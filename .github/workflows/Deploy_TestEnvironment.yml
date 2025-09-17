@@ -13,4 +13,5 @@ jobs:
       with:
         server: ftp.gcorpcleans.ca
         username: Working_interface@testenvironment.gcorpcleans.ca
-        password: ${{ secrets.ftp_password }}
+        password: Interface@2025
+
