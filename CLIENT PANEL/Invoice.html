@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invoice History – Client Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f9fafb;
+      color: #333;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #007bff;
+      color: white;
+      padding: 12px 20px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    .back-btn {
+      text-decoration: none;
+      background: white;
+      color: #007bff;
+      border: none;
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 15px 20px;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+    }
+    .controls input, .controls select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .controls button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+      font-size: 14px;
+    }
+
+    .table-container {
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 15px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+    }
+    th {
+      background: #f3f4f6;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+    }
+    th.sort-asc::after {
+      content: " ▲";
+      font-size: 12px;
+      color: #007bff;
+    }
+    th.sort-desc::after {
+      content: " ▼";
+      font-size: 12px;
+      color: #007bff;
+    }
+    tr:hover {
+      background: #f9fafb;
+    }
+
+    .status {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .paid { background: #d1fae5; color: #065f46; }
+    .pending { background: #fef3c7; color: #92400e; }
+    .overdue { background: #fee2e2; color: #991b1b; }
+
+    .action-btns button {
+      margin-right: 6px;
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
+    .download { background: #10b981; color: white; }
+    .print { background: #6b7280; color: white; }
+    .pay { background: #ef4444; color: white; }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <a href="./Dashboard.html" class="back-btn">⬅ Back</a>
+    <h1>Invoice History</h1>
+    <div></div>
+  </header>
+
+  <!-- Controls -->
+  <div class="controls">
+    <input type="text" id="search" placeholder="🔍 Search invoices...">
+    <select id="statusFilter">
+      <option value="all">All Statuses</option>
+      <option value="paid">Paid</option>
+      <option value="pending">Pending</option>
+      <option value="overdue">Overdue</option>
+    </select>
+    <select id="showEntries">
+      <option value="5">Show 5</option>
+      <option value="10" selected>Show 10</option>
+      <option value="20">Show 20</option>
+    </select>
+    <button onclick="exportPDF()">Download PDF</button>
+    <button onclick="window.print()">Print</button>
+  </div>
+
+  <!-- Table -->
+  <div class="table-container">
+    <table id="invoiceTable">
+      <thead>
+        <tr>
+          <th data-key="id">Invoice ID</th>
+          <th data-key="date">Date</th>
+          <th data-key="service">Service</th>
+          <th data-key="amount">Amount</th>
+          <th data-key="status">Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    // ✅ Sample invoice data
+    const invoices = [
+      { id: "INV001", date: "2025-09-01", service: "Deep Cleaning", amount: "$120", status: "paid" },
+      { id: "INV002", date: "2025-09-05", service: "Window Cleaning", amount: "$80", status: "pending" },
+      { id: "INV003", date: "2025-09-10", service: "Carpet Cleaning", amount: "$150", status: "overdue" },
+      { id: "INV004", date: "2025-09-14", service: "Regular Cleaning", amount: "$100", status: "paid" }
+    ];
+
+    let currentSort = { key: null, order: "asc" };
+
+    const tableBody = document.querySelector("#invoiceTable tbody");
+    const searchInput = document.getElementById("search");
+    const statusFilter = document.getElementById("statusFilter");
+    const showEntries = document.getElementById("showEntries");
+
+    function renderInvoices(data) {
+      tableBody.innerHTML = "";
+      data.forEach(inv => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${inv.id}</td>
+          <td>${inv.date}</td>
+          <td>${inv.service}</td>
+          <td>${inv.amount}</td>
+          <td><span class="status ${inv.status}">${inv.status}</span></td>
+          <td class="action-btns">
+            <button class="download">Download</button>
+            <button class="print">Print</button>
+            ${inv.status !== "paid" ? `<button class="pay">Pay Now</button>` : ""}
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function applyFilters() {
+      let filtered = invoices.filter(inv => 
+        inv.id.toLowerCase().includes(searchInput.value.toLowerCase()) ||
+        inv.service.toLowerCase().includes(searchInput.value.toLowerCase())
+      );
+      if (statusFilter.value !== "all") {
+        filtered = filtered.filter(inv => inv.status === statusFilter.value);
+      }
+
+      // Sorting
+      if (currentSort.key) {
+        filtered.sort((a, b) => {
+          let valA = a[currentSort.key];
+          let valB = b[currentSort.key];
+
+          // Convert amount to number
+          if (currentSort.key === "amount") {
+            valA = parseFloat(valA.replace("$",""));
+            valB = parseFloat(valB.replace("$",""));
+          }
+
+          if (valA < valB) return currentSort.order === "asc" ? -1 : 1;
+          if (valA > valB) return currentSort.order === "asc" ? 1 : -1;
+          return 0;
+        });
+      }
+
+      renderInvoices(filtered.slice(0, parseInt(showEntries.value)));
+    }
+
+    searchInput.addEventListener("input", applyFilters);
+    statusFilter.addEventListener("change", applyFilters);
+    showEntries.addEventListener("change", applyFilters);
+
+    // ✅ Sorting by clicking table headers
+    document.querySelectorAll("th[data-key]").forEach(th => {
+      th.addEventListener("click", () => {
+        const key = th.getAttribute("data-key");
+
+        // Reset previous sort indicators
+        document.querySelectorAll("th").forEach(h => h.classList.remove("sort-asc","sort-desc"));
+
+        if (currentSort.key === key) {
+          currentSort.order = currentSort.order === "asc" ? "desc" : "asc";
+        } else {
+          currentSort.key = key;
+          currentSort.order = "asc";
+        }
+
+        th.classList.add(currentSort.order === "asc" ? "sort-asc" : "sort-desc");
+        applyFilters();
+      });
+    });
+
+    // ✅ Export PDF placeholder
+    function exportPDF() {
+      alert("Export to PDF functionality will go here.");
+    }
+
+    // ✅ Initial render
+    renderInvoices(invoices);
+  </script>
+</body>
+</html>

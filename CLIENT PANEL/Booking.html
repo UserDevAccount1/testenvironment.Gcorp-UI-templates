@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Booking Dashboard</title>
+
+  <!-- FullCalendar -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+  <style>
+    /* ✅ Hide ALL scrollbars */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden !important; /* <-- This kills vertical scrollbar */
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f9fafb;
+      color: #333;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #007bff;
+      color: white;
+      padding: 12px 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .back-btn {
+      background: white;
+      color: #007bff;
+      border: none;
+      padding: 8px 14px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      background: #e5e7eb;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      transition: transform 0.2s;
+      text-align: center;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      color: #374151;
+    }
+
+    .card .value {
+      font-size: 26px;
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .view-toggle {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+    .btn-primary {
+      background: #007bff;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #0056b3;
+    }
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111;
+    }
+    .btn-secondary:hover {
+      background: #d1d5db;
+    }
+
+    #calendar, #list-view {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    #list-view {
+      display: none;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+    }
+
+    .status {
+      font-weight: bold;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+    .confirmed { background: #d1fae5; color: #065f46; }
+    .in-progress { background: #fef9c3; color: #92400e; }
+    .completed { background: #dbeafe; color: #1e40af; }
+    .cancelled { background: #fee2e2; color: #991b1b; }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      width: 400px;
+      max-width: 90%;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+    .modal-header {
+      font-weight: bold;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    .modal input, .modal textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+   <a href="./Dashboard.html" class="back-btn">⬅ Go Back</a>
+    <h1>Client Booking Dashboard</h1>
+    <div></div>
+  </header>
+
+  <!-- Top Stats (Cards) -->
+  <div class="dashboard">
+    <div class="card"><h3>Upcoming Bookings</h3><div class="value" id="upcomingCount">0</div></div>
+    <div class="card"><h3>Completed</h3><div class="value" id="completedCount">0</div></div>
+    <div class="card"><h3>In Progress</h3><div class="value" id="progressCount">0</div></div>
+    <div class="card"><h3>Cancelled</h3><div class="value" id="cancelledCount">0</div></div>
+  </div>
+
+  <!-- Main Panel -->
+  <div class="container">
+    <div class="view-toggle">
+      <button class="btn btn-primary" onclick="showCalendar()">📅 Calendar View</button>
+      <button class="btn btn-secondary" onclick="showList()">📋 List View</button>
+      <button class="btn btn-primary" onclick="openModal()">➕ New Request</button>
+    </div>
+
+    <!-- Calendar -->
+    <div id="calendar"></div>
+
+    <!-- List View -->
+    <div id="list-view">
+      <h3>Scheduled Appointments</h3>
+      <table>
+        <thead><tr><th>Date</th><th>Time</th><th>Cleaner</th><th>Status</th></tr></thead>
+        <tbody id="list-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="requestModal">
+    <div class="modal-content">
+      <div class="modal-header">New Booking Request</div>
+      <input type="date" id="req-date" required>
+      <input type="time" id="req-time" required>
+      <input type="text" id="req-cleaner" placeholder="Preferred Cleaner">
+      <textarea id="req-notes" placeholder="Additional notes..."></textarea>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="submitRequest()">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ✅ Sample booking data
+    const appointments = [
+      { id: 1, title: "Cleaning - John Doe", start: "2025-09-20T10:00:00", cleaner: "Alice", status: "Confirmed" },
+      { id: 2, title: "Cleaning - Sarah Lee", start: "2025-09-21T14:00:00", cleaner: "Bob", status: "In Progress" },
+      { id: 3, title: "Cleaning - Michael Chen", start: "2025-09-22T09:00:00", cleaner: "Chris", status: "Completed" },
+      { id: 4, title: "Cleaning - Emma Davis", start: "2025-09-23T16:00:00", cleaner: "Alice", status: "Cancelled" }
+    ];
+
+    let calendar;
+    document.addEventListener("DOMContentLoaded", function() {
+      calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
+        initialView: "dayGridMonth",
+        height: "auto", // ✅ Prevents extra vertical space
+        events: appointments.map(a => ({
+          id: a.id,
+          title: a.title,
+          start: a.start,
+          backgroundColor: getStatusColor(a.status),
+          borderColor: getStatusColor(a.status)
+        }))
+      });
+      calendar.render();
+
+      renderList();
+      updateCards();
+    });
+
+    function getStatusColor(status) {
+      switch (status) {
+        case "Confirmed": return "#10b981";
+        case "In Progress": return "#f59e0b";
+        case "Completed": return "#3b82f6";
+        case "Cancelled": return "#ef4444";
+        default: return "#6b7280";
+      }
+    }
+
+    function showCalendar() {
+      document.getElementById("calendar").style.display = "block";
+      document.getElementById("list-view").style.display = "none";
+    }
+    function showList() {
+      document.getElementById("calendar").style.display = "none";
+      document.getElementById("list-view").style.display = "block";
+    }
+
+    function renderList() {
+      const tbody = document.getElementById("list-body");
+      tbody.innerHTML = "";
+      appointments.forEach(a => {
+        const date = new Date(a.start);
+        tbody.innerHTML += `
+          <tr>
+            <td>${date.toLocaleDateString()}</td>
+            <td>${date.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})}</td>
+            <td>${a.cleaner}</td>
+            <td><span class="status ${a.status.toLowerCase().replace(" ", "-")}">${a.status}</span></td>
+          </tr>`;
+      });
+    }
+
+    function updateCards() {
+      document.getElementById("upcomingCount").textContent =
+        appointments.filter(a => a.status === "Confirmed").length;
+      document.getElementById("completedCount").textContent =
+        appointments.filter(a => a.status === "Completed").length;
+      document.getElementById("progressCount").textContent =
+        appointments.filter(a => a.status === "In Progress").length;
+      document.getElementById("cancelledCount").textContent =
+        appointments.filter(a => a.status === "Cancelled").length;
+    }
+
+    function openModal() {
+      document.getElementById("requestModal").style.display = "flex";
+    }
+    function closeModal() {
+      document.getElementById("requestModal").style.display = "none";
+    }
+
+    function submitRequest() {
+      const date = document.getElementById("req-date").value;
+      const time = document.getElementById("req-time").value;
+      const cleaner = document.getElementById("req-cleaner").value || "Unassigned";
+
+      if (!date || !time) {
+        alert("Please select date and time.");
+        return;
+      }
+
+      const newAppointment = {
+        id: appointments.length + 1,
+        title: "New Booking",
+        start: date + "T" + time,
+        cleaner: cleaner,
+        status: "Confirmed"
+      };
+
+      appointments.push(newAppointment);
+      calendar.addEvent({
+        id: newAppointment.id,
+        title: newAppointment.title,
+        start: newAppointment.start,
+        backgroundColor: getStatusColor(newAppointment.status),
+        borderColor: getStatusColor(newAppointment.status)
+      });
+
+      renderList();
+      updateCards();
+      closeModal();
+      alert("Your booking has been submitted!");
+    }
+  </script>
+</body>
+</html>

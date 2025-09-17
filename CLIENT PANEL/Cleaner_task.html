@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cleaner Tasks – Client Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f9fafb;
+      color: #333;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #007bff;
+      color: white;
+      padding: 12px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      background: white;
+      color: #007bff;
+      border: none;
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .back-btn:hover {
+      background: #e5e7eb;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 10px;
+      padding: 15px 20px;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+      flex-wrap: wrap;
+    }
+    .controls select, .controls input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    /* Tasks grid */
+    .tasks-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    /* Task card */
+    .task-card {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      padding: 20px;
+      transition: transform 0.2s;
+    }
+    .task-card:hover {
+      transform: translateY(-3px);
+    }
+
+    /* Cleaner info */
+    .cleaner-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+    .cleaner-info img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #007bff;
+    }
+    .cleaner-info .details h4 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .cleaner-info .details span {
+      font-size: 13px;
+      color: #666;
+    }
+
+    /* Progress */
+    .progress-bar {
+      background: #e5e7eb;
+      border-radius: 10px;
+      overflow: hidden;
+      height: 10px;
+      margin-bottom: 15px;
+    }
+    .progress-bar div {
+      height: 100%;
+      background: #007bff;
+      width: 60%;
+      transition: width 0.3s ease;
+    }
+
+    /* Checklist */
+    .checklist {
+      margin-bottom: 15px;
+    }
+    .checklist h5 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+    }
+    .checklist ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .checklist li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      padding: 6px 0;
+    }
+    .checklist li span {
+      font-size: 16px;
+    }
+    .done { color: #10b981; }
+    .pending { color: #9ca3af; }
+
+    /* Custom requests */
+    .custom-requests {
+      background: #fffbe6;
+      border-left: 4px solid #f59e0b;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    /* Feedback */
+    .feedback {
+      border-top: 1px solid #eee;
+      padding-top: 12px;
+    }
+    .stars {
+      font-size: 18px;
+      color: #d1d5db;
+      cursor: pointer;
+    }
+    .stars .active {
+      color: #fbbf24;
+    }
+    textarea {
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      resize: vertical;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <a href="./Dashboard.html" class="back-btn">⬅ Back</a>
+    <h1>Cleaner Tasks</h1>
+    <div></div>
+  </header>
+
+  <!-- Controls -->
+  <div class="controls">
+    <input type="text" id="search" placeholder="🔍 Search cleaner...">
+    <select id="statusFilter">
+      <option value="all">All Statuses</option>
+      <option value="in-progress">In Progress</option>
+      <option value="completed">Completed</option>
+    </select>
+    <select id="sortBy">
+      <option value="name">Sort by Name</option>
+      <option value="progress">Sort by Progress</option>
+    </select>
+  </div>
+
+  <!-- Cleaner Task Cards -->
+  <div class="tasks-container" id="tasks-container">
+    <!-- Cards will be inserted by JS -->
+  </div>
+
+  <script>
+    // ✅ Sample task data
+    const cleaners = [
+      {
+        name: "Alice Johnson",
+        role: "Professional Cleaner",
+        photo: "https://i.pravatar.cc/100?img=12",
+        progress: 75,
+        tasks: [
+          { task: "Bathroom cleaned", done: true },
+          { task: "Kitchen surfaces sanitized", done: true },
+          { task: "Living room vacuumed", done: false },
+          { task: "Bedrooms dusted", done: false }
+        ],
+        customRequest: "Pay extra attention to oven and windows.",
+        status: "in-progress"
+      },
+      {
+        name: "Michael Chen",
+        role: "Cleaner",
+        photo: "https://i.pravatar.cc/100?img=13",
+        progress: 100,
+        tasks: [
+          { task: "Bathroom cleaned", done: true },
+          { task: "Kitchen surfaces sanitized", done: true },
+          { task: "Living room vacuumed", done: true },
+          { task: "Bedrooms dusted", done: true }
+        ],
+        customRequest: "Use eco-friendly products in bathroom.",
+        status: "completed"
+      }
+    ];
+
+    const container = document.getElementById("tasks-container");
+
+    function renderCleaners(data) {
+      container.innerHTML = "";
+      data.forEach(c => {
+        const card = document.createElement("div");
+        card.className = "task-card";
+
+        card.innerHTML = `
+          <div class="cleaner-info">
+            <img src="${c.photo}" alt="${c.name}">
+            <div class="details">
+              <h4>${c.name}</h4>
+              <span>${c.role}</span>
+            </div>
+          </div>
+          <div class="progress-bar"><div style="width:${c.progress}%;"></div></div>
+          <div class="checklist">
+            <h5>Standard Tasks</h5>
+            <ul>
+              ${c.tasks.map(t => `
+                <li>
+                  <span class="${t.done ? "done" : "pending"}">${t.done ? "✅" : "⬜"}</span> 
+                  ${t.task}
+                </li>
+              `).join("")}
+            </ul>
+          </div>
+          <div class="custom-requests">📝 ${c.customRequest}</div>
+          <div class="feedback">
+            <div class="stars">
+              <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+            </div>
+            <textarea placeholder="Leave feedback about ${c.name}..."></textarea>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      enableStarRatings();
+    }
+
+    // ✅ Enable star ratings
+    function enableStarRatings() {
+      document.querySelectorAll(".stars").forEach(starSet => {
+        const stars = starSet.querySelectorAll("span");
+        stars.forEach((star, i) => {
+          star.addEventListener("click", () => {
+            stars.forEach((s, j) => s.classList.toggle("active", j <= i));
+          });
+        });
+      });
+    }
+
+    // ✅ Filtering and sorting
+    document.getElementById("search").addEventListener("input", e => {
+      const query = e.target.value.toLowerCase();
+      const filtered = cleaners.filter(c => c.name.toLowerCase().includes(query));
+      renderCleaners(filtered);
+    });
+
+    document.getElementById("statusFilter").addEventListener("change", e => {
+      const val = e.target.value;
+      const filtered = val === "all" ? cleaners : cleaners.filter(c => c.status === val);
+      renderCleaners(filtered);
+    });
+
+    document.getElementById("sortBy").addEventListener("change", e => {
+      let sorted = [...cleaners];
+      if (e.target.value === "name") {
+        sorted.sort((a,b) => a.name.localeCompare(b.name));
+      } else if (e.target.value === "progress") {
+        sorted.sort((a,b) => b.progress - a.progress);
+      }
+      renderCleaners(sorted);
+    });
+
+    // ✅ Initial render
+    renderCleaners(cleaners);
+  </script>
+</body>
+</html>
