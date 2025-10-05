@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cleaning Services</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f4f4f9;
+    }
+    .buttons {
+      margin-bottom: 20px;
+    }
+    .buttons button {
+      margin: 5px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .buttons button:hover {
+      background: #0056b3;
+    }
+    .content {
+      display: none;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .content.active {
+      display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #007bff;
+      color: white;
+    }
+    input[type=range] {
+      width: 100%;
+    }
+    .total-box {
+      font-size: 20px;
+      font-weight: bold;
+      color: #007bff;
+      margin-top: 20px;
+    }
+   
+  </style>
+</head>
+<body>
+  <div class="buttons">
+    <button onclick="location.href='../index.html'">Go back main page</button>
+    <button onclick="location.href='./maintenance.html'">Maintenance Clean</button>
+   
+  </div>
+
+  <!-- Steam Clean Content -->
+  <div id="steam" class="content active">
+    <h2>Steam Clean Pricing</h2>
+    <form id="estimateForm">
+      <table>
+        <tr><th>Select</th><th>Item</th><th>Size/Details</th><th>Price ($)</th><th>Qty</th></tr>
+        <tr>
+          <td><input type="checkbox" data-price="75"></td><td>Carpets</td><td>Large Room 10x10</td><td>75</td>
+          <td><input type="number" min="1" value="1"></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" data-price="60"></td><td></td><td>Regular Room 8x8</td><td>60</td>
+          <td><input type="number" min="1" value="1"></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" data-price="55"></td><td></td><td>Small Room 5x5</td><td>55</td>
+          <td><input type="number" min="1" value="1"></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" data-price="30"></td><td>Rug</td><td>Area Rug</td><td>30</td>
+          <td><input type="number" min="1" value="1"></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" data-price="25"></td><td></td><td>Small Rug</td><td>25</td>
+          <td><input type="number" min="1" value="1"></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" data-price="50"></td><td>Walk-in Closet</td><td>Large</td><td>50</td>
+          <td><input type="number" min="1" value="1"></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" data-price="35"></td><td></td><td>Small</td><td>35</td>
+          <td><input type="number" min="1" value="1"></td>
+        </tr>
+      <!-- Stair Flight Row -->
+<tr>
+  <!-- Checkbox column -->
+  <td><input type="checkbox" id="stairsCheck" onchange="calculateEstimate()"></td>
+
+  <!-- Category -->
+  <td>Stair Flight</td>
+
+  <!-- Description with slider -->
+  <td>
+    <label for="stairs">Adjust (1–20 flights):</label><br>
+    <input type="range" id="stairs" min="1" max="20" value="1" step="1" oninput="updateStairs(this.value)">
+    <br>Flights: <span id="stairsCountDisplay">1</span>
+  </td>
+
+  <!-- Price column -->
+  <td>$<span id="stairsPrice">20</span></td>
+
+  <!-- Qty column (not needed for stairs, so just show '-') -->
+  <td>-</td>
+</tr>
+          <td><input type="checkbox" data-price="100"></td><td>Walls</td><td></td><td>100</td>
+          <td><input type="number" min="1" value="1"></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" data-price="20"></td><td>Small Chair/Bar Stool</td><td></td><td>20</td>
+          <td><input type="number" min="1" value="1"></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" data-price="100"></td><td>Couch</td><td></td><td>100</td>
+          <td><input type="number" min="1" value="1"></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" data-price="75"></td><td>Love Seat</td><td></td><td>75</td>
+          <td><input type="number" min="1" value="1"></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" data-price="100"></td><td>Mattress</td><td></td><td>100</td>
+          <td><input type="number" min="1" value="1"></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" data-price="35"></td><td>Hallway</td><td></td><td>35</td>
+          <td><input type="number" min="1" value="1"></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox" data-price="25"></td><td>Landing</td><td></td><td>25</td>
+          <td><input type="number" min="1" value="1"></td>
+        </tr>
+      </table>
+    </form>
+
+   
+
+<div class="total-box">
+  <h3>
+  Estimate Invoice 
+  <button onclick="showInfo()" 
+          style="background:#007bff;color:#fff;border:none;border-radius:5px;padding:3px 8px;cursor:pointer;">i</button>
+</h3>
+
+  <div id="estimateInvoice" style="background:#fff; padding:15px; border:1px solid #ccc; border-radius:8px; font-family:monospace; white-space:pre-line;"></div>
+
+  <!-- Deposit Option -->
+  <label>
+    <input type="checkbox" id="depositPaid" onchange="calculateEstimate()"> $120 Deposit Paid
+  </label><br>
+  <label>Upload Proof of Deposit:</label>
+  <input type="file" id="depositFile" accept="image/*,application/pdf">
+</div>
+
+<!-- Info Modal -->
+<div id="infoModal" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+background:#fff;padding:20px;border:1px solid #333;border-radius:10px;z-index:1000;max-width:400px;box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+  <h3>Minimum Charge Policy</h3>
+  <p>All Steam Clean services priced below $120 will be adjusted to $114 plus 5% tax, making the final minimum charge $120.</p>
+  <button onclick="closeInfo()" 
+          style="margin-top:10px;background:#007bff;color:#fff;border:none;border-radius:5px;padding:5px 10px;cursor:pointer;">Close</button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+   function showInfo() {
+    document.getElementById("infoModal").style.display = "block";
+  }
+
+  function closeInfo() {
+    document.getElementById("infoModal").style.display = "none";
+  }
+   function updateStairs(flights) {
+    let basePrice = 20; // base for 1 flight
+    let pricePerFlight = 15; // increment after 1st
+    let totalPrice = basePrice + (flights - 1) * pricePerFlight;
+
+    document.getElementById("stairsPrice").innerText = totalPrice;
+    document.getElementById("stairsCountDisplay").innerText = flights;
+
+    // Recalculate invoice immediately
+    calculateEstimate();
+  }
+
+function calculateEstimate() {
+    let subtotal = 0;
+    let breakdownItems = [];
+    let discounts = [];
+
+    const rows = document.querySelectorAll("#estimateForm tr");
+    let selectedServices = [];
+
+    rows.forEach(row => {
+      const checkbox = row.querySelector("input[type=checkbox]");
+      const qtyInput = row.querySelector("input[type=number]");
+      if (checkbox && checkbox.checked && !checkbox.id.includes("stairs")) {
+        let price = parseInt(checkbox.getAttribute("data-price") || 0);
+        let qty = qtyInput ? parseInt(qtyInput.value) : 1;
+        let itemTotal = price * qty;
+        subtotal += itemTotal;
+        breakdownItems.push(`${row.cells[1].innerText} ×${qty} ........ $${itemTotal}`);
+        selectedServices.push(itemTotal);
+      }
+    });
+
+    // ✅ Handle Stairs
+    const stairsCheck = document.getElementById("stairsCheck");
+    if (stairsCheck && stairsCheck.checked) {
+      let flights = parseInt(document.getElementById("stairsCountDisplay").innerText);
+      let price = parseInt(document.getElementById("stairsPrice").innerText);
+      subtotal += price;
+      breakdownItems.push(`Stair Flights (${flights}) ........ $${price}`);
+      selectedServices.push(price);
+    }
+
+    // ✅ Minimum rule
+    if (selectedServices.length === 1 && subtotal < 120) {
+      subtotal = 114;
+      breakdownItems = ["Minimum Steam Clean Service ........ $114"];
+    }
+
+    let tax = subtotal * 0.05;
+    let total = subtotal + tax;
+
+    const depositPaid = document.getElementById("depositPaid");
+    if (depositPaid && depositPaid.checked) {
+      total -= 120;
+      discounts.push("Deposit Paid: -$120");
+    }
+
+    let invoice = `CLEANING ESTIMATE INVOICE
+--------------------------------
+ITEMS SELECTED:
+${breakdownItems.join("\n")}
+
+DISCOUNTS:
+${discounts.length > 0 ? discounts.join("\n") : "None"}
+
+--------------------------------
+Subtotal: $${subtotal.toFixed(2)}
+Tax (5%): $${tax.toFixed(2)}
+TOTAL DUE: $${total.toFixed(2)}
+`;
+
+    document.getElementById("estimateInvoice").innerText = invoice;
+
+    // ✅ Save to localStorage for maintenance.html
+    localStorage.setItem("steamInvoice", invoice);
+    localStorage.setItem("steamTotal", total.toFixed(2));
+  }
+
+  // Recalculate anytime something changes
+  document.addEventListener("input", function(e) {
+    if (["checkbox", "number"].includes(e.target.type)) {
+      calculateEstimate();
+    }
+  });
+</script> 
+
+</body>
+</html>

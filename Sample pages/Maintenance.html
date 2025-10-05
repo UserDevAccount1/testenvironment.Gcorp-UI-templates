@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cleaning Services Estimator</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background:#f4f4f9; }
+    h2 { color:#007bff; }
+    .section { margin-bottom:20px; }
+    .total-box { font-size: 18px; font-weight: bold; margin-top: 20px; color:#007bff; }
+    button { background:#007bff; color:#fff; border:none; border-radius:5px; padding:5px 10px; cursor:pointer; }
+    table { width:100%; border-collapse:collapse; margin:10px 0; }
+    th, td { border:1px solid #ddd; padding:8px; text-align:center; }
+    th { background:#007bff; color:#fff; }
+    input[type=range] { width: 100px; }
+  </style>
+</head>
+<body>
+  <div class="buttons">
+    <button onclick="location.href='./estimation.html'">Steam Clean</button>
+  </div>
+
+  <h2>Cleaning Service Estimator</h2>
+
+  <!-- Service Options -->
+  <div class="section">
+    <label><input type="checkbox" id="serviceMaintenance" onchange="calculateEstimate()"> Maintenance Clean</label><br>
+    <label><input type="checkbox" id="serviceMoveout" onchange="calculateEstimate()"> Move Out Clean</label><br>
+    <label><input type="checkbox" id="serviceDeep" onchange="calculateEstimate()"> Deep Clean</label><br>
+    <label><input type="checkbox" id="serviceSteam" onchange="calculateEstimate()"> Steam Clean</label>
+  </div>
+
+  <!-- Maintenance Options -->
+  <div id="maintenanceOptions" style="display:none; margin-top:15px;">
+    <h3>Maintenance Clean Options</h3>
+    <label><input type="radio" name="rateType" value="residential" checked onchange="calculateEstimate()"> Residential ($38/hr)</label>
+    <label><input type="radio" name="rateType" value="commercial" onchange="calculateEstimate()"> Commercial ($44/hr)</label>
+
+    <table>
+      <tr><th>Room</th><th>Base Hours</th><th>Large?</th><th>Extra Hours</th><th>Total Hours</th></tr>
+      <tr>
+        <td>Kitchen</td><td>4</td>
+        <td><input type="checkbox" id="kitchenLarge" onchange="calculateEstimate()"> +1.5 hrs</td>
+        <td>
+          <input type="range" id="kitchenExtra" min="0" max="5" step="0.5" value="0" oninput="calculateEstimate()"> 
+          <span id="kitchenExtraDisplay">0</span>
+        </td>
+        <td id="kitchenHours">4</td>
+      </tr>
+      <tr>
+        <td>Bedroom</td><td>1</td>
+        <td><input type="checkbox" id="bedroomLarge" onchange="calculateEstimate()"> +0.5 hrs</td>
+        <td>
+          <input type="range" id="bedroomExtra" min="0" max="5" step="0.5" value="0" oninput="calculateEstimate()"> 
+          <span id="bedroomExtraDisplay">0</span>
+        </td>
+        <td id="bedroomHours">1</td>
+      </tr>
+      <tr>
+        <td>Bathroom</td><td>2.5</td>
+        <td><input type="checkbox" id="bathroomLarge" onchange="calculateEstimate()"> +1 hr</td>
+        <td>
+          <input type="range" id="bathroomExtra" min="0" max="5" step="0.5" value="0" oninput="calculateEstimate()"> 
+          <span id="bathroomExtraDisplay">0</span>
+        </td>
+        <td id="bathroomHours">2.5</td>
+      </tr>
+      <tr>
+        <td>Entryway</td><td>0.5</td>
+        <td><input type="checkbox" disabled> (always 0.5 hrs)</td>
+        <td>
+          <input type="range" id="entryExtra" min="0" max="5" step="0.5" value="0" oninput="calculateEstimate()"> 
+          <span id="entryExtraDisplay">0</span>
+        </td>
+        <td id="entryHours">0.5</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Invoice -->
+  <div class="total-box">
+    <h3>Final Estimate Invoice</h3>
+    <div id="finalInvoice" style="background:#fff; padding:15px; border:1px solid #ccc; border-radius:8px; font-family:monospace; white-space:pre-line;"></div>
+  </div>
+
+  <script>
+    function calculateEstimate() {
+      let breakdown = [];
+      let subtotal = 0;
+
+      // === Maintenance Clean ===
+      if (document.getElementById("serviceMaintenance").checked) {
+        document.getElementById("maintenanceOptions").style.display = "block";
+
+        const rateType = document.querySelector('input[name="rateType"]:checked').value;
+        const rate = (rateType === "residential") ? 38 : 44;
+
+        // Kitchen
+        let kitchen = 4 + (document.getElementById("kitchenLarge").checked ? 1.5 : 0);
+        let kitchenExtra = parseFloat(document.getElementById("kitchenExtra").value);
+        kitchen += kitchenExtra;
+        document.getElementById("kitchenExtraDisplay").innerText = kitchenExtra;
+        document.getElementById("kitchenHours").innerText = kitchen;
+
+        // Bedroom
+        let bedroom = 1 + (document.getElementById("bedroomLarge").checked ? 0.5 : 0);
+        let bedroomExtra = parseFloat(document.getElementById("bedroomExtra").value);
+        bedroom += bedroomExtra;
+        document.getElementById("bedroomExtraDisplay").innerText = bedroomExtra;
+        document.getElementById("bedroomHours").innerText = bedroom;
+
+        // Bathroom
+        let bathroom = 2.5 + (document.getElementById("bathroomLarge").checked ? 1 : 0);
+        let bathroomExtra = parseFloat(document.getElementById("bathroomExtra").value);
+        bathroom += bathroomExtra;
+        document.getElementById("bathroomExtraDisplay").innerText = bathroomExtra;
+        document.getElementById("bathroomHours").innerText = bathroom;
+
+        // Entryway
+        let entryway = 0.5;
+        let entryExtra = parseFloat(document.getElementById("entryExtra").value);
+        entryway += entryExtra;
+        document.getElementById("entryExtraDisplay").innerText = entryExtra;
+        document.getElementById("entryHours").innerText = entryway;
+
+        let totalHours = kitchen + bedroom + bathroom + entryway;
+        let minHours = 6; // minimum rule
+        if (totalHours < minHours) totalHours = minHours;
+
+        let maintenanceCost = totalHours * rate;
+        subtotal += maintenanceCost;
+        breakdown.push(`Maintenance Clean (${rateType}, ${totalHours.toFixed(1)} hrs @ $${rate}/hr) .... $${maintenanceCost.toFixed(2)}`);
+      } else {
+        document.getElementById("maintenanceOptions").style.display = "none";
+      }
+
+      // === Steam Clean (pull from estimation.html if available) ===
+      if (document.getElementById("serviceSteam").checked) {
+        let steamInvoice = localStorage.getItem("steamInvoice");
+        let steamTotal = parseFloat(localStorage.getItem("steamTotal") || 0);
+
+        if (steamInvoice && steamTotal > 0) {
+          subtotal += steamTotal;
+          breakdown.push("---- Included Steam Clean Invoice ----");
+          breakdown.push(steamInvoice);
+        } else {
+          // fallback if nothing saved
+          subtotal += 120;
+          breakdown.push(`Steam Clean (basic package) ................. $120.00`);
+        }
+      }
+
+      // === Move Out ===
+      if (document.getElementById("serviceMoveout").checked) {
+        subtotal += 200;
+        breakdown.push(`Move Out Clean (base) ................. $200.00`);
+      }
+
+      // === Deep Clean ===
+      if (document.getElementById("serviceDeep").checked) {
+        subtotal += 250;
+        breakdown.push(`Deep Clean (basic) .................... $250.00`);
+      }
+
+      // Tax
+      let tax = subtotal * 0.05;
+      let total = subtotal + tax;
+
+      let invoice = `FINAL CLEANING ESTIMATE
+--------------------------------
+${breakdown.join("\n")}
+--------------------------------
+Subtotal: $${subtotal.toFixed(2)}
+Tax (5%): $${tax.toFixed(2)}
+TOTAL DUE: $${total.toFixed(2)}
+`;
+      document.getElementById("finalInvoice").innerText = invoice;
+    }
+
+    document.addEventListener("DOMContentLoaded", calculateEstimate);
+  </script>
+</body>
+</html>
