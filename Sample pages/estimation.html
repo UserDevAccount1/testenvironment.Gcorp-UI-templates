@@ -67,7 +67,7 @@
 <body>
   <div class="buttons">
     <button onclick="location.href='../index.html'">Go back main page</button>
-    <button onclick="location.href='./maintenance.html'">Maintenance Clean</button>
+    <button onclick="location.href='./Maintenance.html'">Maintenance Clean</button>
    
   </div>
 
@@ -105,7 +105,7 @@
           <td><input type="checkbox" data-price="35"></td><td></td><td>Small</td><td>35</td>
           <td><input type="number" min="1" value="1"></td>
         </tr>
-      <!-- Stair Flight Row -->
+<!-- Stair Flight Row -->
 <tr>
   <!-- Checkbox column -->
   <td><input type="checkbox" id="stairsCheck" onchange="calculateEstimate()"></td>
@@ -115,17 +115,20 @@
 
   <!-- Description with slider -->
   <td>
-    <label for="stairs">Adjust (1–20 flights):</label><br>
-    <input type="range" id="stairs" min="1" max="20" value="1" step="1" oninput="updateStairs(this.value)">
-    <br>Flights: <span id="stairsCountDisplay">1</span>
+    <label for="stairs">Adjust (0–15 flights):</label><br>
+    <input type="range" id="stairs" min="0" max="15" value="0" step="1" oninput="updateStairs(this.value)">
+    <br>Flights: <span id="stairsCountDisplay">0</span>
   </td>
 
   <!-- Price column -->
-  <td>$<span id="stairsPrice">20</span></td>
+  <td>$<span id="stairsPrice">0.00</span></td>
 
-  <!-- Qty column (not needed for stairs, so just show '-') -->
+  <!-- Qty column -->
   <td>-</td>
 </tr>
+
+
+
           <td><input type="checkbox" data-price="100"></td><td>Walls</td><td></td><td>100</td>
           <td><input type="number" min="1" value="1"></td>
         </tr>
@@ -207,17 +210,23 @@ background:#fff;padding:20px;border:1px solid #333;border-radius:10px;z-index:10
   function closeInfo() {
     document.getElementById("infoModal").style.display = "none";
   }
-   function updateStairs(flights) {
-    let basePrice = 20; // base for 1 flight
-    let pricePerFlight = 15; // increment after 1st
-    let totalPrice = basePrice + (flights - 1) * pricePerFlight;
+  function updateStairs(flights) {
+  // Keep value between 0–15
+  flights = Math.min(15, Math.max(0, parseInt(flights) || 0));
 
-    document.getElementById("stairsPrice").innerText = totalPrice;
-    document.getElementById("stairsCountDisplay").innerText = flights;
+  // Each flight = $5, max $75
+  let totalPrice = Math.min(flights * 5, 75);
 
-    // Recalculate invoice immediately
+  // Update UI
+  document.getElementById("stairsCountDisplay").innerText = flights;
+  document.getElementById("stairsPrice").innerText = totalPrice.toFixed(2);
+  document.getElementById("stairs").value = flights;
+
+  // Recalculate invoice immediately
+  if (typeof calculateEstimate === "function") {
     calculateEstimate();
   }
+}
 
 function calculateEstimate() {
     let subtotal = 0;
@@ -244,7 +253,8 @@ function calculateEstimate() {
     const stairsCheck = document.getElementById("stairsCheck");
     if (stairsCheck && stairsCheck.checked) {
       let flights = parseInt(document.getElementById("stairsCountDisplay").innerText);
-      let price = parseInt(document.getElementById("stairsPrice").innerText);
+      let price = parseFloat(document.getElementById("stairsPrice").innerText) || 0;
+
       subtotal += price;
       breakdownItems.push(`Stair Flights (${flights}) ........ $${price}`);
       selectedServices.push(price);

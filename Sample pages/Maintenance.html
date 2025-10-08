@@ -81,23 +81,82 @@
     </table>
   </div>
 
-  <!-- Move Out Options -->
-  <div id="moveoutOptions" style="display:none; margin-top:15px;">
-    <h3>Move Out Clean Options</h3>
-    <p>Flat rate based on home size:</p>
-    <label><input type="radio" name="moveoutSize" value="small" checked onchange="calculateEstimate()"> Small (up to 1000sqft) - $200</label><br>
-    <label><input type="radio" name="moveoutSize" value="medium" onchange="calculateEstimate()"> Medium (1001–2000sqft) - $350</label><br>
-    <label><input type="radio" name="moveoutSize" value="large" onchange="calculateEstimate()"> Large (2000+ sqft) - $500</label>
-    <div class="small-note">You can combine Move Out with Maintenance / Steam / Deep Clean.</div>
-  </div>
+<!-- Smart Move Out Estimator -->
+<div id="moveoutOptions" style="display:none; margin-top:15px;">
+  <h3>Move Out Smart Estimator</h3>
+  <p>Automatically estimates hours based on size and hourly rate (no fixed price).</p>
 
-  <!-- Deep Clean Options -->
-  <div id="deepOptions" style="display:none; margin-top:15px;">
-    <h3>Deep Clean Options</h3>
-    <p>Flat rate options:</p>
-    <label><input type="radio" name="deepType" value="basic" checked onchange="calculateEstimate()"> Basic Deep Clean - $250</label><br>
-    <label><input type="radio" name="deepType" value="full" onchange="calculateEstimate()"> Full Deep Clean - $400</label>
+  <label>Home Size:</label><br>
+  <select id="moveoutSize" onchange="calculateEstimate()" style="padding:5px; border-radius:5px;">
+    <option value="small" selected>Small — 7–8 hrs</option>
+    <option value="medium">Medium — 9–15 hrs</option>
+    <option value="large">Large — 15+ hrs</option>
+  </select><br><br>
+
+  <label>Approximate Square Footage:</label><br>
+  <input type="number" id="moveoutSqft" placeholder="e.g. 1800" min="300" step="50"
+         oninput="calculateEstimate()" style="padding:5px; border-radius:5px; width:120px;"><br><br>
+
+  <label>Hourly Rate ($):</label><br>
+  <input type="number" id="moveoutRate" placeholder="e.g. 50" min="20" step="1" value="50"
+         oninput="calculateEstimate()" style="padding:5px; border-radius:5px; width:100px;"><br><br>
+
+  <div style="margin-top:8px;">
+    <strong>Estimated Hours:</strong> <span id="moveoutHoursDisplay">0.00</span><br>
+    <strong>Estimated Cost:</strong> $<span id="moveoutCostDisplay">0.00</span>
   </div>
+</div>
+
+
+<!-- Smart Deep Clean Estimator -->
+<div id="deepOptions" style="display:none; margin-top:15px;">
+  <h3>Deep Clean Smart Estimator</h3>
+  <p>Estimate dynamically based on home size (no fixed rate).</p>
+
+  <label>Home Size:</label><br>
+  <select id="deepSize" onchange="calculateEstimate()" style="padding:5px; border-radius:5px;">
+    <option value="small" selected>Small — minimum 7–8 hrs</option>
+    <option value="medium">Medium — 9–15 hrs</option>
+    <option value="large">Large — 15+ hrs</option>
+  </select><br><br>
+
+  <label>Approximate Square Footage:</label><br>
+  <input type="number" id="deepSqft" placeholder="e.g. 1500" min="300" step="50" 
+         oninput="calculateEstimate()" style="padding:5px; border-radius:5px; width:120px;"><br><br>
+
+  <label>Hourly Rate ($):</label><br>
+  <input type="number" id="deepRate" placeholder="e.g. 50" min="20" step="1" value="50"
+         oninput="calculateEstimate()" style="padding:5px; border-radius:5px; width:100px;"><br><br>
+
+  <p class="small-note">Minimum 7 hours for small homes. Larger spaces may increase hours automatically.</p>
+
+  <div style="margin-top:8px;">
+    <strong>Estimated Hours:</strong> <span id="deepHoursDisplay">0.00</span><br>
+    <strong>Estimated Cost:</strong> $<span id="deepCostDisplay">0.00</span>
+  </div>
+</div>
+
+<!-- Travel Time Fee Estimator -->
+<div id="travelOptions" style="margin-top:15px;">
+  <h3>Travel Time Fee Estimation</h3>
+  <p>Estimate additional cost based on travel duration.</p>
+
+  <label>Rate Type:</label><br>
+  <select id="travelType" onchange="calculateEstimate()" style="padding:5px; border-radius:5px;">
+    <option value="residential" selected>Residential ($38/hr)</option>
+    <option value="commercial">Commercial ($44/hr)</option>
+  </select><br><br>
+
+  <label>Travel Time (minutes):</label><br>
+  <input type="number" id="travelMinutes" placeholder="e.g. 45" min="0" max="120" step="5"
+         oninput="calculateEstimate()" style="padding:5px; border-radius:5px; width:100px;"><br><br>
+
+  <div>
+    <strong>Travel Fee:</strong> $<span id="travelCostDisplay">0.00</span>
+  </div>
+</div>
+
+
 
   <!-- Final Invoice -->
   <div class="total-box">
@@ -181,29 +240,90 @@
         }
       }
 
-      // ----- Move Out -----
-      if (document.getElementById("serviceMoveout").checked) {
-        document.getElementById("moveoutOptions").style.display = "block";
+    // ----- Smart Move Out Estimator -----
+if (document.getElementById("serviceMoveout").checked) {
+  document.getElementById("moveoutOptions").style.display = "block";
 
-        const moveoutSize = document.querySelector('input[name="moveoutSize"]:checked')?.value || 'small';
-        const moveoutCost = (moveoutSize === 'small') ? 200 : (moveoutSize === 'medium') ? 350 : 500;
-        subtotal += moveoutCost;
-        breakdown.push(`Move Out Clean (${moveoutSize}) ................. $${moveoutCost.toFixed(2)}`);
-      } else {
-        document.getElementById("moveoutOptions").style.display = "none";
-      }
+  const size = document.getElementById("moveoutSize").value;
+  const sqft = parseFloat(document.getElementById("moveoutSqft").value) || 0;
+  const rate = parseFloat(document.getElementById("moveoutRate").value) || 0;
 
-      // ----- Deep Clean -----
-      if (document.getElementById("serviceDeep").checked) {
-        document.getElementById("deepOptions").style.display = "block";
+  let baseHours =
+    (size === "small") ? 7 :
+    (size === "medium") ? 10 : 15;
 
-        const deepType = document.querySelector('input[name="deepType"]:checked')?.value || 'basic';
-        const deepCost = (deepType === 'basic') ? 250 : 400;
-        subtotal += deepCost;
-        breakdown.push(`Deep Clean (${deepType}) ....................... $${deepCost.toFixed(2)}`);
-      } else {
-        document.getElementById("deepOptions").style.display = "none";
-      }
+  let sqftFactor =
+    (size === "small") ? sqft / 300 :
+    (size === "medium") ? sqft / 250 : sqft / 200;
+
+  let estimatedHours = Math.max(baseHours, sqftFactor);
+  const totalCost = round2(estimatedHours * rate);
+
+  document.getElementById("moveoutHoursDisplay").innerText = estimatedHours.toFixed(2);
+  document.getElementById("moveoutCostDisplay").innerText = totalCost.toFixed(2);
+
+  if (rate > 0 && sqft > 0) {
+    subtotal += totalCost;
+    breakdown.push(
+      `Move Out Clean (${size}) — ${sqft.toFixed(0)} sqft, ${estimatedHours.toFixed(2)} hrs @ $${rate}/hr ......... $${totalCost.toFixed(2)}`
+    );
+  }
+} else {
+  document.getElementById("moveoutOptions").style.display = "none";
+}
+
+
+
+// ----- Smart Deep Clean Estimator -----
+if (document.getElementById("serviceDeep").checked) {
+  document.getElementById("deepOptions").style.display = "block";
+
+  const size = document.getElementById("deepSize").value;
+  const sqft = parseFloat(document.getElementById("deepSqft").value) || 0;
+  const rate = parseFloat(document.getElementById("deepRate").value) || 0;
+
+  // Estimate hours based on size and sqft
+  let baseHours =
+    (size === "small") ? 7 :
+    (size === "medium") ? 10 : 15;
+
+  let sqftFactor =
+    (size === "small") ? sqft / 300 :
+    (size === "medium") ? sqft / 250 : sqft / 200;
+
+  let estimatedHours = Math.max(baseHours, sqftFactor);
+  const totalCost = round2(estimatedHours * rate);
+
+  document.getElementById("deepHoursDisplay").innerText = estimatedHours.toFixed(2);
+  document.getElementById("deepCostDisplay").innerText = totalCost.toFixed(2);
+
+  if (rate > 0 && sqft > 0) {
+    subtotal += totalCost;
+    breakdown.push(
+      `Deep Clean (${size}) — ${sqft.toFixed(0)} sqft, ${estimatedHours.toFixed(2)} hrs @ $${rate}/hr ......... $${totalCost.toFixed(2)}`
+    );
+  }
+} else {
+  document.getElementById("deepOptions").style.display = "none";
+}
+
+// ----- Travel Time Fee Estimator -----
+const travelType = document.getElementById("travelType").value;
+const travelMinutes = parseFloat(document.getElementById("travelMinutes").value) || 0;
+const travelRate = (travelType === "residential") ? 38 : 44;
+
+if (travelMinutes > 0) {
+  const travelHours = travelMinutes / 60;
+  const travelCost = round2(travelHours * travelRate);
+  document.getElementById("travelCostDisplay").innerText = travelCost.toFixed(2);
+  subtotal += travelCost;
+  breakdown.push(
+    `Travel Time Fee (${travelType}) — ${travelMinutes} mins @ $${travelRate}/hr ......... $${travelCost.toFixed(2)}`
+  );
+} else {
+  document.getElementById("travelCostDisplay").innerText = "0.00";
+}
+
 
       // ----- Tax & total -----
       const tax = round2(subtotal * 0.05);
