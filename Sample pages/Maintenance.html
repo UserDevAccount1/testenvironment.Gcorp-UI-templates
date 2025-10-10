@@ -15,6 +15,10 @@
     th { background:#007bff; color:#fff; }
     input[type=range] { width: 120px; }
     .small-note { font-size: 13px; color: #555; }
+    /* 🔹 Added Visit Estimation styles */
+.alert-box { color: red; font-weight: bold; margin-top:10px; display:none; }
+.success-msg { color: green; font-weight: bold; margin-top:10px; display:none; }
+button:disabled { background: gray; cursor: not-allowed; }
     pre.invoice { font-family: monospace; white-space: pre-wrap; margin:0; }
   </style>
 </head>
@@ -37,19 +41,27 @@
   <!-- Maintenance Options -->
   <div id="maintenanceOptions" style="display:none; margin-top:15px;">
     <h3>Maintenance Clean Options</h3>
-    <label><input type="radio" name="rateType" value="residential" checked onchange="calculateEstimate()"> Residential ($38/hr)</label>
+    <p id="residentialNote" class="small-note" style="display:none;">Minimum booking for maintenance is <strong>3 hours</strong>.</p>
+
+    <label><input type="radio" name="rateType" value="residential" onchange="calculateEstimate()"> Residential ($38/hr)</label>
     <label><input type="radio" name="rateType" value="commercial" onchange="calculateEstimate()"> Commercial ($44/hr)</label>
+    <!-- 🔹 Visit Estimation Toggle (only for Commercial) -->
+<div id="visitOption" style="display:none; margin-top:10px;">
+  <label><input type="checkbox" id="visitEstimation" onchange="toggleVisitEstimation()"> Visit Estimation</label>
+  <div id="visitAlert" class="alert-box">⚠ Invoice is paused until visit estimation is processed.</div>
+  <div id="visitSuccess" class="success-msg">✅ Visit estimation finalized. You can now proceed to booking.</div>
+</div>
 
     <table>
       <tr><th>Room</th><th>Base Hours</th><th>Large?</th><th>Extra Hours (drag)</th><th>Total Hours</th></tr>
       <tr>
-        <td>Kitchen</td><td>4</td>
+        <td>Kitchen</td><td>3</td>
         <td><input type="checkbox" id="kitchenLarge" onchange="calculateEstimate()"> +1.5 hrs</td>
         <td>
           <input type="range" id="kitchenExtra" min="0" max="5" step="0.25" value="0" oninput="calculateEstimate()">
           <div class="small-note"><span id="kitchenExtraDisplay">0.00</span> hrs</div>
         </td>
-        <td id="kitchenHours">4.00</td>
+        <td id="kitchenHours">3.00</td>
       </tr>
       <tr>
         <td>Bedroom</td><td>1</td>
@@ -158,13 +170,64 @@
 
 
 
-  <!-- Final Invoice -->
-  <div class="total-box">
-    <h3>Final Estimate Invoice</h3>
-    <pre id="finalInvoice" class="invoice"></pre>
-  </div>
+<div class="total-box">
+  <h3>Final Estimate Invoice</h3>
+  <pre id="finalInvoice" class="invoice"></pre>
+
+  <!-- 🔹 Added Visit Estimation Finalization and Book Button -->
+  <button id="finalizeVisitBtn" style="display:none;" onclick="finalizeVisitEstimation()">Finalize Visit Estimation</button>
+  <button id="bookButton" disabled>Book Service</button>
+</div>
+
+
+  
 
   <script>
+
+    // 🔹 Handle Commercial toggle visibility
+function toggleVisitOption() {
+  const rateType = document.querySelector('input[name="rateType"]:checked').value;
+  document.getElementById("visitOption").style.display = (rateType === "commercial") ? "block" : "none";
+
+  if (rateType !== "commercial") {
+    document.getElementById("visitEstimation").checked = false;
+    toggleVisitEstimation(false);
+  }
+}
+
+// 🔹 Handle Visit Estimation behavior
+function toggleVisitEstimation() {
+  const isVisit = document.getElementById("visitEstimation").checked;
+  const alertBox = document.getElementById("visitAlert");
+  const successBox = document.getElementById("visitSuccess");
+  const bookBtn = document.getElementById("bookButton");
+  const finalizeBtn = document.getElementById("finalizeVisitBtn");
+
+  if (isVisit) {
+    alertBox.style.display = "block";
+    successBox.style.display = "none";
+    finalizeBtn.style.display = "inline-block";
+    bookBtn.disabled = true;
+    alert("Invoice is paused until visit estimation is processed. You can still estimate, but cannot book until the visit is complete.");
+  } else {
+    alertBox.style.display = "none";
+    successBox.style.display = "none";
+    finalizeBtn.style.display = "none";
+    bookBtn.disabled = false;
+  }
+
+  calculateEstimate();
+}
+
+// 🔹 When visit estimation finalized
+function finalizeVisitEstimation() {
+  document.getElementById("visitAlert").style.display = "none";
+  document.getElementById("visitSuccess").style.display = "block";
+  document.getElementById("bookButton").disabled = false;
+  document.getElementById("finalizeVisitBtn").style.display = "none";
+  alert("Visit estimation finalized. You can now proceed to booking.");
+}
+
     // Main calculator
     function calculateEstimate() {
       const breakdown = [];
@@ -176,6 +239,13 @@
 
         const rateType = document.querySelector('input[name="rateType"]:checked').value;
         const rate = (rateType === "residential") ? 38 : 44;
+        toggleVisitOption();
+        // Show note only for residential
+if (rateType === "residential") {
+  document.getElementById("residentialNote").style.display = "block";
+} else {
+  document.getElementById("residentialNote").style.display = "none";
+}
 
         // kitchen
         let kitchenBase = 4;
@@ -210,8 +280,16 @@
 
         // total hours and minimum enforcement
         let totalHours = kitchen + bedroom + bathroom + entryway;
-        const minHours = 6; // 3 hrs x 2 cleaners
-        let totalHoursApplied = (totalHours < minHours) ? minHours : totalHours;
+let minHours;
+
+if (rateType === "residential") {
+  minHours = 3; // Minimum 3 hours for residential
+} else {
+  minHours = 6; // 3 hrs x 2 cleaners for commercial
+}
+
+let totalHoursApplied = (totalHours < minHours) ? minHours : totalHours;
+
 
         let maintenanceCost = round2(totalHoursApplied * rate);
         subtotal += maintenanceCost;
@@ -347,15 +425,19 @@ TOTAL DUE: $${total.toFixed(2)}
 
     // recalc when ANY input changes (checkbox/radio/range)
     document.addEventListener('input', function(e){
-      // call calculate only for relevant inputs
-      const relevantTypes = ['checkbox','radio','range'];
-      if (relevantTypes.includes(e.target.type) || e.target.name === 'rateType' || e.target.name === 'moveoutSize' || e.target.name === 'deepType') {
-        calculateEstimate();
-      }
-    });
+  const relevantTypes = ['checkbox','radio','range','number','select-one'];
+  if (relevantTypes.includes(e.target.type) || e.target.name === 'rateType') {
+    calculateEstimate();
+  }
+});
 
     // Also recalc on load (pulls Steam if available)
     document.addEventListener('DOMContentLoaded', calculateEstimate);
+    // Fix: Ensure immediate recalculation when switching Residential/Commercial
+document.querySelectorAll('input[name="rateType"]').forEach(radio => {
+  radio.addEventListener('click', calculateEstimate);
+});
+
   </script>
 </body>
 </html>
