@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Onboarding & Offboarding Workflow (Persistent)</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  body { background:#f8f9fa; font-family: Inter, system-ui, Arial; }
+  .card { border-radius:10px; }
+  .workflow-container { display:flex; gap:14px; overflow-x:auto; padding:8px 0; }
+  .workflow-step { min-width:110px; text-align:center; cursor:pointer; position:relative; flex:0 0 auto; }
+  .workflow-circle { width:34px; height:34px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; border:3px solid #ddd; background:#fff; margin-bottom:6px; }
+  .workflow-step.completed .workflow-circle { background:#198754; border-color:#198754; color:#fff; }
+  .workflow-step.active .workflow-circle { background:#0d6efd; border-color:#0d6efd; color:#fff; }
+  .workflow-step::after { content:""; position:absolute; top:18px; right:-70px; width:70px; height:4px; background:#e9ecef; z-index:-1; }
+  .workflow-step:last-child::after { display:none; }
+  .workflow-step.completed::after { background:#198754; }
+  #flowContent { background:#fff; border-radius:8px; padding:18px; border:1px solid #e9ecef; margin-top:12px; }
+  .audit-log { font-family:monospace; font-size:13px; background:#f8f9fb; padding:8px; border-radius:6px; max-height:160px; overflow:auto; border:1px solid #eee; }
+  .muted { color:#6c757d; }
+  .section-title { font-weight:600; margin-top:8px; margin-bottom:6px; }
+  .btn-ghost { background:transparent; border:1px dashed #ddd; padding:6px 8px; border-radius:6px; }
+  pre { white-space:pre-wrap; font-size:13px; }
+</style>
+</head>
+<body>
+
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3>Onboarding & Offboarding Management</h3>
+    <div>
+      <button class="btn btn-outline-secondary me-2" onclick="runScheduledCheck(true)">Run scheduled checks</button>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">Add Employee</button>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body table-responsive">
+      <table class="table table-striped align-middle" id="onboardTable">
+        <thead>
+          <tr>
+            <th>#</th><th>Name</th><th>Role</th><th>Process</th><th>Status</th><th>Applied</th><th>Assigned</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add Employee Modal -->
+<div class="modal fade" id="addEmployeeModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" id="addEmployeeForm">
+      <div class="modal-header"><h5 class="modal-title">Add New Employee</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <div class="mb-2"><label class="form-label">Name</label><input id="empName" class="form-control" required></div>
+        <div class="mb-2"><label class="form-label">Role</label><input id="empRole" class="form-control" required></div>
+        <div class="mb-2"><label class="form-label">Assigned To</label><input id="empAssigned" class="form-control" placeholder="HR - Anne"></div>
+        <div class="mb-2"><label class="form-label">Initial Status</label>
+          <select id="empStatus" class="form-select">
+            <option>Applied</option><option>Interview</option><option>Job Offer</option><option>Onboarding</option><option>Employed</option>
+          </select>
+        </div>
+        <div class="mb-2"><label class="form-label">Applied Date</label><input id="empApplied" type="date" class="form-control" required></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancel</button><button class="btn btn-success" type="submit">Add</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- Workflow Modal -->
+<div class="modal fade" id="workflowModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h5 id="workflowTitle" class="modal-title">Workflow — Employee</h5>
+          <div id="workflowSubtitle" class="muted small"></div>
+        </div>
+        <div>
+          <button class="btn btn-sm btn-outline-secondary me-2" onclick="openEditEmployee()">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteEmployeeConfirm()">Delete</button>
+          <button class="btn-close ms-2" data-bs-dismiss="modal"></button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div id="workflowSteps" class="workflow-container"></div>
+        <div id="flowContent"></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Employee Modal -->
+<div class="modal fade" id="editEmployeeModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" id="editEmployeeForm">
+      <div class="modal-header"><h5 class="modal-title">Edit Employee</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+      <div class="modal-body">
+        <input id="editId" type="hidden">
+        <div class="mb-2"><label class="form-label">Name</label><input id="editName" class="form-control" required></div>
+        <div class="mb-2"><label class="form-label">Role</label><input id="editRole" class="form-control" required></div>
+        <div class="mb-2"><label class="form-label">Assigned</label><input id="editAssigned" class="form-control"></div>
+        <div class="mb-2"><label class="form-label">Applied Date</label><input id="editApplied" type="date" class="form-control"></div>
+        <div class="mb-2"><label class="form-label">Status</label>
+          <select id="editStatus" class="form-select">
+            <option>Applied</option><option>Interview</option><option>Job Offer</option><option>Onboarding</option><option>Employed</option><option>Fired / Resigned</option><option>Offboarding</option><option>Complete</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Cancel</button><button class="btn btn-primary" type="submit">Save</button></div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ------------------------------
+  Data & Persistence Utilities
+--------------------------------*/
+const FLOW = ["Applied","Interview","Job Offer","Onboarding","Employed","Pending Termination","Fired / Resigned","Offboarding","Complete"];
+const STORAGE_KEY = "hr_workflow_v1";
+
+function nowISO(){ return new Date().toISOString(); }
+function todayISO(){ return new Date().toISOString().slice(0,10); }
+
+function loadState(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(!raw) return { employees: [], nextId: 1 };
+  try { return JSON.parse(raw); } catch(e){ return { employees: [], nextId: 1 }; }
+}
+function saveState(state){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+/* initialize state if empty */
+let state = loadState();
+if(!state.employees || !Array.isArray(state.employees)){
+  state = { employees: [], nextId: 1 };
+  saveState(state);
+}
+
+/* Demo seed if empty */
+if(state.employees.length === 0){
+  state.employees.push({
+    id: state.nextId++,
+    name:"Maria Santos",
+    role:"Cleaner",
+    process:"Onboarding",
+    status:"Applied",
+    applied:"2025-10-15",
+    assigned:"HR - Anne",
+    platform:"Indeed",
+    resume:"resume_maria.pdf",
+    interviewForm: null,
+    onboarding: { training:false, documents:false, orientation:false, appLinkSent:false },
+    termination: null,
+    offboarding: { hrVerification:false, hrReady:false, financeROE:false, financePayroll:false, financeBenefits:false },
+    audit: [{ts: nowISO(), actor:"System", action:"Record created"}]
+  });
+  state.employees.push({
+    id: state.nextId++,
+    name:"John Dela Cruz",
+    role:"Driver",
+    process:"Offboarding",
+    status:"Fired / Resigned",
+    applied:"2024-06-12",
+    assigned:"Manager - Leo",
+    platform:"Referral",
+    resume:"",
+    interviewForm: null,
+    onboarding: { training:true, documents:true, orientation:true, appLinkSent:true },
+    termination: { date:"2025-10-24", reason:"Contract end", attachment:null, scheduledBy:"Admin", executed:false },
+    offboarding: { hrVerification:true, hrReady:true, financeROE:false, financePayroll:false, financeBenefits:false },
+    audit: [{ts: nowISO(), actor:"System", action:"Seed record"}]
+  });
+  saveState(state);
+}
+
+/* convenience accessor */
+function employees(){ return state.employees; }
+function findEmp(id){ return employees().find(e=>e.id===id); }
+function addAudit(emp, actor, action, note=""){ emp.audit = emp.audit || []; emp.audit.push({ ts: nowISO(), actor, action, note }); saveState(state); }
+
+/* ------------------------------
+  Rendering: Table & Modal
+--------------------------------*/
+function badgeClass(status){
+  switch(status){
+    case "Applied": return "secondary";
+    case "Interview": return "warning text-dark";
+    case "Job Offer": return "info text-dark";
+    case "Onboarding": return "primary";
+    case "Employed": return "success";
+    case "Pending Termination": return "warning";
+    case "Fired / Resigned": return "danger";
+    case "Offboarding": return "dark";
+    case "Complete": return "success";
+    default: return "secondary";
+  }
+}
+
+function renderTable(){
+  const tbody = document.getElementById("tableBody");
+  tbody.innerHTML = employees().map((e,i)=>`
+    <tr>
+      <td>${i+1}</td>
+      <td>${escapeHtml(e.name)}</td>
+      <td>${escapeHtml(e.role)}</td>
+      <td>${escapeHtml(e.process||"")}</td>
+      <td><span class="badge bg-${badgeClass(e.status)}">${escapeHtml(e.status)}</span></td>
+      <td>${escapeHtml(e.applied||"")}</td>
+      <td>${escapeHtml(e.assigned||"")}</td>
+      <td>
+        <div class="d-flex gap-1">
+          <button class="btn btn-sm btn-outline-primary" onclick="openWorkflow(${e.id})">View</button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="openEditModal(${e.id})">Edit</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
+}
+
+/* safe escape for text insertion */
+function escapeHtml(s){
+  if(s===null||s===undefined) return "";
+  return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+}
+
+/* ------------------------------
+  Add / Edit Employee
+--------------------------------*/
+document.getElementById("addEmployeeForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  const name = document.getElementById("empName").value.trim();
+  const role = document.getElementById("empRole").value.trim();
+  const assigned = document.getElementById("empAssigned").value.trim();
+  const status = document.getElementById("empStatus").value;
+  const applied = document.getElementById("empApplied").value;
+  const newEmp = {
+    id: state.nextId++,
+    name, role, assigned: assigned||"Unassigned", status,
+    process: (["Fired / Resigned","Offboarding","Complete"].includes(status) ? "" : (status==="Employed" ? "Onboarding" : "Onboarding")),
+    applied, platform:null, resume:null,
+    interviewForm:null, onboarding:{ training:false, documents:false, orientation:false, appLinkSent:false },
+    termination:null, offboarding:{ hrVerification:false, hrReady:false, financeROE:false, financePayroll:false, financeBenefits:false },
+    audit:[{ts:nowISO(), actor:"User", action:"Created record"}]
+  };
+  employees().push(newEmp);
+  saveState(state);
+  renderTable();
+  bootstrap.Modal.getInstance(document.getElementById("addEmployeeModal")).hide();
+  e.target.reset();
+});
+
+/* Edit modal */
+function openEditModal(id){
+  const emp = findEmp(id);
+  if(!emp) return;
+  document.getElementById("editId").value = emp.id;
+  document.getElementById("editName").value = emp.name;
+  document.getElementById("editRole").value = emp.role;
+  document.getElementById("editAssigned").value = emp.assigned || "";
+  document.getElementById("editApplied").value = emp.applied || "";
+  document.getElementById("editStatus").value = emp.status || "Applied";
+  new bootstrap.Modal(document.getElementById("editEmployeeModal")).show();
+}
+
+document.getElementById("editEmployeeForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  const id = parseInt(document.getElementById("editId").value);
+  const emp = findEmp(id);
+  if(!emp) return;
+  emp.name = document.getElementById("editName").value.trim();
+  emp.role = document.getElementById("editRole").value.trim();
+  emp.assigned = document.getElementById("editAssigned").value.trim();
+  emp.applied = document.getElementById("editApplied").value;
+  const newStatus = document.getElementById("editStatus").value;
+  emp.status = newStatus;
+  emp.process = (["Offboarding","Fired / Resigned","Pending Termination"].includes(newStatus) ? "Offboarding" : "Onboarding");
+  addAudit(emp,"User","Edited record","");
+  saveState(state);
+  renderTable();
+  bootstrap.Modal.getInstance(document.getElementById("editEmployeeModal")).hide();
+});
+
+/* ------------------------------
+  Workflow Modal: rendering & actions
+--------------------------------*/
+let currentWorkflowId = null;
+
+function openWorkflow(id){
+  currentWorkflowId = id;
+  const emp = findEmp(id);
+  if(!emp) return;
+  document.getElementById("workflowTitle").textContent = `Workflow — ${emp.name}`;
+  document.getElementById("workflowSubtitle").textContent = `${emp.role} • Assigned: ${emp.assigned || "—"}`;
+  renderSteps(emp);
+  showStepContent(emp.status, id);
+  new bootstrap.Modal(document.getElementById("workflowModal")).show();
+  // ensure any old terminate modal removed
+  removeTerminateModalIfExists();
+}
+
+function renderSteps(emp){
+  const container = document.getElementById("workflowSteps");
+  const currentIndex = FLOW.indexOf(emp.status === "Pending Termination" ? "Employed" : emp.status);
+  container.innerHTML = FLOW.map((s,i)=>{
+    const cls = i < currentIndex ? "workflow-step completed" : (i === currentIndex ? "workflow-step active" : "workflow-step");
+    return `<div class="${cls}" onclick="showStepContent('${s}',${emp.id})"><div class="workflow-circle">${i<currentIndex? '✓' : i+1}</div><div style="font-size:12px;margin-top:6px">${s}</div></div>`;
+  }).join("");
+}
+
+/* Show stage content — includes interview form, onboarding checklist, termination / offboarding checks, and audit log */
+function showStepContent(step,id){
+  const emp = findEmp(id);
+  if(!emp) return;
+  renderSteps(emp);
+  let html = `<h6>${step} Stage</h6><hr>`;
+
+  // Applied: minimal per your last ask (you said remove other content from applied earlier)
+  if(step === "Applied"){
+    html += `<p><strong>Applied via:</strong> ${emp.platform || "N/A"}<br><strong>Resume:</strong> ${emp.resume ? `<a href="${emp.resume}" target="_blank">View</a>` : "—"}</p>`;
+    html += `<div class="d-flex gap-2"><button class="btn btn-success btn-sm" onclick="setStatus(${id},'Interview')">Move Forward</button><button class="btn btn-danger btn-sm" onclick="setStatus(${id},'Complete')">Reject</button></div>`;
+  }
+
+  // Interview stage: full detailed form (collapsed sections)
+  else if(step === "Interview"){
+    const f = emp.interviewForm || {};
+    html += `<div class="mb-3"><small class="muted">Fill interview form — saved automatically.</small></div>`;
+    html += `<div class="accordion" id="interviewAccordion">`;
+
+    // Personal Info
+    html += accordionCard("personal","Personal Details", `
+      <div class="row g-2">
+        <div class="col-md-6"><label class="form-label">Full name</label><input class="form-control" id="if_name" value="${escapeHtml(f.name||emp.name||"")}"></div>
+        <div class="col-md-6"><label class="form-label">Email</label><input class="form-control" id="if_email" value="${escapeHtml(f.email||"")}"></div>
+        <div class="col-md-6"><label class="form-label">Phone</label><input class="form-control" id="if_phone" value="${escapeHtml(f.phone||"")}"></div>
+        <div class="col-md-6"><label class="form-label">City / Town</label><input class="form-control" id="if_city" value="${escapeHtml(f.city||"")}"></div>
+      </div>
+    `);
+
+    // Driver & eligibility
+    html += accordionCard("driver","Driver & Eligibility", `
+      <div class="mb-2"><label>Reliable vehicle & driver's licence?</label>
+        <select id="if_vehicle" class="form-select"><option value="">—</option><option ${f.vehicle==="YES"?"selected":""}>YES</option><option ${f.vehicle==="NO"?"selected":""}>NO</option></select>
+      </div>
+      <div class="mb-2"><label>Allowed to work in Canada?</label>
+        <select id="if_canwork" class="form-select"><option></option><option ${f.canwork==="YES"?"selected":""}>YES</option><option ${f.canwork==="NO"?"selected":""}>NO</option></select>
+      </div>
+      <div class="mb-2"><label>Criminal record check pass?</label>
+        <select id="if_criminal" class="form-select"><option></option><option ${f.criminal==="YES"?"selected":""}>YES</option><option ${f.criminal==="NO"?"selected":""}>NO</option></select>
+      </div>
+      <div class="mb-2"><label>Can lift 50 lb repeatedly?</label>
+        <select id="if_lift" class="form-select"><option></option><option ${f.lift==="YES"?"selected":""}>YES</option><option ${f.lift==="NO"?"selected":""}>NO</option></select>
+      </div>
+      <div class="mb-2"><label>Willing to work nights/early mornings?</label>
+        <select id="if_shift" class="form-select"><option></option><option ${f.shift==="YES"?"selected":""}>YES</option><option ${f.shift==="NO"?"selected":""}>NO</option></select>
+      </div>
+      <div class="mb-2"><label>Years cleaning experience</label>
+        <select id="if_years" class="form-select">${[0,1,2,3,4,"5+"].map(v=>`<option ${String(f.years)===String(v)?"selected":""}>${v}</option>`).join('')}</select>
+      </div>
+    `);
+
+    // Driver-specific convictions (condensed)
+    html += accordionCard("driverinfo","Driver Convictions & Licensing", `
+      <div class="row g-2">
+        <div class="col-md-6"><label>Serious convictions last 3 yrs?</label>
+          <select id="if_serious" class="form-select"><option></option><option ${f.serious==="YES"?"selected":""}>YES</option><option ${f.serious==="NO"?"selected":""}>NO</option></select></div>
+        <div class="col-md-6"><label>Major convictions last 3 yrs?</label>
+          <select id="if_major" class="form-select"><option></option><option ${f.major==="YES"?"selected":""}>YES</option><option ${f.major==="NO"?"selected":""}>NO</option></select></div>
+        <div class="col-md-4"><label>Minor convictions (#)</label><select id="if_minor" class="form-select">${[0,1,2,3,"4+"].map(v=>`<option ${String(f.minor)===String(v)?"selected":""}>${v}</option>`).join('')}</select></div>
+        <div class="col-md-4"><label>Years fully licensed</label><select id="if_licensed" class="form-select">${[0,1,2,3,4,"4+"].map(v=>`<option ${String(f.licensed)===String(v)?"selected":""}>${v}</option>`).join('')}</select></div>
+        <div class="col-md-4"><label>At-fault claims (6 yrs)</label><select id="if_claims" class="form-select">${[0,1,2,3,"4+"].map(v=>`<option ${String(f.claims)===String(v)?"selected":""}>${v}</option>`).join('')}</select></div>
+      </div>
+    `);
+
+    // Situational judgment (provide selects/textareas)
+    html += accordionCard("situational","Situational Judgment (choose best)", `
+      ${situationalQuestionHtml("late_last_task","You're running late for the last job of the day... (20 min late)","sj1", f.sj1)}
+      ${situationalQuestionHtml("15_min_late","You're 15 minutes late for a job.","sj2", f.sj2)}
+      ${situationalQuestionHtml("5_min_late","You're only 5 minutes late and think client won't notice.","sj3", f.sj3)}
+      ${situationalQuestionHtml("found_money","You see a $20 bill on the floor while vacuuming.","sj4", f.sj4)}
+      ${situationalQuestionHtml("broken_chemical","You drop a cleaning chemical bottle and it cracks.","sj5", f.sj5)}
+      ${situationalQuestionHtml("missed_corner","A supervisor tells you that you missed a corner while cleaning.","sj6", f.sj6)}
+      ${situationalQuestionHtml("new_hire_suggestion","You've been 6 months and a new hire suggests a faster way.","sj7", f.sj7)}
+      ${situationalQuestionHtml("oven_request","Client asks you to clean oven not booked.","sj8", f.sj8)}
+      ${situationalQuestionHtml("cash_offer","Client offers $50 cash to clean on the side.","sj9", f.sj9)}
+      ${situationalQuestionHtml("vomit","You find vomit in a bathroom.","sj10", f.sj10)}
+      ${situationalQuestionHtml("bleach_ammonia","You find bleach and ammonia stored together.","sj11", f.sj11)}
+    `);
+
+    // Work Samples & open questions
+    html += accordionCard("work","Work Samples & Open Questions", `
+      <label class="form-label">Order to clean 3-bed / 2-bath in 2.5 hrs and top 3 quality checks</label>
+      <textarea id="if_work_order" class="form-control mb-2">${escapeHtml(f.work_order||"")}</textarea>
+      <label class="form-label">Product/tool for greasy kitchen (and why)</label>
+      <textarea id="if_grease" class="form-control mb-2">${escapeHtml(f.grease||"")}</textarea>
+      <label class="form-label">If client says "only floors", what do you do?</label>
+      <textarea id="if_client_floors" class="form-control mb-2">${escapeHtml(f.client_floors||"")}</textarea>
+      <label class="form-label">3 common mistakes & how you avoid them</label>
+      <textarea id="if_mistakes" class="form-control mb-2">${escapeHtml(f.mistakes||"")}</textarea>
+      <label class="form-label">If finish early but notice dust on ceiling fan...</label>
+      <textarea id="if_finish_early" class="form-control mb-2">${escapeHtml(f.finish_early||"")}</textarea>
+      <label class="form-label">If client unhappy with bathroom, exact steps to fix & document</label>
+      <textarea id="if_client_unhappy" class="form-control mb-2">${escapeHtml(f.client_unhappy||"")}</textarea>
+      <label class="form-label">Time you learned something new quickly</label>
+      <textarea id="if_learned" class="form-control mb-2">${escapeHtml(f.learned||"")}</textarea>
+      <label class="form-label">If partner rushing & missing tasks, what do you do?</label>
+      <textarea id="if_partner" class="form-control mb-2">${escapeHtml(f.partner||"")}</textarea>
+      <label class="form-label">What does quality mean to you? Example</label>
+      <textarea id="if_quality" class="form-control mb-2">${escapeHtml(f.quality||"")}</textarea>
+    `);
+
+    // Logistics & availability
+    html += accordionCard("logistics","Logistics & Availability", `
+      <div class="row g-2">
+        <div class="col-md-6"><label>Earliest start date</label><input id="if_start" type="date" class="form-control" value="${f.start||""}"></div>
+        <div class="col-md-6"><label>Hours wanted / week</label>
+          <select id="if_hours" class="form-select"><option></option><option ${f.hours==="Less than 10"?"selected":""}>Less than 10 hours</option><option ${f.hours==="10–20 hours"?"selected":""}>10–20 hours</option><option ${f.hours==="20–30 hours"?"selected":""}>20–30 hours</option><option ${f.hours==="30–40 hours"?"selected":""}>30–40 hours</option><option ${f.hours==="40+ hours"?"selected":""}>40+ hours</option></select></div>
+      </div>
+      <div class="mt-2">
+        <label>Work availability (check all)</label>
+        <div class="form-check"><input class="form-check-input" id="if_avail_morn" type="checkbox" ${f.avail_morn?"checked":""}><label class="form-check-label">Weekday mornings (before noon)</label></div>
+        <div class="form-check"><input class="form-check-input" id="if_avail_aft" type="checkbox" ${f.avail_aft?"checked":""}><label class="form-check-label">Weekday afternoons (12–6 PM)</label></div>
+        <div class="form-check"><input class="form-check-input" id="if_avail_eve" type="checkbox" ${f.avail_eve?"checked":""}><label class="form-check-label">Evenings (after 6 PM)</label></div>
+        <div class="form-check"><input class="form-check-input" id="if_avail_wk" type="checkbox" ${f.avail_wk?"checked":""}><label class="form-check-label">Weekends</label></div>
+        <div class="form-check"><input class="form-check-input" id="if_avail_overnight" type="checkbox" ${f.avail_overnight?"checked":""}><label class="form-check-label">Overnight (if needed)</label></div>
+      </div>
+    `);
+
+    // Notes and interviewer
+    html += accordionCard("notes","Notes & Interviewer", `
+      <div class="mb-2"><label>Notes from candidate</label><textarea id="if_notes_candidate" class="form-control">${escapeHtml(f.notes_candidate||"")}</textarea></div>
+      <div class="mb-2"><label>Notes from interviewer</label><textarea id="if_notes_interviewer" class="form-control">${escapeHtml(f.notes_interviewer||"")}</textarea></div>
+      <div class="mb-2"><label>Interviewer</label><input id="if_interviewer" class="form-control" value="${escapeHtml(f.interviewer||"")}"></div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-primary btn-sm" onclick="saveInterviewForm(${id})">Save Interview Form</button>
+        <button class="btn btn-success btn-sm" onclick="completeInterview(${id})">Mark Interview Complete</button>
+      </div>
+    `);
+
+    html += `</div>`; // end accordion
+  }
+
+  // Job Offer stage
+  else if(step === "Job Offer"){
+    html += `<p>Offer stage. Choose to send offer or decline.</p>
+      <div class="d-flex gap-2">
+        <button class="btn btn-success btn-sm" onclick="sendOffer(${id})">Send Offer & Proceed to Onboarding</button>
+        <button class="btn btn-outline-danger btn-sm" onclick="declineOffer(${id})">Decline</button>
+      </div>
+    `;
+  }
+
+  // Onboarding stage: checklist + team mate onboarding form
+  else if(step === "Onboarding"){
+    const ob = emp.onboarding || { training:false, documents:false, orientation:false, appLinkSent:false };
+    html += `<div class="mb-3"><small class="muted">Complete checklist — App Access Link appears only when all items checked.</small></div>`;
+    html += `<div class="form-check"><input id="ob_train" class="form-check-input" type="checkbox" ${ob.training?"checked":""} onchange="toggleOnboard(${id})"><label class="form-check-label">Training Assigned</label></div>`;
+    html += `<div class="form-check"><input id="ob_docs" class="form-check-input" type="checkbox" ${ob.documents?"checked":""} onchange="toggleOnboard(${id})"><label class="form-check-label">Documents Uploaded</label></div>`;
+    html += `<div class="form-check mb-3"><input id="ob_orient" class="form-check-input" type="checkbox" ${ob.orientation?"checked":""} onchange="toggleOnboard(${id})"><label class="form-check-label">Orientation Scheduled</label></div>`;
+    html += `<div id="ob_applink" style="display:${(ob.training && ob.documents && ob.orientation)?'block':'none'}" class="alert alert-info">App Access Link: <a href="https://example.com/onboarding-link" target="_blank">https://example.com/onboarding-link</a></div>`;
+    html += `<div class="mt-3"><button class="btn btn-success btn-sm" ${ (ob.training && ob.documents && ob.orientation) ? "" : "disabled" } onclick="completeOnboarding(${id})">Mark Onboarding Complete</button></div>`;
+
+    // TEAM MATE ONBOARDING checklist (compact)
+    html += `<hr><h6 class="section-title">Team Mate Onboarding (quick checklist)</h6>`;
+    const team = emp.teamOnboard || {
+      rpSigned:false, driversAbstract:false, policySigned:false, qboInvited:false, qbtEntered:false, clockPermissions:false, googleChat:false, calShared:false, notes:""
+    };
+    html += `
+      <div class="form-check"><input id="tm_rp${id}" class="form-check-input" type="checkbox" ${team.rpSigned?"checked":""}><label class="form-check-label">Orientation contract signed</label></div>
+      <div class="form-check"><input id="tm_drv${id}" class="form-check-input" type="checkbox" ${team.driversAbstract?"checked":""}><label class="form-check-label">Drivers abstract</label></div>
+      <div class="form-check"><input id="tm_pol${id}" class="form-check-input" type="checkbox" ${team.policySigned?"checked":""}><label class="form-check-label">Policy signed</label></div>
+      <div class="form-check"><input id="tm_qbo${id}" class="form-check-input" type="checkbox" ${team.qboInvited?"checked":""}><label class="form-check-label">Entered into QBO & workforce invite sent</label></div>
+      <div class="form-check"><input id="tm_qbt${id}" class="form-check-input" type="checkbox" ${team.qbtEntered?"checked":""}><label class="form-check-label">Entered into QBT / Group assigned</label></div>
+      <div class="form-check"><input id="tm_clkp${id}" class="form-check-input" type="checkbox" ${team.clockPermissions?"checked":""}><label class="form-check-label">Clock-in permissions updated & tested</label></div>
+      <div class="form-check"><input id="tm_chat${id}" class="form-check-input" type="checkbox" ${team.googleChat?"checked":""}><label class="form-check-label">Entered and verified into Google Chats</label></div>
+      <div class="form-check mb-2"><input id="tm_cal${id}" class="form-check-input" type="checkbox" ${team.calShared?"checked":""}><label class="form-check-label">Calendar shared / team cal added</label></div>
+      <div><label class="form-label">Notes</label><textarea id="tm_notes${id}" class="form-control" rows="2">${escapeHtml(team.notes||"")}</textarea></div>
+    `;
+    html += `<div class="mt-2"><button class="btn btn-sm btn-primary" onclick="saveTeamOnboard(${id})">Save Team Onboarding</button></div>`;
+  }
+
+  // Employed: show employment form checklist and Terminate
+  else if(step === "Employed"){
+    html += `<h6>Employment Form / Checklist</h6>`;
+    const empForm = emp.employmentForm || {};
+    html += `
+      <div class="mb-2"><label class="form-label">Email</label><input id="ef_email" class="form-control" value="${escapeHtml(empForm.email||"")}"></div>
+      <div class="mb-2 row g-2"><div class="col-md-6"><label>First name</label><input id="ef_first" class="form-control" value="${escapeHtml(empForm.first||"")}"></div><div class="col-md-6"><label>Last name</label><input id="ef_last" class="form-control" value="${escapeHtml(empForm.last||"")}"></div></div>
+      <div class="mb-2"><label>SIN Number</label><input id="ef_sin" class="form-control" value="${escapeHtml(empForm.sin||"")}"></div>
+      <div class="mb-2"><label>Direct debit / Acc# / Transit#</label><input id="ef_dd" class="form-control" value="${escapeHtml(empForm.dd||"")}"></div>
+      <div class="mb-2"><label>Emergency contact</label><input id="ef_emerg" class="form-control" value="${escapeHtml(empForm.emerg||"")}"></div>
+      <div class="d-flex gap-2"><button class="btn btn-primary btn-sm" onclick="saveEmploymentForm(${id})">Save Employment Form</button>
+      <button class="btn btn-danger btn-sm" onclick="openTerminateForm(${id})">Terminate Employee</button></div>
+    `;
+  }
+
+  // Pending Termination (employee still active until date)
+  else if(step === "Pending Termination"){
+    const t = emp.termination;
+    html += `<div class="alert alert-warning">Pending Termination scheduled on <b>${escapeHtml(t.date)}</b>. Reason: ${escapeHtml(t.reason||"")}</div>`;
+    html += `<div class="d-flex gap-2"><button class="btn btn-outline-secondary btn-sm" onclick="editTermination(${id})">Edit</button><button class="btn btn-danger btn-sm" onclick="cancelTermination(${id})">Cancel</button></div>`;
+  }
+
+  // Fired / Resigned (post-execution)
+  else if(step === "Fired / Resigned"){
+    html += `<h6>Termination executed</h6><p>System has executed termination. Access frozen except allowed items. HR should verify and mark ready for finance.</p>`;
+    html += `<div class="d-flex gap-2"><button class="btn btn-primary btn-sm" onclick="setStatus(${id},'Offboarding')">Go to Offboarding</button></div>`;
+  }
+
+  // Offboarding stage: HR verification & Finance tasks (checkboxes persisted)
+  else if(step === "Offboarding"){
+    const ob = emp.offboarding || { hrVerification:false, hrReady:false, financeROE:false, financePayroll:false, financeBenefits:false };
+    html += `<h6>HR Verification</h6>
+      <div class="form-check"><input id="cb_hr_reason" class="form-check-input" type="checkbox" ${ob.hrVerification?"checked":""}><label class="form-check-label">Termination reason & docs complete</label></div>
+      <div class="form-check mb-3"><input id="cb_hr_ready" class="form-check-input" type="checkbox" ${ob.hrReady?"checked":""}><label class="form-check-label">HR marked Ready for Finance Finalization</label></div>
+      <h6>Finance Tasks</h6>
+      <div class="form-check"><input id="cb_fin_roe" class="form-check-input" type="checkbox" ${ob.financeROE?"checked":""}><label class="form-check-label">Prepare & Submit ROE</label></div>
+      <div class="form-check"><input id="cb_fin_pay" class="form-check-input" type="checkbox" ${ob.financePayroll?"checked":""}><label class="form-check-label">Finalize payroll & CRA adjustments</label></div>
+      <div class="form-check mb-3"><input id="cb_fin_ben" class="form-check-input" type="checkbox" ${ob.financeBenefits?"checked":""}><label class="form-check-label">Close benefits & insurance</label></div>
+      <div class="d-flex gap-2"><button class="btn btn-primary btn-sm" onclick="saveOffboardingChecks(${id})">Save Checks</button><button class="btn btn-success btn-sm" onclick="finalizeOffboarding(${id})">Mark Offboarding Complete</button></div>
+    `;
+  }
+
+  // Complete
+  else if(step === "Complete"){
+    html += `<div class="alert alert-success">Process complete. Record can be archived or deleted.</div>`;
+  }
+
+  // append audit log
+  html += `<hr><h6>Activity / Audit Log</h6><div class="audit-log" id="audit_${id}">${(emp.audit||[]).slice().reverse().map(a=>`${a.ts.slice(0,19).replace("T"," ")} — ${escapeHtml(a.actor)}: ${escapeHtml(a.action)} ${a.note? ' | ' + escapeHtml(a.note):''}`).join("<br><br>") || '<span class="muted">No entries yet.</span>'}</div>`;
+
+  document.getElementById("flowContent").innerHTML = html;
+}
+
+/* Helper: builds an accordion card HTML */
+function accordionCard(key,title,innerHtml){
+  return `
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="h-${key}">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#c-${key}">${title}</button>
+    </h2>
+    <div id="c-${key}" class="accordion-collapse collapse" data-bs-parent="#interviewAccordion">
+      <div class="accordion-body">${innerHtml}</div>
+    </div>
+  </div>`;
+}
+function situationalQuestionHtml(id,label,name,value){
+  return `<div class="mb-2"><label class="form-label">${label}</label>
+    <select id="${id}" class="form-select"><option></option><option ${value==="A"?"selected":""}>A</option><option ${value==="B"?"selected":""}>B</option><option ${value==="C"?"selected":""}>C</option></select></div>`;
+}
+
+/* ------------------------------
+  Interview Form: save & complete
+--------------------------------*/
+function saveInterviewForm(id){
+  const emp = findEmp(id);
+  if(!emp) return;
+  const f = {};
+  // personal
+  f.name = document.getElementById("if_name").value.trim();
+  f.email = document.getElementById("if_email").value.trim();
+  f.phone = document.getElementById("if_phone").value.trim();
+  f.city = document.getElementById("if_city").value.trim();
+  // driver/eligibility
+  f.vehicle = document.getElementById("if_vehicle").value;
+  f.canwork = document.getElementById("if_canwork").value;
+  f.criminal = document.getElementById("if_criminal").value;
+  f.lift = document.getElementById("if_lift").value;
+  f.shift = document.getElementById("if_shift").value;
+  f.years = document.getElementById("if_years").value;
+  // driver info
+  f.serious = document.getElementById("if_serious").value;
+  f.major = document.getElementById("if_major").value;
+  f.minor = document.getElementById("if_minor").value;
+  f.licensed = document.getElementById("if_licensed").value;
+  f.claims = document.getElementById("if_claims").value;
+  // situational
+  for(let i=1;i<=11;i++) f['sj'+i] = document.getElementById('sj'+i)?.value || document.getElementById('late_last_task')?.value || null;
+  // work samples & questions - many fields
+  f.work_order = document.getElementById("if_work_order")?.value || "";
+  f.grease = document.getElementById("if_grease")?.value || "";
+  f.client_floors = document.getElementById("if_client_floors")?.value || "";
+  f.mistakes = document.getElementById("if_mistakes")?.value || "";
+  f.finish_early = document.getElementById("if_finish_early")?.value || "";
+  f.client_unhappy = document.getElementById("if_client_unhappy")?.value || "";
+  f.learned = document.getElementById("if_learned")?.value || "";
+  f.partner = document.getElementById("if_partner")?.value || "";
+  f.quality = document.getElementById("if_quality")?.value || "";
+  // logistics
+  f.start = document.getElementById("if_start")?.value || "";
+  f.hours = document.getElementById("if_hours")?.value || "";
+  f.avail_morn = document.getElementById("if_avail_morn")?.checked || false;
+  f.avail_aft = document.getElementById("if_avail_aft")?.checked || false;
+  f.avail_eve = document.getElementById("if_avail_eve")?.checked || false;
+  f.avail_wk = document.getElementById("if_avail_wk")?.checked || false;
+  f.avail_overnight = document.getElementById("if_avail_overnight")?.checked || false;
+  // notes/interviewer
+  f.notes_candidate = document.getElementById("if_notes_candidate")?.value || "";
+  f.notes_interviewer = document.getElementById("if_notes_interviewer")?.value || "";
+  f.interviewer = document.getElementById("if_interviewer")?.value || "";
+
+  emp.interviewForm = f;
+  addAudit(emp,"Interviewer","Saved interview form","");
+  saveState(state);
+  showStepContent("Interview", id);
+  alert("Interview form saved.");
+}
+
+/* Mark interview complete -> move to Job Offer */
+function completeInterview(id){
+  const emp = findEmp(id);
+  if(!emp) return;
+  // require at least interviewer notes or name to mark complete (simple validation)
+  if(!emp.interviewForm || (!emp.interviewForm.interviewer && !emp.interviewForm.notes_interviewer)){
+    if(!confirm("Interview form appears incomplete. Mark interview complete anyway?")) return;
+  }
+  emp.status = "Job Offer";
+  addAudit(emp,"Interviewer","Interview completed","");
+  saveState(state);
+  renderTable();
+  showStepContent("Job Offer", id);
+}
+
+/* ------------------------------
+  Job Offer actions
+--------------------------------*/
+function sendOffer(id){
+  const emp = findEmp(id);
+  if(!emp) return;
+  emp.status = "Onboarding";
+  addAudit(emp,"HR","Sent job offer and moved to Onboarding","");
+  saveState(state);
+  renderTable();
+  showStepContent("Onboarding", id);
+}
+function declineOffer(id){
+  const emp = findEmp(id);
+  if(!emp) return;
+  emp.status = "Complete";
+  addAudit(emp,"HR","Offer declined","");
+  saveState(state);
+  renderTable();
+  showStepContent("Complete", id);
+}
+
+/* ------------------------------
+  Onboarding functions
+--------------------------------*/
+function toggleOnboard(id){
+  const emp = findEmp(id);
+  if(!emp) return;
+  emp.onboarding.training = document.getElementById("ob_train").checked;
+  emp.onboarding.documents = document.getElementById("ob_docs").checked;
+  emp.onboarding.orientation = document.getElementById("ob_orient").checked;
+  // when all checked, set appLinkSent true (but only when admin clicks complete we mark employed)
+  emp.onboarding.appLinkSent = emp.onboarding.training && emp.onboarding.documents && emp.onboarding.orientation;
+  saveState(state);
+  showStepContent("Onboarding", id);
+}
+function completeOnboarding(id){
+  const emp = findEmp(id);
+  if(!emp) return;
+  if(!(emp.onboarding.training && emp.onboarding.documents && emp.onboarding.orientation)){
+    alert("Complete the onboarding checklist first.");
+    return;
+  }
+  emp.onboarding.appLinkSent = true;
+  emp.status = "Employed";
+  emp.process = "Onboarding";
+  addAudit(emp,"HR","Onboarding completed; app access sent","");
+  saveState(state);
+  renderTable();
+  showStepContent("Employed", id);
+}
+
+/* Save team onboarding compact form */
+function saveTeamOnboard(id){
+  const emp = findEmp(id);
+  if(!emp) return;
+  emp.teamOnboard = {
+    rpSigned: document.getElementById(`tm_rp${id}`).checked,
+    driversAbstract: document.getElementById(`tm_drv${id}`).checked,
+    policySigned: document.getElementById(`tm_pol${id}`).checked,
+    qboInvited: document.getElementById(`tm_qbo${id}`).checked,
+    qbtEntered: document.getElementById(`tm_qbt${id}`).checked,
+    clockPermissions: document.getElementById(`tm_clkp${id}`).checked,
+    googleChat: document.getElementById(`tm_chat${id}`).checked,
+    calShared: document.getElementById(`tm_cal${id}`).checked,
+    notes: document.getElementById(`tm_notes${id}`).value
+  };
+  addAudit(emp,"HR","Saved team onboarding checklist","");
+  saveState(state);
+  alert("Team onboarding saved.");
+}
+
+/* ------------------------------
+  Employment Form & Termination
+--------------------------------*/
+function saveEmploymentForm(id){
+  const emp = findEmp(id);
+  if(!emp) return;
+  emp.employmentForm = {
+    email: document.getElementById("ef_email")?.value || "",
+    first: document.getElementById("ef_first")?.value || "",
+    last: document.getElementById("ef_last")?.value || "",
+    sin: document.getElementById("ef_sin")?.value || "",
+    dd: document.getElementById("ef_dd")?.value || "",
+    emerg: document.getElementById("ef_emerg")?.value || ""
+  };
+  addAudit(emp,"HR","Saved employment form","");
+  saveState(state);
+  alert("Employment form saved.");
+}
+
+/* Termination flow: open inline modal (single instance) */
+function removeTerminateModalIfExists(){
+  const existing = document.getElementById("terminateModal");
+  if(existing) existing.remove();
+}
+function openTerminateForm(id){
+  removeTerminateModalIfExists();
+  const html = `
+  <div class="modal fade" id="terminateModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header"><h5>Termination Form (1 of 2)</h5><button class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <div class="mb-2"><label>Termination Type</label><select id="term_type" class="form-select"><option>WITHOUT CAUSE</option><option>WITH CAUSE</option></select></div>
+          <div class="mb-2 row g-2">
+            <div class="col"><label>First Name</label><input id="term_first" class="form-control"></div>
+            <div class="col"><label>Last Name</label><input id="term_last" class="form-control"></div>
+          </div>
+          <div class="mb-2"><label>Employee Email</label><input id="term_email" class="form-control"></div>
+          <div class="mb-2"><label>Start Date</label><input id="term_start" type="date" class="form-control"></div>
+          <div class="mb-2"><label>Termination Date</label><input id="term_date" type="date" class="form-control"></div>
+          <div class="mb-2"><label>Explanation for termination</label><textarea id="term_expl" class="form-control"></textarea></div>
+          <div class="mb-2"><label>Selection for termination</label>
+            <select id="term_sel" class="form-select"><option>FIRED</option><option>QUIT</option><option>NO SHOW QUIT</option><option>MATERNITY</option><option>LONG TERM EMPLOYEE LEAVING</option></select>
+          </div>
+          <div class="mb-2"><label>Notes</label><textarea id="term_notes" class="form-control"></textarea></div>
+          <div class="d-grid gap-2"><button class="btn btn-danger" onclick="confirmTerminationFromForm(${id})">Schedule Termination (save as Pending)</button></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML("beforeend", html);
+  new bootstrap.Modal(document.getElementById("terminateModal")).show();
+}
+function confirmTerminationFromForm(id){
+  const emp = findEmp(id);
+  if(!emp) return;
+  const date = document.getElementById("term_date").value;
+  const reason = document.getElementById("term_expl").value || document.getElementById("term_sel").value;
+  if(!date || !reason){ alert("Please enter termination date and reason."); return; }
+  emp.termination = {
+    date,
+    reason,
+    attachment: null,
+    scheduledBy: "Admin",
+    executed: false,
+    executedAt: null
+  };
+  emp.status = "Pending Termination";
+  addAudit(emp,"Admin","Scheduled termination", `Date:${date} Reason:${reason}`);
+  saveState(state);
+  renderTable();
+  new bootstrap.Modal(document.getElementById("terminateModal")).hide();
+  showStepContent("Pending Termination", id);
+}
+
+/* edit / cancel termination */
+function editTermination(id){ openTerminateForm(id); }
+function cancelTermination(id){
+  const emp = findEmp(id); if(!emp || !emp.termination) return;
+  if(!confirm("Cancel scheduled termination?")) return;
+  emp.termination = null;
+  emp.status = "Employed";
+  addAudit(emp,"Admin","Cancelled scheduled termination","");
+  saveState(state);
+  renderTable();
+  showStepContent("Employed", id);
+}
+
+/* auto execution: when date <= today */
+function runScheduledCheck(manual=false){
+  const today = todayISO();
+  employees().forEach(emp=>{
+    if(emp.termination && !emp.termination.executed){
+      if(emp.termination.date <= today){
+        // execute
+        emp.termination.executed = true;
+        emp.termination.executedAt = nowISO();
+        emp.status = "Fired / Resigned";
+        emp.process = "Offboarding";
+        // generate termination letter (simulated)
+        emp.termination.letter = `Termination_Letter_${emp.id}_${emp.termination.date}.txt`;
+        addAudit(emp,"System","Auto-executed termination", `Scheduled:${emp.termination.date}`);
+        saveState(state);
+      }
+    }
+  });
+  if(manual) alert("Scheduled checks completed.");
+  renderTable();
+}
+
+/* ------------------------------
+  Offboarding: HR & Finance
+--------------------------------*/
+function saveOffboardingChecks(id){
+  const emp = findEmp(id);
+  if(!emp) return;
+  emp.offboarding.hrVerification = document.getElementById("cb_hr_reason").checked;
+  emp.offboarding.hrReady = document.getElementById("cb_hr_ready").checked;
+  emp.offboarding.financeROE = document.getElementById("cb_fin_roe").checked;
+  emp.offboarding.financePayroll = document.getElementById("cb_fin_pay").checked;
+  emp.offboarding.financeBenefits = document.getElementById("cb_fin_ben").checked;
+  addAudit(emp,"HR/Finance","Saved offboarding checks","");
+  saveState(state);
+  showStepContent("Offboarding", id);
+  alert("Offboarding checks saved.");
+}
+
+/* finalize offboarding: require HR ready + all finance checks true */
+function finalizeOffboarding(id){
+  const emp = findEmp(id);
+  if(!emp) return;
+  const ob = emp.offboarding;
+  if(!(ob.hrVerification && ob.hrReady && ob.financeROE && ob.financePayroll && ob.financeBenefits)){
+    alert("All HR verification and finance tasks must be completed before finalizing.");
+    return;
+  }
+  emp.status = "Complete";
+  addAudit(emp,"Finance","Offboarding completed; record closed","");
+  saveState(state);
+  renderTable();
+  showStepContent("Complete", id);
+}
+
+/* ------------------------------
+  Utilities: status set, delete, edit
+--------------------------------*/
+function setStatus(id,newStatus){
+  const emp = findEmp(id);
+  if(!emp) return;
+  emp.status = newStatus;
+  addAudit(emp,"User","Status changed",newStatus);
+  saveState(state);
+  renderTable();
+  showStepContent(newStatus, id);
+}
+function deleteEmployeeConfirm(){
+  if(!currentWorkflowId) return;
+  if(!confirm("Delete this record? This cannot be undone.")) return;
+  state.employees = state.employees.filter(e=>e.id !== currentWorkflowId);
+  saveState(state);
+  renderTable();
+  bootstrap.Modal.getInstance(document.getElementById("workflowModal")).hide();
+}
+
+/* open edit employee quick from workflow header */
+function openEditEmployee(){
+  if(!currentWorkflowId) return;
+  bootstrap.Modal.getInstance(document.getElementById("workflowModal")).hide();
+  openEditModal(currentWorkflowId);
+}
+
+/* ------------------------------
+  Employment & interview helpers
+--------------------------------*/
+function saveEmploymentFormInline(id){
+  saveEmploymentForm(id);
+}
+
+/* ------------------------------
+  Helpers for interview completion
+--------------------------------*/
+function saveInterviewFormInline(id){ saveInterviewForm(id); }
+function completeInterviewInline(id){ completeInterview(id); }
+
+/* ------------------------------
+  Scheduled auto-run every 30s
+--------------------------------*/
+setInterval(()=>runScheduledCheck(false), 30000);
+
+/* ------------------------------
+  Small helpers & init
+--------------------------------*/
+function escapeHtml(s){ if(!s && s!==0) return ""; return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+
+renderTable();
+</script>
+</body>
+</html>

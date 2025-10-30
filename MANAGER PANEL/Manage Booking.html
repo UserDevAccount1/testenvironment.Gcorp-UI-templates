@@ -651,7 +651,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
                             <div class="dashboard_bar">
-                                Onboarding & Offboarding </div>
+                                Admin Dashboard </div>
                         </div>
                         <ul class="navbar-nav header-right">
                             <li class="nav-item dropdown notification_dropdown all">
@@ -1064,6 +1064,7 @@
     <span class="nav-text">Dashboard</span>
   </a>
 </li>
+
 <!-- Manage Appointment -->
 <li>
   <a class="has-arrow" href="./Manage Booking.html" aria-expanded="false">
@@ -1138,7 +1139,7 @@
 
 <!-- Onboarding & Offboarding (New Page) -->
 <li>
-  <a class="has-arrow" href="./OnboardingOffboarding.html" aria-expanded="false">
+  <a class="has-arrow" href="./Offboarding & Onboarding.html" aria-expanded="false">
     <i class="material-symbols-outlined">supervisor_account</i>
     <span class="nav-text">Onboarding & Offboarding</span>
   </a>
@@ -1197,538 +1198,263 @@
 ***********************************-->
         <div class="content-body default-height">
             <div class="container-fluid">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Material+Symbols+Outlined" rel="stylesheet">
 
-<style>
+ <style>
+  /* ===== Scoped Styles ===== */
+  #bookingManagerModule_CA * { box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
+  #bookingManagerModule_CA { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 20px; margin-top: 20px; }
+  #bookingManagerModule_CA h2 { font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #333; }
 
-#onboardOffboardPage .card {
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-#onboardOffboardPage table th {
-  background-color: #0066cc;
-  color: #fff;
-  cursor: pointer;
-  vertical-align: middle;
-  user-select: none;
-}
-#onboardOffboardPage .material-symbols-outlined {
-  vertical-align: middle;
-  font-size: 20px;
-}
-#onboardOffboardPage .btn-icon {
-  border: none;
-  background: none;
-  cursor: pointer;
-  color: #000; /* black icon */
-  padding: 2px;
-  transition: 0.2s;
-}
-#onboardOffboardPage .btn-icon:hover {
-  transform: scale(1.1);
-  color: #ffffff;
-}
-#onboardOffboardPage .badge {
-  font-size: 13px;
-  padding: 6px 10px;
-}
+  #bmControls_CA { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:15px; align-items:center; }
+  #bmControls_CA select, #bmControls_CA input { padding:6px 10px; border:1px solid #ccc; border-radius:6px; font-size:14px; }
+  #bmControls_CA button { border:none; border-radius:6px; background:#007bff; color:#fff; cursor:pointer; padding:6px 12px; }
 
-/* === WORKFLOW MODAL === */
-#workflowModal .workflow-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  overflow-x: auto;
-  padding: 20px 0;
-}
-#workflowModal .workflow-step {
-  flex: 1;
-  text-align: center;
-  position: relative;
-}
-#workflowModal .workflow-step:not(:last-child)::after {
-  content: "";
-  position: absolute;
-  top: 18px;
-  right: -50%;
-  width: 100%;
-  height: 3px;
-  background-color: #ccc;
-}
-#workflowModal .workflow-circle {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background-color: #ccc;
-  margin: 0 auto;
-}
-#workflowModal .workflow-step.active .workflow-circle {
-  background-color: #007bff;
-}
-#workflowModal .workflow-step.completed .workflow-circle {
-  background-color: #28a745;
-}
-#workflowModal .workflow-step span {
-  display: block;
-  margin-top: 8px;
-  font-size: 13px;
-  color: #333;
-  font-weight: 600;
-}
-#workflowModal .flow-content {
-  margin-top: 25px;
-  background: #f1f3f6;
-  padding: 15px;
-  border-radius: 10px;
-}
-#workflowModal .flow-content input[type="url"] {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 8px;
-}
+  #bmTable_CA { width:100%; border-collapse:collapse; }
+  #bmTable_CA th, #bmTable_CA td { padding:10px; text-align:left; border-bottom:1px solid #eee; vertical-align:middle; }
+  #bmTable_CA th { background:#f8f9fa; font-weight:600; cursor:pointer; user-select:none; }
+  #bmTable_CA th span.sort_CA { font-size:12px; color:#888; margin-left:4px; }
 
-#workflowModal .flow-content .form-check-label {
-  font-size: 14px;
-}
+  .bm-status_CA { font-weight:600; border-radius:6px; padding:3px 8px; display:inline-block; }
+  .status-pending_CA { background:#fff3cd; color:#856404; }
+  .status-approved_CA { background:#d4edda; color:#155724; }
+  .status-rejected_CA { background:#f8d7da; color:#721c24; }
 
-#workflowModal .flow-content button.btn-success {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-/* === PAGINATION === */
-.pagination .page-item .page-link {
-  color: #0066cc;
-}
-.pagination .page-item.active .page-link {
-  background-color: #0066cc;
-  border-color: #0066cc;
-}
-/* Make workflow modal non-blocking (no dark background) */
-.modal-backdrop.show {
-  opacity: 0 !important;
-}
+  .bm-actions_CA button { border:none; background:transparent; cursor:pointer; font-size:18px; margin-right:6px; transition:0.2s; }
+  .bm-actions_CA button:hover { transform:scale(1.1); }
+  .bm-icon-accept_CA { color:#28a745; }
+  .bm-icon-reject_CA { color:#dc3545; }
+  .bm-icon-reschedule_CA { color:#ffc107; }
 
-.modal {
-  pointer-events: none;
-}
+  /* Custom lightweight modals (accepted + reschedule) */
+  .bm-modal-overlay_CA { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9998; justify-content:center; align-items:center; }
+  .bm-modal_CA { background:#fff; padding:20px; border-radius:8px; width:480px; max-height:80vh; overflow-y:auto; box-shadow:0 4px 10px rgba(0,0,0,0.2); }
+  .bm-modal_CA h3 { margin-top:0; margin-bottom:10px; }
+  .bm-close-btn_CA { background:#dc3545; color:white; border:none; border-radius:5px; padding:5px 10px; cursor:pointer; float:right; }
 
-.modal-dialog, .modal-content {
-  pointer-events: auto;
-}
+  /* Bootstrap invoice modal visuals */
+  .modal-content { border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.2); }
+  .invoice-preview h6 { font-weight:600; margin-bottom:6px; }
+  .invoice-line { display:flex; justify-content:space-between; gap:12px; padding:6px 0; border-bottom:1px solid #f1f1f1; }
+  .invoice-total { font-weight:700; text-align:right; margin-top:12px; }
 </style>
-</head>
-<body>
 
-<div id="onboardOffboardPage" class="container-fluid py-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3>Onboarding & Offboarding Management</h3>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-      <span class="material-symbols-outlined">person_add</span>
-    </button>
-  </div>
+<h2>🧹 Cleaning Service – Booking Manager (Canada)</h2>
 
-  <!-- FILTERS -->
-  <div class="row g-2 mb-3">
-    <div class="col-md-3">
-      <select id="filterRole" class="form-select">
-        <option value="">All Roles</option>
-      </select>
-    </div>
-    <div class="col-md-3">
-      <select id="filterStatus" class="form-select">
-        <option value="">All Status</option>
-      </select>
-    </div>
-    <div class="col-md-3">
-      <input type="text" id="searchInput" class="form-control" placeholder="Search by name...">
-    </div>
-    <div class="col-md-3 text-end">
-      Show
-      <select id="entriesCount" class="form-select d-inline-block w-auto">
-        <option>5</option>
-        <option>10</option>
-        <option>25</option>
-      </select>
-      entries
-    </div>
-  </div>
-
-  <!-- TABLE -->
-  <div class="card">
-    <div class="card-body table-responsive">
-      <table class="table table-striped align-middle" id="onboardTable">
-        <thead>
-          <tr>
-            <th data-col="id">#</th>
-            <th data-col="name">Name</th>
-            <th data-col="role">Role</th>
-            <th data-col="process">Process</th>
-            <th data-col="status">Status</th>
-            <th data-col="applied">Applied Date</th>
-            <th data-col="assigned">Assigned</th>
-            <th>Invite</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- PAGINATION -->
-  <nav class="mt-3">
-    <ul class="pagination justify-content-center" id="pagination"></ul>
-  </nav>
+<div id="bmControls_CA">
+  <input type="text" id="bmFilterClient_CA" placeholder="Search client...">
+  <select id="bmFilterStatus_CA">
+    <option value="">All Status</option>
+    <option value="Pending">Pending</option>
+    <option value="Approved">Approved</option>
+    <option value="Rejected">Rejected</option>
+  </select>
+  <input type="date" id="bmFilterDate_CA">
+  <button id="bmViewAccepted_CA" type="button">📋 View Accepted</button>
 </div>
 
-<!-- Add Modal -->
-<div class="modal fade" id="addModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header"><h5>Add New Employee</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="addForm">
-          <input type="text" id="addName" class="form-control mb-2" placeholder="Name" required>
-          <input type="text" id="addRole" class="form-control mb-2" placeholder="Role" required>
-          <input type="text" id="addAssigned" class="form-control mb-2" placeholder="Assigned By" required>
-          <input type="date" id="addDate" class="form-control mb-2" required>
-          <button class="btn btn-primary w-100">Add</button>
-        </form>
-      </div>
+<table id="bmTable_CA">
+  <thead>
+    <tr>
+      <th data-key="id">#<span class="sort_CA">↕</span></th>
+      <th data-key="client">Client<span class="sort_CA">↕</span></th>
+      <th data-key="service">Service Type<span class="sort_CA">↕</span></th>
+      <th data-key="cleanType">Type of Clean<span class="sort_CA">↕</span></th>
+      <th data-key="date">Date/Time<span class="sort_CA">↕</span></th>
+      <th data-key="location">Location<span class="sort_CA">↕</span></th>
+      <th data-key="invoice">Estimated Invoice<span class="sort_CA">↕</span></th>
+      <th data-key="notes">Notes<span class="sort_CA">↕</span></th>
+      <th data-key="status">Status<span class="sort_CA">↕</span></th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="bmBody_CA"></tbody>
+</table>
+
+<!-- Existing modals unchanged -->
+<div class="bm-modal-overlay_CA" id="bmRescheduleModal_CA">
+  <div class="bm-modal_CA">
+    <h3>Reschedule Booking</h3>
+    <input type="datetime-local" id="bmRescheduleDate_CA">
+    <div style="margin-top:10px; text-align:right;">
+      <button id="bmConfirmReschedule_CA" type="button">Confirm</button>
+      <button class="bm-close-btn_CA" id="bmCancelReschedule_CA" type="button">Cancel</button>
     </div>
   </div>
 </div>
 
-<!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header"><h5>Edit Employee</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="editForm">
-          <input type="hidden" id="editId">
-          <input type="text" id="editName" class="form-control mb-2" placeholder="Name" required>
-          <input type="text" id="editRole" class="form-control mb-2" placeholder="Role" required>
-          <input type="text" id="editAssigned" class="form-control mb-2" placeholder="Assigned By" required>
-          <input type="date" id="editDate" class="form-control mb-2" required>
-          <button class="btn btn-success w-100">Save Changes</button>
-        </form>
-      </div>
-    </div>
+<div class="bm-modal-overlay_CA" id="bmAcceptedModal_CA">
+  <div class="bm-modal_CA">
+    <button class="bm-close-btn_CA" id="bmCloseAccepted_CA" type="button">Close</button>
+    <h3>Accepted Bookings</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Client</th>
+          <th>Service</th>
+          <th>Type</th>
+          <th>Date</th>
+          <th>Location</th>
+          <th>Invoice</th>
+        </tr>
+      </thead>
+      <tbody id="bmAcceptedBody_CA"></tbody>
+    </table>
   </div>
 </div>
 
-<!-- Workflow Modal -->
-<div class="modal fade" id="workflowModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header"><h5>Employment Workflow</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="bmInvoiceModal_CA" tabindex="-1" aria-labelledby="bmInvoiceLabel_CA" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content rounded-3 shadow-lg">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="bmInvoiceLabel_CA">Estimated Invoice</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body">
-        <div id="workflowSteps" class="workflow-container"></div>
-        <div id="flowContent" class="flow-content"></div>
+      <div class="modal-body" id="bmInvoiceBody_CA"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button id="bmConfirmInvoice_CA" type="button" class="btn btn-success">Confirm Invoice</button>
       </div>
     </div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-let employeeData = [
-  {id:1,name:"Maria Santos",role:"Cleaner",process:"Onboarding",status:"Applied",applied:"2025-10-15",assigned:"HR - Anne"},
-  {id:2,name:"John Dela Cruz",role:"Driver",process:"Offboarding",status:"Employed",applied:"2024-06-12",assigned:"Manager - Leo"},
-  {id:3,name:"Ella Ramos",role:"Security",process:"Onboarding",status:"Interview",applied:"2025-09-01",assigned:"HR - Carla"}
-];
+(function() {
+  const tableBody = document.querySelector('#bmBody_CA');
+  const acceptedBody = document.querySelector('#bmAcceptedBody_CA');
+  const acceptedModal = document.querySelector('#bmAcceptedModal_CA');
+  const rescheduleModal = document.querySelector('#bmRescheduleModal_CA');
+  const rescheduleInput = document.querySelector('#bmRescheduleDate_CA');
+  const invoiceBodyEl = document.querySelector('#bmInvoiceBody_CA');
+  const bmInvoiceModalEl = document.getElementById('bmInvoiceModal_CA');
+  const bsInvoiceModal = new bootstrap.Modal(bmInvoiceModalEl);
+  let currentRescheduleId = null;
+  let sortState = {}; // track asc/desc per column
 
-const flow = ["Applied","Interview","Job Offer","Onboarding","Employed","Fired / Resigned","Offboarding","Complete"];
+  const bookings = [
+    { id: 1, client: 'Sarah Thompson', service: 'Home Cleaning', cleanType: 'Deep Clean', date: '2025-11-05T09:00', location: 'Toronto, ON', notes: 'Full house spring clean', invoice: 220, currency: 'CAD', status: 'Pending' },
+    { id: 2, client: 'Daniel Lee', service: 'Office Cleaning', cleanType: 'Maintenance', date: '2025-11-06T10:30', location: 'Vancouver, BC', notes: 'Weekly office clean', invoice: 150, currency: 'CAD', status: 'Pending' },
+    { id: 3, client: 'Olivia Chen', service: 'Apartment Cleaning', cleanType: 'Move-out', date: '2025-11-07T13:00', location: 'Calgary, AB', notes: 'End-of-lease deep clean', invoice: 300, currency: 'CAD', status: 'Approved' },
+    { id: 4, client: 'Ethan Brown', service: 'Steam Cleaning', cleanType: 'Steam Clean', date: '2025-11-08T11:00', location: 'Ottawa, ON', notes: 'Carpet steam cleaning', invoice: 180, currency: 'CAD', status: 'Pending' }
+  ];
 
-let sortOrder = {};
-let currentPage = 1;
-let entriesPerPage = 5;
+  const formatCurrency = (amount, currency) =>
+    new Intl.NumberFormat('en-CA', { style: 'currency', currency }).format(amount);
 
-function renderFilters() {
-  const roles = [...new Set(employeeData.map(e=>e.role))];
-  const statuses = [...new Set(employeeData.map(e=>e.status))];
-  document.getElementById("filterRole").innerHTML = `<option value="">All Roles</option>` + roles.map(r=>`<option>${r}</option>`).join('');
-  document.getElementById("filterStatus").innerHTML = `<option value="">All Status</option>` + statuses.map(s=>`<option>${s}</option>`).join('');
-}
-
-function renderTable() {
-  const roleF = document.getElementById("filterRole").value;
-  const statusF = document.getElementById("filterStatus").value;
-  const search = document.getElementById("searchInput").value.toLowerCase();
-  let filtered = employeeData.filter(e=>{
-    return (!roleF || e.role===roleF) && (!statusF || e.status===statusF) && e.name.toLowerCase().includes(search);
-  });
-
-  const totalPages = Math.ceil(filtered.length / entriesPerPage);
-  currentPage = Math.min(currentPage, totalPages || 1);
-  const start = (currentPage-1)*entriesPerPage;
-  const pageData = filtered.slice(start, start+entriesPerPage);
-
-  const tbody = document.getElementById("tableBody");
-  tbody.innerHTML = pageData.map((e,i)=>`
-    <tr>
-      <td>${start+i+1}</td>
-      <td>${e.name}</td>
-      <td>${e.role}</td>
-      <td>${e.process}</td>
-      <td>
-        <span class="badge bg-${getBadgeColor(e.status)}">${e.status}</span>
-        <button class="btn-icon" onclick="openWorkflow(${e.id})"><span class="material-symbols-outlined">visibility</span></button>
-      </td>
-      <td>${e.applied}</td>
-      <td>${e.assigned}</td>
-      <td><button class="btn-icon"><span class="material-symbols-outlined">mail</span></button></td>
-      <td>
-        <button class="btn-icon" onclick="editEmployee(${e.id})"><span class="material-symbols-outlined">edit</span></button>
-        <button class="btn-icon" onclick="deleteEmployee(${e.id})"><span class="material-symbols-outlined">delete</span></button>
-      </td>
-    </tr>`).join('');
-
-  renderPagination(totalPages);
-}
-
-function getBadgeColor(status){
-  if(status==="Applied") return "secondary";
-  if(status==="Interview") return "warning text-dark";
-  if(status==="Employed") return "success";
-  if(status==="Fired / Resigned") return "danger";
-  if(status==="Offboarding") return "info text-dark";
-  return "primary";
-}
-
-function renderPagination(totalPages){
-  const pagination=document.getElementById("pagination");
-  let html="";
-  for(let i=1;i<=totalPages;i++){
-    html+=`<li class="page-item ${i===currentPage?'active':''}"><a class="page-link" href="#" onclick="goPage(${i})">${i}</a></li>`;
-  }
-  pagination.innerHTML=html;
-}
-function goPage(p){currentPage=p;renderTable();}
-
-document.getElementById("entriesCount").addEventListener("change",e=>{
-  entriesPerPage=parseInt(e.target.value);
-  currentPage=1;
-  renderTable();
-});
-document.getElementById("filterRole").addEventListener("change",renderTable);
-document.getElementById("filterStatus").addEventListener("change",renderTable);
-document.getElementById("searchInput").addEventListener("input",renderTable);
-
-document.querySelectorAll("#onboardTable th[data-col]").forEach(th=>{
-  th.addEventListener("click",()=>{
-    const col=th.dataset.col;
-    sortOrder[col]=!sortOrder[col];
-    employeeData.sort((a,b)=>{
-      if(a[col]<b[col]) return sortOrder[col]?-1:1;
-      if(a[col]>b[col]) return sortOrder[col]?1:-1;
-      return 0;
+  function renderTable(data = bookings) {
+    tableBody.innerHTML = '';
+    data.forEach((b, index) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${b.client}</td>
+        <td>${b.service}</td>
+        <td>${b.cleanType}</td>
+        <td>${new Date(b.date).toLocaleString()}</td>
+        <td>${b.location}</td>
+        <td>${formatCurrency(b.invoice, b.currency)} 
+          <button type="button" class="btn btn-outline-primary btn-sm bm-invoice-view_CA" data-id="${b.id}" style="margin-left:8px;">View</button>
+        </td>
+        <td>${b.notes}</td>
+        <td><span class="bm-status_CA status-${b.status.toLowerCase()}_CA">${b.status}</span></td>
+        <td class="bm-actions_CA">
+          <button class="bm-icon-accept_CA" data-id="${b.id}" title="Accept">✅</button>
+          <button class="bm-icon-reject_CA" data-id="${b.id}" title="Reject">❌</button>
+          <button class="bm-icon-reschedule_CA" data-id="${b.id}" title="Reschedule">🔁</button>
+        </td>`;
+      tableBody.appendChild(tr);
     });
+  }
+
+  // Sorting logic
+  document.querySelectorAll('#bmTable_CA thead th[data-key]').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.key;
+      sortState[key] = !sortState[key]; // toggle sort
+      const direction = sortState[key] ? 1 : -1;
+      const sorted = [...bookings].sort((a,b) => {
+        let valA = a[key], valB = b[key];
+        if (key === 'date') return direction * (new Date(valA) - new Date(valB));
+        if (typeof valA === 'string') return direction * valA.localeCompare(valB);
+        return direction * (valA - valB);
+      });
+      renderTable(sorted);
+      document.querySelectorAll('#bmTable_CA th span.sort_CA').forEach(s => s.textContent = '↕');
+      th.querySelector('span.sort_CA').textContent = sortState[key] ? '↑' : '↓';
+    });
+  });
+
+  // Show invoice modal
+  tableBody.addEventListener('click', e => {
+    if (e.target.classList.contains('bm-invoice-view_CA')) {
+      const id = e.target.dataset.id;
+      const b = bookings.find(x => x.id == id);
+      if (!b) return;
+      invoiceBodyEl.innerHTML = `
+        <div class="invoice-preview">
+          <h6>Client: ${b.client}</h6>
+          <p>Date: ${new Date(b.date).toLocaleString()}</p>
+          <p>Service: ${b.service} — ${b.cleanType}</p>
+          <div class="invoice-total">Estimated Total: ${formatCurrency(b.invoice, b.currency)}</div>
+        </div>`;
+      bsInvoiceModal.show();
+    }
+  });
+
+  // Status update buttons
+  tableBody.addEventListener('click', e => {
+    const id = e.target.dataset.id;
+    const b = bookings.find(x => x.id == id);
+    if (!b) return;
+    if (e.target.classList.contains('bm-icon-accept_CA')) b.status = 'Approved';
+    if (e.target.classList.contains('bm-icon-reject_CA')) b.status = 'Rejected';
+    if (e.target.classList.contains('bm-icon-reschedule_CA')) {
+      currentRescheduleId = id;
+      rescheduleModal.style.display = 'flex';
+    }
     renderTable();
   });
-});
 
-function deleteEmployee(id){
-  employeeData=employeeData.filter(e=>e.id!==id);
-  renderFilters();
-  renderTable();
-}
-
-function editEmployee(id){
-  const e=employeeData.find(x=>x.id===id);
-  document.getElementById("editId").value=e.id;
-  document.getElementById("editName").value=e.name;
-  document.getElementById("editRole").value=e.role;
-  document.getElementById("editAssigned").value=e.assigned;
-  document.getElementById("editDate").value=e.applied;
-  new bootstrap.Modal("#editModal").show();
-}
-
-document.getElementById("editForm").addEventListener("submit",ev=>{
-  ev.preventDefault();
-  const id=parseInt(document.getElementById("editId").value);
-  const e=employeeData.find(x=>x.id===id);
-  e.name=document.getElementById("editName").value;
-  e.role=document.getElementById("editRole").value;
-  e.assigned=document.getElementById("editAssigned").value;
-  e.applied=document.getElementById("editDate").value;
-  bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
-  renderFilters();
-  renderTable();
-});
-
-document.getElementById("addForm").addEventListener("submit",ev=>{
-  ev.preventDefault();
-  const name=document.getElementById("addName").value;
-  const role=document.getElementById("addRole").value;
-  const assigned=document.getElementById("addAssigned").value;
-  const applied=document.getElementById("addDate").value;
-  const newId=Math.max(...employeeData.map(e=>e.id))+1;
-  employeeData.push({id:newId,name,role,process:"Onboarding",status:"Applied",applied,assigned});
-  bootstrap.Modal.getInstance(document.getElementById("addModal")).hide();
-  ev.target.reset();
-  renderFilters();
-  renderTable();
-});
-
-/* === WORKFLOW === */
-function openWorkflow(id){
-  const e=employeeData.find(x=>x.id===id);
-  let stepsHTML="";
-  const current=flow.indexOf(e.status);
-  flow.forEach((s,i)=>{
-    let cls="workflow-step";
-    if(i<current)cls+=" completed";
-    else if(i===current)cls+=" active";
-    stepsHTML+=`<div class="${cls}" onclick="showStepContent('${s}',${id})"><div class="workflow-circle"></div><span>${s}</span></div>`;
-  });
-  document.getElementById("workflowSteps").innerHTML=stepsHTML;
-  showStepContent(e.status,id);
-  new bootstrap.Modal("#workflowModal").show();
-}
-let archivedRecords = []; // store archived employee data
-
-function showStepContent(step, id) {
-  const emp = employeeData.find(e => e.id === id);
-  let html = `<h6>${step} Stage</h6><p>${getStepDescription(step)}</p>`;
-
-  // === ONBOARDING STAGE CUSTOM CONTENT ===
-  if (step === "Onboarding") {
-    html += `
-      <div class="mt-3 p-3 border rounded bg-white">
-        <label class="form-label fw-bold">App Access Link</label>
-        <input type="url" class="form-control mb-3" id="appLinkInput" placeholder="https://example.com/onboarding-link">
-        
-        <h6 class="mt-2 mb-2">Onboarding Checklist</h6>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="chkTraining">
-          <label class="form-check-label" for="chkTraining">Training Assigned</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="chkDocuments">
-          <label class="form-check-label" for="chkDocuments">Documents Uploaded</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="chkOrientation">
-          <label class="form-check-label" for="chkOrientation">Orientation Scheduled</label>
-        </div>
-
-        <button class="btn btn-success btn-sm mt-3" onclick="sendOnboardingData(${id})">
-          <span class="material-symbols-outlined align-middle">send</span> Send App Link
-        </button>
-      </div>
-    `;
-  }
-
-  // === Default Next Step Button ===
-  if (step === emp.status && step !== "Complete") {
-    html += `<button class="btn btn-primary btn-sm mt-3" onclick="nextStep(${id})">Next Step</button>`;
-  }
-
-  // === COMPLETE STAGE: ARCHIVE OR DELETE ===
-  if (step === "Complete" && emp.status === "Complete") {
-    html += `
-      <div class="alert alert-success mt-3">
-        <strong>Process Complete:</strong> This employee record can now be archived or deleted.
-      </div>
-      <button class="btn btn-secondary btn-sm mt-2 me-2" onclick="archiveRecord(${id})">
-        <span class="material-symbols-outlined align-middle">inventory_2</span> Archive Record
-      </button>
-      <button class="btn btn-danger btn-sm mt-2" onclick="deleteEmployee(${id})">
-        <span class="material-symbols-outlined align-middle">delete</span> Delete Permanently
-      </button>
-    `;
-  }
-
-  document.getElementById("flowContent").innerHTML = html;
-}
-
-function getStepDescription(step) {
-  switch(step) {
-    case "Applied": return "Applicant submitted resume and awaiting HR review.";
-    case "Interview": return "Conduct interview and evaluate candidate suitability.";
-    case "Job Offer": return "Prepare and send job offer for acceptance.";
-    case "Onboarding": return "Assign training, upload documents, and provide system access link.";
-    case "Employed": return "Employee is now active in the organization.";
-    case "Fired / Resigned": return "Process resignation or termination notice.";
-    case "Offboarding": return "Finalize clearance, finance settlement, and record cleanup.";
-    case "Complete": return "All processes complete, record is ready for archiving.";
-  }
-}
-
-// === Send Onboarding Data Function ===
-function sendOnboardingData(id) {
-  const emp = employeeData.find(e => e.id === id);
-  const appLink = document.getElementById("appLinkInput").value;
-  const training = document.getElementById("chkTraining").checked;
-  const docs = document.getElementById("chkDocuments").checked;
-  const orientation = document.getElementById("chkOrientation").checked;
-
-  const completed = [training, docs, orientation].filter(v => v).length;
-  alert(`📩 Onboarding Info for ${emp.name}\n\nLink: ${appLink || "(none)"}\nChecklist Done: ${completed}/3`);
-
-  // Optional: you could later replace this alert with an AJAX or webhook call
-}
-
-renderFilters();
-renderTable();
-function nextStep(id) {
-  const emp = employeeData.find(e => e.id === id);
-  const currentIndex = flow.indexOf(emp.status);
-
-  if (currentIndex < flow.length - 1) {
-    emp.status = flow[currentIndex + 1];
-    emp.process = emp.status === "Offboarding" ? "Offboarding" : "Onboarding";
-
-    // Refresh table and workflow display
+  // Reschedule confirm/cancel
+  document.querySelector('#bmConfirmReschedule_CA').addEventListener('click', () => {
+    const b = bookings.find(x => x.id == currentRescheduleId);
+    if (b && rescheduleInput.value) {
+      b.date = rescheduleInput.value;
+      b.status = 'Pending';
+    }
+    rescheduleModal.style.display = 'none';
     renderTable();
-    openWorkflow(id);
-  } else {
-    alert("✅ Workflow is already complete.");
-  }
-}
-if (step === emp.status && step !== "Complete") {
-  html += `<button class="btn btn-primary btn-sm mt-3" onclick="nextStep(${id})">
-    <span class="material-symbols-outlined align-middle">arrow_forward</span> Next Step
-  </button>`;
-}
-// Archive Record Function
-function archiveRecord(id) {
-  const emp = employeeData.find(e => e.id === id);
-  if (!emp) return;
-  
-  archivedRecords.push(emp); // move to archive list
-  employeeData = employeeData.filter(e => e.id !== id); // remove from main list
+  });
+  document.querySelector('#bmCancelReschedule_CA').addEventListener('click', () => rescheduleModal.style.display = 'none');
 
-  alert(`📦 ${emp.name} has been archived.`);
-  bootstrap.Modal.getInstance(document.getElementById("workflowModal")).hide();
-  renderFilters();
+  // Accepted bookings
+  document.querySelector('#bmViewAccepted_CA').addEventListener('click', () => {
+    acceptedBody.innerHTML = '';
+    const approved = bookings.filter(b => b.status === 'Approved');
+    if (approved.length === 0) {
+      acceptedBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No accepted bookings yet</td></tr>';
+    } else {
+      approved.forEach((b, i) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td><td>${b.client}</td><td>${b.service}</td><td>${b.cleanType}</td><td>${new Date(b.date).toLocaleString()}</td><td>${b.location}</td><td>${formatCurrency(b.invoice, b.currency)}</td>`;
+        acceptedBody.appendChild(tr);
+      });
+    }
+    acceptedModal.style.display = 'flex';
+  });
+  document.querySelector('#bmCloseAccepted_CA').addEventListener('click', () => acceptedModal.style.display = 'none');
+
+  document.querySelector('#bmConfirmInvoice_CA').addEventListener('click', () => {
+    bsInvoiceModal.hide();
+    alert('Invoice confirmed (demo)');
+  });
+
   renderTable();
-}
-
-// Optional: view archived records in console
-function viewArchivedRecords() {
-  console.table(archivedRecords);
-}
-
+})();
 </script>
-
-
-
-
-
-
-
-
 
 
 

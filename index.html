@@ -9,10 +9,20 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
       background: #f4f4f4;
       font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .button-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      max-width: 800px;
     }
 
     .button-container {
@@ -36,24 +46,41 @@
       color: white;
       transition: background 0.3s ease;
       display: inline-block;
+      text-align: center;
+      white-space: nowrap;
     }
 
     .btn:hover {
       background: #0056b3;
     }
+
+    @media (max-width: 600px) {
+      .btn {
+        width: 100%;
+      }
+
+      .button-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="button-container">
-    <a href="./" class="btn">CFO</a>
-    <a href="ignite-va.html" class="btn">Ignite VA</a>
-    <a href="ceo.html" class="btn">CEO</a>
-    <a href="./ADMIN PANEL/Dashboard.html" class="btn">Admin</a>
-    <a href="./MANAGER PANEL/Dashboard.html" class="btn">Manager</a>
-    <a href="./STAFF PANEL/Dashboard.html" class="btn">Staff</a>
-    <a href="./CLIENT PANEL/Dashboard.html" class="btn">Client</a>
-    <a href="./Sample pages/estimation.html" class="btn">Estimation Feature</a>
-    
+  <div class="button-wrapper">
+    <div class="button-container">
+      <a href="./" class="btn">CFO</a>
+      <a href="ignite-va.html" class="btn">Ignite VA</a>
+      <a href="ceo.html" class="btn">CEO</a>
+      <a href="./ADMIN PANEL/Dashboard.html" class="btn">Admin</a>
+      <a href="./MANAGER PANEL/Dashboard.html" class="btn">Manager</a>
+      <a href="./STAFF PANEL/Dashboard.html" class="btn">Staff</a>
+      <a href="./CLIENT PANEL/Dashboard.html" class="btn">Client</a>
+      <a href="./Sample pages/estimation.html" class="btn">Estimation Feature</a>
+    </div>
+    <div class="button-container">
+      <a href="./Sample pages/application workflow.html" class="btn">Application Workflow</a>
+    </div>
   </div>
 </body>
 </html>
