@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step 3 — Supervisor: Site Visit & Report</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f7f8fa;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    /* ===== Navigation Buttons ===== */
+    .nav-buttons {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+    .nav-buttons button {
+      background: #004aad;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .nav-buttons button:hover {
+      background: #00357e;
+    }
+
+    /* ===== Container ===== */
+    .container {
+      margin: 100px auto 50px;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 95%;
+      max-width: 1000px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #222;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: #004aad;
+      border-bottom: 2px solid #004aad;
+      padding-bottom: 6px;
+      margin-top: 40px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    textarea, input[type="text"], input[type="number"], input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .file-upload {
+      border: 2px dashed #ccc;
+      padding: 20px;
+      text-align: center;
+      border-radius: 8px;
+      background: #fafafa;
+      cursor: pointer;
+    }
+
+    .file-upload:hover {
+      border-color: #004aad;
+      background: #eef4ff;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: #004aad;
+      color: white;
+      font-size: 16px;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+      margin-top: 20px;
+    }
+
+    .submit-btn:hover {
+      background: #00357e;
+    }
+
+    .confirmation {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      background: #e6f4ea;
+      color: #1a7f37;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    /* ===== Estimation Preview ===== */
+    .estimation-preview {
+      background: #eef5ff;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #cdddfd;
+      font-family: monospace;
+      white-space: pre-line;
+      margin-bottom: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: #004aad;
+      color: white;
+    }
+
+    input[type=range] { width: 100%; }
+
+    /* ===== Page Description Box ===== */
+    .info-box {
+      background: #eef4ff;
+      border-left: 4px solid #004aad;
+      padding: 12px 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 25px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Buttons -->
+  <div class="nav-buttons">
+    <button onclick="window.location.href='step2.html'">← Step 2</button>
+    <button onclick="window.location.href='step4.html'">→ Step 4</button>
+  </div>
+
+  <div class="container">
+    <h1>Step 3 — Site Visit & Report</h1>
+
+    <!-- ===== Page Context Description ===== -->
+    <div class="info-box">
+      <strong>ℹ️ This page is part of the Manage Booking dashboard.</strong><br>
+      When a <b>client requests a Site Visit</b> or the <b>Supervisor marks “Require Site Visit”</b> in Step 2, 
+      this form is used by the Supervisor to record inspection notes, update estimates, and upload photos.<br><br>
+      If no site visit is required, the booking automatically proceeds to <b>Step 4 — Manager Review & Final Quotation</b> 
+      inside the Manager’s Manage Booking dashboard.
+    </div>
+
+    <!-- ===== Original Estimation Preview ===== -->
+    <h2>Original Client Estimation (Fetched)</h2>
+    <div id="originalEstimate" class="estimation-preview">
+      Loading client estimation data...
+    </div>
+
+    <!-- ===== Adjusted Estimation (Supervisor) ===== -->
+    <h2>Supervisor Adjusted Estimation</h2>
+    <p style="font-size:13px;color:#444;">Recalculate or adjust the original estimate based on actual site conditions.</p>
+
+    <table id="estimateTable">
+      <tr><th>Select</th><th>Item</th><th>Size/Details</th><th>Price (CAD)</th><th>Qty</th></tr>
+      <tr><td><input type="checkbox" data-price="75"></td><td>Carpet</td><td>Large Room</td><td>75</td><td><input type="number" min="1" value="1"></td></tr>
+      <tr><td><input type="checkbox" data-price="60"></td><td>Carpet</td><td>Regular Room</td><td>60</td><td><input type="number" min="1" value="1"></td></tr>
+      <tr><td><input type="checkbox" data-price="30"></td><td>Rug</td><td>Area Rug</td><td>30</td><td><input type="number" min="1" value="1"></td></tr>
+      <tr><td><input type="checkbox" data-price="100"></td><td>Walls</td><td>Surface Wash</td><td>100</td><td><input type="number" min="1" value="1"></td></tr>
+      <tr><td><input type="checkbox" id="stairsCheck"></td><td>Stair Flight</td>
+          <td>
+            <label>Adjust (0–15 flights):</label>
+            <input type="range" id="stairs" min="0" max="15" value="0" step="1" oninput="updateStairs(this.value)">
+            Flights: <span id="stairsCountDisplay">0</span>
+          </td>
+          <td>$<span id="stairsPrice">0.00</span></td><td>-</td>
+      </tr>
+    </table>
+
+    <div class="estimation-preview" id="updatedEstimate">Select items to recalculate...</div>
+
+    <!-- ===== Site Visit Report Form ===== -->
+    <h2>Site Visit Report Form</h2>
+    <form id="siteVisitForm">
+      <div class="form-group">
+        <label>🏠 Property & Scope Notes</label>
+        <textarea placeholder="Describe rooms, surfaces, observed issues..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>📋 Special Requirements</label>
+        <textarea placeholder="Any specific client requests, materials, etc."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>💰 Updated Estimated Price Range (CAD)</label>
+        <input type="text" placeholder="e.g. 180 - 260 CAD">
+      </div>
+
+      <div class="form-group">
+        <label>📷 Upload Photos / Attachments</label>
+        <div class="file-upload" onclick="document.getElementById('attachments').click()">Click or drag files here</div>
+        <input type="file" id="attachments" multiple style="display:none">
+        <p id="fileList" style="font-size: 13px; color: #555;"></p>
+      </div>
+
+      <button type="submit" class="submit-btn">Submit Site Visit Report</button>
+      <div id="confirmationMsg" class="confirmation">
+        ✅ Site Visit Report Submitted!  
+        Booking status → <strong>visit_completed</strong><br>
+        Manager has been notified.
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // ====== Load Original Client Estimation ======
+    window.onload = function() {
+      const estimate = localStorage.getItem("steamInvoice") || "No previous estimation found.";
+      document.getElementById("originalEstimate").innerText = estimate;
+    };
+
+    // ====== Update Stair Price ======
+    function updateStairs(flights) {
+      flights = Math.max(0, Math.min(15, parseInt(flights) || 0));
+      let totalPrice = Math.min(flights * 5, 75);
+      document.getElementById("stairsCountDisplay").innerText = flights;
+      document.getElementById("stairsPrice").innerText = totalPrice.toFixed(2);
+      calculateEstimate();
+    }
+
+    // ====== Dynamic Estimate Recalculation ======
+    const table = document.getElementById("estimateTable");
+    const updatedEstimateBox = document.getElementById("updatedEstimate");
+
+    function calculateEstimate() {
+      let subtotal = 0;
+      let items = [];
+      const rows = table.querySelectorAll("tr");
+
+      rows.forEach(row => {
+        const cb = row.querySelector("input[type=checkbox]");
+        const qty = row.querySelector("input[type=number]");
+        if (cb && cb.checked && !cb.id.includes("stairs")) {
+          const price = parseFloat(cb.getAttribute("data-price"));
+          const count = parseInt(qty.value);
+          const total = price * count;
+          subtotal += total;
+          items.push(`${row.cells[1].innerText} ×${count} ....... $${total}`);
+        }
+      });
+
+      const stairsCheck = document.getElementById("stairsCheck");
+      if (stairsCheck.checked) {
+        const flights = document.getElementById("stairsCountDisplay").innerText;
+        const price = parseFloat(document.getElementById("stairsPrice").innerText);
+        subtotal += price;
+        items.push(`Stair Flights (${flights}) ....... $${price}`);
+      }
+
+      let tax = subtotal * 0.05;
+      let total = subtotal + tax;
+
+      updatedEstimateBox.innerText = 
+`ADJUSTED ESTIMATION
+----------------------------
+${items.join("\n")}
+
+Subtotal: $${subtotal.toFixed(2)}
+Tax (5%): $${tax.toFixed(2)}
+Total: $${total.toFixed(2)}
+`;
+    }
+
+    document.addEventListener("input", (e) => {
+      if (["checkbox", "number", "range"].includes(e.target.type)) {
+        calculateEstimate();
+      }
+    });
+
+    // ====== File Upload Display ======
+    const fileInput = document.getElementById("attachments");
+    const fileList = document.getElementById("fileList");
+    fileInput.addEventListener("change", () => {
+      const files = Array.from(fileInput.files);
+      fileList.textContent = files.map(f => f.name).join(", ") || "No files selected.";
+    });
+
+    // ====== Form Submission ======
+    const form = document.getElementById("siteVisitForm");
+    const confirmationMsg = document.getElementById("confirmationMsg");
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      setTimeout(() => {
+        confirmationMsg.style.display = "block";
+        form.reset();
+        fileList.textContent = "";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 600);
+    });
+  </script>
+</body>
+</html>

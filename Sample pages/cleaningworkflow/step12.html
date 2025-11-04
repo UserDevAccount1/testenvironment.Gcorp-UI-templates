@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 12 — Sync Final Invoice to QuickBooks</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: #f2f3f7;
+    color: #222;
+  }
+
+  /* Top-left Navigation Buttons */
+  .nav-buttons {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+  }
+  .nav-buttons button {
+    background: #2b5fad;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+  .nav-buttons button:hover {
+    background: #1f4e8a;
+  }
+
+  /* Manager Panel Container */
+  .manager-panel {
+    max-width: 1000px;
+    margin: 80px auto;
+    padding: 25px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+
+  h1 {
+    text-align: center;
+    color: #2b5fad;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+
+  .workflow-description {
+    background: #eef5ff;
+    border-left: 4px solid #2b5fad;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    color: #333;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 0.95em;
+    text-align: left;
+  }
+  th {
+    background: #2b5fad;
+    color: #fff;
+  }
+
+  .invoice-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .btn-action {
+    display: inline-block;
+    background: #2b5fad;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 18px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+    text-align: center;
+    width: fit-content;
+  }
+  .btn-action:hover { background: #1f4e8a; }
+
+  .notification, .survey {
+    background: #f9fafc;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+  }
+
+  .notification h3, .survey h3 {
+    margin: 0 0 5px;
+    color: #2b5fad;
+  }
+
+  .invoice-file {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 8px 12px;
+    background: #ffc107;
+    border-radius: 6px;
+    color: #222;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .invoice-file:hover { background: #e0a800; }
+</style>
+</head>
+<body>
+
+<!-- Top-left Navigation Buttons -->
+<div class="nav-buttons">
+  <button onclick="window.location.href='./step11.html'">← Step 11</button>
+</div>
+
+<div class="manager-panel">
+  <h1>Step 12 — Finalize Booking & Sync to QuickBooks</h1>
+  <p class="subtitle">Inside Manage Booking panel. This is the final step: final invoice synced, booking closed, and follow-up triggered.</p>
+
+  <div class="workflow-description">
+    <strong>Workflow Context:</strong> System automatically pushes final invoice to QuickBooks, updates booking status to closed, sends thank-you notification to client, and optionally triggers follow-up survey.
+  </div>
+
+  <!-- Final Invoice Table -->
+  <h2>Final Invoice Summary</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Item / Service</th>
+        <th>Quantity</th>
+        <th>Unit Price (CAD)</th>
+        <th>Total (CAD)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Deep Cleaning — 3 Rooms + 1 Bathroom</td>
+        <td>1</td>
+        <td>280.00</td>
+        <td>280.00</td>
+      </tr>
+      <tr>
+        <td>Upsell: Carpet Steam Clean</td>
+        <td>1</td>
+        <td>50.00</td>
+        <td>50.00</td>
+      </tr>
+      <tr>
+        <td>Upsell: Kitchen Degrease</td>
+        <td>1</td>
+        <td>30.00</td>
+        <td>30.00</td>
+      </tr>
+      <tr>
+        <td><strong>Subtotal</strong></td>
+        <td></td>
+        <td></td>
+        <td><strong>360.00</strong></td>
+      </tr>
+      <tr>
+        <td>Tax (13% HST)</td>
+        <td></td>
+        <td></td>
+        <td>46.80</td>
+      </tr>
+      <tr>
+        <td><strong>Total</strong></td>
+        <td></td>
+        <td></td>
+        <td><strong>406.80 CAD</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Invoice File and Notification -->
+  <div class="notification">
+    <h3>Thank-You Notification</h3>
+    <p>Email sent to client: <strong>"Thank you for your booking! Your final invoice is attached."</strong></p>
+    <a href="./final_invoice.pdf" target="_blank" class="invoice-file">View Invoice PDF</a>
+  </div>
+
+  <!-- Optional Survey -->
+  <div class="survey">
+    <h3>Follow-Up Survey / Next Service Offer</h3>
+    <p>Trigger optional survey or next-service offer to client:</p>
+    <a href="#" class="btn-action" onclick="triggerSurvey()">Send Survey</a>
+  </div>
+</div>
+
+<script>
+  function triggerSurvey() {
+    alert("Follow-up survey triggered to client via email/app notification.");
+  }
+</script>
+
+</body>
+</html>

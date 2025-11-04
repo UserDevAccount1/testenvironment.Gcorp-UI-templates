@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cleaning Service Workflow Dashboard</title>
+<style>
+  :root{
+    --bg:#f7fafc; --card:#ffffff; --accent:#0ea5a4; --muted:#64748b;
+    --node-size:80px;
+  }
+  *{box-sizing:border-box}
+  body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial; margin:0;background:var(--bg);color:#0f1724;}
+  .wrap{max-width:1200px;margin:24px auto;padding:16px}
+  h1{font-size:24px;margin:0 0 12px}
+  p.lead{color:var(--muted);margin:6px 0 18px}
+
+  .stepper-wrap{background:var(--card);border-radius:12px;padding:14px;border:1px solid rgba(15,23,36,0.04);}
+  .controls-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+  .nodes-row{display:flex;align-items:center;gap:12px;padding:8px 6px;overflow:auto;scroll-behavior:smooth}
+  .nodes-row::-webkit-scrollbar{height:10px}
+  .nodes-row::-webkit-scrollbar-thumb{background:linear-gradient(90deg,var(--accent),#06b6d4);border-radius:8px}
+
+  .node{min-width:var(--node-size);height:var(--node-size);border-radius:50%;background:rgba(14,165,164,0.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;cursor:pointer;transition:transform .18s ease,box-shadow .18s}
+  .node:hover{transform:translateY(-6px)}
+  .node.active{background:linear-gradient(135deg, rgba(14,165,164,0.14), rgba(6,182,212,0.08));box-shadow:0 8px 18px rgba(14,165,164,0.08)}
+  .node .num{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e6fffb;font-weight:700;color:var(--accent)}
+  .node .label{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);white-space:nowrap;font-size:12px;color:var(--muted);max-width:120px;overflow:hidden;text-overflow:ellipsis}
+
+  .connector{height:4px;background:linear-gradient(90deg,#e6eef0,#e6eef0);flex:0 0 48px;border-radius:6px}
+  .connector.filled{background:linear-gradient(90deg,var(--accent),#06b6d4)}
+
+  .details{margin-top:16px}
+  .card{background:var(--card);padding:16px;border-radius:10px;border:1px solid rgba(15,23,36,0.04)}
+  .card h3{margin:0 0 8px}
+  .card .meta{color:var(--muted);font-size:13px;margin-bottom:10px}
+  .card .content{font-size:14px;color:#0f1724;line-height:1.45;white-space:pre-wrap}
+
+  .controls{display:flex;gap:8px;align-items:center}
+  .btn{background:transparent;border:1px solid rgba(15,23,36,0.06);padding:8px 12px;border-radius:8px;color:var(--accent);cursor:pointer}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),#06b6d4);color:white;border:none}
+
+  table{width:100%;border-collapse:collapse;margin-bottom:12px}
+  table, th, td{border:1px solid #e6eef0}
+  th,td{padding:6px;text-align:left}
+  th{background:#f0fdfa}
+  .task-item{display:flex;justify-content:space-between;align-items:center;padding:4px 8px;border-radius:6px;background:#f0fdfa;margin-bottom:4px}
+  .task-item button{background:transparent;border:none;color:#ef4444;font-weight:600;cursor:pointer}
+  .action-btn button{margin-right:8px;padding:6px 10px;border-radius:6px;border:none;color:white;cursor:pointer}
+  .action-accept{background:#10b981;}
+  .action-reject{background:#ef4444;}
+  .action-reschedule{background:#f59e0b;}
+  .action-sitevisit{background:#3b82f6;}
+  .action-generate{background:#06b6d4;}
+  .action-revision{background:#f97316;}
+  .action-complete{background:#14b8a6;}
+  .small{font-size:12px;color:var(--muted)}
+  @media (max-width:720px){ .wrap{padding:12px} .node .label{display:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  
+  <h1>Cleaning Service Workflow Dashboard</h1>
+  <p class="lead">Click any step node to view its content and perform actions.</p>
+  <div class="stepper-wrap">
+    <div class="controls-row">
+      <div style="font-weight:700">Workflow Steps</div>
+      <div class="controls">
+        <button id="prevBtn" class="btn">◀ Prev</button>
+        <button id="nextBtn" class="btn">Next ▶</button>
+        <button id="playBtn" class="btn">Play</button>
+      </div>
+    </div>
+    <div id="nodesRow" class="nodes-row" tabindex="0" aria-label="Workflow steps"></div>
+    <div class="details">
+      <div id="detailCard" class="card">
+        <h3 id="detailTitle">Step</h3>
+        <div class="meta" id="detailMeta">Status info</div>
+        <div id="detailContent" class="content">Select a step to view details.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const steps = [
+  {
+    id:1,
+    title:'Client: Create Booking + Estimation',
+    status:'pending_review',
+    monitored:true, // being monitored
+    intervention:true, // manager can intervene at this step
+    content:`
+<h4>Booking Submitted</h4>
+<p>Client John Doe submitted a cleaning booking for 2-bedroom apartment.</p>
+<p><strong>Estimated Total:</strong> ₱5,500</p>
+<h4>Tasks Selected</h4>
+<ul>
+<li>Steam Clean - Living Room</li>
+<li>Maintenance Clean - Bedroom</li>
+<li>Optional: Clean balcony, Sanitize carpets</li>
+</ul>
+<h4>Manager Intervention Available</h4>
+<button class="action-accept" onclick="advanceStep()">Accept Booking</button>
+<button class="action-sitevisit" onclick="advanceStep()">Require Site Visit</button>
+`
+  },
+  {
+    id:2,
+    title:'Supervisor: Review Booking',
+    status:'pending_review',
+    monitored:true,
+    intervention:true,
+    content:`
+<h4>Supervisor Dashboard</h4>
+<p>Supervisor sees booking summary:</p>
+<ul>
+<li>Client: John Doe</li>
+<li>Estimated Total: ₱5,500</li>
+<li>Tasks: Clean balcony, Sanitize carpets</li>
+</ul>
+<p>Actions available for Supervisor:</p>
+<button class="action-accept" onclick="advanceStep()">Approve Booking</button>
+<button class="action-reschedule" onclick="advanceStep()">Request Reschedule</button>
+<button class="action-sitevisit" onclick="advanceStep()">Require Site Visit</button>
+`
+  },
+  {
+    id:3,
+    title:'Site Visit (if required)',
+    status:'awaiting_visit',
+    monitored:true,
+    intervention:false,
+    content:`
+<h4>Monitoring Site Visit</h4>
+<p>Supervisor is performing site visit at client location.</p>
+<p>Notes recorded: 2-bedroom apartment, laminate floors, minor stains.</p>
+<p>Estimated price updated: ₱5,800</p>
+<p>Photos uploaded: 2 images</p>
+`
+  },
+  {
+    id:4,
+    title:'Manager: Review & Finalize Quotation',
+    status:'visit_completed',
+    monitored:true,
+    intervention:true,
+    content:`
+<h4>Quotation Review</h4>
+<p>Manager sees booking & supervisor report:</p>
+<ul>
+<li>Tasks: Clean balcony, Sanitize carpets</li>
+<li>Upsell options: Deep-clean add-on</li>
+<li>Estimated Price: ₱5,800</li>
+<li>Internal Notes: Check special stains</li>
+</ul>
+<p>Actions available:</p>
+<button class="action-generate" onclick="advanceStep()">Generate Quotation</button>
+<button class="action-revision" onclick="advanceStep()">Request Revision</button>
+`
+  },
+  {
+    id:5,
+    title:'Client: Review Quotation',
+    status:'quotation_sent',
+    monitored:true,
+    intervention:false,
+    content:`
+<h4>Monitoring Client Review</h4>
+<p>Client received quotation for approval.</p>
+<ul>
+<li>Service Tasks: Clean balcony, Sanitize carpets, Deep-clean add-on</li>
+<li>Total: ₱5,800</li>
+<li>Status: Pending client response</li>
+</ul>
+`
+  },
+  {
+    id:6,
+    title:'Client: Pay Invoice',
+    status:'quotation_approved',
+    monitored:true,
+    intervention:false,
+    content:`
+<h4>Monitoring Payment</h4>
+<p>Invoice generated for client payment.</p>
+<ul>
+<li>Invoice #: INV-0001</li>
+<li>Payment Methods: Stripe, PayPal, GCash, Card</li>
+<li>Status: Awaiting payment</li>
+</ul>
+`
+  },
+  {
+    id:7,
+    title:'System: Auto-Create Appointment',
+    status:'quotation_paid',
+    monitored:true,
+    intervention:false,
+    content:`
+<h4>Appointment Created</h4>
+<p>Appointment ID: APT-1001</p>
+<p>Tasks: Clean balcony, Sanitize carpets, Deep-clean add-on</p>
+<p>Status: Waiting for cleaner assignment</p>
+`
+  },
+  {
+    id:8,
+    title:'Manager: Assign Cleaner(s)',
+    status:'appointment_ready',
+    monitored:true,
+    intervention:true,
+    content:`
+<h4>Cleaner Assignment</h4>
+<p>Available cleaners: Alex Santos, Maria Cruz</p>
+<p>Status: Ready to assign</p>
+<button class="action-generate" onclick="advanceStep()">Assign Alex Santos</button>
+`
+  },
+  {
+    id:9,
+    title:'Cleaner: Accept Appointment',
+    status:'scheduled',
+    monitored:true,
+    intervention:false,
+    content:`
+<h4>Monitoring Cleaner Acceptance</h4>
+<p>Cleaner Alex Santos has been assigned.</p>
+<p>Status: Awaiting cleaner confirmation</p>
+`
+  },
+  {
+    id:10,
+    title:'Cleaning Execution',
+    status:'in_progress',
+    monitored:true,
+    intervention:false,
+    content:`
+<h4>Monitoring Cleaning</h4>
+<ul>
+<li>Clean balcony: Completed</li>
+<li>Sanitize carpets: In Progress</li>
+<li>Deep-clean add-on: Pending</li>
+</ul>
+<p>Photos and remarks being uploaded in real-time.</p>
+`
+  },
+  {
+    id:11,
+    title:'Manager: Verify Completion',
+    status:'service_done',
+    monitored:true,
+    intervention:true,
+    content:`
+<h4>Monitoring Verification</h4>
+<p>All tasks completed by cleaner.</p>
+<p>Photos uploaded: 5 images</p>
+<button class="action-complete" onclick="advanceStep()">Mark Service Completed</button>
+`
+  },
+  {
+    id:12,
+    title:'System: Sync Final Invoice',
+    status:'closed',
+    monitored:true,
+    intervention:false,
+    content:`
+<h4>Final Invoice Synced</h4>
+<p>Invoice #INV-0001 synced to QuickBooks</p>
+<p>Booking marked closed.</p>
+<p>Thank-you notification sent to client.</p>
+`
+  }
+];
+
+const nodesRow = document.getElementById('nodesRow');
+const detailTitle = document.getElementById('detailTitle');
+const detailMeta = document.getElementById('detailMeta');
+const detailContent = document.getElementById('detailContent');
+
+let activeStep = 0;
+
+// Build step nodes
+steps.forEach((s,i)=>{
+  const node=document.createElement('div');
+  node.classList.add('node'); 
+  if(i===activeStep) node.classList.add('active');
+  node.innerHTML=`<div class="num">${s.id}</div><div class="label">${s.title}</div>`;
+  node.onclick=()=>setActiveStep(i);
+  nodesRow.appendChild(node);
+  if(i<steps.length-1){
+    const connector=document.createElement('div');
+    connector.classList.add('connector');
+    if(i<activeStep) connector.classList.add('filled');
+    nodesRow.appendChild(connector);
+  }
+});
+
+function setActiveStep(i){
+  activeStep=i;
+  document.querySelectorAll('.node').forEach((n,idx)=>{
+    n.classList.toggle('active', idx===i);
+  });
+  detailTitle.innerHTML = steps[i].title;
+  detailMeta.innerHTML = steps[i].meta;
+  detailContent.innerHTML = steps[i].content;
+  updateConnectors();
+}
+
+function updateConnectors(){
+  const conns = document.querySelectorAll('.connector');
+  conns.forEach((c,idx)=>{
+    c.classList.toggle('filled', idx<activeStep);
+  });
+}
+
+function advanceStep(){
+  if(activeStep<steps.length-1){
+    activeStep++;
+    setActiveStep(activeStep);
+  }
+}
+
+// Prev/Next buttons
+document.getElementById('prevBtn').onclick = ()=>{ if(activeStep>0){activeStep--;setActiveStep(activeStep)} }
+document.getElementById('nextBtn').onclick = ()=>{ if(activeStep<steps.length-1){activeStep++;setActiveStep(activeStep)} }
+
+// Optional: autoplay
+let playInterval=null;
+document.getElementById('playBtn').onclick=()=>{
+  if(playInterval){ clearInterval(playInterval); playInterval=null; return; }
+  playInterval=setInterval(()=>{
+    if(activeStep<steps.length-1) advanceStep(); else clearInterval(playInterval);
+  },2000);
+}
+
+// Initialize first step
+setActiveStep(activeStep);
+</script>
+</body>
+</html>

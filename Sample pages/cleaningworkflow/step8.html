@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 8 — Manager: Assign Cleaner</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: #f2f3f7;
+    color: #222;
+  }
+
+  /* === Fixed Left Navigation Buttons === */
+  .nav-buttons {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+  }
+
+  .nav-buttons button {
+    background: #2b5fad;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+
+  .nav-buttons button:hover {
+    background: #1f4e8a;
+  }
+
+  /* === Main Container === */
+  .manager-panel {
+    max-width: 900px;
+    margin: 80px auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 25px;
+  }
+
+  h1 {
+    text-align: center;
+    color: #2b5fad;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+
+  p.subtitle {
+    text-align: center;
+    font-size: 0.95em;
+    color: #555;
+    margin-bottom: 20px;
+  }
+
+  /* Description for Workflow Context */
+  .workflow-description {
+    background: #eef5ff;
+    border-left: 4px solid #2b5fad;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    color: #333;
+  }
+
+  .filter-section, .assign-section {
+    background: #f9fafc;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .filter-section h3, .assign-section h3 {
+    color: #2b5fad;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+  }
+
+  .filter-section select, .assign-section select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  th, td {
+    border: 1px solid #e0e0e0;
+    padding: 10px;
+    font-size: 0.9em;
+    text-align: left;
+  }
+
+  th {
+    background: #f1f3f8;
+    color: #333;
+  }
+
+  tr:hover {
+    background: #f9f9ff;
+  }
+
+  .btn-action {
+    background: #2b5fad;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+
+  .btn-action:hover {
+    background: #1f4e8a;
+  }
+
+  .status-label {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.8em;
+    background: #e6f0ff;
+    color: #2b5fad;
+    font-weight: 600;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- Left Side Navigation Buttons -->
+<div class="nav-buttons">
+  <button onclick="window.location.href='./step7.html'">← Step 7</button>
+  <button onclick="window.location.href='./step9.html'">Step 9 →</button>
+</div>
+
+<!-- Manager Panel -->
+<div class="manager-panel">
+  <h1>Step 8 — Manager: Assign Cleaner(s)</h1>
+  <p class="subtitle">Assign cleaner or cleaning team to confirmed appointments. Status → <strong>scheduled</strong></p>
+
+  <!-- Workflow Description -->
+  <div class="workflow-description">
+    <strong>Workflow Context:</strong> This panel is displayed inside the <em>Manage Booking</em> module. 
+    Only appointments with status "Paid" or "Ready for Scheduling" trigger this interface. 
+    Managers can assign a cleaner or team for each appointment. Once assigned, the system updates the appointment details 
+    and sends notifications to the assigned cleaner(s) and the client.
+  </div>
+
+  <!-- Filter Section -->
+  <div class="filter-section">
+    <h3>Filter by Status</h3>
+    <select id="filterStatus">
+      <option value="ready">Ready for Scheduling</option>
+      <option value="scheduled">Scheduled</option>
+      <option value="completed">Completed</option>
+    </select>
+  </div>
+
+  <!-- Appointments Table -->
+  <div class="assign-section">
+    <h3>Paid Appointments (Ready for Scheduling)</h3>
+    <table id="appointmentsTable">
+      <thead>
+        <tr>
+          <th>Appointment ID</th>
+          <th>Client</th>
+          <th>Date / Time</th>
+          <th>Service Type</th>
+          <th>Cleaner Assigned</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>APT-CA-2025-010</td>
+          <td>Sarah Johnson</td>
+          <td>Nov 10, 2025 — 10:00 AM</td>
+          <td>Deep Cleaning</td>
+          <td>
+            <select>
+              <option value="">Select Cleaner</option>
+              <option value="John M.">John M.</option>
+              <option value="Team A">Team A</option>
+              <option value="Emily R.">Emily R.</option>
+            </select>
+          </td>
+          <td><span class="status-label">Ready</span></td>
+          <td><button class="btn-action" onclick="assignCleaner(this)">Assign</button></td>
+        </tr>
+
+        <tr>
+          <td>APT-CA-2025-011</td>
+          <td>Mark Davis</td>
+          <td>Nov 11, 2025 — 2:00 PM</td>
+          <td>Move-Out Cleaning</td>
+          <td>
+            <select>
+              <option value="">Select Cleaner</option>
+              <option value="Team B">Team B</option>
+              <option value="Liam P.">Liam P.</option>
+            </select>
+          </td>
+          <td><span class="status-label">Ready</span></td>
+          <td><button class="btn-action" onclick="assignCleaner(this)">Assign</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function assignCleaner(button) {
+    const row = button.closest("tr");
+    const cleanerSelect = row.querySelector("select");
+    const status = row.querySelector(".status-label");
+
+    if (cleanerSelect.value === "") {
+      alert("Please select a cleaner before assigning.");
+      return;
+    }
+
+    status.textContent = "Scheduled";
+    status.style.background = "#e8fce8";
+    status.style.color = "#2c7a2c";
+
+    button.disabled = true;
+    button.textContent = "Assigned";
+
+    alert(`Cleaner ${cleanerSelect.value} assigned successfully! Notification sent to client and cleaner.`);
+  }
+</script>
+
+</body>
+</html>

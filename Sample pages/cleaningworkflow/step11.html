@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 11 — Manager Dashboard: Post-Cleaning Workflow</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: #f2f3f7;
+    color: #222;
+  }
+
+  /* === Fixed Navigation Buttons (Top-left) === */
+  .nav-buttons {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+  }
+  .nav-buttons button {
+    background: #2b5fad;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+  .nav-buttons button:hover {
+    background: #1f4e8a;
+  }
+
+  /* === Manager Panel Container === */
+  .manager-panel {
+    max-width: 1000px;
+    margin: 80px auto;
+    padding: 25px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+
+  h1 {
+    text-align: center;
+    color: #2b5fad;
+    font-size: 1.5em;
+    margin-bottom: 5px;
+  }
+
+  p.subtitle {
+    text-align: center;
+    font-size: 0.95em;
+    color: #555;
+    margin-bottom: 20px;
+  }
+
+  .workflow-description {
+    background: #eef5ff;
+    border-left: 4px solid #2b5fad;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    color: #333;
+  }
+
+  .appointment-info {
+    background: #f9fafc;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .appointment-info h3 { margin: 0 0 5px; color: #2b5fad; font-size: 1.1em; }
+  .appointment-info p { margin: 4px 0; font-size: 0.9em; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 0.9em;
+    text-align: left;
+  }
+  th {
+    background: #2b5fad;
+    color: #fff;
+  }
+
+  .task-status {
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.85em;
+    font-weight: 600;
+    display: inline-block;
+  }
+  .status-pending { background: #fff3cd; color: #856404; }
+  .status-complete { background: #d4edda; color: #155724; }
+  .status-inprogress { background: #cce5ff; color: #004085; }
+
+  .btn-action {
+    display: inline-block;
+    background: #2b5fad;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: 0.3s;
+  }
+  .btn-action:hover { background: #1f4e8a; }
+
+  .btn-complete { background: #28a745; margin-right: 10px; }
+  .btn-complete:hover { background: #1e7e34; }
+
+  .btn-invoice { background: #ffc107; color: #222; }
+  .btn-invoice:hover { background: #e0a800; }
+
+  .button-group {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 15px;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- Top-left Navigation Buttons -->
+<div class="nav-buttons">
+  <button onclick="window.location.href='./step10.html'">← Step 10</button>
+  <button onclick="window.location.href='./step12.html'">→ Step 12</button>
+</div>
+
+<div class="manager-panel">
+  <h1>Step 11 — Manager Dashboard</h1>
+  <p class="subtitle">Inside Manage Booking panel. Review completed appointments and finalize workflow actions.</p>
+
+  <div class="workflow-description">
+    <strong>Workflow Context:</strong> After cleaning execution, manager can mark service complete and generate the final invoice summary.
+  </div>
+
+  <!-- Appointment Info Section -->
+  <div class="appointment-info">
+    <h3>Appointment Overview</h3>
+    <p><strong>Appointment ID:</strong> APPT-20251104-001</p>
+    <p><strong>Client:</strong> John Doe</p>
+    <p><strong>Address:</strong> 123 Maple Street, Toronto, ON</p>
+    <p><strong>Date/Time:</strong> Nov 5, 2025 — 10:00 AM</p>
+    <p><strong>Status:</strong> Cleaning Completed</p>
+  </div>
+
+  <!-- Task Table -->
+  <table>
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Cleaner</th>
+        <th>Duration</th>
+        <th>Status</th>
+        <th>Remarks / Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Carpet Steam Clean — Living Room</td>
+        <td>Jane Smith</td>
+        <td>1 hr</td>
+        <td><span class="task-status status-complete">Complete</span></td>
+        <td>Finished, client signed off</td>
+      </tr>
+      <tr>
+        <td>Kitchen Degrease</td>
+        <td>Jane Smith</td>
+        <td>45 min</td>
+        <td><span class="task-status status-complete">Complete</span></td>
+        <td>All grease removed</td>
+      </tr>
+      <tr>
+        <td>Bathroom Cleaning</td>
+        <td>John Doe</td>
+        <td>30 min</td>
+        <td><span class="task-status status-complete">Complete</span></td>
+        <td>Mirror cleaned, supplies restocked</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Internal Notes & Action Buttons -->
+  <div class="appointment-info">
+    <h3>Internal Notes</h3>
+    <p>All tasks completed successfully. Ready to finalize service and generate invoice.</p>
+    <div class="button-group">
+      <button class="btn-action btn-complete" onclick="serviceComplete()">Service Complete</button>
+      <button class="btn-action btn-invoice" onclick="createInvoice()">Create Final Invoice Summary</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function serviceComplete() {
+    if(confirm("Mark this appointment as fully completed?")) {
+      alert("Appointment status updated to 'Service Completed'.");
+      // Here you could update backend status via AJAX
+    }
+  }
+
+  function createInvoice() {
+    alert("Generating final invoice summary for this appointment...");
+    // Redirect to invoice generation page or trigger summary modal
+  }
+</script>
+
+</body>
+</html>

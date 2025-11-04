@@ -1073,6 +1073,8 @@
   </a>
 </li>
 
+
+
 <!-- Team Schedule -->
 <li>
   <a class="has-arrow" href="./TeamSchedule.html" aria-expanded="false">
@@ -1207,409 +1209,506 @@
         <div class="content-body default-height">
             <div class="container-fluid">
 
- <style>
-  /* ===== Scoped Styles ===== */
-  #bookingManagerModule_CA * { box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
-  #bookingManagerModule_CA { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 20px; margin-top: 20px; }
-  #bookingManagerModule_CA h2 { font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #333; }
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+  :root{--primary:#0366d6;--muted:#6b7280}
 
-  #bmControls_CA { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:15px; align-items:center; }
-  #bmControls_CA select, #bmControls_CA input { padding:6px 10px; border:1px solid #ccc; border-radius:6px; font-size:14px; }
-  #bmControls_CA button { border:none; border-radius:6px; background:#007bff; color:#fff; cursor:pointer; padding:6px 12px; }
-
-  #bmTable_CA { width:100%; border-collapse:collapse; }
-  #bmTable_CA th, #bmTable_CA td { padding:10px; text-align:left; border-bottom:1px solid #eee; vertical-align:middle; }
-  #bmTable_CA th { background:#f8f9fa; font-weight:600; cursor:pointer; user-select:none; }
-  #bmTable_CA th span.sort_CA { font-size:12px; color:#888; margin-left:4px; }
-
-  .bm-status_CA { font-weight:600; border-radius:6px; padding:3px 8px; display:inline-block; }
-  .status-pending_CA { background:#fff3cd; color:#856404; }
-  .status-approved_CA { background:#d4edda; color:#155724; }
-  .status-rejected_CA { background:#f8d7da; color:#721c24; }
-
-  .bm-actions_CA button { border:none; background:transparent; cursor:pointer; font-size:18px; margin-right:6px; transition:0.2s; }
-  .bm-actions_CA button:hover { transform:scale(1.1); }
-  .bm-icon-accept_CA { color:#28a745; }
-  .bm-icon-reject_CA { color:#dc3545; }
-  .bm-icon-reschedule_CA { color:#ffc107; }
-
-  /* Custom lightweight modals (accepted + reschedule) */
-  .bm-modal-overlay_CA { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9998; justify-content:center; align-items:center; }
-  .bm-modal_CA { background:#fff; padding:20px; border-radius:8px; width:480px; max-height:80vh; overflow-y:auto; box-shadow:0 4px 10px rgba(0,0,0,0.2); }
-  .bm-modal_CA h3 { margin-top:0; margin-bottom:10px; }
-  .bm-close-btn_CA { background:#dc3545; color:white; border:none; border-radius:5px; padding:5px 10px; cursor:pointer; float:right; }
-
-  /* Bootstrap invoice modal visuals */
-  .modal-content { border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,0.2); }
-  .invoice-preview h6 { font-weight:600; margin-bottom:6px; }
-  .invoice-line { display:flex; justify-content:space-between; gap:12px; padding:6px 0; border-bottom:1px solid #f1f1f1; }
-  .invoice-total { font-weight:700; text-align:right; margin-top:12px; }
-
-   /* Make modal larger */
-#bmWorkflowModal_CA .modal-dialog {
-  max-width: 90%;
-  width: auto;
-  margin: 30px auto;
-}
-
-.workflow-timeline {
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  overflow-x: auto;
-  padding: 20px;
-}
-
-.workflow-step-node {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  min-width: 150px;
-  margin-right: 20px;
-}
-
-.circle-node {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: #ccc;
-  color: #fff;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.workflow-step-node.completed .circle-node {
-  background-color: #28a745; /* green */
-}
-
-.workflow-step-node.active .circle-node {
-  background-color: #ffc107; /* yellow */
-}
-
-.step-content {
-  text-align: center;
-  font-size: 0.85rem;
-  line-height: 1.2rem;
-  max-width: 120px;
-}
-
-.timeline-line {
-  flex: 1;
-  height: 4px;
-  background-color: #ccc;
-  margin-top: 23px; /* align with circle center */
-}
-
+  #employeeSpotCheckModule{background:#fff;border-radius:12px;padding:18px;max-width:1200px;margin:0 auto;box-shadow:0 6px 18px rgba(16,24,40,0.06)}
+  h2{color:#12263a;margin-bottom:6px}
+  p.module-desc{color:var(--muted);margin-bottom:14px;font-size:13px}
+  .top-controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin-bottom:12px}
+  .top-controls > div{min-width:150px}
+  input[type="text"], input[type="email"], select, textarea {width:100%; padding:8px 10px; border-radius:6px; border:1px solid #cbd5e1; font-size:14px}
+  input:focus, select:focus, textarea:focus {outline: none; box-shadow:0 0 0 2px rgba(3,102,214,0.12); border-color:var(--primary)}
+  button {background:var(--primary); color:#fff; border:0; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600}
+  button.ghost{background:transparent;border:1px solid #d1d5db;color:#0f172a}
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 6px rgba(15,23,42,0.04)}
+  thead th{background:var(--primary); color:#fff; padding:10px 12px; cursor:pointer; user-select:none; position:relative}
+  tbody td{padding:10px 12px;border-bottom:1px solid #eef2f7;color:#0f172a}
+  tbody tr:hover{background:#f4f8ff}
+  .action-btn{background:none;border:0;cursor:pointer;margin-right:6px;font-size:16px}
+  .modal-backdrop-custom{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9998;justify-content:center;align-items:center;padding:18px}
+  .modal-content-custom{background:#fff;padding:18px;border-radius:10px;width:820px;max-height:88vh;overflow:auto;box-shadow:0 8px 30px rgba(2,6,23,0.2)}
+  .form-section{margin-bottom:14px;background:#f8fbff;padding:10px;border-radius:8px;border:1px solid #e6eefc}
+  .form-section h4{color:var(--primary);font-size:15px;margin-bottom:8px}
+  label.block{display:block;font-weight:600;font-size:13px;margin-bottom:6px}
+  .modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+  thead th.sort-asc::after{content:" ▲"}
+  thead th.sort-desc::after{content:" ▼"}
+  .small-muted{font-size:12px;color:var(--muted)}
+  .search-input{min-width:240px}
+  @media (max-width:900px){ .modal-content-custom{width:96%} .top-controls{flex-direction:column;align-items:flex-start} }
 </style>
+</head>
+<body>
 
-<h2>🧹 Cleaning Service – Booking Manager (Canada)</h2>
+<div id="employeeSpotCheckModule">
+  <h2>EMPLOYEE SPOT CHECK (WSO)</h2>
+  <p class="module-desc">Used to evaluate employees through development on-the-spot checks (Work Site Observation)</p>
 
-<div id="bmControls_CA">
-  <input type="text" id="bmFilterClient_CA" placeholder="Search client...">
-  <select id="bmFilterStatus_CA">
-    <option value="">All Status</option>
-    <option value="Pending">Pending</option>
-    <option value="Approved">Approved</option>
-    <option value="Rejected">Rejected</option>
-  </select>
-  <input type="date" id="bmFilterDate_CA">
-  <button id="bmViewAccepted_CA" type="button">📋 View Accepted</button>
+  <div class="top-controls">
+    <div>
+      <label class="small-muted">Show</label>
+      <select id="entries_emp">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="25">25</option>
+        <option value="all">All</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="small-muted">Status</label>
+      <select id="filter_status_emp">
+        <option value="">All</option>
+        <option value="Good">Good</option>
+        <option value="Needs Improvement">Needs Improvement</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="small-muted">Search</label>
+      <input type="text" id="search_emp" class="search-input" placeholder="Search employee, observer or email">
+    </div>
+
+    <div style="display:flex;gap:8px;align-items:end">
+      <button id="addRecordBtn_emp">+ Add Record</button>
+      <button id="clearAll_emp" class="ghost">Clear All</button>
+    </div>
+  </div>
+
+  <table id="wsoTable_emp" aria-live="polite">
+    <thead>
+      <tr>
+        <th data-col="id">ID</th>
+        <th data-col="timestamp">Date</th>
+        <th data-col="employee">Employee</th>
+        <th data-col="observer">Observer</th>
+        <th data-col="attitude">Attitude</th>
+        <th data-col="onsite">On Site</th>
+        <th data-col="uniform">Uniform</th>
+        <th data-col="status">Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 </div>
 
-<table id="bmTable_CA">
-  <thead>
-    <tr>
-      <th data-key="id">#<span class="sort_CA">↕</span></th>
-      <th data-key="client">Client<span class="sort_CA">↕</span></th>
-      <th data-key="service">Service Type<span class="sort_CA">↕</span></th>
-      <th data-key="cleanType">Type of Clean<span class="sort_CA">↕</span></th>
-      <th data-key="date">Date/Time<span class="sort_CA">↕</span></th>
-      <th data-key="location">Location<span class="sort_CA">↕</span></th>
-      <th data-key="invoice">Estimated Invoice<span class="sort_CA">↕</span></th>
-      <th data-key="notes">Notes<span class="sort_CA">↕</span></th>
-      <th data-key="status">Status<span class="sort_CA">↕</span></th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody id="bmBody_CA"></tbody>
-</table>
+<!-- ADD / EDIT Modal (floating) -->
+<div id="addModal" class="modal-backdrop-custom" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-content-custom">
+    <h3 id="modalTitle">Add Employee Spot Check</h3>
 
-<!-- Existing modals unchanged -->
-<div class="bm-modal-overlay_CA" id="bmRescheduleModal_CA">
-  <div class="bm-modal_CA">
-    <h3>Reschedule Booking</h3>
-    <input type="datetime-local" id="bmRescheduleDate_CA">
-    <div style="margin-top:10px; text-align:right;">
-      <button id="bmConfirmReschedule_CA" type="button">Confirm</button>
-      <button class="bm-close-btn_CA" id="bmCancelReschedule_CA" type="button">Cancel</button>
+    <form id="wsoForm_emp" novalidate>
+      <input type="hidden" id="record_id_emp" value="">
+
+      <!-- Basic Information -->
+      <div class="form-section">
+        <h4>Basic Information</h4>
+
+        <label class="block">Email*</label>
+        <input type="email" id="email_emp" required placeholder="it@gcorpindustries.ca">
+
+        <label class="block">PERSON DOING WSO *<span class="small-muted">WHO IS DOING THE WSO? This is a required question</span></label>
+        <input type="text" id="observer_emp" required placeholder="Person doing WSO">
+
+        <label class="block">EMPLOYEE BEING OBSERVED *<span class="small-muted">WHO IS THE WSO BEING DONE ON?</span></label>
+        <input type="text" id="employee_emp" required placeholder="Employee being observed">
+      </div>
+
+      <!-- Observation Details -->
+      <div class="form-section">
+        <h4>Observation Details</h4>
+
+        <label class="block">EMPLOYEE BEING WSOD IS CURRENTLY IN YOUR PRESENCE AND YOU'RE DOING THIS LIVE NOT AT HOME. *</label>
+        <p class="small-muted">ARE YOU DOING THIS WSO ON SITE? (THIS IS A TRICK QUESTION ITS TO BE DONE WITH THE EMPLOYEE)</p>
+        <select id="onsite_emp" required>
+          <option value="">Select</option>
+          <option>YES</option>
+          <option>NO</option>
+        </select>
+
+        <label class="block" style="margin-top:10px">EMPLOYEE GENERAL ATTITUDE *</label>
+        <p class="small-muted">DOES THIS PERSON WANT TO BE HERE TO CONTRIBUTE TO THE TEAM OR NOT / ARE THEY POSITIVE / ARE THEY ADDING TEAM VALUE?</p>
+        <select id="attitude_emp" required>
+          <option value="">Select</option>
+          <option value="1">1 - Bad</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5 - Great</option>
+        </select>
+
+        <label class="block" style="margin-top:10px">EMPLOYEE WEARING UNIFORM *</label>
+        <p class="small-muted">ARE WE USING OUR COMPANY UNIFORM.</p>
+        <select id="uniform_emp" required>
+          <option value="">Select</option>
+          <option>YES</option>
+          <option>NO</option>
+        </select>
+
+        <label class="block" style="margin-top:10px">Status*</label>
+        <select id="status_emp" required>
+          <option value="">Select</option>
+          <option>Good</option>
+          <option>Needs Improvement</option>
+        </select>
+      </div>
+
+      <!-- Equipment & Checks -->
+      <div class="form-section">
+        <h4>Checks & Equipment</h4>
+
+        <label class="block">EMPLOYEE CADDY INSPECTED AND ALL PRODUCTS LABELED, NO PRODUCTS OTHER THAN PRESCRIBED CHEMS. *</label>
+        <p class="small-muted">CHECK CADDY FOR PRODUCTS THAT WE ARE USING AND ENSURE THEY ARE USING THE PROPER PRODUCTS THAT WE USE AS A COMPANY.</p>
+        <textarea id="caddy_emp" rows="2" required></textarea>
+
+        <label class="block" style="margin-top:8px">EMPLOYEE VACUUM / STEAM CLEANER / FLOOR SCRUBBER CONDITION. *</label>
+        <p class="small-muted">CHECK VACUUM THAT CLEANER IS USING. IS IT WORKING PROPERLY / SOUND PROPER / HAS A FILTER ETC.</p>
+        <textarea id="equipment_emp" rows="2" required></textarea>
+
+        <label class="block" style="margin-top:8px">EMPLOYEE CAN SHOW YOU THAT THEY HAVE ACCESS TO THE VEHICLE REG / INS FOR THE VEHICLE THEY ARE IN OR DRIVING. *</label>
+        <p class="small-muted">ALL EMPLOYEES NEED TO KNOW WHERE TO FIND VEHICLE REGISTRATIONS AND INSURANCES...</p>
+        <textarea id="vehicle_emp" rows="2" required></textarea>
+
+        <label class="block" style="margin-top:8px">EMPLOYEE HAS FULL ACCESS TO SMS AND HAS SHOWN YOU AN SDS. *</label>
+        <p class="small-muted">GET THEM TO SHOW YOU THE SMS ACCESS SO YOU CAN VERIFY THEY HAVE THE APP / ACCESS TO FOLDERS.</p>
+        <textarea id="sms_emp" rows="2" required></textarea>
+
+        <label class="block" style="margin-top:8px">EMPLOYEE HAS READ THE CALENDAR EVENT AND KNOWS TO BE READING THESE ALL PRIOR TO STARTING THE JOB. *</label>
+        <p class="small-muted">KNOWLEDGE CHECK THE EMPLOYEE AND ENSURE THEY HAVE READ THE CAL EVENT...</p>
+        <textarea id="calendar_emp" rows="2" required></textarea>
+      </div>
+
+      <!-- Evaluation Notes -->
+      <div class="form-section">
+        <h4>Evaluation Notes</h4>
+
+        <label class="block">VALUE ADDED OBSERVATIONS *</label>
+        <p class="small-muted">WHAT ARE THE CLEANER'S STRENGTHS AND WHAT DO THEY BRING TO HELP THE TEAM.</p>
+        <textarea id="value_emp" rows="3" required></textarea>
+
+        <label class="block" style="margin-top:8px">DEVELOPMENT OBSERVATIONS *</label>
+        <p class="small-muted">WHAT AREAS DOES THE CLEANER NEED DEVELOPMENT ON...</p>
+        <textarea id="development_emp" rows="3" required></textarea>
+
+        <label class="block" style="margin-top:8px">SUGGESTED ACTIONS *</label>
+        <p class="small-muted">DONT WRITE NONE. SUGGEST ACTIONS TO DEVELOP THIS EMPLOYEE.</p>
+        <textarea id="actions_emp" rows="3" required></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="closeModal_emp" class="ghost">Cancel</button>
+        <button type="submit" id="saveBtn_emp">Save Record</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- VIEW Modal -->
+<div id="viewModal" class="modal-backdrop-custom" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal-content-custom" style="width:680px">
+    <h3>WSO Record Details</h3>
+    <div id="viewContent" style="white-space:pre-wrap; font-size:14px; color:#111"></div>
+    <div class="modal-actions" style="margin-top:12px">
+      <button id="closeView_emp" class="ghost">Close</button>
     </div>
   </div>
 </div>
-
-<div class="bm-modal-overlay_CA" id="bmAcceptedModal_CA">
-  <div class="bm-modal_CA">
-    <button class="bm-close-btn_CA" id="bmCloseAccepted_CA" type="button">Close</button>
-    <h3>Accepted Bookings</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Client</th>
-          <th>Service</th>
-          <th>Type</th>
-          <th>Date</th>
-          <th>Location</th>
-          <th>Invoice</th>
-        </tr>
-      </thead>
-      <tbody id="bmAcceptedBody_CA"></tbody>
-    </table>
-  </div>
-</div>
-
-<div class="modal fade" id="bmInvoiceModal_CA" tabindex="-1" aria-labelledby="bmInvoiceLabel_CA" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content rounded-3 shadow-lg">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="bmInvoiceLabel_CA">Estimated Invoice</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body" id="bmInvoiceBody_CA"></div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button id="bmConfirmInvoice_CA" type="button" class="btn btn-success">Confirm Invoice</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- WORKFLOW MODAL -->
-<div class="bm-modal-overlay_CA" id="bmWorkflowModal_CA">
-  <div class="bm-modal_CA">
-    <button class="bm-close-btn_CA" id="bmCloseWorkflow_CA" type="button">Close</button>
-    <h3>🧭 Cleaning Service Workflow Monitor</h3>
-    <div id="bmWorkflowBody_CA" class="workflow-stepper"></div>
-  </div>
-</div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-(function() {
-  const tableBody = document.querySelector('#bmBody_CA');
-  const acceptedBody = document.querySelector('#bmAcceptedBody_CA');
-  const acceptedModal = document.querySelector('#bmAcceptedModal_CA');
-  const rescheduleModal = document.querySelector('#bmRescheduleModal_CA');
-  const rescheduleInput = document.querySelector('#bmRescheduleDate_CA');
-  const invoiceBodyEl = document.querySelector('#bmInvoiceBody_CA');
-  const bmInvoiceModalEl = document.getElementById('bmInvoiceModal_CA');
-  const bsInvoiceModal = new bootstrap.Modal(bmInvoiceModalEl);
-  const workflowModal = document.querySelector('#bmWorkflowModal_CA');
-  const workflowBody = document.querySelector('#bmWorkflowBody_CA');
-  const workflowCloseBtn = document.querySelector('#bmCloseWorkflow_CA');
+(function(){
+  const root = document.getElementById("employeeSpotCheckModule");
+  const tableBody = root.querySelector("#wsoTable_emp tbody");
+  const headers = root.querySelectorAll("#wsoTable_emp thead th[data-col]");
+  const addModal = document.getElementById("addModal");
+  const viewModal = document.getElementById("viewModal");
+  const addBtn = document.getElementById("addRecordBtn_emp");
+  const closeModalBtn = document.getElementById("closeModal_emp");
+  const closeViewBtn = document.getElementById("closeView_emp");
+  const clearAllBtn = document.getElementById("clearAll_emp");
+  const entriesSelect = document.getElementById("entries_emp");
+  const searchInput = document.getElementById("search_emp");
+  const statusFilter = document.getElementById("filter_status_emp");
+  const form = document.getElementById("wsoForm_emp");
+  const modalTitle = document.getElementById("modalTitle");
+  const viewContent = document.getElementById("viewContent");
+  const fid = document.getElementById("record_id_emp");
 
-  let currentRescheduleId = null;
-  let sortState = {}; // track asc/desc per column
+  // field ids used in the form
+  const fields = ["email","observer","employee","onsite","attitude","uniform","status","caddy","equipment","vehicle","sms","calendar","value","development","actions"];
 
-  const bookings = [
-    { id: 1, client: 'Sarah Thompson', service: 'Home Cleaning', cleanType: 'Deep Clean', date: '2025-11-05T09:00', location: 'Toronto, ON', notes: 'Full house spring clean', invoice: 220, currency: 'CAD', status: 'Pending' },
-    { id: 2, client: 'Daniel Lee', service: 'Office Cleaning', cleanType: 'Maintenance', date: '2025-11-06T10:30', location: 'Vancouver, BC', notes: 'Weekly office clean', invoice: 150, currency: 'CAD', status: 'Pending' },
-    { id: 3, client: 'Olivia Chen', service: 'Apartment Cleaning', cleanType: 'Move-out', date: '2025-11-07T13:00', location: 'Calgary, AB', notes: 'End-of-lease deep clean', invoice: 300, currency: 'CAD', status: 'Approved' },
-    { id: 4, client: 'Ethan Brown', service: 'Steam Cleaning', cleanType: 'Steam Clean', date: '2025-11-08T11:00', location: 'Ottawa, ON', notes: 'Carpet steam cleaning', invoice: 180, currency: 'CAD', status: 'Pending' }
-  ];
+  // load list & nextId from localStorage
+  let wsoList = JSON.parse(localStorage.getItem("wsoList_emp")) || [];
+  // nextId: if stored use it, otherwise compute from max existing id +1
+  let nextId = parseInt(localStorage.getItem("wso_next_id") || "0", 10);
+  if (!nextId) {
+    const max = wsoList.reduce((m,r)=> Math.max(m, r.id || 0), 0);
+    nextId = max + 1;
+  }
 
-  const workflowSteps = [
-    { step: '📱 STEP 1 — Client: Create Booking + Estimation', key: 'pending_review' },
-    { step: 'STEP 2 — Supervisor: Manage Booking Review', key: 'approved' },
-    { step: 'STEP 3 — Supervisor: Site Visit & Report (Conditional)', key: 'awaiting_visit' },
-    { step: 'STEP 4 — Manager: Review & Finalize Quotation', key: 'quotation_sent' },
-    { step: 'STEP 5 — Client: Review & Approve Quotation', key: 'quotation_approved' },
-    { step: 'STEP 6 — Client: Pay Invoice (In-App)', key: 'quotation_paid' },
-    { step: 'STEP 7 — System: Auto-Create Appointment + Unlock Task', key: 'appointment_ready' },
-    { step: 'STEP 8 — Manager: Assign Cleaner(s)', key: 'scheduled' },
-    { step: 'STEP 9 — Cleaner: Accept Appointment', key: 'in_progress' },
-    { step: 'STEP 10 — Cleaning Execution', key: 'in_progress' },
-    { step: 'STEP 11 — Manager: Verify Completion', key: 'service_done' },
-    { step: 'STEP 12 — System: Sync Final Invoice to QuickBooks', key: 'closed' }
-  ];
+  const saveToStorage = () => {
+    localStorage.setItem("wsoList_emp", JSON.stringify(wsoList));
+    localStorage.setItem("wso_next_id", String(nextId));
+  };
 
-  const formatCurrency = (amount, currency) =>
-    new Intl.NumberFormat('en-CA', { style: 'currency', currency }).format(amount);
+  // Sorting config
+  let sortConfig = { key: null, direction: null };
 
-  function renderTable(data = bookings) {
-    tableBody.innerHTML = '';
-    data.forEach((b, index) => {
-      const tr = document.createElement('tr');
+  function renderTable(){
+    tableBody.innerHTML = "";
+    let list = [...wsoList];
+
+    const term = (searchInput.value || "").toLowerCase();
+    const filterStatus = statusFilter.value;
+
+    if (term) {
+      list = list.filter(r =>
+        (r.employee||"").toLowerCase().includes(term) ||
+        (r.observer||"").toLowerCase().includes(term) ||
+        (r.email||"").toLowerCase().includes(term)
+      );
+    }
+    if (filterStatus) list = list.filter(r => r.status === filterStatus);
+
+    if (sortConfig.key) {
+      list.sort((a,b) => {
+        let valA = (a[sortConfig.key] || "").toString().toLowerCase();
+        let valB = (b[sortConfig.key] || "").toString().toLowerCase();
+        // numeric compare for id
+        if (sortConfig.key === "id") {
+          return sortConfig.direction === "asc" ? (a.id - b.id) : (b.id - a.id);
+        }
+        if (valA < valB) return sortConfig.direction === "asc" ? -1 : 1;
+        if (valA > valB) return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+
+    const limit = entriesSelect.value === "all" ? list.length : parseInt(entriesSelect.value, 10);
+    list.slice(0, limit).forEach(r => {
+      const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${index + 1}</td>
-        <td>${b.client}</td>
-        <td>${b.service}</td>
-        <td>${b.cleanType}</td>
-        <td>${new Date(b.date).toLocaleString()}</td>
-        <td>${b.location}</td>
-        <td>${formatCurrency(b.invoice, b.currency)} 
-          <button type="button" class="btn btn-outline-primary btn-sm bm-invoice-view_CA" data-id="${b.id}" style="margin-left:8px;">View</button>
-        </td>
-        <td>${b.notes}</td>
+        <td>${r.id}</td>
+        <td>${r.timestamp}</td>
+        <td>${escapeHtml(r.employee || "")}</td>
+        <td>${escapeHtml(r.observer || "")}</td>
+        <td>${escapeHtml(String(r.attitude || ""))}</td>
+        <td>${escapeHtml(r.onsite || "")}</td>
+        <td>${escapeHtml(r.uniform || "")}</td>
+        <td>${escapeHtml(r.status || "")}</td>
         <td>
-          <span class="bm-status_CA status-${b.status.toLowerCase()}_CA">${b.status}</span>
-          <button class="btn btn-outline-info btn-sm bm-workflow-view_CA" data-id="${b.id}" style="margin-left:6px;">View Workflow</button>
+          <button class="action-btn view-btn" title="View" onclick="employeeSpotCheckModule_view(${r.id})">👁</button>
+          <button class="action-btn edit-btn" title="Edit" onclick="employeeSpotCheckModule_edit(${r.id})">✏</button>
+          <button class="action-btn delete-btn" title="Delete" onclick="employeeSpotCheckModule_delete(${r.id})">🗑</button>
         </td>
-        <td class="bm-actions_CA">
-          <button class="bm-icon-accept_CA" data-id="${b.id}" title="Accept">✅</button>
-          <button class="bm-icon-reject_CA" data-id="${b.id}" title="Reject">❌</button>
-          <button class="bm-icon-reschedule_CA" data-id="${b.id}" title="Reschedule">🔁</button>
-        </td>`;
+      `;
       tableBody.appendChild(tr);
     });
   }
 
-  // Sorting logic
-  document.querySelectorAll('#bmTable_CA thead th[data-key]').forEach(th => {
-    th.addEventListener('click', () => {
-      const key = th.dataset.key;
-      sortState[key] = !sortState[key];
-      const direction = sortState[key] ? 1 : -1;
-      const sorted = [...bookings].sort((a,b) => {
-        let valA = a[key], valB = b[key];
-        if (key === 'date') return direction * (new Date(valA) - new Date(valB));
-        if (typeof valA === 'string') return direction * valA.localeCompare(valB);
-        return direction * (valA - valB);
-      });
-      renderTable(sorted);
-      document.querySelectorAll('#bmTable_CA th span.sort_CA').forEach(s => s.textContent = '↕');
-      th.querySelector('span.sort_CA').textContent = sortState[key] ? '↑' : '↓';
+  // header sorting
+  headers.forEach(h => {
+    h.addEventListener("click", () => {
+      const key = h.dataset.col;
+      if (!key) return;
+      if (sortConfig.key === key) {
+        sortConfig.direction = sortConfig.direction === "asc" ? "desc" : "asc";
+      } else {
+        sortConfig.key = key;
+        sortConfig.direction = "asc";
+      }
+      headers.forEach(th => th.classList.remove("sort-asc","sort-desc"));
+      h.classList.add(`sort-${sortConfig.direction}`);
+      renderTable();
     });
   });
 
-  // Show invoice modal
-  tableBody.addEventListener('click', e => {
-    const id = e.target.dataset.id;
-    const b = bookings.find(x => x.id == id);
-    if (!b) return;
-
-    if (e.target.classList.contains('bm-invoice-view_CA')) {
-      invoiceBodyEl.innerHTML = `
-        <div class="invoice-preview">
-          <h6>Client: ${b.client}</h6>
-          <p>Date: ${new Date(b.date).toLocaleString()}</p>
-          <p>Service: ${b.service} — ${b.cleanType}</p>
-          <div class="invoice-total">Estimated Total: ${formatCurrency(b.invoice, b.currency)}</div>
-        </div>`;
-      bsInvoiceModal.show();
-    }
-
-    // Status update
-    if (e.target.classList.contains('bm-icon-accept_CA')) b.status = 'Approved';
-    if (e.target.classList.contains('bm-icon-reject_CA')) b.status = 'Rejected';
-    if (e.target.classList.contains('bm-icon-reschedule_CA')) {
-      currentRescheduleId = id;
-      rescheduleModal.style.display = 'flex';
-    }
-
-    // Workflow button click
-    if (e.target.classList.contains('bm-workflow-view_CA')) {
-      workflowBody.innerHTML = '';
-      workflowSteps.forEach((ws, idx) => {
-        const div = document.createElement('div');
-        div.className = 'workflow-step';
-        div.textContent = ws.step;
-
-        const statusIndex = workflowSteps.findIndex(s => s.key === b.status);
-        if (idx < statusIndex) div.classList.add('completed');
-        else if (idx === statusIndex) div.classList.add('active');
-
-        workflowBody.appendChild(div);
-      });
-      workflowModal.style.display = 'flex';
-    }
-
-    renderTable();
+  // show modal
+  addBtn.addEventListener("click", () => {
+    form.reset();
+    fid.value = "";
+    modalTitle.textContent = "Add Employee Spot Check";
+    openModal(addModal);
   });
 
-  // Reschedule confirm/cancel
-  document.querySelector('#bmConfirmReschedule_CA').addEventListener('click', () => {
-    const b = bookings.find(x => x.id == currentRescheduleId);
-    if (b && rescheduleInput.value) {
-      b.date = rescheduleInput.value;
-      b.status = 'Pending';
+  closeModalBtn.addEventListener("click", () => closeModal(addModal));
+  closeViewBtn.addEventListener("click", () => closeModal(viewModal));
+  clearAllBtn.addEventListener("click", () => {
+    if (confirm("Delete all records?")) {
+      wsoList = [];
+      nextId = 1;
+      saveToStorage();
+      renderTable();
     }
-    rescheduleModal.style.display = 'none';
-    renderTable();
   });
-  document.querySelector('#bmCancelReschedule_CA').addEventListener('click', () => rescheduleModal.style.display = 'none');
 
-  // Accepted bookings
-  document.querySelector('#bmViewAccepted_CA').addEventListener('click', () => {
-    acceptedBody.innerHTML = '';
-    const approved = bookings.filter(b => b.status === 'Approved');
-    if (approved.length === 0) {
-      acceptedBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No accepted bookings yet</td></tr>';
+  // Form submit: add or update
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    // basic validation: ensure required fields exist
+    const get = id => document.getElementById(id).value.trim();
+
+    // For select fields like onsite_emp which is select element: use .value
+    const formValues = {
+      email: get("email_emp"),
+      observer: get("observer_emp"),
+      employee: get("employee_emp"),
+      onsite: document.getElementById("onsite_emp").value,
+      attitude: document.getElementById("attitude_emp").value,
+      uniform: document.getElementById("uniform_emp").value,
+      status: document.getElementById("status_emp").value,
+      caddy: get("caddy_emp"),
+      equipment: get("equipment_emp"),
+      vehicle: get("vehicle_emp"),
+      sms: get("sms_emp"),
+      calendar: get("calendar_emp"),
+      value: get("value_emp"),
+      development: get("development_emp"),
+      actions: get("actions_emp")
+    };
+
+    // ensure required present
+    for (const key of ["email","observer","employee","onsite","attitude","uniform","status","value","development","actions"]) {
+      if (!formValues[key]) {
+        alert("Please fill all required fields.");
+        return;
+      }
+    }
+
+    if (fid.value) {
+      // update existing
+      const idNum = parseInt(fid.value, 10);
+      wsoList = wsoList.map(r => r.id === idNum ? ({ ...r, ...formValues }) : r);
     } else {
-      approved.forEach((b, i) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i+1}</td><td>${b.client}</td><td>${b.service}</td><td>${b.cleanType}</td><td>${new Date(b.date).toLocaleString()}</td><td>${b.location}</td><td>${formatCurrency(b.invoice, b.currency)}</td>`;
-        acceptedBody.appendChild(tr);
-      });
+      // add new record with auto-increment numeric id
+      const rec = {
+        id: nextId++,
+        timestamp: new Date().toLocaleString(),
+        ...formValues
+      };
+      wsoList.unshift(rec);
     }
-    acceptedModal.style.display = 'flex';
-  });
-  document.querySelector('#bmCloseAccepted_CA').addEventListener('click', () => acceptedModal.style.display = 'none');
-  document.querySelector('#bmConfirmInvoice_CA').addEventListener('click', () => { bsInvoiceModal.hide(); alert('Invoice confirmed (demo)'); });
-  workflowCloseBtn.addEventListener('click', () => workflowModal.style.display = 'none');
 
+    saveToStorage();
+    renderTable();
+    closeModal(addModal);
+  });
+
+  // expose view/edit/delete functions globally for inline onclicks
+  window.employeeSpotCheckModule_view = (id) => {
+    const r = wsoList.find(x => x.id === id);
+    if (!r) return alert("Record not found");
+    // build human readable content
+    const lines = [
+      `ID: ${r.id}`,
+      `Date: ${r.timestamp}`,
+      `Email: ${r.email || ""}`,
+      `PERSON DOING WSO: ${r.observer || ""}`,
+      `EMPLOYEE BEING OBSERVED: ${r.employee || ""}`,
+      `ON SITE: ${r.onsite || ""}`,
+      `EMPLOYEE GENERAL ATTITUDE: ${r.attitude || ""}`,
+      `EMPLOYEE WEARING UNIFORM: ${r.uniform || ""}`,
+      `Status: ${r.status || ""}`,
+      ``,
+      `EMPLOYEE CADDY INSPECTED:`,
+      `${r.caddy || ""}`,
+      ``,
+      `EQUIPMENT CONDITION:`,
+      `${r.equipment || ""}`,
+      ``,
+      `VEHICLE REG/INS ACCESS:`,
+      `${r.vehicle || ""}`,
+      ``,
+      `SMS / SDS:`,
+      `${r.sms || ""}`,
+      ``,
+      `CALENDAR KNOWLEDGE:`,
+      `${r.calendar || ""}`,
+      ``,
+      `VALUE ADDED OBSERVATIONS:`,
+      `${r.value || ""}`,
+      ``,
+      `DEVELOPMENT OBSERVATIONS:`,
+      `${r.development || ""}`,
+      ``,
+      `SUGGESTED ACTIONS:`,
+      `${r.actions || ""}`
+    ];
+    viewContent.textContent = lines.join("\n");
+    openModal(viewModal);
+  };
+
+  window.employeeSpotCheckModule_edit = (id) => {
+    const r = wsoList.find(x => x.id === id);
+    if (!r) return alert("Record not found");
+    fid.value = r.id;
+    // populate fields
+    document.getElementById("email_emp").value = r.email || "";
+    document.getElementById("observer_emp").value = r.observer || "";
+    document.getElementById("employee_emp").value = r.employee || "";
+    document.getElementById("onsite_emp").value = r.onsite || "";
+    document.getElementById("attitude_emp").value = r.attitude || "";
+    document.getElementById("uniform_emp").value = r.uniform || "";
+    document.getElementById("status_emp").value = r.status || "";
+    document.getElementById("caddy_emp").value = r.caddy || "";
+    document.getElementById("equipment_emp").value = r.equipment || "";
+    document.getElementById("vehicle_emp").value = r.vehicle || "";
+    document.getElementById("sms_emp").value = r.sms || "";
+    document.getElementById("calendar_emp").value = r.calendar || "";
+    document.getElementById("value_emp").value = r.value || "";
+    document.getElementById("development_emp").value = r.development || "";
+    document.getElementById("actions_emp").value = r.actions || "";
+    modalTitle.textContent = "Edit Employee Spot Check";
+    openModal(addModal);
+  };
+
+  window.employeeSpotCheckModule_delete = (id) => {
+    if (!confirm("Delete this record?")) return;
+    wsoList = wsoList.filter(r => r.id !== id);
+    saveToStorage();
+    renderTable();
+  };
+
+  // search & filters
+  [searchInput, entriesSelect, statusFilter].forEach(el => {
+    el.addEventListener("input", renderTable);
+  });
+
+  // helper: open/close modal
+  function openModal(modalEl){
+    modalEl.style.display = "flex";
+    modalEl.setAttribute("aria-hidden","false");
+    // focus first input
+    const first = modalEl.querySelector("input,select,textarea,button");
+    if (first) first.focus();
+  }
+  function closeModal(modalEl){
+    modalEl.style.display = "none";
+    modalEl.setAttribute("aria-hidden","true");
+  }
+
+  // simple HTML escape for table cells
+  function escapeHtml(text){
+    if (!text) return "";
+    return text.replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[m]; });
+  }
+
+  // initialize UI
   renderTable();
-})();
-// Inside your main IIFE, replace workflow rendering part with this
-if (e.target.classList.contains('bm-workflow-view_CA')) {
-  workflowBody.innerHTML = '';
+  // save initial nextId if not present
+  saveToStorage();
 
-  // Container for the horizontal timeline
-  const timeline = document.createElement('div');
-  timeline.className = 'workflow-timeline';
-
-  workflowSteps.forEach((ws, idx) => {
-    const stepNode = document.createElement('div');
-    stepNode.className = 'workflow-step-node';
-
-    // Determine node style based on status
-    const statusIndex = workflowSteps.findIndex(s => s.key === b.status);
-    if (idx < statusIndex) stepNode.classList.add('completed');
-    else if (idx === statusIndex) stepNode.classList.add('active');
-
-    // Circle node
-    const circle = document.createElement('div');
-    circle.className = 'circle-node';
-    circle.textContent = idx + 1;
-
-    // Step content inside node
-    const content = document.createElement('div');
-    content.className = 'step-content';
-    content.innerHTML = `<strong>${ws.step}</strong><br>Details about this step`;
-
-    stepNode.appendChild(circle);
-    stepNode.appendChild(content);
-    timeline.appendChild(stepNode);
-
-    // Add line except for the last node
-    if (idx < workflowSteps.length - 1) {
-      const line = document.createElement('div');
-      line.className = 'timeline-line';
-      timeline.appendChild(line);
-    }
+  // close modal on backdrop click
+  [addModal, viewModal].forEach(modalEl => {
+    modalEl.addEventListener("click", (ev) => {
+      if (ev.target === modalEl) closeModal(modalEl);
+    });
   });
 
-  workflowBody.appendChild(timeline);
-  workflowModal.style.display = 'flex';
-}
+})();
 </script>
-
-
 
 
 

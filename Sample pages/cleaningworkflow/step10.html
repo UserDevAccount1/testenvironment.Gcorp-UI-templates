@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 10 — Cleaning Execution (Job Panel)</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: #f2f3f7;
+    color: #222;
+  }
+
+  /* === Fixed Navigation Buttons (Top-left) === */
+  .nav-buttons {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+  }
+  .nav-buttons button {
+    background: #2b5fad;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+  .nav-buttons button:hover {
+    background: #1f4e8a;
+  }
+
+  /* === Job Panel Container === */
+  .job-panel {
+    max-width: 900px;
+    margin: 80px auto;
+    padding: 25px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+
+  h1 {
+    text-align: center;
+    color: #2b5fad;
+    font-size: 1.5em;
+    margin-bottom: 5px;
+  }
+
+  p.subtitle {
+    text-align: center;
+    font-size: 0.95em;
+    color: #555;
+    margin-bottom: 20px;
+  }
+
+  .workflow-description {
+    background: #eef5ff;
+    border-left: 4px solid #2b5fad;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    color: #333;
+  }
+
+  .client-info {
+    background: #f9fafc;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .client-info h3 { margin: 0 0 5px; color: #2b5fad; font-size: 1.1em; }
+  .client-info p { margin: 4px 0; font-size: 0.9em; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 0.9em;
+    text-align: left;
+  }
+  th {
+    background: #2b5fad;
+    color: #fff;
+  }
+
+  .task-status {
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.85em;
+    font-weight: 600;
+    display: inline-block;
+  }
+  .status-pending { background: #fff3cd; color: #856404; }
+  .status-complete { background: #d4edda; color: #155724; }
+
+  input[type="file"], textarea {
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 0.9em;
+  }
+
+  .btn-action {
+    display: inline-block;
+    background: #2b5fad;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: 0.3s;
+  }
+  .btn-action:hover { background: #1f4e8a; }
+
+  .btn-finish { background: #28a745; }
+  .btn-finish:hover { background: #1e7e34; }
+</style>
+</head>
+
+<body>
+
+<!-- Top-left Navigation Buttons -->
+<div class="nav-buttons">
+  <button onclick="window.location.href='./step9.html'">← Step 9</button>
+  <button onclick="window.location.href='./step11.html'">→ Step 11</button>
+</div>
+
+<div class="job-panel">
+  <h1>Step 10 — Cleaning Execution</h1>
+  <p class="subtitle">Cleaner / Staff Job Panel. Update task status, upload photos, and add remarks during cleaning execution.</p>
+
+  <div class="workflow-description">
+    <strong>Workflow Context:</strong> Tasks assigned for this appointment are displayed. Status updates are visible to Manager and Client. Upon finishing all tasks, click <strong>Finish Job</strong> to complete the appointment.
+  </div>
+
+  <!-- ===== Client Info Section ===== -->
+  <div class="client-info">
+    <h3>Client Information</h3>
+    <p><strong>Name:</strong> John Doe</p>
+    <p><strong>Address:</strong> 123 Maple Street, Toronto, ON</p>
+    <p><strong>Appointment ID:</strong> APPT-20251104-001</p>
+    <p><strong>Date/Time:</strong> Nov 5, 2025 — 10:00 AM</p>
+  </div>
+
+  <!-- ===== Task Table ===== -->
+  <table>
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Estimated Duration</th>
+        <th>Status</th>
+        <th>Upload Photos</th>
+        <th>Remarks</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Carpet Steam Clean — Living Room</td>
+        <td>1 hr</td>
+        <td><span class="task-status status-pending" id="status1">Pending</span></td>
+        <td><input type="file" id="file1" multiple></td>
+        <td><textarea id="remarks1" placeholder="Add remarks..."></textarea></td>
+        <td><button class="btn-action" onclick="markComplete('status1')">Mark Complete</button></td>
+      </tr>
+      <tr>
+        <td>Kitchen Degrease</td>
+        <td>45 min</td>
+        <td><span class="task-status status-pending" id="status2">Pending</span></td>
+        <td><input type="file" id="file2" multiple></td>
+        <td><textarea id="remarks2" placeholder="Add remarks..."></textarea></td>
+        <td><button class="btn-action" onclick="markComplete('status2')">Mark Complete</button></td>
+      </tr>
+      <tr>
+        <td>Bathroom Cleaning</td>
+        <td>30 min</td>
+        <td><span class="task-status status-pending" id="status3">Pending</span></td>
+        <td><input type="file" id="file3" multiple></td>
+        <td><textarea id="remarks3" placeholder="Add remarks..."></textarea></td>
+        <td><button class="btn-action" onclick="markComplete('status3')">Mark Complete</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===== Finish Job Button ===== -->
+  <button class="btn-action btn-finish" onclick="finishJob()">Finish Job</button>
+</div>
+
+<script>
+  function markComplete(statusId) {
+    const statusLabel = document.getElementById(statusId);
+    statusLabel.textContent = "Complete";
+    statusLabel.classList.remove("status-pending");
+    statusLabel.classList.add("status-complete");
+    alert("Task marked complete! Progress updated for Manager and Client.");
+  }
+
+  function finishJob() {
+    const statuses = document.querySelectorAll(".task-status");
+    let incomplete = Array.from(statuses).some(s => s.textContent === "Pending");
+    if(incomplete) {
+      if(!confirm("Some tasks are still pending. Finish job anyway?")) return;
+    }
+    alert("All tasks marked finished! Appointment status updated to completed.");
+  }
+</script>
+
+</body>
+</html>

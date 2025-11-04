@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 2 — Supervisor: Manage Booking Review (Canada)</title>
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background: #f5f6fa;
+    color: #222;
+  }
+
+  /* Fixed Navigation Buttons */
+  .nav-container {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1000;
+  }
+
+  .nav-btn {
+    background: #0ea5a4;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-btn:hover {
+    background: #0d9488;
+    transform: scale(1.03);
+  }
+
+  /* Dashboard Container */
+  .supervisor-dashboard {
+    margin: 90px auto 40px;
+    max-width: 920px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    padding: 20px;
+  }
+
+  h2 {
+    text-align: center;
+    color: #0ea5a4;
+    margin-bottom: 12px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+  }
+
+  th, td {
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+    padding: 12px;
+    vertical-align: top;
+  }
+
+  th {
+    background: #e9f6f6;
+    color: #0d9488;
+    font-weight: 600;
+  }
+
+  tr:hover {
+    background: #f9f9f9;
+  }
+
+  .action-btns {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    transition: 0.2s;
+  }
+
+  .icon-btn:hover {
+    background: #f3f4f6;
+    transform: scale(1.1);
+  }
+
+  .icon { width: 20px; height: 20px; }
+
+  .accept { color: #16a34a; }
+  .reschedule { color: #f59e0b; }
+  .hold { color: #6b7280; }
+  .visit { color: #2563eb; }
+  .reject { color: #dc2626; }
+
+  .status {
+    font-weight: 600;
+    text-transform: capitalize;
+    margin-top: 6px;
+  }
+
+  @media(max-width: 700px) {
+    table, thead, tbody, th, td, tr {
+      display: block;
+    }
+    th { display: none; }
+    td {
+      border: none;
+      margin-bottom: 10px;
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- Fixed Nav Buttons -->
+<div class="nav-container">
+  <button class="nav-btn" onclick="window.location.href='step1.html'">
+    ⬅ Step 1
+  </button>
+  <button class="nav-btn" onclick="window.location.href='step3.html'">
+    ➡ Step 3
+  </button>
+</div>
+
+<!-- Supervisor Dashboard -->
+<div class="supervisor-dashboard">
+  <h2>📋 Step 2 — Supervisor: Manage Booking Review</h2>
+  <p style="text-align:center; color:#555;">Review pending bookings and choose the appropriate action.</p>
+
+  <table id="bookingTable">
+    <thead>
+      <tr>
+        <th>Client</th>
+        <th>Service Info</th>
+        <th>Estimation</th>
+        <th>Optional Tasks</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <strong>Emily Johnson</strong><br>
+          📍 102 King St W, Toronto, ON<br>
+          📞 +1 (647) 555-2147
+        </td>
+        <td>
+          Deep Clean — 3 Bedroom Condo<br>
+          Preferred Date: Nov 9, 2025<br>
+          Time: 9:30 AM
+        </td>
+        <td>CA$320.00 (incl. HST)</td>
+        <td>Wipe Windows, Clean Balcony</td>
+        <td>
+          <div class="action-btns">
+            <button class="icon-btn" onclick="updateStatus(this,'approved')" title="Accept"><i data-lucide="check-circle" class="icon accept"></i></button>
+            <button class="icon-btn" onclick="updateStatus(this,'reschedule_requested')" title="Reschedule"><i data-lucide="calendar" class="icon reschedule"></i></button>
+            <button class="icon-btn" onclick="updateStatus(this,'on_hold')" title="Hold"><i data-lucide="pause-circle" class="icon hold"></i></button>
+            <button class="icon-btn" onclick="updateStatus(this,'awaiting_visit')" title="Site Visit"><i data-lucide="map-pin" class="icon visit"></i></button>
+            <button class="icon-btn" onclick="updateStatus(this,'rejected')" title="Reject"><i data-lucide="x-circle" class="icon reject"></i></button>
+          </div>
+          <div class="status" style="color:#0ea5a4;">pending_review</div>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <strong>Lucas Martin</strong><br>
+          📍 55 Burrard St, Vancouver, BC<br>
+          📞 +1 (604) 888-4470
+        </td>
+        <td>
+          Steam Clean — 2 Carpets<br>
+          Preferred Date: Nov 10, 2025<br>
+          Time: 2:00 PM
+        </td>
+        <td>CA$150.00 (incl. tax)</td>
+        <td>Sanitize Carpets</td>
+        <td>
+          <div class="action-btns">
+            <button class="icon-btn" onclick="updateStatus(this,'approved')" title="Accept"><i data-lucide="check-circle" class="icon accept"></i></button>
+            <button class="icon-btn" onclick="updateStatus(this,'reschedule_requested')" title="Reschedule"><i data-lucide="calendar" class="icon reschedule"></i></button>
+            <button class="icon-btn" onclick="updateStatus(this,'on_hold')" title="Hold"><i data-lucide="pause-circle" class="icon hold"></i></button>
+            <button class="icon-btn" onclick="updateStatus(this,'awaiting_visit')" title="Site Visit"><i data-lucide="map-pin" class="icon visit"></i></button>
+            <button class="icon-btn" onclick="updateStatus(this,'rejected')" title="Reject"><i data-lucide="x-circle" class="icon reject"></i></button>
+          </div>
+          <div class="status" style="color:#0ea5a4;">pending_review</div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // Activate Lucide Icons
+  lucide.createIcons();
+
+  // Update booking status dynamically
+  function updateStatus(button, newStatus) {
+    const statusDiv = button.closest('td').querySelector('.status');
+    statusDiv.textContent = newStatus;
+
+    switch(newStatus) {
+      case 'approved': statusDiv.style.color = '#16a34a'; break;
+      case 'reschedule_requested': statusDiv.style.color = '#f59e0b'; break;
+      case 'on_hold': statusDiv.style.color = '#6b7280'; break;
+      case 'awaiting_visit': statusDiv.style.color = '#2563eb'; break;
+      case 'rejected': statusDiv.style.color = '#dc2626'; break;
+    }
+  }
+</script>
+
+</body>
+</html>

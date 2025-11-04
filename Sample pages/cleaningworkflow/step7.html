@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step 7 — Client Appointment Details</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f4f7fb;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      color: #222;
+    }
+
+    /* ====== Navigation Buttons ====== */
+    .nav-buttons {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .nav-buttons button {
+      background: #004aad;
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .nav-buttons button:hover {
+      background: #00357e;
+    }
+
+    /* ===== Container ===== */
+    .container {
+      margin: 100px auto 40px;
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      width: 95%;
+      max-width: 450px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.4em;
+      color: #004aad;
+    }
+
+    .status {
+      text-align: center;
+      color: #1a7f37;
+      background: #e6f4ea;
+      border-radius: 8px;
+      padding: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .appointment-card {
+      background: #f8fbff;
+      border-radius: 10px;
+      padding: 15px;
+      border: 1px solid #d6e3ff;
+      margin-bottom: 15px;
+    }
+
+    .appointment-card p {
+      margin: 6px 0;
+      font-size: 14px;
+    }
+
+    .label {
+      font-weight: 600;
+      color: #004aad;
+    }
+
+    .task-list {
+      background: #f1f5ff;
+      border: 1px solid #c8d9ff;
+      border-radius: 10px;
+      padding: 10px 15px;
+      margin-top: 10px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+    }
+
+    .task-item input {
+      accent-color: #004aad;
+    }
+
+    .notification {
+      background: #fff8e1;
+      border: 1px solid #ffecb3;
+      color: #7a5e00;
+      font-size: 13px;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #777;
+    }
+
+    /* Animation for confirmation */
+    .success-check {
+      text-align: center;
+      font-size: 40px;
+      color: #1a7f37;
+      animation: pop 0.5s ease;
+    }
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      80% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Buttons -->
+  <div class="nav-buttons">
+    <button onclick="window.location.href='./step5&6.html'">← Step 6</button>
+    <button onclick="window.location.href='step8.html'">→ Step 8</button>
+  </div>
+
+  <div class="container">
+    <h1>Step 7 — Appointment Details</h1>
+
+    <div class="status">Status: appointment_ready ✅</div>
+
+    <div class="success-check">✔</div>
+
+    <div class="appointment-card">
+      <p><span class="label">Appointment ID:</span> <span id="appointmentID">CA-APT-10284</span></p>
+      <p><span class="label">Client:</span> Sarah Johnson</p>
+      <p><span class="label">Service Type:</span> Deep Clean + Carpet Steam</p>
+      <p><span class="label">Date/Time:</span> Nov 12, 2025 — 10:00 AM</p>
+      <p><span class="label">Location:</span> 25 Maple Street, Toronto, ON</p>
+      <p><span class="label">Assigned Cleaner:</span> James Cooper</p>
+      <p><span class="label">Total Price:</span> $280.00 CAD</p>
+    </div>
+
+    <h3 style="color:#004aad;">Task List (Unlocked)</h3>
+    <div class="task-list">
+      <div class="task-item"><input type="checkbox" checked> Living Room Deep Clean</div>
+      <div class="task-item"><input type="checkbox" checked> Steam Carpet Cleaning</div>
+      <div class="task-item"><input type="checkbox"> Kitchen Sanitization</div>
+      <div class="task-item"><input type="checkbox"> Balcony & Windows</div>
+    </div>
+
+    <div class="notification">
+      🔔 Payment confirmed. Appointment successfully created and ready for scheduling.
+    </div>
+
+    <div class="footer-note">
+      This page appears in the <strong>Client Dashboard → Appointment Details Tab</strong> after payment confirmation.
+    </div>
+  </div>
+
+  <script>
+    // Auto-generate random appointment ID for demo
+    document.getElementById("appointmentID").innerText =
+      "CA-APT-" + Math.floor(Math.random() * 90000 + 10000);
+
+    // Optional: Mark tasks as complete interactively
+    const tasks = document.querySelectorAll(".task-item input");
+    tasks.forEach(t => {
+      t.addEventListener("change", () => {
+        t.parentElement.style.textDecoration = t.checked ? "line-through" : "none";
+      });
+    });
+  </script>
+</body>
+</html>

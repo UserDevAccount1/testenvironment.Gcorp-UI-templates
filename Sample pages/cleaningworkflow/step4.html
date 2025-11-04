@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step 4 — Manager: Review & Finalize Quotation</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #f6f8fa;
+      color: #333;
+    }
+
+    /* ==== Floating Side Buttons ==== */
+    .side-buttons {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
+    }
+    .side-buttons button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .side-buttons button:hover {
+      background: #0056b3;
+    }
+
+    /* ==== Page Layout ==== */
+    .page-container {
+      max-width: 1200px;
+      margin: 60px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #007bff;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    section {
+      margin-bottom: 25px;
+    }
+
+    h2 {
+      color: #0056b3;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    th {
+      background: #007bff;
+      color: white;
+      text-align: left;
+    }
+
+    input[type="text"], textarea, input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .final-box {
+      background: #eef4ff;
+      padding: 15px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      border: 1px solid #bcd4ff;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+      justify-content: center;
+    }
+
+    .action-buttons button {
+      padding: 12px 22px;
+      font-size: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .approve { background: #28a745; color: white; }
+    .approve:hover { background: #218838; }
+
+    .revise { background: #ffc107; color: #222; }
+    .revise:hover { background: #e0a800; }
+
+    .reject { background: #dc3545; color: white; }
+    .reject:hover { background: #c82333; }
+
+    .image-preview {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .image-preview img {
+      width: 120px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Floating Navigation Buttons -->
+  <div class="side-buttons">
+    <button onclick="location.href='./step3.html'">← Step 3</button>
+    <button onclick="location.href='./step5&6.html'">→ Step 5</button>
+  </div>
+
+  <div class="page-container">
+    <h1>Step 4 — Manager: Review & Finalize Quotation</h1>
+
+    <!-- Booking Info -->
+    <section>
+      <h2>Booking Info</h2>
+      <table>
+        <tr><th>Client Name</th><td id="clientName">Jane Doe</td></tr>
+        <tr><th>Service Type</th><td id="serviceType">Move-Out Cleaning</td></tr>
+        <tr><th>Date / Time</th><td id="bookingDate">Nov 10, 2025 - 10:00 AM</td></tr>
+        <tr><th>Status</th><td id="status">visit_completed</td></tr>
+      </table>
+    </section>
+
+    <!-- Supervisor Report -->
+    <section>
+      <h2>Supervisor Report</h2>
+      <p><strong>Site Notes:</strong></p>
+      <textarea rows="4" placeholder="Supervisor's findings and remarks...">Client requested detailed carpet cleaning. Property well-maintained, requires deep clean for kitchen and living area.</textarea>
+
+      <p><strong>Updated Price Estimate:</strong></p>
+      <input type="text" value="$340 - $380 (before tax)">
+
+      <div class="image-preview">
+        <img src="https://placehold.co/150x100" alt="Site Photo 1">
+        <img src="https://placehold.co/150x100" alt="Site Photo 2">
+      </div>
+    </section>
+
+    <!-- Estimation Breakdown -->
+    <section>
+      <h2>Estimation Breakdown</h2>
+      <table>
+        <tr><th>Item</th><th>Qty</th><th>Unit Price ($)</th><th>Total ($)</th></tr>
+        <tr><td>Living Room Steam Clean</td><td>1</td><td>75</td><td>75</td></tr>
+        <tr><td>Bedroom Steam Clean</td><td>2</td><td>60</td><td>120</td></tr>
+        <tr><td>Rug Deep Clean</td><td>1</td><td>50</td><td>50</td></tr>
+        <tr><td>Stair Flight</td><td>5</td><td>5</td><td>25</td></tr>
+      </table>
+    </section>
+
+    <!-- Task List -->
+    <section>
+      <h2>Task List (Editable)</h2>
+      <textarea rows="4" placeholder="Enter tasks to be performed...">✓ Carpet steam cleaning
+✓ Deep clean kitchen appliances
+✓ Wash and sanitize bathroom</textarea>
+    </section>
+
+    <!-- Upselling Options -->
+    <section>
+      <h2>Upselling Options</h2>
+      <label><input type="checkbox" id="addDeepClean"> Add Deep Clean (+$120)</label><br>
+      <label><input type="checkbox" id="addCarpetProtect"> Add Carpet Protection (+$60)</label>
+    </section>
+
+    <!-- Final Computation -->
+    <section>
+      <h2>Final Price Computation</h2>
+      <div class="final-box">
+        Subtotal: $270<br>
+        Tax (5%): $13.50<br>
+        Upsells: $0<br>
+        <strong>Final Total: <span id="finalTotal">$283.50</span></strong>
+      </div>
+    </section>
+
+    <!-- Internal Notes -->
+    <section>
+      <h2>Internal Notes (For Team)</h2>
+      <textarea rows="3" placeholder="Internal communication notes..."></textarea>
+    </section>
+
+    <!-- Manager Actions -->
+    <div class="action-buttons">
+      <button class="approve" onclick="generateQuotation()">✅ Generate Quotation</button>
+      <button class="revise" onclick="requestRevision()">🔁 Request Revision</button>
+      <button class="reject" onclick="rejectBooking()">❌ Reject Booking</button>
+    </div>
+  </div>
+
+  <script>
+    function recalcFinalTotal() {
+      let baseTotal = 270;
+      let tax = 13.5;
+      let upsell = 0;
+
+      if (document.getElementById("addDeepClean").checked) upsell += 120;
+      if (document.getElementById("addCarpetProtect").checked) upsell += 60;
+
+      let final = baseTotal + tax + upsell;
+      document.getElementById("finalTotal").textContent = `$${final.toFixed(2)}`;
+    }
+
+    document.querySelectorAll("#addDeepClean, #addCarpetProtect").forEach(el => {
+      el.addEventListener("change", recalcFinalTotal);
+    });
+
+    function generateQuotation() {
+      alert("Quotation generated and sent to QuickBooks. Status: quotation_sent ✅");
+    }
+
+    function requestRevision() {
+      alert("Revision request sent to Supervisor. Status: revision_requested 🔁");
+    }
+
+    function rejectBooking() {
+      alert("Booking has been rejected. Status: rejected ❌");
+    }
+  </script>
+
+</body>
+</html>

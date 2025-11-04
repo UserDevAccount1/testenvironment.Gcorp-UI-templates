@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 9 — Cleaner Panel: Accept Appointment</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: #f2f3f7;
+    color: #222;
+  }
+
+  /* === Fixed Navigation Buttons === */
+  .nav-buttons {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+  }
+  .nav-buttons button {
+    background: #2b5fad;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+  .nav-buttons button:hover {
+    background: #1f4e8a;
+  }
+
+  /* === Staff Panel Container === */
+  .staff-panel {
+    max-width: 900px;
+    margin: 80px auto;
+    padding: 25px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+
+  h1 {
+    text-align: center;
+    color: #2b5fad;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+
+  p.subtitle {
+    text-align: center;
+    font-size: 0.95em;
+    color: #555;
+    margin-bottom: 20px;
+  }
+
+  /* Workflow description */
+  .workflow-description {
+    background: #eef5ff;
+    border-left: 4px solid #2b5fad;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.95em;
+    color: #333;
+  }
+
+  /* Appointment card */
+  .appointment-card {
+    background: #f9fafc;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .appointment-card h3 {
+    margin: 0 0 8px;
+    font-size: 1.1em;
+    color: #2b5fad;
+  }
+
+  .appointment-card p {
+    margin: 4px 0;
+    font-size: 0.9em;
+  }
+
+  .btn-action {
+    display: inline-block;
+    background: #2b5fad;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-right: 10px;
+    transition: 0.3s;
+  }
+
+  .btn-action:hover {
+    background: #1f4e8a;
+  }
+
+  .btn-decline {
+    background: #ff5959;
+  }
+
+  .btn-decline:hover {
+    background: #cc4747;
+  }
+
+  .status-label {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.85em;
+    background: #e6f0ff;
+    color: #2b5fad;
+    font-weight: 600;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- Top-left Navigation Buttons -->
+<div class="nav-buttons">
+  <button onclick="window.location.href='./step8.html'">← Step 8</button>
+  <button onclick="window.location.href='./step10.html'">Step 10 →</button>
+</div>
+
+<div class="staff-panel">
+  <h1>Step 9 — Cleaner: Accept Appointment</h1>
+  <p class="subtitle">This panel is part of the Staff / Cleaner Dashboard. Cleaners view upcoming appointments, accept or decline them, and see all relevant details.</p>
+
+  <!-- Workflow Description -->
+  <div class="workflow-description">
+    <strong>Workflow Context:</strong> Cleaners receive notifications for ready appointments in their panel. 
+    They can review appointment details including client info, address, task list, and estimated duration. 
+    Accepting the appointment changes its status to <strong>in_progress</strong>, while declining returns it to the manager for reassignment.
+  </div>
+
+  <!-- Sample Appointment Cards -->
+  <div class="appointment-card">
+    <h3>Appointment ID: APT-CA-2025-010</h3>
+    <p><strong>Client:</strong> Sarah Johnson</p>
+    <p><strong>Date / Time:</strong> Nov 10, 2025 — 10:00 AM</p>
+    <p><strong>Address:</strong> 123 Main St, Toronto, ON</p>
+    <p><strong>Service:</strong> Deep Cleaning — 3 Rooms + 1 Bathroom</p>
+    <p><strong>Tasks:</strong> Carpet Steam Clean, Kitchen Degrease</p>
+    <p><strong>Estimated Duration:</strong> 4 hours</p>
+    <p><strong>Status:</strong> <span class="status-label" id="status1">Ready for Acceptance</span></p>
+    <button class="btn-action" onclick="acceptAppointment('status1')">Accept</button>
+    <button class="btn-action btn-decline" onclick="declineAppointment('status1')">Decline</button>
+  </div>
+
+  <div class="appointment-card">
+    <h3>Appointment ID: APT-CA-2025-011</h3>
+    <p><strong>Client:</strong> Mark Davis</p>
+    <p><strong>Date / Time:</strong> Nov 11, 2025 — 2:00 PM</p>
+    <p><strong>Address:</strong> 456 Queen St, Toronto, ON</p>
+    <p><strong>Service:</strong> Move-Out Cleaning</p>
+    <p><strong>Tasks:</strong> Full Home Cleaning, Carpet Steam Clean</p>
+    <p><strong>Estimated Duration:</strong> 5 hours</p>
+    <p><strong>Status:</strong> <span class="status-label" id="status2">Ready for Acceptance</span></p>
+    <button class="btn-action" onclick="acceptAppointment('status2')">Accept</button>
+    <button class="btn-action btn-decline" onclick="declineAppointment('status2')">Decline</button>
+  </div>
+</div>
+
+<script>
+  function acceptAppointment(statusId) {
+    const statusLabel = document.getElementById(statusId);
+    statusLabel.textContent = "In Progress";
+    statusLabel.style.background = "#e8fce8";
+    statusLabel.style.color = "#2c7a2c";
+    alert("Appointment accepted! Status updated to in_progress. Notification sent to client.");
+  }
+
+  function declineAppointment(statusId) {
+    const statusLabel = document.getElementById(statusId);
+    statusLabel.textContent = "Returned to Manager";
+    statusLabel.style.background = "#ffe6e6";
+    statusLabel.style.color = "#cc4747";
+    alert("Appointment declined. Notification sent to manager for reassignment.");
+  }
+</script>
+
+</body>
+</html>

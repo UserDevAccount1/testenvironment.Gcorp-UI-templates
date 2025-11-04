@@ -1,0 +1,281 @@
+
+<style>
+ /* Upper-right button */
+  .top-right-btn {
+    position: absolute; /* Fix it relative to the page */
+    top: 20px;          /* Distance from top */
+    right: 20px;        /* Distance from right */
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .top-right-btn:hover {
+    background-color: #0056b3;
+  }
+
+  /* Vertical button list */
+  .button-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: fit-content;
+    margin: 50px; /* Add space from top-left corner */
+  }
+
+  .nav-btn {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .nav-btn:hover {
+    background-color: #1e7e34;
+  }
+
+</style><!-- ===== STEP 1 — CLIENT (MOBILE APP): CREATE BOOKING + ESTIMATION ===== -->
+<!-- Global Navigation Button (outside the main container) -->
+<!-- Upper-right button -->
+<button class="top-right-btn" onclick="window.location.href='../cleaning service workflow.html'">
+  ⬅ Workflow Node Sample
+</button>
+
+<!-- Vertical list of buttons -->
+<div class="button-list">
+  <button class="nav-btn" onclick="window.location.href='step2.html'">
+    ⬅ Step 2
+  </button>
+ 
+</div>
+<style>
+  .nav-btn {
+    cursor: pointer;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+
+  .nav-btn:hover {
+    background-color: #0056b3;
+  }
+</style>
+
+
+<div class="mobile-estimation">
+    
+  <h2>🧾 Cleaning Service Estimation</h2>
+  
+  <!-- Auto-Fetched Client Info -->
+  <div class="client-info">
+    <h4>👤 Client Details (Auto-Fetched)</h4>
+    <p><strong>Name:</strong> Maria Santos</p>
+    <p><strong>Contact:</strong> +63 912 345 6789</p>
+    <p><strong>Address:</strong> 25 Jupiter St., Makati City</p>
+  </div>
+
+  <!-- Cleaning Type -->
+  <div class="form-section">
+    <label for="cleaningType">Cleaning Type (Select One or More)</label>
+    <select id="cleaningType" multiple>
+      <option value="steam">Steam Clean</option>
+      <option value="deep">Deep Clean</option>
+      <option value="moveout">Move-Out Clean</option>
+      <option value="maintenance">Maintenance Clean</option>
+    </select>
+    
+    <p class="info-note">
+      💡 Each cleaning type follows its own pricing and task structure
+      as defined in the <strong>Cleaning Estimation Calculator</strong>.
+      Selecting one or more types will automatically apply the corresponding
+      estimation logic, cleaning content, and base pricing for accurate computation.
+    </p>
+
+    <small style="color:#6b7280;font-size:12px;">
+      Tip: Tap multiple options to select more than one cleaning type.
+    </small>
+  </div>
+
+  <!-- Service Items -->
+  <div class="form-section">
+    <h4>🧹 Service Items</h4>
+    <p class="info-note">
+      💡 Estimation pricing is dynamically calculated based on your selected items,
+      using the same logic as the Estimation Calculator.
+    </p>
+    <table class="service-table">
+      <tr><th>Select</th><th>Item</th><th>Price (₱)</th><th>Qty</th></tr>
+      <tr>
+        <td><input type="checkbox" data-price="1200"></td>
+        <td>Large Room (10x10)</td>
+        <td>1200</td>
+        <td><input type="number" min="1" value="1"></td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" data-price="900"></td>
+        <td>Regular Room (8x8)</td>
+        <td>900</td>
+        <td><input type="number" min="1" value="1"></td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" data-price="500"></td>
+        <td>Rug Cleaning</td>
+        <td>500</td>
+        <td><input type="number" min="1" value="1"></td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" data-price="350"></td>
+        <td>Hallway</td>
+        <td>350</td>
+        <td><input type="number" min="1" value="1"></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Optional Tasks -->
+  <div class="form-section">
+    <h4>➕ Optional Tasks</h4>
+    <textarea id="optionalTasks" placeholder="e.g., Clean balcony, Wipe windows..."></textarea>
+  </div>
+
+  <!-- Request On-Site Visit -->
+  <div class="form-section checkbox">
+    <label><input type="checkbox" id="onsiteVisit"> Request On-Site Visit for Estimation</label>
+  </div>
+
+  <!-- Estimate Summary -->
+  <div class="estimate-summary">
+    <h4>📊 Estimate Summary</h4>
+    <div id="estimateResult">No items selected yet.</div>
+  </div>
+
+  <!-- Submit -->
+  <button class="submit-btn" onclick="submitBooking()">Submit Booking</button>
+</div>
+
+<!-- ===== CSS ===== -->
+<style>
+.mobile-estimation {
+  background:#fff;
+  border-radius:12px;
+  padding:16px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.1);
+  font-family:system-ui, sans-serif;
+  max-width:420px;
+  margin:auto;
+}
+h2,h4{color:#0ea5a4;margin-bottom:8px}
+.client-info, .form-section {
+  background:#f9fafb;
+  padding:10px;
+  border-radius:8px;
+  margin-bottom:12px;
+  font-size:14px;
+}
+label{font-weight:600;display:block;margin-bottom:4px;color:#0f172a}
+select,input,textarea {
+  width:100%;
+  padding:8px;
+  border-radius:6px;
+  border:1px solid #d1d5db;
+  margin-bottom:6px;
+}
+textarea{resize:none;min-height:60px}
+.service-table {
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+.service-table th {
+  background:#0ea5a4;
+  color:#fff;
+  text-align:left;
+  padding:6px;
+}
+.service-table td {
+  border-bottom:1px solid #e5e7eb;
+  padding:6px;
+}
+.estimate-summary {
+  background:#f1f5f9;
+  border-radius:8px;
+  padding:10px;
+  font-size:14px;
+}
+.submit-btn {
+  width:100%;
+  background:linear-gradient(90deg,#0ea5a4,#06b6d4);
+  color:white;
+  border:none;
+  padding:10px;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+}
+.submit-btn:hover{opacity:0.9}
+.checkbox label{font-size:14px;cursor:pointer}
+.info-note {
+  background:#e0f2fe;
+  color:#0369a1;
+  font-size:13px;
+  padding:6px;
+  border-radius:6px;
+  margin-bottom:8px;
+}
+</style>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+function calculateEstimate(){
+  let subtotal = 0;
+  const rows = document.querySelectorAll(".service-table tr");
+  let breakdown = [];
+
+  rows.forEach(row=>{
+    const checkbox = row.querySelector("input[type=checkbox]");
+    const qtyInput = row.querySelector("input[type=number]");
+    if(checkbox && checkbox.checked){
+      const price = parseFloat(checkbox.getAttribute("data-price")) || 0;
+      const qty = parseInt(qtyInput.value) || 1;
+      const itemTotal = price * qty;
+      subtotal += itemTotal;
+      breakdown.push(`${row.cells[1].innerText} ×${qty} — ₱${itemTotal.toFixed(2)}`);
+    }
+  });
+
+  if(subtotal === 0){
+    document.getElementById("estimateResult").innerText = "No items selected yet.";
+    return;
+  }
+
+  if(subtotal < 1200) subtotal = 1200; // Minimum service charge
+  const tax = subtotal * 0.05;
+  const total = subtotal + tax;
+
+  document.getElementById("estimateResult").innerHTML = `
+    <strong>Items Selected:</strong><br>${breakdown.join("<br>")}<br><br>
+    <strong>Subtotal:</strong> ₱${subtotal.toFixed(2)}<br>
+    <strong>Tax (5%):</strong> ₱${tax.toFixed(2)}<br>
+    <strong>Total:</strong> ₱${total.toFixed(2)}
+  `;
+}
+
+document.addEventListener("input", e=>{
+  if(["checkbox","number","select-one"].includes(e.target.type)) calculateEstimate();
+});
+
+function submitBooking(){
+  const visit = document.getElementById("onsiteVisit").checked;
+  let msg = visit
+    ? "📩 Booking submitted. Supervisor will contact you for on-site visit."
+    : "✅ Booking submitted! Status: pending_review — awaiting supervisor review.";
+  alert(msg);
+}
+</script>

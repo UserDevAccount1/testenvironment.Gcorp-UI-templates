@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Panel — Quotation & Invoice</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    background: #f2f3f7;
+    color: #222;
+  }
+
+  /* === Fixed Navigation Buttons (Left side) === */
+  .nav-buttons {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+  }
+
+  .nav-buttons button {
+    background: #2b5fad;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+
+  .nav-buttons button:hover {
+    background: #1f4e8a;
+  }
+
+  /* === Mobile Panel Container === */
+  .mobile-panel {
+    max-width: 420px;
+    margin: 80px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+
+  .mobile-header {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-bottom: 15px;
+  }
+
+  .card {
+    background: #f9fafc;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+
+  .card h3 {
+    margin: 0 0 5px;
+    font-size: 1em;
+    color: #2b5fad;
+  }
+
+  .card p {
+    margin: 4px 0;
+    font-size: 0.9em;
+  }
+
+  .btn-action {
+    display: block;
+    width: 100%;
+    background: #2b5fad;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .btn-action:hover {
+    background: #1d4785;
+  }
+
+  /* Step content hidden by default */
+  .step {
+    display: none;
+  }
+
+  .active {
+    display: block;
+  }
+
+  /* Payment Methods */
+  .payment-methods {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .payment-method {
+    flex: 1;
+    background: #f0f2f7;
+    text-align: center;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+
+  .payment-method:hover {
+    border-color: #2b5fad;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- Left Fixed Buttons -->
+<div class="nav-buttons">
+  <button id="step4Btn" onclick="window.location.href='./step4.html'">← Step 4</button>
+  <button id="step5Btn" onclick="showStep('step5')">Step 5</button>
+  <button id="step6Btn" onclick="showStep('step6')">Step 6</button>
+</div>
+
+<!-- Step 5: Quotation Review -->
+<div id="step5" class="mobile-panel step active">
+  <div class="mobile-header">Step 5 — Client: Review & Approve Quotation</div>
+  <div class="card">
+    <h3>Service Breakdown</h3>
+    <p>Deep Cleaning Package — 3 Rooms + 1 Bathroom</p>
+    <p>Upsells: Carpet Steam Clean, Kitchen Degrease</p>
+  </div>
+  <div class="card">
+    <h3>Total Amount</h3>
+    <p>Subtotal: $280.00 CAD</p>
+    <p>Tax (13% HST): $36.40 CAD</p>
+    <p><strong>Total: $316.40 CAD</strong></p>
+    <p>Quotation valid until: <strong>Nov 20, 2025</strong></p>
+  </div>
+  <div class="card">
+    <h3>Client Options</h3>
+    <button class="btn-action" onclick="approveQuotation()">Approve Quotation</button>
+    <button class="btn-action" style="background:#ff5959" onclick="declineQuotation()">Decline / Request Revision</button>
+  </div>
+</div>
+
+<!-- Step 6: Pay Invoice -->
+<div id="step6" class="mobile-panel step">
+  <div class="mobile-header">Step 6 — Client: Pay Invoice (In-App)</div>
+  <div class="card">
+    <h3>Invoice Summary</h3>
+    <p>Quotation Ref#: QTN-CA-1056</p>
+    <p>Service: Deep Cleaning Package</p>
+    <p>Total: $316.40 CAD</p>
+    <p>Status: <strong>Pending Payment</strong></p>
+  </div>
+  <div class="card">
+    <h3>Payment Methods</h3>
+    <div class="payment-methods">
+      <div class="payment-method">PayPal</div>
+      <div class="payment-method">Debit Card</div>
+      <div class="payment-method">Credit Card</div>
+    </div>
+  </div>
+  <div class="card">
+    <button class="btn-action" onclick="payNow()">Pay Now</button>
+  </div>
+</div>
+
+<script>
+  function showStep(stepId) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.getElementById(stepId).classList.add('active');
+
+    const step4Btn = document.getElementById('step4Btn');
+    const step6Btn = document.getElementById('step6Btn');
+
+    if (stepId === 'step6') {
+      // Hide Step 4 button
+      step4Btn.style.display = 'none';
+      // Change Step 6 button to Step 7 and set redirect
+      step6Btn.textContent = 'Step 7';
+      step6Btn.onclick = () => window.location.href = './step7.html';
+    } else {
+      // Restore buttons for Step 5
+      step4Btn.style.display = 'block';
+      step6Btn.textContent = 'Step 6';
+      step6Btn.onclick = () => showStep('step6');
+    }
+  }
+
+  function approveQuotation() {
+    alert("Quotation Approved. Redirecting to Invoice Page...");
+    showStep('step6');
+  }
+
+  function declineQuotation() {
+    alert("Quotation Revision Requested. Notification sent to Manager.");
+  }
+
+  function payNow() {
+    alert("Processing Payment via Gateway... Payment Successful!");
+  }
+</script>
+</body>
+</html>
