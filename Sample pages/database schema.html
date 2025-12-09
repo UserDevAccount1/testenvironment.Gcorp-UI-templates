@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cleaning Service Data Flow Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e6ef;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .step-btn {
+            padding: 12px 24px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .step-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .step-btn.active {
+            background-color: #2c3e50;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .color-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .green { background-color: #2ecc71; }
+        .yellow { background-color: #f1c40f; }
+        .blue { background-color: #3498db; }
+        .white { background-color: #ecf0f1; border: 1px solid #bdc3c7; }
+        
+        .data-table-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .table-header {
+            padding: 20px;
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: rgba(255,255,255,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        
+        .step-icon {
+            background-color: white;
+            color: #2c3e50;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #e0e6ef;
+            position: sticky;
+            top: 0;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e6ef;
+        }
+        
+        tr:hover {
+            background-color: #f9fbfd;
+        }
+        
+        .field-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .data-source {
+            font-size: 0.9rem;
+        }
+        
+        .step-ref {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 2px;
+        }
+        
+        .step-1 { background-color: #e8f4fc; color: #3498db; }
+        .step-2 { background-color: #e8f6f3; color: #27ae60; }
+        .step-3 { background-color: #fef9e7; color: #f39c12; }
+        .step-4 { background-color: #f4ecf7; color: #8e44ad; }
+        .step-5 { background-color: #fdedec; color: #e74c3c; }
+        .step-6 { background-color: #eaf2f8; color: #2980b9; }
+        .step-7 { background-color: #e8f8f5; color: #1abc9c; }
+        .step-8 { background-color: #fef5e7; color: #d35400; }
+        .step-9 { background-color: #f4ecf7; color: #9b59b6; }
+        .step-10 { background-color: #e8f6f3; color: #16a085; }
+        .step-11 { background-color: #fdedec; color: #c0392b; }
+        .step-12 { background-color: #eaf2f8; color: #2c3e50; }
+        
+        .input-type {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin: 2px;
+        }
+        
+        .client { background-color: #d5f4e6; color: #27ae60; }
+        .supervisor { background-color: #fdebd0; color: #e67e22; }
+        .manager { background-color: #d6eaf8; color: #2980b9; }
+        .cleaner { background-color: #fadbd8; color: #e74c3c; }
+        .system { background-color: #e8daef; color: #8e44ad; }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background-color: #ecf0f1;
+            color: #7f8c8d;
+        }
+        
+        .maintenance { background-color: #d6eaf8; color: #2980b9; }
+        .moveout { background-color: #fdebd0; color: #e67e22; }
+        .deepclean { background-color: #d5f4e6; color: #27ae60; }
+        .steam { background-color: #fadbd8; color: #e74c3c; }
+        
+        .show-all-btn {
+            display: block;
+            margin: 30px auto;
+            padding: 12px 30px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .show-all-btn:hover {
+            background-color: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .cleaning-types-panel {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .cleaning-types-panel h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e6ef;
+        }
+        
+        .cleaning-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .cleaning-card {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 5px solid;
+        }
+        
+        .cleaning-card.maintenance { border-color: #3498db; }
+        .cleaning-card.moveout { border-color: #e67e22; }
+        .cleaning-card.deepclean { border-color: #27ae60; }
+        .cleaning-card.steam { border-color: #e74c3c; }
+        
+        .cleaning-card h4 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .type-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .type-icon.maintenance { background-color: #3498db; }
+        .type-icon.moveout { background-color: #e67e22; }
+        .type-icon.deepclean { background-color: #27ae60; }
+        .type-icon.steam { background-color: #e74c3c; }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #e0e6ef;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .detail-value {
+            color: #7f8c8d;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 768px) {
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .step-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .cleaning-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🧹 Cleaning Service Data Flow System</h1>
+            <p class="subtitle">Complete visualization of data across all 12 steps with filtering capabilities</p>
+        </header>
+        
+        <div class="controls">
+            <button class="step-btn" data-step="1">
+                <span>📱</span> Step 1: Client Booking
+            </button>
+            <button class="step-btn" data-step="2">
+                <span>✅</span> Step 2: Supervisor Review
+            </button>
+            <button class="step-btn" data-step="3">
+                <span>📍</span> Step 3: Site Visit
+            </button>
+            <button class="step-btn" data-step="4">
+                <span>👔</span> Step 4: Manager Quotation
+            </button>
+            <button class="step-btn" data-step="5">
+                <span>✅</span> Step 5: Client Approval
+            </button>
+            <button class="step-btn" data-step="6">
+                <span>💰</span> Step 6: Payment
+            </button>
+            <button class="step-btn" data-step="7">
+                <span>📅</span> Step 7: Appointment
+            </button>
+            <button class="step-btn" data-step="8">
+                <span>👥</span> Step 8: Assign Cleaner
+            </button>
+            <button class="step-btn" data-step="9">
+                <span>👷</span> Step 9: Cleaner Accept
+            </button>
+            <button class="step-btn" data-step="10">
+                <span>🚀</span> Step 10: Start Service
+            </button>
+            <button class="step-btn" data-step="11">
+                <span>📋</span> Step 11: Completion
+            </button>
+            <button class="step-btn" data-step="12">
+                <span>🧾</span> Step 12: Invoice
+            </button>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="color-box green"></div>
+                <span>Fetched from previous step</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box yellow"></div>
+                <span>Input in current step</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box blue"></div>
+                <span>Passed to next step</span>
+            </div>
+            <div class="legend-item">
+                <div class="color-box white"></div>
+                <span>System-generated</span>
+            </div>
+        </div>
+        
+        <div class="cleaning-types-panel">
+            <h3>🧼 Cleaning Types Details</h3>
+            <div class="cleaning-grid">
+                <div class="cleaning-card maintenance">
+                    <h4>
+                        <div class="type-icon maintenance">MC</div>
+                        Maintenance Clean
+                    </h4>
+                    <div class="detail-row">
+                        <span class="detail-label">Rate per hour:</span>
+                        <span class="detail-value">$38 (Residential) / $44 (Commercial)</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Minimum hours:</span>
+                        <span class="detail-value">3 hrs (Res) / 6 hrs (Comm)</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Room breakdown:</span>
+                        <span class="detail-value">Kitchen: 3hrs, Bedroom: 1hr, Bathroom: 2.5hrs</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Commercial:</span>
+                        <span class="detail-value">Auto on-site visit required</span>
+                    </div>
+                </div>
+                
+                <div class="cleaning-card moveout">
+                    <h4>
+                        <div class="type-icon moveout">MO</div>
+                        Move-Out Clean
+                    </h4>
+                    <div class="detail-row">
+                        <span class="detail-label">Rate:</span>
+                        <span class="detail-value">$50/hr (default)</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Calculation:</span>
+                        <span class="detail-value">Square footage based</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Base hours:</span>
+                        <span class="detail-value">Small: 7-8hrs, Medium: 9-15hrs, Large: 15+hrs</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Formula:</span>
+                        <span class="detail-value">Final Hours = MAX(Base Hours, Sqft ÷ 200-300)</span>
+                    </div>
+                </div>
+                
+                <div class="cleaning-card deepclean">
+                    <h4>
+                        <div class="type-icon deepclean">DC</div>
+                        Deep Clean
+                    </h4>
+                    <div class="detail-row">
+                        <span class="detail-label">Rate:</span>
+                        <span class="detail-value">$50/hr (default)</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Minimum hours:</span>
+                        <span class="detail-value">7 hours</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Calculation:</span>
+                        <span class="detail-value">Same as Move-Out (Sqft based)</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Special tasks:</span>
+                        <span class="detail-value">Baseboards, inside cabinets, behind appliances</span>
+                    </div>
+                </div>
+                
+                <div class="cleaning-card steam">
+                    <h4>
+                        <div class="type-icon steam">SC</div>
+                        Steam Clean
+                    </h4>
+                    <div class="detail-row">
+                        <span class="detail-label">Pricing:</span>
+                        <span class="detail-value">Fixed item-based</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Minimum charge:</span>
+                        <span class="detail-value">$120</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Deposit:</span>
+                        <span class="detail-value">$120 (Residential only)</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Stairs:</span>
+                        <span class="detail-value">$5/flight (max $75)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="data-table-container">
+            <div class="table-header">
+                <div class="table-title">Data Flow Table</div>
+                <div class="step-indicator">
+                    <div class="step-icon">1</div>
+                    <span>Step 1: Client Booking Creation</span>
+                </div>
+            </div>
+            
+            <div class="table-wrapper">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th width="20%">Field Name</th>
+                            <th width="15%">Data Source</th>
+                            <th width="15%">Input Type</th>
+                            <th width="20%">Goes to Step</th>
+                            <th width="30%">Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Data will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <button class="show-all-btn" id="showAllBtn">📋 Show Complete Data Flow (All Steps)</button>
+    </div>
+
+    <script>
+        // Master data for all steps
+        const stepData = {
+            1: {
+                title: "Step 1: Client Booking Creation",
+                data: [
+                    { field: "booking_id", source: "system", input: "system", toStep: "All steps", notes: "BK-2025-00014", color: "white" },
+                    { field: "client_id", source: "user", input: "system", toStep: "All steps", notes: "From auth system", color: "green" },
+                    { field: "client_name", source: "user", input: "system", toStep: "All steps", notes: "Auto-fetched", color: "green" },
+                    { field: "mobile_number", source: "user", input: "system", toStep: "All steps", notes: "Auto-fetched", color: "green" },
+                    { field: "email", source: "user", input: "system", toStep: "All steps", notes: "Auto-fetched", color: "green" },
+                    { field: "address", source: "user", input: "system", toStep: "All steps", notes: "Auto-fetched", color: "green" },
+                    { field: "client_type", source: "system", input: "system", toStep: "2,4,12", notes: "residential/commercial", color: "green" },
+                    { field: "cleaning_types", source: "", input: "client", toStep: "2,3,4,7,9,10", notes: '["Steam","Maintenance"]', color: "yellow" },
+                    { field: "maintenance_details", source: "", input: "client", toStep: "2,3,4", notes: "{rate:38,hours:3,rooms:{}}", color: "yellow" },
+                    { field: "moveout_details", source: "", input: "client", toStep: "2,3,4", notes: "{sqft:2300,base_hours:9}", color: "yellow" },
+                    { field: "deepclean_details", source: "", input: "client", toStep: "2,3,4", notes: "{hours:7,tasks:[...]}", color: "yellow" },
+                    { field: "steam_items", source: "", input: "client", toStep: "2,3,4,5,6", notes: '[{item:"Room",qty:2,price:75}]', color: "yellow" },
+                    { field: "optional_tasks", source: "", input: "client", toStep: "2,3,4,7,9,10", notes: "Clean balcony", color: "yellow" },
+                    { field: "on_site_request", source: "", input: "client", toStep: "2,3", notes: "True/False", color: "yellow" },
+                    { field: "deposit_option", source: "", input: "client", toStep: "2,4,5,6,7", notes: "paid/waived", color: "yellow" },
+                    { field: "subtotal", source: "", input: "system", toStep: "2,3,4,5", notes: "Minimum $1200", color: "white" },
+                    { field: "tax", source: "", input: "system", toStep: "2,3,4,5", notes: "5%", color: "white" },
+                    { field: "total", source: "", input: "system", toStep: "2,3,4,5,6", notes: "Final estimate", color: "white" },
+                    { field: "status", source: "", input: "system", toStep: "All steps", notes: "pending_review", color: "white" },
+                    { field: "created_at", source: "", input: "system", toStep: "All steps", notes: "Timestamp", color: "white" }
+                ]
+            },
+            2: {
+                title: "Step 2: Supervisor Dashboard",
+                data: [
+                    { field: "review_id", source: "", input: "system", toStep: "3,4", notes: "SR-2025-001", color: "white" },
+                    { field: "booking_id", source: "step1", input: "system", toStep: "3,4", notes: "From Step 1", color: "green" },
+                    { field: "supervisor_id", source: "", input: "supervisor", toStep: "3,11", notes: "Who reviews", color: "yellow" },
+                    { field: "visit_required", source: "step1", input: "supervisor", toStep: "3", notes: "Auto/commercial→Yes", color: "green" },
+                    { field: "scheduled_visit_date", source: "", input: "supervisor", toStep: "3,7", notes: "Future date", color: "yellow" },
+                    { field: "supervisor_notes", source: "", input: "supervisor", toStep: "3,4", notes: "Internal notes", color: "yellow" },
+                    { field: "status", source: "step1", input: "supervisor", toStep: "3,4", notes: "visit_required/approved", color: "green" },
+                    { field: "action_taken", source: "", input: "supervisor", toStep: "3,4", notes: "approve/reject/schedule", color: "yellow" }
+                ]
+            },
+            3: {
+                title: "Step 3: Supervisor Site Visit",
+                data: [
+                    { field: "visit_id", source: "", input: "system", toStep: "4,11", notes: "VISIT-2025-001", color: "white" },
+                    { field: "booking_id", source: "step2", input: "system", toStep: "4", notes: "From Step 2", color: "green" },
+                    { field: "visit_date", source: "", input: "system", toStep: "4,11", notes: "Actual visit time", color: "white" },
+                    { field: "property_notes", source: "", input: "supervisor", toStep: "4,7,9,10", notes: "Observed conditions", color: "yellow" },
+                    { field: "special_requirements", source: "", input: "supervisor", toStep: "4,7,9,10", notes: "Client-specific needs", color: "yellow" },
+                    { field: "recommended_min_price", source: "", input: "supervisor", toStep: "4", notes: "$340", color: "yellow" },
+                    { field: "recommended_max_price", source: "", input: "supervisor", toStep: "4", notes: "$380", color: "yellow" },
+                    { field: "adjusted_items", source: "step1", input: "supervisor", toStep: "4", notes: "Modified quantities/prices", color: "green" },
+                    { field: "stair_flights", source: "step1", input: "supervisor", toStep: "4", notes: "For steam cleaning", color: "green" },
+                    { field: "photos", source: "", input: "supervisor", toStep: "4,5,7,11", notes: "Evidence photos", color: "yellow" },
+                    { field: "recurrence", source: "", input: "supervisor", toStep: "4,7,12", notes: "weekly/monthly/none", color: "yellow" },
+                    { field: "status", source: "step2", input: "supervisor", toStep: "4", notes: "completed", color: "green" }
+                ]
+            },
+            4: {
+                title: "Step 4: Manager Final Quotation",
+                data: [
+                    { field: "quotation_id", source: "", input: "system", toStep: "5,6,12", notes: "QTN-2025-001", color: "white" },
+                    { field: "booking_id", source: "step3", input: "system", toStep: "5,6", notes: "From Step 3", color: "green" },
+                    { field: "manager_id", source: "", input: "manager", toStep: "5,6,12", notes: "Approving manager", color: "yellow" },
+                    { field: "final_items", source: "step3", input: "manager", toStep: "5,6,12", notes: "Approved item list", color: "green" },
+                    { field: "upsells", source: "", input: "manager", toStep: "5,6,12", notes: '[{name:"Deep Clean",price:120}]', color: "yellow" },
+                    { field: "task_list", source: "step1+3", input: "manager", toStep: "5,7,9,10", notes: "Final task list", color: "green" },
+                    { field: "subtotal", source: "step3", input: "manager", toStep: "5,6,12", notes: "Base + upsells", color: "green" },
+                    { field: "tax", source: "step3", input: "system", toStep: "5,6,12", notes: "5% of subtotal", color: "green" },
+                    { field: "final_total", source: "", input: "system", toStep: "5,6,7,12", notes: "Grand total", color: "white" },
+                    { field: "internal_notes", source: "", input: "manager", toStep: "Internal", notes: "Manager-only", color: "yellow" },
+                    { field: "valid_until", source: "", input: "system", toStep: "5,6", notes: "30 days expiry", color: "white" },
+                    { field: "status", source: "step3", input: "manager", toStep: "5", notes: "generated", color: "green" }
+                ]
+            },
+            5: {
+                title: "Step 5: Client Review & Approval",
+                data: [
+                    { field: "approval_id", source: "", input: "system", toStep: "6,7", notes: "APPR-2025-001", color: "white" },
+                    { field: "quotation_id", source: "step4", input: "system", toStep: "6", notes: "From Step 4", color: "green" },
+                    { field: "client_action", source: "", input: "client", toStep: "6,7", notes: "approve/request_revision", color: "yellow" },
+                    { field: "client_notes", source: "", input: "client", toStep: "4,6", notes: "Revision requests", color: "yellow" },
+                    { field: "approved_at", source: "", input: "system", toStep: "6,7", notes: "When approved", color: "white" },
+                    { field: "digital_booklet_url", source: "", input: "system", toStep: "Client", notes: "PDF/HTML summary", color: "white" },
+                    { field: "status", source: "step4", input: "system", toStep: "6,7", notes: "approved/pending", color: "green" }
+                ]
+            },
+            6: {
+                title: "Step 6: Client Payment",
+                data: [
+                    { field: "payment_id", source: "", input: "system", toStep: "7,12", notes: "PAY-2025-001", color: "white" },
+                    { field: "booking_id", source: "step5", input: "system", toStep: "7", notes: "From Step 5", color: "green" },
+                    { field: "deposit_amount", source: "step1+4", input: "system", toStep: "7,12", notes: "$120 if residential", color: "green" },
+                    { field: "deposit_status", source: "step1", input: "system", toStep: "7,12", notes: "paid/waived", color: "green" },
+                    { field: "final_amount", source: "step4", input: "system", toStep: "7,12", notes: "From quotation", color: "green" },
+                    { field: "amount_paid", source: "", input: "client", toStep: "7,12", notes: "Actual paid", color: "yellow" },
+                    { field: "payment_method", source: "", input: "client", toStep: "7,12", notes: "PayPal/Credit/Debit", color: "yellow" },
+                    { field: "transaction_id", source: "", input: "system", toStep: "7,12", notes: "Payment reference", color: "white" },
+                    { field: "payment_status", source: "", input: "system", toStep: "7,8", notes: "paid/pending/failed", color: "white" },
+                    { field: "paid_at", source: "", input: "system", toStep: "7,8", notes: "Payment time", color: "white" }
+                ]
+            },
+            7: {
+                title: "Step 7: Appointment Details",
+                data: [
+                    { field: "appointment_id", source: "", input: "system", toStep: "8,9,10,11", notes: "APT-2025-001", color: "white" },
+                    { field: "booking_id", source: "step6", input: "system", toStep: "8", notes: "From Step 6", color: "green" },
+                    { field: "service_date", source: "step4", input: "system", toStep: "8,9,10,11", notes: "Nov 12, 2025", color: "green" },
+                    { field: "service_time", source: "step4", input: "system", toStep: "8,9,10,11", notes: "10:00 AM", color: "green" },
+                    { field: "service_type", source: "step4", input: "system", toStep: "8,9,10,11", notes: "Final package", color: "green" },
+                    { field: "assigned_cleaner_id", source: "", input: "system", toStep: "8,9,10", notes: "Initial assignment", color: "white" },
+                    { field: "estimated_duration", source: "step4", input: "system", toStep: "8,9,10,11", notes: "Hours needed", color: "green" },
+                    { field: "status", source: "step6", input: "system", toStep: "8,9", notes: "scheduled", color: "green" },
+                    { field: "client_notified", source: "", input: "system", toStep: "8", notes: "True/False", color: "white" }
+                ]
+            },
+            8: {
+                title: "Step 8: Manager Assign Cleaner",
+                data: [
+                    { field: "assignment_id", source: "", input: "system", toStep: "9,10", notes: "ASSIGN-2025-001", color: "white" },
+                    { field: "appointment_id", source: "step7", input: "system", toStep: "9", notes: "From Step 7", color: "green" },
+                    { field: "cleaner_id", source: "", input: "manager", toStep: "9,10", notes: "Assigned cleaner", color: "yellow" },
+                    { field: "team_leader", source: "", input: "manager", toStep: "9,10", notes: "True for lead", color: "yellow" },
+                    { field: "assignment_notes", source: "", input: "manager", toStep: "9,10", notes: "Instructions", color: "yellow" },
+                    { field: "client_notified", source: "", input: "system", toStep: "9", notes: "Email/SMS sent", color: "white" },
+                    { field: "cleaner_notified", source: "", input: "system", toStep: "9", notes: "App notification", color: "white" },
+                    { field: "status", source: "step7", input: "manager", toStep: "9", notes: "assigned", color: "green" }
+                ]
+            },
+            9: {
+                title: "Step 9: Cleaner Accept Assignment",
+                data: [
+                    { field: "acceptance_id", source: "", input: "system", toStep: "10,11", notes: "ACCEPT-2025-001", color: "white" },
+                    { field: "assignment_id", source: "step8", input: "system", toStep: "10", notes: "From Step 8", color: "green" },
+                    { field: "accepted_at", source: "", input: "system", toStep: "10,11", notes: "Acceptance time", color: "white" },
+                    { field: "equipment_verified", source: "", input: "cleaner", toStep: "10", notes: "True/False", color: "yellow" },
+                    { field: "required_equipment", source: "step4+8", input: "system", toStep: "10", notes: "Auto-generated list", color: "green" },
+                    { field: "notes", source: "", input: "cleaner", toStep: "10,11", notes: "Cleaner concerns", color: "yellow" },
+                    { field: "status", source: "step8", input: "cleaner", toStep: "10", notes: "accepted", color: "green" }
+                ]
+            },
+            10: {
+                title: "Step 10: Cleaner Start Service",
+                data: [
+                    { field: "session_id", source: "", input: "system", toStep: "11,12", notes: "SESS-2025-001", color: "white" },
+                    { field: "appointment_id", source: "step9", input: "system", toStep: "11", notes: "From Step 9", color: "green" },
+                    { field: "start_time", source: "", input: "system", toStep: "11,12", notes: "Service start", color: "white" },
+                    { field: "start_location", source: "", input: "gps", toStep: "11,12", notes: "{lat, lng}", color: "white" },
+                    { field: "equipment_checklist", source: "step9", input: "cleaner", toStep: "11", notes: "Confirmed items", color: "green" },
+                    { field: "client_present", source: "", input: "cleaner", toStep: "11", notes: "True/False", color: "yellow" },
+                    { field: "initial_notes", source: "", input: "cleaner", toStep: "11", notes: "Starting conditions", color: "yellow" },
+                    { field: "status", source: "step9", input: "cleaner", toStep: "11", notes: "in_progress", color: "green" }
+                ]
+            },
+            11: {
+                title: "Step 11: Post-Cleaning Verification",
+                data: [
+                    { field: "completion_id", source: "", input: "system", toStep: "12", notes: "COMP-2025-001", color: "white" },
+                    { field: "session_id", source: "step10", input: "system", toStep: "12", notes: "From Step 10", color: "green" },
+                    { field: "end_time", source: "", input: "system", toStep: "12", notes: "Service end", color: "white" },
+                    { field: "end_location", source: "", input: "gps", toStep: "12", notes: "{lat, lng}", color: "white" },
+                    { field: "tasks_completed", source: "step4+7", input: "cleaner", toStep: "12", notes: "[{task,status,time}]", color: "green" },
+                    { field: "completion_photos", source: "", input: "cleaner", toStep: "12", notes: "After photos", color: "yellow" },
+                    { field: "client_signoff", source: "", input: "system", toStep: "12", notes: "True/False", color: "white" },
+                    { field: "cleaner_notes", source: "", input: "cleaner", toStep: "12", notes: "Completion notes", color: "yellow" },
+                    { field: "manager_verified", source: "", input: "manager", toStep: "12", notes: "QA approval", color: "yellow" },
+                    { field: "verification_notes", source: "", input: "manager", toStep: "12", notes: "Manager QA notes", color: "yellow" },
+                    { field: "status", source: "step10", input: "manager", toStep: "12", notes: "completed", color: "green" }
+                ]
+            },
+            12: {
+                title: "Step 12: Final Invoice & QuickBooks Sync",
+                data: [
+                    { field: "invoice_id", source: "", input: "system", toStep: "-", notes: "INV-2025-001", color: "white" },
+                    { field: "booking_id", source: "step11", input: "system", toStep: "-", notes: "From Step 11", color: "green" },
+                    { field: "invoice_number", source: "", input: "system", toStep: "-", notes: "INV-001-2025", color: "white" },
+                    { field: "invoice_date", source: "", input: "system", toStep: "-", notes: "Generation date", color: "white" },
+                    { field: "due_date", source: "", input: "system", toStep: "-", notes: "30 days later", color: "white" },
+                    { field: "items", source: "step4+11", input: "system", toStep: "-", notes: "Final billed items", color: "green" },
+                    { field: "quickbooks_sync_id", source: "", input: "api", toStep: "-", notes: "QB reference", color: "white" },
+                    { field: "sync_status", source: "", input: "system", toStep: "-", notes: "pending/synced", color: "white" },
+                    { field: "client_notified", source: "", input: "system", toStep: "-", notes: "Email sent", color: "white" },
+                    { field: "payment_received", source: "step6", input: "system", toStep: "-", notes: "True/False", color: "green" },
+                    { field: "status", source: "step11", input: "manager", toStep: "-", notes: "closed", color: "green" }
+                ]
+            }
+        };
+
+        // All data combined for "Show All" view
+        const allData = [];
+        Object.keys(stepData).forEach(step => {
+            stepData[step].data.forEach(item => {
+                allData.push({
+                    ...item,
+                    step: step,
+                    stepTitle: stepData[step].title.replace(`Step ${step}: `, '')
+                });
+            });
+        });
+
+        // DOM elements
+        const stepButtons = document.querySelectorAll('.step-btn');
+        const tableTitle = document.querySelector('.table-title');
+        const stepIndicator = document.querySelector('.step-indicator');
+        const stepIcon = document.querySelector('.step-icon');
+        const stepIndicatorText = stepIndicator.querySelector('span:last-child');
+        const tableBody = document.getElementById('tableBody');
+        const showAllBtn = document.getElementById('showAllBtn');
+
+        // Initialize with Step 1
+        let currentStep = 1;
+        let isShowingAll = false;
+
+        // Function to render table data
+        function renderTable(data, step) {
+            tableBody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="empty-state">
+                            <h3>No data available</h3>
+                            <p>Select a step to view its data fields</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                
+                // Determine source display
+                let sourceDisplay = '';
+                if (item.source) {
+                    if (item.source.includes('step')) {
+                        const stepNum = item.source.replace('step', '');
+                        sourceDisplay = `<span class="step-ref step-${stepNum}">Step ${stepNum}</span>`;
+                    } else if (item.source === 'system' || item.source === 'user' || item.source === 'gps' || item.source === 'api') {
+                        sourceDisplay = `<span class="status-badge">${item.source}</span>`;
+                    }
+                }
+                
+                // Determine input type display
+                let inputDisplay = '';
+                if (item.input) {
+                    const inputClass = item.input.toLowerCase();
+                    inputDisplay = `<span class="input-type ${inputClass}">${item.input}</span>`;
+                }
+                
+                // Determine "goes to step" display
+                let toStepDisplay = '';
+                if (item.toStep) {
+                    if (item.toStep === 'All steps' || item.toStep === '-') {
+                        toStepDisplay = `<span>${item.toStep}</span>`;
+                    } else {
+                        const steps = item.toStep.split(',');
+                        toStepDisplay = steps.map(s => {
+                            if (s.includes('+')) {
+                                const stepNums = s.split('+');
+                                return stepNums.map(num => `<span class="step-ref step-${num.trim()}">Step ${num.trim()}</span>`).join('+');
+                            }
+                            return `<span class="step-ref step-${s.trim()}">Step ${s.trim()}</span>`;
+                        }).join(', ');
+                    }
+                }
+                
+                // Add color indicator
+                const colorClass = item.color || 'white';
+                
+                row.innerHTML = `
+                    <td>
+                        <div class="field-name">${item.field}</div>
+                        <div class="color-box ${colorClass}" style="margin-top: 5px; display: inline-block;"></div>
+                    </td>
+                    <td><div class="data-source">${sourceDisplay}</div></td>
+                    <td>${inputDisplay}</td>
+                    <td>${toStepDisplay}</td>
+                    <td>${item.notes}</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to update the view for a specific step
+        function updateViewForStep(step) {
+            currentStep = step;
+            isShowingAll = false;
+            
+            // Update active button
+            stepButtons.forEach(btn => {
+                if (parseInt(btn.dataset.step) === step) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Update header
+            tableTitle.textContent = `Data Flow Table`;
+            stepIcon.textContent = step;
+            stepIndicatorText.textContent = stepData[step].title;
+            
+            // Render table data
+            renderTable(stepData[step].data, step);
+            
+            // Update button text
+            showAllBtn.textContent = '📋 Show Complete Data Flow (All Steps)';
+        }
+
+        // Function to show all data
+        function showAllData() {
+            isShowingAll = true;
+            
+            // Remove active from all buttons
+            stepButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Update header
+            tableTitle.textContent = `Complete Data Flow (All 12 Steps)`;
+            stepIcon.textContent = '📊';
+            stepIndicatorText.textContent = 'All Steps Combined View';
+            
+            // Render all data
+            renderTable(allData);
+            
+            // Update button text
+            showAllBtn.textContent = '⬅ Back to Step View';
+        }
+
+        // Add event listeners to step buttons
+        stepButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const step = parseInt(button.dataset.step);
+                updateViewForStep(step);
+            });
+        });
+
+        // Add event listener to show all button
+        showAllBtn.addEventListener('click', () => {
+            if (isShowingAll) {
+                updateViewForStep(currentStep);
+            } else {
+                showAllData();
+            }
+        });
+
+        // Initialize with Step 1
+        updateViewForStep(1);
+    </script>
+</body>
+</html>

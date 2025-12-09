@@ -60,6 +60,7 @@
 </head>
 <body>
 <div class="wrap">
+  
   <h1>Cleaning Service Workflow Dashboard</h1>
   <p class="lead">Click any step node to view its content and perform actions.</p>
   <div class="stepper-wrap">
@@ -339,1504 +340,782 @@ setActiveStep(activeStep);
 </script>
 </body>
 </html>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cleaning Service Workflow Dashboard</title>
 <style>
-.nav-btn {
-  position: fixed;
-  top: 12px;
-  left: 12px;
-  background: #0ea5a4;
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  z-index: 1000;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  transition: all 0.2s ease;
-}
+  :root{
+    --bg:#f7fafc; --card:#ffffff; --accent:#0ea5a4; --muted:#64748b;
+    --node-size:80px;
+  }
+  *{box-sizing:border-box}
+  body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial; margin:0;background:var(--bg);color:#0f1724;}
+  .wrap{max-width:1200px;margin:24px auto;padding:16px}
+  h1{font-size:24px;margin:0 0 12px}
+  p.lead{color:var(--muted);margin:6px 0 18px}
 
-.nav-btn:hover {
-  background: #0d9488;
-  transform: scale(1.03);
-}
+  .stepper-wrap{background:var(--card);border-radius:12px;padding:14px;border:1px solid rgba(15,23,36,0.04);}
+  .controls-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+  .nodes-row{display:flex;align-items:center;gap:12px;padding:8px 6px;overflow:auto;scroll-behavior:smooth}
+  .nodes-row::-webkit-scrollbar{height:10px}
+  .nodes-row::-webkit-scrollbar-thumb{background:linear-gradient(90deg,var(--accent),#06b6d4);border-radius:8px}
 
-</style><!-- ===== STEP 1 — CLIENT (MOBILE APP): CREATE BOOKING + ESTIMATION ===== -->
-<!-- Global Navigation Button (outside the main container) -->
-<button class="nav-btn" onclick="window.location.href='step2.html'">⬅ Step 2</button>
+  .node{min-width:var(--node-size);height:var(--node-size);border-radius:50%;background:rgba(14,165,164,0.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;cursor:pointer;transition:transform .18s ease,box-shadow .18s}
+  .node:hover{transform:translateY(-6px)}
+  .node.active{background:linear-gradient(135deg, rgba(14,165,164,0.14), rgba(6,182,212,0.08));box-shadow:0 8px 18px rgba(14,165,164,0.08)}
+  .node .num{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#e6fffb;font-weight:700;color:var(--accent)}
+  .node .label{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);white-space:nowrap;font-size:12px;color:var(--muted);max-width:120px;overflow:hidden;text-overflow:ellipsis}
 
+  .connector{height:4px;background:linear-gradient(90deg,#e6eef0,#e6eef0);flex:0 0 48px;border-radius:6px}
+  .connector.filled{background:linear-gradient(90deg,var(--accent),#06b6d4)}
 
-<div class="mobile-estimation">
-    
-  <h2>🧾 Cleaning Service Estimation</h2>
+  .details{margin-top:16px}
+  .card{background:var(--card);padding:16px;border-radius:10px;border:1px solid rgba(15,23,36,0.04)}
+  .card h3{margin:0 0 8px}
+  .card .meta{color:var(--muted);font-size:13px;margin-bottom:10px}
+  .card .content{font-size:14px;color:#0f1724;line-height:1.45;white-space:pre-wrap}
+
+  .controls{display:flex;gap:8px;align-items:center}
+  .btn{background:transparent;border:1px solid rgba(15,23,36,0.06);padding:8px 12px;border-radius:8px;color:var(--accent);cursor:pointer}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),#06b6d4);color:white;border:none}
+
+  table{width:100%;border-collapse:collapse;margin-bottom:12px}
+  table, th, td{border:1px solid #e6eef0}
+  th,td{padding:6px;text-align:left}
+  th{background:#f0fdfa}
+  .task-item{display:flex;justify-content:space-between;align-items:center;padding:4px 8px;border-radius:6px;background:#f0fdfa;margin-bottom:4px}
+  .task-item button{background:transparent;border:none;color:#ef4444;font-weight:600;cursor:pointer}
+  .action-btn button{margin-right:8px;padding:6px 10px;border-radius:6px;border:none;color:white;cursor:pointer}
+  .action-accept{background:#10b981;}
+  .action-reject{background:#ef4444;}
+  .action-reschedule{background:#f59e0b;}
+  .action-sitevisit{background:#3b82f6;}
+  .action-generate{background:#06b6d4;}
+  .action-revision{background:#f97316;}
+  .action-complete{background:#14b8a6;}
+  .small{font-size:12px;color:var(--muted)}
+  @media (max-width:720px){ .wrap{padding:12px} .node .label{display:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
   
-  <!-- Auto-Fetched Client Info -->
-  <div class="client-info">
-    <h4>👤 Client Details (Auto-Fetched)</h4>
-    <p><strong>Name:</strong> Maria Santos</p>
-    <p><strong>Contact:</strong> +63 912 345 6789</p>
-    <p><strong>Address:</strong> 25 Jupiter St., Makati City</p>
+  <h1>Cleaning Service Workflow Dashboard</h1>
+  <p class="lead">Click any step node to view its content and perform actions.</p>
+  <div class="stepper-wrap">
+    <div class="controls-row">
+      <div style="font-weight:700">Workflow Steps</div>
+      <div class="controls">
+        <button id="prevBtn" class="btn">◀ Prev</button>
+        <button id="nextBtn" class="btn">Next ▶</button>
+        <button id="playBtn" class="btn">Play</button>
+      </div>
+    </div>
+    <div id="nodesRow" class="nodes-row" tabindex="0" aria-label="Workflow steps"></div>
+    <div class="details">
+      <div id="detailCard" class="card">
+        <h3 id="detailTitle">Step</h3>
+        <div class="meta" id="detailMeta">Status info</div>
+        <div id="detailContent" class="content">Select a step to view details.</div>
+      </div>
+    </div>
   </div>
-
-  <!-- Cleaning Type -->
-  <div class="form-section">
-    <label for="cleaningType">Cleaning Type (Select One or More)</label>
-    <select id="cleaningType" multiple>
-      <option value="steam">Steam Clean</option>
-      <option value="deep">Deep Clean</option>
-      <option value="moveout">Move-Out Clean</option>
-      <option value="maintenance">Maintenance Clean</option>
-    </select>
-    
-    <p class="info-note">
-      💡 Each cleaning type follows its own pricing and task structure
-      as defined in the <strong>Cleaning Estimation Calculator</strong>.
-      Selecting one or more types will automatically apply the corresponding
-      estimation logic, cleaning content, and base pricing for accurate computation.
-    </p>
-
-    <small style="color:#6b7280;font-size:12px;">
-      Tip: Tap multiple options to select more than one cleaning type.
-    </small>
-  </div>
-
-  <!-- Service Items -->
-  <div class="form-section">
-    <h4>🧹 Service Items</h4>
-    <p class="info-note">
-      💡 Estimation pricing is dynamically calculated based on your selected items,
-      using the same logic as the Estimation Calculator.
-    </p>
-    <table class="service-table">
-      <tr><th>Select</th><th>Item</th><th>Price (₱)</th><th>Qty</th></tr>
-      <tr>
-        <td><input type="checkbox" data-price="1200"></td>
-        <td>Large Room (10x10)</td>
-        <td>1200</td>
-        <td><input type="number" min="1" value="1"></td>
-      </tr>
-      <tr>
-        <td><input type="checkbox" data-price="900"></td>
-        <td>Regular Room (8x8)</td>
-        <td>900</td>
-        <td><input type="number" min="1" value="1"></td>
-      </tr>
-      <tr>
-        <td><input type="checkbox" data-price="500"></td>
-        <td>Rug Cleaning</td>
-        <td>500</td>
-        <td><input type="number" min="1" value="1"></td>
-      </tr>
-      <tr>
-        <td><input type="checkbox" data-price="350"></td>
-        <td>Hallway</td>
-        <td>350</td>
-        <td><input type="number" min="1" value="1"></td>
-      </tr>
-    </table>
-  </div>
-
-  <!-- Optional Tasks -->
-  <div class="form-section">
-    <h4>➕ Optional Tasks</h4>
-    <textarea id="optionalTasks" placeholder="e.g., Clean balcony, Wipe windows..."></textarea>
-  </div>
-
-  <!-- Request On-Site Visit -->
-  <div class="form-section checkbox">
-    <label><input type="checkbox" id="onsiteVisit"> Request On-Site Visit for Estimation</label>
-  </div>
-
-  <!-- Estimate Summary -->
-  <div class="estimate-summary">
-    <h4>📊 Estimate Summary</h4>
-    <div id="estimateResult">No items selected yet.</div>
-  </div>
-
-  <!-- Submit -->
-  <button class="submit-btn" onclick="submitBooking()">Submit Booking</button>
 </div>
 
-<!-- ===== CSS ===== -->
-<style>
-.mobile-estimation {
-  background:#fff;
-  border-radius:12px;
-  padding:16px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.1);
-  font-family:system-ui, sans-serif;
-  max-width:420px;
-  margin:auto;
-}
-h2,h4{color:#0ea5a4;margin-bottom:8px}
-.client-info, .form-section {
-  background:#f9fafb;
-  padding:10px;
-  border-radius:8px;
-  margin-bottom:12px;
-  font-size:14px;
-}
-label{font-weight:600;display:block;margin-bottom:4px;color:#0f172a}
-select,input,textarea {
-  width:100%;
-  padding:8px;
-  border-radius:6px;
-  border:1px solid #d1d5db;
-  margin-bottom:6px;
-}
-textarea{resize:none;min-height:60px}
-.service-table {
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
-.service-table th {
-  background:#0ea5a4;
-  color:#fff;
-  text-align:left;
-  padding:6px;
-}
-.service-table td {
-  border-bottom:1px solid #e5e7eb;
-  padding:6px;
-}
-.estimate-summary {
-  background:#f1f5f9;
-  border-radius:8px;
-  padding:10px;
-  font-size:14px;
-}
-.submit-btn {
-  width:100%;
-  background:linear-gradient(90deg,#0ea5a4,#06b6d4);
-  color:white;
-  border:none;
-  padding:10px;
-  border-radius:8px;
-  font-weight:600;
-  cursor:pointer;
-}
-.submit-btn:hover{opacity:0.9}
-.checkbox label{font-size:14px;cursor:pointer}
-.info-note {
-  background:#e0f2fe;
-  color:#0369a1;
-  font-size:13px;
-  padding:6px;
-  border-radius:6px;
-  margin-bottom:8px;
-}
-</style>
-
-<!-- ===== JAVASCRIPT ===== -->
 <script>
-function calculateEstimate(){
-  let subtotal = 0;
-  const rows = document.querySelectorAll(".service-table tr");
-  let breakdown = [];
-
-  rows.forEach(row=>{
-    const checkbox = row.querySelector("input[type=checkbox]");
-    const qtyInput = row.querySelector("input[type=number]");
-    if(checkbox && checkbox.checked){
-      const price = parseFloat(checkbox.getAttribute("data-price")) || 0;
-      const qty = parseInt(qtyInput.value) || 1;
-      const itemTotal = price * qty;
-      subtotal += itemTotal;
-      breakdown.push(`${row.cells[1].innerText} ×${qty} — ₱${itemTotal.toFixed(2)}`);
-    }
-  });
-
-  if(subtotal === 0){
-    document.getElementById("estimateResult").innerText = "No items selected yet.";
-    return;
+const steps = [
+  {
+    id:1,
+    title:'Client: Create Booking + Estimation',
+    status:'pending_review',
+    monitored:true, // being monitored
+    intervention:true, // manager can intervene at this step
+    content:`
+<h4>Booking Submitted</h4>
+<p>Client John Doe submitted a cleaning booking for 2-bedroom apartment.</p>
+<p><strong>Estimated Total:</strong> ₱5,500</p>
+<h4>Tasks Selected</h4>
+<ul>
+<li>Steam Clean - Living Room</li>
+<li>Maintenance Clean - Bedroom</li>
+<li>Optional: Clean balcony, Sanitize carpets</li>
+</ul>
+<h4>Manager Intervention Available</h4>
+<button class="action-accept" onclick="advanceStep()">Accept Booking</button>
+<button class="action-sitevisit" onclick="advanceStep()">Require Site Visit</button>
+`
+  },
+  {
+    id:2,
+    title:'Supervisor: Review Booking',
+    status:'pending_review',
+    monitored:true,
+    intervention:true,
+    content:`
+<h4>Supervisor Dashboard</h4>
+<p>Supervisor sees booking summary:</p>
+<ul>
+<li>Client: John Doe</li>
+<li>Estimated Total: ₱5,500</li>
+<li>Tasks: Clean balcony, Sanitize carpets</li>
+</ul>
+<p>Actions available for Supervisor:</p>
+<button class="action-accept" onclick="advanceStep()">Approve Booking</button>
+<button class="action-reschedule" onclick="advanceStep()">Request Reschedule</button>
+<button class="action-sitevisit" onclick="advanceStep()">Require Site Visit</button>
+`
+  },
+  {
+    id:3,
+    title:'Site Visit (if required)',
+    status:'awaiting_visit',
+    monitored:true,
+    intervention:false,
+    content:`
+<h4>Monitoring Site Visit</h4>
+<p>Supervisor is performing site visit at client location.</p>
+<p>Notes recorded: 2-bedroom apartment, laminate floors, minor stains.</p>
+<p>Estimated price updated: ₱5,800</p>
+<p>Photos uploaded: 2 images</p>
+`
+  },
+  {
+    id:4,
+    title:'Manager: Review & Finalize Quotation',
+    status:'visit_completed',
+    monitored:true,
+    intervention:true,
+    content:`
+<h4>Quotation Review</h4>
+<p>Manager sees booking & supervisor report:</p>
+<ul>
+<li>Tasks: Clean balcony, Sanitize carpets</li>
+<li>Upsell options: Deep-clean add-on</li>
+<li>Estimated Price: ₱5,800</li>
+<li>Internal Notes: Check special stains</li>
+</ul>
+<p>Actions available:</p>
+<button class="action-generate" onclick="advanceStep()">Generate Quotation</button>
+<button class="action-revision" onclick="advanceStep()">Request Revision</button>
+`
+  },
+  {
+    id:5,
+    title:'Client: Review Quotation',
+    status:'quotation_sent',
+    monitored:true,
+    intervention:false,
+    content:`
+<h4>Monitoring Client Review</h4>
+<p>Client received quotation for approval.</p>
+<ul>
+<li>Service Tasks: Clean balcony, Sanitize carpets, Deep-clean add-on</li>
+<li>Total: ₱5,800</li>
+<li>Status: Pending client response</li>
+</ul>
+`
+  },
+  {
+    id:6,
+    title:'Client: Pay Invoice',
+    status:'quotation_approved',
+    monitored:true,
+    intervention:false,
+    content:`
+<h4>Monitoring Payment</h4>
+<p>Invoice generated for client payment.</p>
+<ul>
+<li>Invoice #: INV-0001</li>
+<li>Payment Methods: Stripe, PayPal, GCash, Card</li>
+<li>Status: Awaiting payment</li>
+</ul>
+`
+  },
+  {
+    id:7,
+    title:'System: Auto-Create Appointment',
+    status:'quotation_paid',
+    monitored:true,
+    intervention:false,
+    content:`
+<h4>Appointment Created</h4>
+<p>Appointment ID: APT-1001</p>
+<p>Tasks: Clean balcony, Sanitize carpets, Deep-clean add-on</p>
+<p>Status: Waiting for cleaner assignment</p>
+`
+  },
+  {
+    id:8,
+    title:'Manager: Assign Cleaner(s)',
+    status:'appointment_ready',
+    monitored:true,
+    intervention:true,
+    content:`
+<h4>Cleaner Assignment</h4>
+<p>Available cleaners: Alex Santos, Maria Cruz</p>
+<p>Status: Ready to assign</p>
+<button class="action-generate" onclick="advanceStep()">Assign Alex Santos</button>
+`
+  },
+  {
+    id:9,
+    title:'Cleaner: Accept Appointment',
+    status:'scheduled',
+    monitored:true,
+    intervention:false,
+    content:`
+<h4>Monitoring Cleaner Acceptance</h4>
+<p>Cleaner Alex Santos has been assigned.</p>
+<p>Status: Awaiting cleaner confirmation</p>
+`
+  },
+  {
+    id:10,
+    title:'Cleaning Execution',
+    status:'in_progress',
+    monitored:true,
+    intervention:false,
+    content:`
+<h4>Monitoring Cleaning</h4>
+<ul>
+<li>Clean balcony: Completed</li>
+<li>Sanitize carpets: In Progress</li>
+<li>Deep-clean add-on: Pending</li>
+</ul>
+<p>Photos and remarks being uploaded in real-time.</p>
+`
+  },
+  {
+    id:11,
+    title:'Manager: Verify Completion',
+    status:'service_done',
+    monitored:true,
+    intervention:true,
+    content:`
+<h4>Monitoring Verification</h4>
+<p>All tasks completed by cleaner.</p>
+<p>Photos uploaded: 5 images</p>
+<button class="action-complete" onclick="advanceStep()">Mark Service Completed</button>
+`
+  },
+  {
+    id:12,
+    title:'System: Sync Final Invoice',
+    status:'closed',
+    monitored:true,
+    intervention:false,
+    content:`
+<h4>Final Invoice Synced</h4>
+<p>Invoice #INV-0001 synced to QuickBooks</p>
+<p>Booking marked closed.</p>
+<p>Thank-you notification sent to client.</p>
+`
   }
+];
 
-  if(subtotal < 1200) subtotal = 1200; // Minimum service charge
-  const tax = subtotal * 0.05;
-  const total = subtotal + tax;
+const nodesRow = document.getElementById('nodesRow');
+const detailTitle = document.getElementById('detailTitle');
+const detailMeta = document.getElementById('detailMeta');
+const detailContent = document.getElementById('detailContent');
 
-  document.getElementById("estimateResult").innerHTML = `
-    <strong>Items Selected:</strong><br>${breakdown.join("<br>")}<br><br>
-    <strong>Subtotal:</strong> ₱${subtotal.toFixed(2)}<br>
-    <strong>Tax (5%):</strong> ₱${tax.toFixed(2)}<br>
-    <strong>Total:</strong> ₱${total.toFixed(2)}
-  `;
-}
+let activeStep = 0;
 
-document.addEventListener("input", e=>{
-  if(["checkbox","number","select-one"].includes(e.target.type)) calculateEstimate();
+// Build step nodes
+steps.forEach((s,i)=>{
+  const node=document.createElement('div');
+  node.classList.add('node'); 
+  if(i===activeStep) node.classList.add('active');
+  node.innerHTML=`<div class="num">${s.id}</div><div class="label">${s.title}</div>`;
+  node.onclick=()=>setActiveStep(i);
+  nodesRow.appendChild(node);
+  if(i<steps.length-1){
+    const connector=document.createElement('div');
+    connector.classList.add('connector');
+    if(i<activeStep) connector.classList.add('filled');
+    nodesRow.appendChild(connector);
+  }
 });
 
-function submitBooking(){
-  const visit = document.getElementById("onsiteVisit").checked;
-  let msg = visit
-    ? "📩 Booking submitted. Supervisor will contact you for on-site visit."
-    : "✅ Booking submitted! Status: pending_review — awaiting supervisor review.";
-  alert(msg);
+function setActiveStep(i){
+  activeStep=i;
+  document.querySelectorAll('.node').forEach((n,idx)=>{
+    n.classList.toggle('active', idx===i);
+  });
+  detailTitle.innerHTML = steps[i].title;
+  detailMeta.innerHTML = steps[i].meta;
+  detailContent.innerHTML = steps[i].content;
+  updateConnectors();
 }
+
+function updateConnectors(){
+  const conns = document.querySelectorAll('.connector');
+  conns.forEach((c,idx)=>{
+    c.classList.toggle('filled', idx<activeStep);
+  });
+}
+
+function advanceStep(){
+  if(activeStep<steps.length-1){
+    activeStep++;
+    setActiveStep(activeStep);
+  }
+}
+
+// Prev/Next buttons
+document.getElementById('prevBtn').onclick = ()=>{ if(activeStep>0){activeStep--;setActiveStep(activeStep)} }
+document.getElementById('nextBtn').onclick = ()=>{ if(activeStep<steps.length-1){activeStep++;setActiveStep(activeStep)} }
+
+// Optional: autoplay
+let playInterval=null;
+document.getElementById('playBtn').onclick=()=>{
+  if(playInterval){ clearInterval(playInterval); playInterval=null; return; }
+  playInterval=setInterval(()=>{
+    if(activeStep<steps.length-1) advanceStep(); else clearInterval(playInterval);
+  },2000);
+}
+
+// Initialize first step
+setActiveStep(activeStep);
 </script>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Step 2 — Supervisor: Manage Booking Review (Canada)</title>
-
-<!-- Lucide Icons -->
-<script src="https://unpkg.com/lucide@latest"></script>
-
-<style>
-  body {
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    background: #f5f6fa;
-    color: #222;
-  }
-
-  /* Fixed Navigation Buttons */
-  .nav-container {
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    z-index: 1000;
-  }
-
-  .nav-btn {
-    background: #0ea5a4;
-    color: #fff;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    transition: all 0.2s ease;
-    text-align: left;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .nav-btn:hover {
-    background: #0d9488;
-    transform: scale(1.03);
-  }
-
-  /* Dashboard Container */
-  .supervisor-dashboard {
-    margin: 90px auto 40px;
-    max-width: 920px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    padding: 20px;
-  }
-
-  h2 {
-    text-align: center;
-    color: #0ea5a4;
-    margin-bottom: 12px;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 16px;
-  }
-
-  th, td {
-    border-bottom: 1px solid #e0e0e0;
-    text-align: left;
-    padding: 12px;
-    vertical-align: top;
-  }
-
-  th {
-    background: #e9f6f6;
-    color: #0d9488;
-    font-weight: 600;
-  }
-
-  tr:hover {
-    background: #f9f9f9;
-  }
-
-  .action-btns {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .icon-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 6px;
-    border-radius: 8px;
-    transition: 0.2s;
-  }
-
-  .icon-btn:hover {
-    background: #f3f4f6;
-    transform: scale(1.1);
-  }
-
-  .icon { width: 20px; height: 20px; }
-
-  .accept { color: #16a34a; }
-  .reschedule { color: #f59e0b; }
-  .hold { color: #6b7280; }
-  .visit { color: #2563eb; }
-  .reject { color: #dc2626; }
-
-  .status {
-    font-weight: 600;
-    text-transform: capitalize;
-    margin-top: 6px;
-  }
-
-  @media(max-width: 700px) {
-    table, thead, tbody, th, td, tr {
-      display: block;
-    }
-    th { display: none; }
-    td {
-      border: none;
-      margin-bottom: 10px;
-      padding: 10px;
-      background: #f9f9f9;
-      border-radius: 8px;
-    }
-  }
-</style>
-</head>
-
-<body>
-
-<!-- Fixed Nav Buttons -->
-<div class="nav-container">
-  <button class="nav-btn" onclick="window.location.href='step1.html'">
-    ⬅ Step 1
-  </button>
-  <button class="nav-btn" onclick="window.location.href='step3.html'">
-    ➡ Step 3
-  </button>
-</div>
-
-<!-- Supervisor Dashboard -->
-<div class="supervisor-dashboard">
-  <h2>📋 Step 2 — Supervisor: Manage Booking Review</h2>
-  <p style="text-align:center; color:#555;">Review pending bookings and choose the appropriate action.</p>
-
-  <table id="bookingTable">
-    <thead>
-      <tr>
-        <th>Client</th>
-        <th>Service Info</th>
-        <th>Estimation</th>
-        <th>Optional Tasks</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <strong>Emily Johnson</strong><br>
-          📍 102 King St W, Toronto, ON<br>
-          📞 +1 (647) 555-2147
-        </td>
-        <td>
-          Deep Clean — 3 Bedroom Condo<br>
-          Preferred Date: Nov 9, 2025<br>
-          Time: 9:30 AM
-        </td>
-        <td>CA$320.00 (incl. HST)</td>
-        <td>Wipe Windows, Clean Balcony</td>
-        <td>
-          <div class="action-btns">
-            <button class="icon-btn" onclick="updateStatus(this,'approved')" title="Accept"><i data-lucide="check-circle" class="icon accept"></i></button>
-            <button class="icon-btn" onclick="updateStatus(this,'reschedule_requested')" title="Reschedule"><i data-lucide="calendar" class="icon reschedule"></i></button>
-            <button class="icon-btn" onclick="updateStatus(this,'on_hold')" title="Hold"><i data-lucide="pause-circle" class="icon hold"></i></button>
-            <button class="icon-btn" onclick="updateStatus(this,'awaiting_visit')" title="Site Visit"><i data-lucide="map-pin" class="icon visit"></i></button>
-            <button class="icon-btn" onclick="updateStatus(this,'rejected')" title="Reject"><i data-lucide="x-circle" class="icon reject"></i></button>
-          </div>
-          <div class="status" style="color:#0ea5a4;">pending_review</div>
-        </td>
-      </tr>
-
-      <tr>
-        <td>
-          <strong>Lucas Martin</strong><br>
-          📍 55 Burrard St, Vancouver, BC<br>
-          📞 +1 (604) 888-4470
-        </td>
-        <td>
-          Steam Clean — 2 Carpets<br>
-          Preferred Date: Nov 10, 2025<br>
-          Time: 2:00 PM
-        </td>
-        <td>CA$150.00 (incl. tax)</td>
-        <td>Sanitize Carpets</td>
-        <td>
-          <div class="action-btns">
-            <button class="icon-btn" onclick="updateStatus(this,'approved')" title="Accept"><i data-lucide="check-circle" class="icon accept"></i></button>
-            <button class="icon-btn" onclick="updateStatus(this,'reschedule_requested')" title="Reschedule"><i data-lucide="calendar" class="icon reschedule"></i></button>
-            <button class="icon-btn" onclick="updateStatus(this,'on_hold')" title="Hold"><i data-lucide="pause-circle" class="icon hold"></i></button>
-            <button class="icon-btn" onclick="updateStatus(this,'awaiting_visit')" title="Site Visit"><i data-lucide="map-pin" class="icon visit"></i></button>
-            <button class="icon-btn" onclick="updateStatus(this,'rejected')" title="Reject"><i data-lucide="x-circle" class="icon reject"></i></button>
-          </div>
-          <div class="status" style="color:#0ea5a4;">pending_review</div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<script>
-  // Activate Lucide Icons
-  lucide.createIcons();
-
-  // Update booking status dynamically
-  function updateStatus(button, newStatus) {
-    const statusDiv = button.closest('td').querySelector('.status');
-    statusDiv.textContent = newStatus;
-
-    switch(newStatus) {
-      case 'approved': statusDiv.style.color = '#16a34a'; break;
-      case 'reschedule_requested': statusDiv.style.color = '#f59e0b'; break;
-      case 'on_hold': statusDiv.style.color = '#6b7280'; break;
-      case 'awaiting_visit': statusDiv.style.color = '#2563eb'; break;
-      case 'rejected': statusDiv.style.color = '#dc2626'; break;
-    }
-  }
-</script>
-
 </body>
 </html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Step 3 — Supervisor: Site Visit & Report</title>
-  <style>
-    body {
-      font-family: "Poppins", sans-serif;
-      background: #f7f8fa;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-    }
-
-    /* ===== Navigation Buttons ===== */
-    .nav-buttons {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      display: flex;
-      gap: 10px;
-      z-index: 100;
-    }
-    .nav-buttons button {
-      background: #004aad;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    .nav-buttons button:hover {
-      background: #00357e;
-    }
-
-    /* ===== Container ===== */
-    .container {
-      margin: 100px auto 50px;
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      width: 95%;
-      max-width: 1000px;
-    }
-
-    h1 {
-      text-align: center;
-      color: #222;
-      margin-bottom: 20px;
-    }
-
-    h2 {
-      color: #004aad;
-      border-bottom: 2px solid #004aad;
-      padding-bottom: 6px;
-      margin-top: 40px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    label {
-      font-weight: 600;
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    textarea, input[type="text"], input[type="number"], input[type="file"] {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .file-upload {
-      border: 2px dashed #ccc;
-      padding: 20px;
-      text-align: center;
-      border-radius: 8px;
-      background: #fafafa;
-      cursor: pointer;
-    }
-
-    .file-upload:hover {
-      border-color: #004aad;
-      background: #eef4ff;
-    }
-
-    .submit-btn {
-      width: 100%;
-      background: #004aad;
-      color: white;
-      font-size: 16px;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.3s;
-      margin-top: 20px;
-    }
-
-    .submit-btn:hover {
-      background: #00357e;
-    }
-
-    .confirmation {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-      background: #e6f4ea;
-      color: #1a7f37;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: 600;
-    }
-
-    /* ===== Estimation Preview ===== */
-    .estimation-preview {
-      background: #eef5ff;
-      padding: 15px;
-      border-radius: 10px;
-      border: 1px solid #cdddfd;
-      font-family: monospace;
-      white-space: pre-line;
-      margin-bottom: 15px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-    table, th, td {
-      border: 1px solid #ccc;
-    }
-    th, td {
-      padding: 8px;
-      text-align: left;
-      font-size: 14px;
-    }
-    th {
-      background: #004aad;
-      color: white;
-    }
-
-    input[type=range] { width: 100%; }
-
-    /* ===== Page Description Box ===== */
-    .info-box {
-      background: #eef4ff;
-      border-left: 4px solid #004aad;
-      padding: 12px 15px;
-      border-radius: 8px;
-      font-size: 14px;
-      color: #333;
-      margin-bottom: 25px;
-    }
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; background:#f4f4f9; }
+    h2 { color:#007bff; }
+    .section { margin-bottom:20px; }
+    .total-box { font-size: 18px; font-weight: bold; margin-top: 20px; color:#007bff; }
+    button { background:#007bff; color:#fff; border:none; border-radius:5px; padding:5px 10px; cursor:pointer; }
+    table { width:100%; border-collapse:collapse; margin:10px 0; }
+    th, td { border:1px solid #ddd; padding:8px; text-align:center; }
+    th { background:#007bff; color:#fff; }
+    input[type=range] { width: 120px; }
+    .small-note { font-size: 13px; color: #555; }
+    /* 🔹 Added Visit Estimation styles */
+.alert-box { color: red; font-weight: bold; margin-top:10px; display:none; }
+.success-msg { color: green; font-weight: bold; margin-top:10px; display:none; }
+button:disabled { background: gray; cursor: not-allowed; }
+    pre.invoice { font-family: monospace; white-space: pre-wrap; margin:0; }
   </style>
 </head>
 <body>
-
-  <!-- Navigation Buttons -->
-  <div class="nav-buttons">
-    <button onclick="window.location.href='step2.html'">← Step 2</button>
-    <button onclick="window.location.href='step4.html'">→ Step 4</button>
+  <div class="buttons">
+    <button onclick="location.href='./estimation.html'">Open Steam Estimator</button>
   </div>
 
-  <div class="container">
-    <h1>Step 3 — Site Visit & Report</h1>
+  <h2>Cleaning Service Estimator (Maintenance)</h2>
 
-    <!-- ===== Page Context Description ===== -->
-    <div class="info-box">
-      <strong>ℹ️ This page is part of the Manage Booking dashboard.</strong><br>
-      When a <b>client requests a Site Visit</b> or the <b>Supervisor marks “Require Site Visit”</b> in Step 2, 
-      this form is used by the Supervisor to record inspection notes, update estimates, and upload photos.<br><br>
-      If no site visit is required, the booking automatically proceeds to <b>Step 4 — Manager Review & Final Quotation</b> 
-      inside the Manager’s Manage Booking dashboard.
-    </div>
+  <!-- Service Options -->
+  <div class="section">
+    <label><input type="checkbox" id="serviceMaintenance" onchange="calculateEstimate()"> Maintenance Clean</label><br>
+    <label><input type="checkbox" id="serviceMoveout" onchange="calculateEstimate()"> Move Out Clean</label><br>
+    <label><input type="checkbox" id="serviceDeep" onchange="calculateEstimate()"> Deep Clean</label><br>
+    <label><input type="checkbox" id="serviceSteam" onchange="calculateEstimate()"> Include Steam Clean (from Estimator)</label>
+    <div class="small-note">Tip: open <strong>Steam Estimator</strong>, calculate & save there first — then check "Include Steam Clean" here to pull the exact Steam invoice/total.</div>
+  </div>
 
-    <!-- ===== Original Estimation Preview ===== -->
-    <h2>Original Client Estimation (Fetched)</h2>
-    <div id="originalEstimate" class="estimation-preview">
-      Loading client estimation data...
-    </div>
+  <!-- Maintenance Options -->
+  <div id="maintenanceOptions" style="display:none; margin-top:15px;">
+    <h3>Maintenance Clean Options</h3>
+    <p id="residentialNote" class="small-note" style="display:none;">Minimum booking for maintenance is <strong>3 hours</strong>.</p>
 
-    <!-- ===== Adjusted Estimation (Supervisor) ===== -->
-    <h2>Supervisor Adjusted Estimation</h2>
-    <p style="font-size:13px;color:#444;">Recalculate or adjust the original estimate based on actual site conditions.</p>
+    <label><input type="radio" name="rateType" value="residential" onchange="calculateEstimate()"> Residential ($38/hr)</label>
+    <label><input type="radio" name="rateType" value="commercial" onchange="calculateEstimate()"> Commercial ($44/hr)</label>
+    <!-- 🔹 Visit Estimation Toggle (only for Commercial) -->
+<div id="visitOption" style="display:none; margin-top:10px;">
+  <label><input type="checkbox" id="visitEstimation" onchange="toggleVisitEstimation()"> Visit Estimation</label>
+  <div id="visitAlert" class="alert-box">⚠ Invoice is paused until visit estimation is processed.</div>
+  <div id="visitSuccess" class="success-msg">✅ Visit estimation finalized. You can now proceed to booking.</div>
+</div>
 
-    <table id="estimateTable">
-      <tr><th>Select</th><th>Item</th><th>Size/Details</th><th>Price (CAD)</th><th>Qty</th></tr>
-      <tr><td><input type="checkbox" data-price="75"></td><td>Carpet</td><td>Large Room</td><td>75</td><td><input type="number" min="1" value="1"></td></tr>
-      <tr><td><input type="checkbox" data-price="60"></td><td>Carpet</td><td>Regular Room</td><td>60</td><td><input type="number" min="1" value="1"></td></tr>
-      <tr><td><input type="checkbox" data-price="30"></td><td>Rug</td><td>Area Rug</td><td>30</td><td><input type="number" min="1" value="1"></td></tr>
-      <tr><td><input type="checkbox" data-price="100"></td><td>Walls</td><td>Surface Wash</td><td>100</td><td><input type="number" min="1" value="1"></td></tr>
-      <tr><td><input type="checkbox" id="stairsCheck"></td><td>Stair Flight</td>
-          <td>
-            <label>Adjust (0–15 flights):</label>
-            <input type="range" id="stairs" min="0" max="15" value="0" step="1" oninput="updateStairs(this.value)">
-            Flights: <span id="stairsCountDisplay">0</span>
-          </td>
-          <td>$<span id="stairsPrice">0.00</span></td><td>-</td>
+    <table>
+      <tr><th>Room</th><th>Base Hours</th><th>Large?</th><th>Extra Hours (drag)</th><th>Total Hours</th></tr>
+      <tr>
+        <td>Kitchen</td><td>3</td>
+        <td><input type="checkbox" id="kitchenLarge" onchange="calculateEstimate()"> +1.5 hrs</td>
+        <td>
+          <input type="range" id="kitchenExtra" min="0" max="5" step="0.25" value="0" oninput="calculateEstimate()">
+          <div class="small-note"><span id="kitchenExtraDisplay">0.00</span> hrs</div>
+        </td>
+        <td id="kitchenHours">3.00</td>
+      </tr>
+      <tr>
+        <td>Bedroom</td><td>1</td>
+        <td><input type="checkbox" id="bedroomLarge" onchange="calculateEstimate()"> +0.5 hrs</td>
+        <td>
+          <input type="range" id="bedroomExtra" min="0" max="5" step="0.25" value="0" oninput="calculateEstimate()">
+          <div class="small-note"><span id="bedroomExtraDisplay">0.00</span> hrs</div>
+        </td>
+        <td id="bedroomHours">1.00</td>
+      </tr>
+      <tr>
+        <td>Bathroom</td><td>2.5</td>
+        <td><input type="checkbox" id="bathroomLarge" onchange="calculateEstimate()"> +1.0 hrs</td>
+        <td>
+          <input type="range" id="bathroomExtra" min="0" max="5" step="0.25" value="0" oninput="calculateEstimate()">
+          <div class="small-note"><span id="bathroomExtraDisplay">0.00</span> hrs</div>
+        </td>
+        <td id="bathroomHours">2.50</td>
+      </tr>
+      <tr>
+        <td>Entryway</td><td>0.5</td>
+        <td><input type="checkbox" disabled> (fixed)</td>
+        <td>
+          <input type="range" id="entryExtra" min="0" max="3" step="0.25" value="0" oninput="calculateEstimate()">
+          <div class="small-note"><span id="entryExtraDisplay">0.00</span> hrs</div>
+        </td>
+        <td id="entryHours">0.50</td>
       </tr>
     </table>
-
-    <div class="estimation-preview" id="updatedEstimate">Select items to recalculate...</div>
-
-    <!-- ===== Site Visit Report Form ===== -->
-    <h2>Site Visit Report Form</h2>
-    <form id="siteVisitForm">
-      <div class="form-group">
-        <label>🏠 Property & Scope Notes</label>
-        <textarea placeholder="Describe rooms, surfaces, observed issues..."></textarea>
-      </div>
-
-      <div class="form-group">
-        <label>📋 Special Requirements</label>
-        <textarea placeholder="Any specific client requests, materials, etc."></textarea>
-      </div>
-
-      <div class="form-group">
-        <label>💰 Updated Estimated Price Range (CAD)</label>
-        <input type="text" placeholder="e.g. 180 - 260 CAD">
-      </div>
-
-      <div class="form-group">
-        <label>📷 Upload Photos / Attachments</label>
-        <div class="file-upload" onclick="document.getElementById('attachments').click()">Click or drag files here</div>
-        <input type="file" id="attachments" multiple style="display:none">
-        <p id="fileList" style="font-size: 13px; color: #555;"></p>
-      </div>
-
-      <button type="submit" class="submit-btn">Submit Site Visit Report</button>
-      <div id="confirmationMsg" class="confirmation">
-        ✅ Site Visit Report Submitted!  
-        Booking status → <strong>visit_completed</strong><br>
-        Manager has been notified.
-      </div>
-    </form>
   </div>
 
+<!-- Smart Move Out Estimator -->
+<div id="moveoutOptions" style="display:none; margin-top:15px;">
+  <h3>Move Out Smart Estimator</h3>
+  <p>Automatically estimates hours based on size and hourly rate (no fixed price).</p>
+
+  <label>Home Size:</label><br>
+  <select id="moveoutSize" onchange="calculateEstimate()" style="padding:5px; border-radius:5px;">
+    <option value="small" selected>Small — 7–8 hrs</option>
+    <option value="medium">Medium — 9–15 hrs</option>
+    <option value="large">Large — 15+ hrs</option>
+  </select><br><br>
+
+  <label>Approximate Square Footage:</label><br>
+  <input type="number" id="moveoutSqft" placeholder="e.g. 1800" min="300" step="50"
+         oninput="calculateEstimate()" style="padding:5px; border-radius:5px; width:120px;"><br><br>
+
+  <label>Hourly Rate ($):</label><br>
+  <input type="number" id="moveoutRate" placeholder="e.g. 50" min="20" step="1" value="50"
+         oninput="calculateEstimate()" style="padding:5px; border-radius:5px; width:100px;"><br><br>
+
+  <div style="margin-top:8px;">
+    <strong>Estimated Hours:</strong> <span id="moveoutHoursDisplay">0.00</span><br>
+    <strong>Estimated Cost:</strong> $<span id="moveoutCostDisplay">0.00</span>
+  </div>
+</div>
+
+
+<!-- Smart Deep Clean Estimator -->
+<div id="deepOptions" style="display:none; margin-top:15px;">
+  <h3>Deep Clean Smart Estimator</h3>
+  <p>Estimate dynamically based on home size (no fixed rate).</p>
+
+  <label>Home Size:</label><br>
+  <select id="deepSize" onchange="calculateEstimate()" style="padding:5px; border-radius:5px;">
+    <option value="small" selected>Small — minimum 7–8 hrs</option>
+    <option value="medium">Medium — 9–15 hrs</option>
+    <option value="large">Large — 15+ hrs</option>
+  </select><br><br>
+
+  <label>Approximate Square Footage:</label><br>
+  <input type="number" id="deepSqft" placeholder="e.g. 1500" min="300" step="50" 
+         oninput="calculateEstimate()" style="padding:5px; border-radius:5px; width:120px;"><br><br>
+
+  <label>Hourly Rate ($):</label><br>
+  <input type="number" id="deepRate" placeholder="e.g. 50" min="20" step="1" value="50"
+         oninput="calculateEstimate()" style="padding:5px; border-radius:5px; width:100px;"><br><br>
+
+  <p class="small-note">Minimum 7 hours for small homes. Larger spaces may increase hours automatically.</p>
+
+  <div style="margin-top:8px;">
+    <strong>Estimated Hours:</strong> <span id="deepHoursDisplay">0.00</span><br>
+    <strong>Estimated Cost:</strong> $<span id="deepCostDisplay">0.00</span>
+  </div>
+</div>
+
+<!-- Travel Time Fee Estimator -->
+<div id="travelOptions" style="margin-top:15px;">
+  <h3>Travel Time Fee Estimation</h3>
+  <p>Estimate additional cost based on travel duration.</p>
+
+  <label>Rate Type:</label><br>
+  <select id="travelType" onchange="calculateEstimate()" style="padding:5px; border-radius:5px;">
+    <option value="residential" selected>Residential ($38/hr)</option>
+    <option value="commercial">Commercial ($44/hr)</option>
+  </select><br><br>
+
+  <label>Travel Time (minutes):</label><br>
+  <input type="number" id="travelMinutes" placeholder="e.g. 45" min="0" max="120" step="5"
+         oninput="calculateEstimate()" style="padding:5px; border-radius:5px; width:100px;"><br><br>
+
+  <div>
+    <strong>Travel Fee:</strong> $<span id="travelCostDisplay">0.00</span>
+  </div>
+</div>
+
+
+
+<div class="total-box">
+  <h3>Final Estimate Invoice</h3>
+  <pre id="finalInvoice" class="invoice"></pre>
+
+  <!-- 🔹 Added Visit Estimation Finalization and Book Button -->
+  <button id="finalizeVisitBtn" style="display:none;" onclick="finalizeVisitEstimation()">Finalize Visit Estimation</button>
+  <button id="bookButton" disabled>Book Service</button>
+</div>
+
+
+  
+
   <script>
-    // ====== Load Original Client Estimation ======
-    window.onload = function() {
-      const estimate = localStorage.getItem("steamInvoice") || "No previous estimation found.";
-      document.getElementById("originalEstimate").innerText = estimate;
-    };
 
-    // ====== Update Stair Price ======
-    function updateStairs(flights) {
-      flights = Math.max(0, Math.min(15, parseInt(flights) || 0));
-      let totalPrice = Math.min(flights * 5, 75);
-      document.getElementById("stairsCountDisplay").innerText = flights;
-      document.getElementById("stairsPrice").innerText = totalPrice.toFixed(2);
-      calculateEstimate();
-    }
+    // 🔹 Handle Commercial toggle visibility
+function toggleVisitOption() {
+  const rateType = document.querySelector('input[name="rateType"]:checked').value;
+  document.getElementById("visitOption").style.display = (rateType === "commercial") ? "block" : "none";
 
-    // ====== Dynamic Estimate Recalculation ======
-    const table = document.getElementById("estimateTable");
-    const updatedEstimateBox = document.getElementById("updatedEstimate");
+  if (rateType !== "commercial") {
+    document.getElementById("visitEstimation").checked = false;
+    toggleVisitEstimation(false);
+  }
+}
 
+// 🔹 Handle Visit Estimation behavior
+function toggleVisitEstimation() {
+  const isVisit = document.getElementById("visitEstimation").checked;
+  const alertBox = document.getElementById("visitAlert");
+  const successBox = document.getElementById("visitSuccess");
+  const bookBtn = document.getElementById("bookButton");
+  const finalizeBtn = document.getElementById("finalizeVisitBtn");
+
+  if (isVisit) {
+    alertBox.style.display = "block";
+    successBox.style.display = "none";
+    finalizeBtn.style.display = "inline-block";
+    bookBtn.disabled = true;
+    alert("Invoice is paused until visit estimation is processed. You can still estimate, but cannot book until the visit is complete.");
+  } else {
+    alertBox.style.display = "none";
+    successBox.style.display = "none";
+    finalizeBtn.style.display = "none";
+    bookBtn.disabled = false;
+  }
+
+  calculateEstimate();
+}
+
+// 🔹 When visit estimation finalized
+function finalizeVisitEstimation() {
+  document.getElementById("visitAlert").style.display = "none";
+  document.getElementById("visitSuccess").style.display = "block";
+  document.getElementById("bookButton").disabled = false;
+  document.getElementById("finalizeVisitBtn").style.display = "none";
+  alert("Visit estimation finalized. You can now proceed to booking.");
+}
+
+    // Main calculator
     function calculateEstimate() {
+      const breakdown = [];
       let subtotal = 0;
-      let items = [];
-      const rows = table.querySelectorAll("tr");
 
-      rows.forEach(row => {
-        const cb = row.querySelector("input[type=checkbox]");
-        const qty = row.querySelector("input[type=number]");
-        if (cb && cb.checked && !cb.id.includes("stairs")) {
-          const price = parseFloat(cb.getAttribute("data-price"));
-          const count = parseInt(qty.value);
-          const total = price * count;
-          subtotal += total;
-          items.push(`${row.cells[1].innerText} ×${count} ....... $${total}`);
-        }
-      });
+      // ----- Maintenance -----
+      if (document.getElementById("serviceMaintenance").checked) {
+        document.getElementById("maintenanceOptions").style.display = "block";
 
-      const stairsCheck = document.getElementById("stairsCheck");
-      if (stairsCheck.checked) {
-        const flights = document.getElementById("stairsCountDisplay").innerText;
-        const price = parseFloat(document.getElementById("stairsPrice").innerText);
-        subtotal += price;
-        items.push(`Stair Flights (${flights}) ....... $${price}`);
+        const rateType = document.querySelector('input[name="rateType"]:checked').value;
+        const rate = (rateType === "residential") ? 38 : 44;
+        toggleVisitOption();
+        // Show note only for residential
+if (rateType === "residential") {
+  document.getElementById("residentialNote").style.display = "block";
+} else {
+  document.getElementById("residentialNote").style.display = "none";
+}
+
+        // kitchen
+        let kitchenBase = 4;
+        let kitchenLargeAdd = document.getElementById("kitchenLarge").checked ? 1.5 : 0;
+        let kitchenExtra = parseFloat(document.getElementById("kitchenExtra").value) || 0;
+        let kitchen = round2(kitchenBase + kitchenLargeAdd + kitchenExtra);
+        document.getElementById("kitchenExtraDisplay").innerText = kitchenExtra.toFixed(2);
+        document.getElementById("kitchenHours").innerText = kitchen.toFixed(2);
+
+        // bedroom
+        let bedroomBase = 1;
+        let bedroomLargeAdd = document.getElementById("bedroomLarge").checked ? 0.5 : 0;
+        let bedroomExtra = parseFloat(document.getElementById("bedroomExtra").value) || 0;
+        let bedroom = round2(bedroomBase + bedroomLargeAdd + bedroomExtra);
+        document.getElementById("bedroomExtraDisplay").innerText = bedroomExtra.toFixed(2);
+        document.getElementById("bedroomHours").innerText = bedroom.toFixed(2);
+
+        // bathroom
+        let bathroomBase = 2.5;
+        let bathroomLargeAdd = document.getElementById("bathroomLarge").checked ? 1 : 0;
+        let bathroomExtra = parseFloat(document.getElementById("bathroomExtra").value) || 0;
+        let bathroom = round2(bathroomBase + bathroomLargeAdd + bathroomExtra);
+        document.getElementById("bathroomExtraDisplay").innerText = bathroomExtra.toFixed(2);
+        document.getElementById("bathroomHours").innerText = bathroom.toFixed(2);
+
+        // entryway
+        let entryBase = 0.5;
+        let entryExtra = parseFloat(document.getElementById("entryExtra").value) || 0;
+        let entryway = round2(entryBase + entryExtra);
+        document.getElementById("entryExtraDisplay").innerText = entryExtra.toFixed(2);
+        document.getElementById("entryHours").innerText = entryway.toFixed(2);
+
+        // total hours and minimum enforcement
+        let totalHours = kitchen + bedroom + bathroom + entryway;
+let minHours;
+
+if (rateType === "residential") {
+  minHours = 3; // Minimum 3 hours for residential
+} else {
+  minHours = 6; // 3 hrs x 2 cleaners for commercial
+}
+
+let totalHoursApplied = (totalHours < minHours) ? minHours : totalHours;
+
+
+        let maintenanceCost = round2(totalHoursApplied * rate);
+        subtotal += maintenanceCost;
+        breakdown.push(`Maintenance Clean (${rateType}, ${totalHoursApplied.toFixed(2)} hrs @ $${rate}/hr) .... $${maintenanceCost.toFixed(2)}`);
+      } else {
+        // hide maintenance options if not checked
+        document.getElementById("maintenanceOptions").style.display = "none";
       }
 
-      let tax = subtotal * 0.05;
-      let total = subtotal + tax;
+      // ----- Steam Clean (pull from estimation.html via localStorage) -----
+      if (document.getElementById("serviceSteam").checked) {
+        document.getElementById("serviceSteam").checked = true; // ensure UI state
+        const steamInvoice = localStorage.getItem("steamInvoice");
+        const steamTotal = parseFloat(localStorage.getItem("steamTotal") || "0");
 
-      updatedEstimateBox.innerText = 
-`ADJUSTED ESTIMATION
-----------------------------
-${items.join("\n")}
+        if (steamInvoice && steamTotal > 0) {
+          subtotal += steamTotal;
+          breakdown.push("---- Included Steam Clean Invoice (pulled from estimator) ----");
+          // include steam invoice text as-is (keeps formatting)
+          breakdown.push(steamInvoice);
+        } else {
+          // fallback
+          const fallbackSteam = 120;
+          subtotal += fallbackSteam;
+          breakdown.push(`Steam Clean (basic package) ................. $${fallbackSteam.toFixed(2)}`);
+        }
+      }
 
+    // ----- Smart Move Out Estimator -----
+if (document.getElementById("serviceMoveout").checked) {
+  document.getElementById("moveoutOptions").style.display = "block";
+
+  const size = document.getElementById("moveoutSize").value;
+  const sqft = parseFloat(document.getElementById("moveoutSqft").value) || 0;
+  const rate = parseFloat(document.getElementById("moveoutRate").value) || 0;
+
+  let baseHours =
+    (size === "small") ? 7 :
+    (size === "medium") ? 10 : 15;
+
+  let sqftFactor =
+    (size === "small") ? sqft / 300 :
+    (size === "medium") ? sqft / 250 : sqft / 200;
+
+  let estimatedHours = Math.max(baseHours, sqftFactor);
+  const totalCost = round2(estimatedHours * rate);
+
+  document.getElementById("moveoutHoursDisplay").innerText = estimatedHours.toFixed(2);
+  document.getElementById("moveoutCostDisplay").innerText = totalCost.toFixed(2);
+
+  if (rate > 0 && sqft > 0) {
+    subtotal += totalCost;
+    breakdown.push(
+      `Move Out Clean (${size}) — ${sqft.toFixed(0)} sqft, ${estimatedHours.toFixed(2)} hrs @ $${rate}/hr ......... $${totalCost.toFixed(2)}`
+    );
+  }
+} else {
+  document.getElementById("moveoutOptions").style.display = "none";
+}
+
+
+
+// ----- Smart Deep Clean Estimator -----
+if (document.getElementById("serviceDeep").checked) {
+  document.getElementById("deepOptions").style.display = "block";
+
+  const size = document.getElementById("deepSize").value;
+  const sqft = parseFloat(document.getElementById("deepSqft").value) || 0;
+  const rate = parseFloat(document.getElementById("deepRate").value) || 0;
+
+  // Estimate hours based on size and sqft
+  let baseHours =
+    (size === "small") ? 7 :
+    (size === "medium") ? 10 : 15;
+
+  let sqftFactor =
+    (size === "small") ? sqft / 300 :
+    (size === "medium") ? sqft / 250 : sqft / 200;
+
+  let estimatedHours = Math.max(baseHours, sqftFactor);
+  const totalCost = round2(estimatedHours * rate);
+
+  document.getElementById("deepHoursDisplay").innerText = estimatedHours.toFixed(2);
+  document.getElementById("deepCostDisplay").innerText = totalCost.toFixed(2);
+
+  if (rate > 0 && sqft > 0) {
+    subtotal += totalCost;
+    breakdown.push(
+      `Deep Clean (${size}) — ${sqft.toFixed(0)} sqft, ${estimatedHours.toFixed(2)} hrs @ $${rate}/hr ......... $${totalCost.toFixed(2)}`
+    );
+  }
+} else {
+  document.getElementById("deepOptions").style.display = "none";
+}
+
+// ----- Travel Time Fee Estimator -----
+const travelType = document.getElementById("travelType").value;
+const travelMinutes = parseFloat(document.getElementById("travelMinutes").value) || 0;
+const travelRate = (travelType === "residential") ? 38 : 44;
+
+if (travelMinutes > 0) {
+  const travelHours = travelMinutes / 60;
+  const travelCost = round2(travelHours * travelRate);
+  document.getElementById("travelCostDisplay").innerText = travelCost.toFixed(2);
+  subtotal += travelCost;
+  breakdown.push(
+    `Travel Time Fee (${travelType}) — ${travelMinutes} mins @ $${travelRate}/hr ......... $${travelCost.toFixed(2)}`
+  );
+} else {
+  document.getElementById("travelCostDisplay").innerText = "0.00";
+}
+
+
+      // ----- Tax & total -----
+      const tax = round2(subtotal * 0.05);
+      const total = round2(subtotal + tax);
+
+      // Build final invoice text clearly
+      let invoiceText = `FINAL CLEANING ESTIMATE
+--------------------------------
+${breakdown.join("\n\n")}
+--------------------------------
 Subtotal: $${subtotal.toFixed(2)}
 Tax (5%): $${tax.toFixed(2)}
-Total: $${total.toFixed(2)}
+TOTAL DUE: $${total.toFixed(2)}
 `;
+
+      document.getElementById("finalInvoice").innerText = invoiceText;
     }
 
-    document.addEventListener("input", (e) => {
-      if (["checkbox", "number", "range"].includes(e.target.type)) {
-        calculateEstimate();
-      }
-    });
+    // small helper to avoid float precision issues
+    function round2(n){ return Math.round(n*100)/100; }
 
-    // ====== File Upload Display ======
-    const fileInput = document.getElementById("attachments");
-    const fileList = document.getElementById("fileList");
-    fileInput.addEventListener("change", () => {
-      const files = Array.from(fileInput.files);
-      fileList.textContent = files.map(f => f.name).join(", ") || "No files selected.";
-    });
-
-    // ====== Form Submission ======
-    const form = document.getElementById("siteVisitForm");
-    const confirmationMsg = document.getElementById("confirmationMsg");
-    form.addEventListener("submit", e => {
-      e.preventDefault();
-      setTimeout(() => {
-        confirmationMsg.style.display = "block";
-        form.reset();
-        fileList.textContent = "";
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }, 600);
-    });
-  </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Step 4 — Manager: Review & Finalize Quotation</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      background-color: #f6f8fa;
-      color: #333;
-    }
-
-    /* ==== Floating Side Buttons ==== */
-    .side-buttons {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 1000;
-    }
-    .side-buttons button {
-      background: #007bff;
-      color: #fff;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-      font-weight: 600;
-      transition: 0.3s;
-    }
-    .side-buttons button:hover {
-      background: #0056b3;
-    }
-
-    /* ==== Page Layout ==== */
-    .page-container {
-      max-width: 1200px;
-      margin: 60px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-      color: #007bff;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    section {
-      margin-bottom: 25px;
-    }
-
-    h2 {
-      color: #0056b3;
-      border-bottom: 2px solid #007bff;
-      padding-bottom: 5px;
-      margin-bottom: 10px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-    }
-
-    th {
-      background: #007bff;
-      color: white;
-      text-align: left;
-    }
-
-    input[type="text"], textarea, input[type="number"] {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    .final-box {
-      background: #eef4ff;
-      padding: 15px;
-      border-radius: 10px;
-      font-weight: bold;
-      font-size: 16px;
-      border: 1px solid #bcd4ff;
-    }
-
-    .action-buttons {
-      display: flex;
-      gap: 15px;
-      margin-top: 25px;
-      justify-content: center;
-    }
-
-    .action-buttons button {
-      padding: 12px 22px;
-      font-size: 15px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: 0.3s;
-    }
-
-    .approve { background: #28a745; color: white; }
-    .approve:hover { background: #218838; }
-
-    .revise { background: #ffc107; color: #222; }
-    .revise:hover { background: #e0a800; }
-
-    .reject { background: #dc3545; color: white; }
-    .reject:hover { background: #c82333; }
-
-    .image-preview {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    .image-preview img {
-      width: 120px;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-  </style>
-</head>
-<body>
-
-  <!-- Floating Navigation Buttons -->
-  <div class="side-buttons">
-    <button onclick="location.href='./step3.html'">← Step 3</button>
-    <button onclick="location.href='./step5&6.html'">→ Step 5</button>
-  </div>
-
-  <div class="page-container">
-    <h1>Step 4 — Manager: Review & Finalize Quotation</h1>
-
-    <!-- Booking Info -->
-    <section>
-      <h2>Booking Info</h2>
-      <table>
-        <tr><th>Client Name</th><td id="clientName">Jane Doe</td></tr>
-        <tr><th>Service Type</th><td id="serviceType">Move-Out Cleaning</td></tr>
-        <tr><th>Date / Time</th><td id="bookingDate">Nov 10, 2025 - 10:00 AM</td></tr>
-        <tr><th>Status</th><td id="status">visit_completed</td></tr>
-      </table>
-    </section>
-
-    <!-- Supervisor Report -->
-    <section>
-      <h2>Supervisor Report</h2>
-      <p><strong>Site Notes:</strong></p>
-      <textarea rows="4" placeholder="Supervisor's findings and remarks...">Client requested detailed carpet cleaning. Property well-maintained, requires deep clean for kitchen and living area.</textarea>
-
-      <p><strong>Updated Price Estimate:</strong></p>
-      <input type="text" value="$340 - $380 (before tax)">
-
-      <div class="image-preview">
-        <img src="https://placehold.co/150x100" alt="Site Photo 1">
-        <img src="https://placehold.co/150x100" alt="Site Photo 2">
-      </div>
-    </section>
-
-    <!-- Estimation Breakdown -->
-    <section>
-      <h2>Estimation Breakdown</h2>
-      <table>
-        <tr><th>Item</th><th>Qty</th><th>Unit Price ($)</th><th>Total ($)</th></tr>
-        <tr><td>Living Room Steam Clean</td><td>1</td><td>75</td><td>75</td></tr>
-        <tr><td>Bedroom Steam Clean</td><td>2</td><td>60</td><td>120</td></tr>
-        <tr><td>Rug Deep Clean</td><td>1</td><td>50</td><td>50</td></tr>
-        <tr><td>Stair Flight</td><td>5</td><td>5</td><td>25</td></tr>
-      </table>
-    </section>
-
-    <!-- Task List -->
-    <section>
-      <h2>Task List (Editable)</h2>
-      <textarea rows="4" placeholder="Enter tasks to be performed...">✓ Carpet steam cleaning
-✓ Deep clean kitchen appliances
-✓ Wash and sanitize bathroom</textarea>
-    </section>
-
-    <!-- Upselling Options -->
-    <section>
-      <h2>Upselling Options</h2>
-      <label><input type="checkbox" id="addDeepClean"> Add Deep Clean (+$120)</label><br>
-      <label><input type="checkbox" id="addCarpetProtect"> Add Carpet Protection (+$60)</label>
-    </section>
-
-    <!-- Final Computation -->
-    <section>
-      <h2>Final Price Computation</h2>
-      <div class="final-box">
-        Subtotal: $270<br>
-        Tax (5%): $13.50<br>
-        Upsells: $0<br>
-        <strong>Final Total: <span id="finalTotal">$283.50</span></strong>
-      </div>
-    </section>
-
-    <!-- Internal Notes -->
-    <section>
-      <h2>Internal Notes (For Team)</h2>
-      <textarea rows="3" placeholder="Internal communication notes..."></textarea>
-    </section>
-
-    <!-- Manager Actions -->
-    <div class="action-buttons">
-      <button class="approve" onclick="generateQuotation()">✅ Generate Quotation</button>
-      <button class="revise" onclick="requestRevision()">🔁 Request Revision</button>
-      <button class="reject" onclick="rejectBooking()">❌ Reject Booking</button>
-    </div>
-  </div>
-
-  <script>
-    function recalcFinalTotal() {
-      let baseTotal = 270;
-      let tax = 13.5;
-      let upsell = 0;
-
-      if (document.getElementById("addDeepClean").checked) upsell += 120;
-      if (document.getElementById("addCarpetProtect").checked) upsell += 60;
-
-      let final = baseTotal + tax + upsell;
-      document.getElementById("finalTotal").textContent = `$${final.toFixed(2)}`;
-    }
-
-    document.querySelectorAll("#addDeepClean, #addCarpetProtect").forEach(el => {
-      el.addEventListener("change", recalcFinalTotal);
-    });
-
-    function generateQuotation() {
-      alert("Quotation generated and sent to QuickBooks. Status: quotation_sent ✅");
-    }
-
-    function requestRevision() {
-      alert("Revision request sent to Supervisor. Status: revision_requested 🔁");
-    }
-
-    function rejectBooking() {
-      alert("Booking has been rejected. Status: rejected ❌");
-    }
-  </script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Client Panel — Quotation & Invoice</title>
-
-<style>
-  body {
-    margin: 0;
-    font-family: "Poppins", sans-serif;
-    background: #f2f3f7;
-    color: #222;
+    // recalc when ANY input changes (checkbox/radio/range)
+    document.addEventListener('input', function(e){
+  const relevantTypes = ['checkbox','radio','range','number','select-one'];
+  if (relevantTypes.includes(e.target.type) || e.target.name === 'rateType') {
+    calculateEstimate();
   }
+});
 
-  /* === Fixed Navigation Buttons (Left side) === */
-  .nav-buttons {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    z-index: 1000;
-  }
+    // Also recalc on load (pulls Steam if available)
+    document.addEventListener('DOMContentLoaded', calculateEstimate);
+    // Fix: Ensure immediate recalculation when switching Residential/Commercial
+document.querySelectorAll('input[name="rateType"]').forEach(radio => {
+  radio.addEventListener('click', calculateEstimate);
+});
 
-  .nav-buttons button {
-    background: #2b5fad;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 15px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.3s;
-  }
-
-  .nav-buttons button:hover {
-    background: #1f4e8a;
-  }
-
-  /* === Mobile Panel Container === */
-  .mobile-panel {
-    max-width: 420px;
-    margin: 80px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 16px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  }
-
-  .mobile-header {
-    text-align: center;
-    font-size: 1.2em;
-    font-weight: 700;
-    margin-bottom: 15px;
-  }
-
-  .card {
-    background: #f9fafc;
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-  }
-
-  .card h3 {
-    margin: 0 0 5px;
-    font-size: 1em;
-    color: #2b5fad;
-  }
-
-  .card p {
-    margin: 4px 0;
-    font-size: 0.9em;
-  }
-
-  .btn-action {
-    display: block;
-    width: 100%;
-    background: #2b5fad;
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 12px;
-    margin-top: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-
-  .btn-action:hover {
-    background: #1d4785;
-  }
-
-  /* Step content hidden by default */
-  .step {
-    display: none;
-  }
-
-  .active {
-    display: block;
-  }
-
-  /* Payment Methods */
-  .payment-methods {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .payment-method {
-    flex: 1;
-    background: #f0f2f7;
-    text-align: center;
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 0.9em;
-    font-weight: 600;
-    cursor: pointer;
-    border: 2px solid transparent;
-  }
-
-  .payment-method:hover {
-    border-color: #2b5fad;
-  }
-</style>
-</head>
-
-<body>
-
-<!-- Left Fixed Buttons -->
-<div class="nav-buttons">
-  <button id="step4Btn" onclick="window.location.href='./step4.html'">← Step 4</button>
-  <button id="step5Btn" onclick="showStep('step5')">Step 5</button>
-  <button id="step6Btn" onclick="showStep('step6')">Step 6</button>
-</div>
-
-<!-- Step 5: Quotation Review -->
-<div id="step5" class="mobile-panel step active">
-  <div class="mobile-header">Step 5 — Client: Review & Approve Quotation</div>
-  <div class="card">
-    <h3>Service Breakdown</h3>
-    <p>Deep Cleaning Package — 3 Rooms + 1 Bathroom</p>
-    <p>Upsells: Carpet Steam Clean, Kitchen Degrease</p>
-  </div>
-  <div class="card">
-    <h3>Total Amount</h3>
-    <p>Subtotal: $280.00 CAD</p>
-    <p>Tax (13% HST): $36.40 CAD</p>
-    <p><strong>Total: $316.40 CAD</strong></p>
-    <p>Quotation valid until: <strong>Nov 20, 2025</strong></p>
-  </div>
-  <div class="card">
-    <h3>Client Options</h3>
-    <button class="btn-action" onclick="approveQuotation()">Approve Quotation</button>
-    <button class="btn-action" style="background:#ff5959" onclick="declineQuotation()">Decline / Request Revision</button>
-  </div>
-</div>
-
-<!-- Step 6: Pay Invoice -->
-<div id="step6" class="mobile-panel step">
-  <div class="mobile-header">Step 6 — Client: Pay Invoice (In-App)</div>
-  <div class="card">
-    <h3>Invoice Summary</h3>
-    <p>Quotation Ref#: QTN-CA-1056</p>
-    <p>Service: Deep Cleaning Package</p>
-    <p>Total: $316.40 CAD</p>
-    <p>Status: <strong>Pending Payment</strong></p>
-  </div>
-  <div class="card">
-    <h3>Payment Methods</h3>
-    <div class="payment-methods">
-      <div class="payment-method">PayPal</div>
-      <div class="payment-method">Debit Card</div>
-      <div class="payment-method">Credit Card</div>
-    </div>
-  </div>
-  <div class="card">
-    <button class="btn-action" onclick="payNow()">Pay Now</button>
-  </div>
-</div>
-
-<script>
-  function showStep(stepId) {
-    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-    document.getElementById(stepId).classList.add('active');
-
-    const step4Btn = document.getElementById('step4Btn');
-    const step6Btn = document.getElementById('step6Btn');
-
-    if (stepId === 'step6') {
-      // Hide Step 4 button
-      step4Btn.style.display = 'none';
-      // Change Step 6 button to Step 7 and set redirect
-      step6Btn.textContent = 'Step 7';
-      step6Btn.onclick = () => window.location.href = './step7.html';
-    } else {
-      // Restore buttons for Step 5
-      step4Btn.style.display = 'block';
-      step6Btn.textContent = 'Step 6';
-      step6Btn.onclick = () => showStep('step6');
-    }
-  }
-
-  function approveQuotation() {
-    alert("Quotation Approved. Redirecting to Invoice Page...");
-    showStep('step6');
-  }
-
-  function declineQuotation() {
-    alert("Quotation Revision Requested. Notification sent to Manager.");
-  }
-
-  function payNow() {
-    alert("Processing Payment via Gateway... Payment Successful!");
-  }
-</script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Step 7 — Client Appointment Details</title>
-  <style>
-    body {
-      font-family: "Poppins", sans-serif;
-      background: #f4f7fb;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      color: #222;
-    }
-
-    /* ====== Navigation Buttons ====== */
-    .nav-buttons {
-      position: fixed;
-      top: 15px;
-      left: 15px;
-      display: flex;
-      gap: 10px;
-      z-index: 100;
-    }
-
-    .nav-buttons button {
-      background: #004aad;
-      color: #fff;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .nav-buttons button:hover {
-      background: #00357e;
-    }
-
-    /* ===== Container ===== */
-    .container {
-      margin: 100px auto 40px;
-      background: white;
-      border-radius: 12px;
-      padding: 25px;
-      width: 95%;
-      max-width: 450px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 1.4em;
-      color: #004aad;
-    }
-
-    .status {
-      text-align: center;
-      color: #1a7f37;
-      background: #e6f4ea;
-      border-radius: 8px;
-      padding: 6px;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 20px;
-    }
-
-    .appointment-card {
-      background: #f8fbff;
-      border-radius: 10px;
-      padding: 15px;
-      border: 1px solid #d6e3ff;
-      margin-bottom: 15px;
-    }
-
-    .appointment-card p {
-      margin: 6px 0;
-      font-size: 14px;
-    }
-
-    .label {
-      font-weight: 600;
-      color: #004aad;
-    }
-
-    .task-list {
-      background: #f1f5ff;
-      border: 1px solid #c8d9ff;
-      border-radius: 10px;
-      padding: 10px 15px;
-      margin-top: 10px;
-    }
-
-    .task-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 0;
-    }
-
-    .task-item input {
-      accent-color: #004aad;
-    }
-
-    .notification {
-      background: #fff8e1;
-      border: 1px solid #ffecb3;
-      color: #7a5e00;
-      font-size: 13px;
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 15px;
-    }
-
-    .footer-note {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 13px;
-      color: #777;
-    }
-
-    /* Animation for confirmation */
-    .success-check {
-      text-align: center;
-      font-size: 40px;
-      color: #1a7f37;
-      animation: pop 0.5s ease;
-    }
-    @keyframes pop {
-      0% { transform: scale(0); opacity: 0; }
-      80% { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(1); }
-    }
-
-  </style>
-</head>
-<body>
-
-  <!-- Navigation Buttons -->
-  <div class="nav-buttons">
-    <button onclick="window.location.href='./step5&6.html'">← Step 6</button>
-    <button onclick="window.location.href='step8.html'">→ Step 8</button>
-  </div>
-
-  <div class="container">
-    <h1>Step 7 — Appointment Details</h1>
-
-    <div class="status">Status: appointment_ready ✅</div>
-
-    <div class="success-check">✔</div>
-
-    <div class="appointment-card">
-      <p><span class="label">Appointment ID:</span> <span id="appointmentID">CA-APT-10284</span></p>
-      <p><span class="label">Client:</span> Sarah Johnson</p>
-      <p><span class="label">Service Type:</span> Deep Clean + Carpet Steam</p>
-      <p><span class="label">Date/Time:</span> Nov 12, 2025 — 10:00 AM</p>
-      <p><span class="label">Location:</span> 25 Maple Street, Toronto, ON</p>
-      <p><span class="label">Assigned Cleaner:</span> James Cooper</p>
-      <p><span class="label">Total Price:</span> $280.00 CAD</p>
-    </div>
-
-    <h3 style="color:#004aad;">Task List (Unlocked)</h3>
-    <div class="task-list">
-      <div class="task-item"><input type="checkbox" checked> Living Room Deep Clean</div>
-      <div class="task-item"><input type="checkbox" checked> Steam Carpet Cleaning</div>
-      <div class="task-item"><input type="checkbox"> Kitchen Sanitization</div>
-      <div class="task-item"><input type="checkbox"> Balcony & Windows</div>
-    </div>
-
-    <div class="notification">
-      🔔 Payment confirmed. Appointment successfully created and ready for scheduling.
-    </div>
-
-    <div class="footer-note">
-      This page appears in the <strong>Client Dashboard → Appointment Details Tab</strong> after payment confirmation.
-    </div>
-  </div>
-
-  <script>
-    // Auto-generate random appointment ID for demo
-    document.getElementById("appointmentID").innerText =
-      "CA-APT-" + Math.floor(Math.random() * 90000 + 10000);
-
-    // Optional: Mark tasks as complete interactively
-    const tasks = document.querySelectorAll(".task-item input");
-    tasks.forEach(t => {
-      t.addEventListener("change", () => {
-        t.parentElement.style.textDecoration = t.checked ? "line-through" : "none";
-      });
-    });
   </script>
 </body>
 </html>
