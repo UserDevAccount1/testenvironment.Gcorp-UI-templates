@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Step 7 — Appointment Details</title>
+
+  <!-- ================== GLOBAL STYLES ================== -->
+  <style>
+    :root {
+      --primary: #004aad;
+      --success: #1a7f37;
+      --warning: #7a5e00;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --border: #d6e3ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", system-ui, sans-serif;
+      background: var(--bg);
+      color: #222;
+      min-height: 100vh;
+    }
+
+    h1, h2, h3 {
+      margin: 0 0 10px;
+      color: var(--primary);
+    }
+
+    p { margin: 6px 0; font-size: 14px; }
+
+    /* ================== NAVIGATION ================== */
+    .nav-buttons {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .nav-buttons button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* ================== LAYOUT ================== */
+    .container {
+      max-width: 480px;
+      margin: 90px auto 40px;
+      padding: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    .label {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    /* ================== STATUS ================== */
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #e6f4ea;
+      color: var(--success);
+      font-weight: 600;
+      font-size: 13px;
+      padding: 8px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .success-check {
+      text-align: center;
+      font-size: 42px;
+      color: var(--success);
+      animation: pop 0.5s ease;
+      margin-bottom: 10px;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); opacity: 0; }
+      80% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    /* ================== TASK LIST ================== */
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 14px;
+    }
+
+    .task-item.completed {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .task-item input {
+      pointer-events: none; /* client readonly */
+      accent-color: var(--primary);
+    }
+
+    .task-photo {
+      margin-left: 26px;
+      margin-top: 6px;
+    }
+
+    .task-photo img {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 6px;
+      border: 1px solid var(--border);
+    }
+
+    /* ================== PROGRESS ================== */
+    .progress-bar {
+      background: #eef2ff;
+      border-radius: 10px;
+      overflow: hidden;
+      height: 10px;
+      margin-top: 10px;
+    }
+
+    .progress {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* ================== BUTTONS ================== */
+    .btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    /* ================== NOTIFICATION ================== */
+    .notification {
+      background: #fff8e1;
+      border: 1px solid #ffecb3;
+      color: var(--warning);
+      font-size: 13px;
+      padding: 12px;
+      border-radius: 10px;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================== NAV ================== -->
+<div class="nav-buttons">
+  <button onclick="location.href='step5&6.html'">← Step 6</button>
+  <button onclick="location.href='step8.html'">→ Step 8</button>
+  <button onclick="location.href='ManageBooking-nodecontent.html'">goback to node presentation</button>
+</div>
+
+<div class="container">
+
+  <!-- ================== HEADER ================== -->
+  <h1>Step 7 — Appointment Details</h1>
+  <div class="status">Status: appointment_ready ✅</div>
+  <div class="success-check">✔</div>
+
+  <!-- ================== APPOINTMENT CARD ================== -->
+  <div class="card">
+    <p><span class="label">Appointment ID:</span> <span id="appointmentID"></span></p>
+    <p><span class="label">Client:</span> Sarah Johnson</p>
+    <p><span class="label">Service:</span> Deep Clean + Carpet Steam</p>
+    <p><span class="label">Date & Time:</span> Nov 12, 2025 — 10:00 AM</p>
+    <p><span class="label">Location:</span> 25 Maple Street, Toronto, ON</p>
+    <p><span class="label">Cleaner:</span> James Cooper (⭐ 4.8/5)</p>
+    <p><span class="label">Cleaner Phone:</span> <a href="tel:+14165551234">+1 416 555 1234</a></p>
+    <p><span class="label">Total Price:</span> $280.00 CAD</p>
+    <p><span class="label">Deposit:</span> Residential — Optional (Paid)</p>
+  </div>
+
+  <!-- ================== TASK LIST ================== -->
+  <div class="card">
+    <h3>Task List (Cleaner Managed)</h3>
+
+    <div class="task-item completed">
+      <input type="checkbox" checked /> Living Room Deep Clean
+    </div>
+    <div class="task-photo">
+      <img src="https://via.placeholder.com/70" />
+      <img src="https://via.placeholder.com/70" />
+    </div>
+
+    <div class="task-item completed">
+      <input type="checkbox" checked /> Steam Carpet Cleaning
+    </div>
+
+    <div class="task-item">
+      <input type="checkbox" /> Kitchen Sanitization
+    </div>
+
+    <div class="task-item">
+      <input type="checkbox" /> Balcony & Windows
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress" id="progress"></div>
+    </div>
+    <p id="progressText" style="font-size:12px; color:#555"></p>
+  </div>
+
+  <!-- ================== NOTES ================== -->
+  <div class="card">
+    <h3>Client Instructions</h3>
+    <p id="notes">Focus on balcony windows.</p>
+    <button class="btn btn-outline" onclick="addNote()">Add / Edit Notes</button>
+  </div>
+
+  <!-- ================== NOTIFICATION ================== -->
+  <div class="notification">
+    🔔 Payment confirmed. Email & SMS with appointment summary sent. Download the app for live cleaner updates.
+  </div>
+
+  <!-- ================== APP PROMPT ================== -->
+  <div class="card">
+    <h3>Get the Mobile App</h3>
+    <p>Track tasks, photos, cleaner ETA, and updates in real time.</p>
+    <button class="btn btn-primary">Download App</button>
+  </div>
+
+  <div class="footer-note">
+    Client Dashboard → Appointment Details Tab
+  </div>
+</div>
+
+<!-- ================== JAVASCRIPT ================== -->
+<script>
+  // Generate Appointment ID
+  document.getElementById("appointmentID").textContent =
+    "CA-APT-" + Math.floor(Math.random() * 90000 + 10000);
+
+  // Progress Calculation
+  const tasks = document.querySelectorAll('.task-item');
+  const completed = document.querySelectorAll('.task-item.completed');
+  const progress = Math.round((completed.length / tasks.length) * 100);
+
+  document.getElementById('progress').style.width = progress + '%';
+  document.getElementById('progressText').textContent = `Progress: ${progress}% completed`;
+
+  // Notes
+  function addNote() {
+    const note = prompt('Add instructions for your cleaner:');
+    if (note) document.getElementById('notes').textContent = note;
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grey Line Overbilling Intelligence Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --primary: #2b5fad;
+    --primary-dark: #1f4e8a;
+    --primary-light: #eef5ff;
+    --secondary: #10b981;
+    --secondary-dark: #0da271;
+    --warning: #f59e0b;
+    --danger: #dc3545;
+    --success: #28a745;
+    --light-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --grey-line: #6b7280;
+    --grey-line-light: #9ca3af;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f6f9ff 0%, #f1f5f9 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Dashboard Layout */
+  .dashboard-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: linear-gradient(180deg, var(--grey-line) 0%, #4b5563 100%);
+    color: white;
+    padding: 25px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .admin-profile {
+    text-align: center;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 25px;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+  }
+
+  .admin-name {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .admin-role {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 10px;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .nav-item.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-weight: 600;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--warning);
+    color: white;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  /* Main Content */
+  .main-content {
+    padding: 30px;
+    overflow-y: auto;
+  }
+
+  /* Header */
+  .content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .header-title h1 {
+    font-size: 28px;
+    color: var(--grey-line);
+    margin-bottom: 8px;
+  }
+
+  .header-title p {
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 15px;
+  }
+
+  .stat-box {
+    background: var(--card-bg);
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    text-align: center;
+    min-width: 120px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--grey-line);
+    margin-bottom: 5px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Dashboard Grid */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  /* Card Styles */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: var(--shadow);
+    margin-bottom: 25px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .card-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .card-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--grey-line), #4b5563);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  .card-title h2 {
+    font-size: 20px;
+    color: var(--grey-line);
+    margin-bottom: 4px;
+  }
+
+  .card-title p {
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  /* Toggle Switch */
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+  }
+
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+  }
+
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .toggle-slider {
+    background-color: var(--grey-line);
+  }
+
+  input:checked + .toggle-slider:before {
+    transform: translateX(30px);
+  }
+
+  /* Status Badge */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .status-active {
+    background: #e6f0ff;
+    color: var(--primary);
+  }
+
+  .status-inactive {
+    background: #f8f9fa;
+    color: var(--text-secondary);
+  }
+
+  .status-applied {
+    background: #e8fce8;
+    color: #2c7a2c;
+  }
+
+  .status-pending {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  /* Invoice Table */
+  .invoice-table-container {
+    overflow-x: auto;
+    margin: 20px 0;
+  }
+
+  .invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 900px;
+  }
+
+  .invoice-table thead {
+    background: var(--light-bg);
+  }
+
+  .invoice-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .invoice-table td {
+    padding: 15px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .invoice-table tbody tr {
+    transition: all 0.3s ease;
+  }
+
+  .invoice-table tbody tr:hover {
+    background: #f9f9ff;
+  }
+
+  .invoice-table tbody tr.selected {
+    background: var(--primary-light);
+    border-left: 4px solid var(--primary);
+  }
+
+  .amount-cell {
+    text-align: right;
+    font-weight: 600;
+  }
+
+  /* Control Panels */
+  .control-panel {
+    background: #f8f9fa;
+    border-radius: var(--radius);
+    padding: 25px;
+    margin: 20px 0;
+    border-left: 4px solid var(--grey-line);
+  }
+
+  .control-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+  }
+
+  .control-group {
+    padding: 20px;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+
+  .control-group h4 {
+    color: var(--grey-line);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .control-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  .control-label {
+    font-size: 14px;
+    color: var(--text-primary);
+    flex: 1;
+  }
+
+  .control-value {
+    font-weight: 600;
+    color: var(--grey-line);
+    min-width: 80px;
+    text-align: right;
+  }
+
+  .minutes-badge {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .slider-container {
+    margin-top: 10px;
+  }
+
+  .slider {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+    outline: none;
+    -webkit-appearance: none;
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--grey-line);
+    cursor: pointer;
+  }
+
+  /* Total Calculation Panel */
+  .total-panel {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px;
+    border-radius: var(--radius);
+    margin-top: 20px;
+  }
+
+  .total-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .total-header h3 {
+    font-size: 16px;
+    opacity: 0.9;
+    margin-bottom: 5px;
+  }
+
+  .total-value {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .total-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .breakdown-item {
+    text-align: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+  }
+
+  .breakdown-label {
+    font-size: 12px;
+    opacity: 0.9;
+    margin-bottom: 5px;
+  }
+
+  .breakdown-value {
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 16px 24px;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(43, 95, 173, 0.3);
+  }
+
+  .btn-grey {
+    background: var(--grey-line);
+    color: white;
+  }
+
+  .btn-grey:hover {
+    background: #4b5563;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(107, 114, 128, 0.3);
+  }
+
+  .btn-success {
+    background: var(--success);
+    color: white;
+  }
+
+  .btn-success:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+  }
+
+  .btn-outline {
+    background: white;
+    color: var(--grey-line);
+    border: 2px solid var(--grey-line);
+  }
+
+  .btn-outline:hover {
+    background: #f9fafb;
+  }
+
+  .btn-warning {
+    background: var(--warning);
+    color: white;
+  }
+
+  .btn-warning:hover {
+    background: #d97706;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+  }
+
+  .action-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 25px;
+  }
+
+  /* Reason Panel */
+  .reason-panel {
+    background: #fff8e6;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid var(--warning);
+  }
+
+  .reason-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .reason-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--warning);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+  }
+
+  /* Invoice Preview */
+  .invoice-preview {
+    background: white;
+    border-radius: var(--radius);
+    padding: 25px;
+    margin: 20px 0;
+    border: 2px solid var(--border);
+  }
+
+  .invoice-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+
+  .preview-table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .preview-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .grey-line-row {
+    background: #f8f9fa;
+    font-style: italic;
+    color: var(--grey-line);
+  }
+
+  .client-hidden {
+    opacity: 0.5;
+  }
+
+  /* NEW: Floating Window Styles */
+  .floating-window {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 1000px;
+    max-height: 90vh;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    z-index: 2000;
+    overflow: hidden;
+  }
+
+  .floating-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 30px;
+    background: linear-gradient(135deg, var(--grey-line) 0%, #4b5563 100%);
+    color: white;
+  }
+
+  .floating-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .floating-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .floating-body {
+    padding: 0;
+    max-height: calc(90vh - 80px);
+    overflow-y: auto;
+  }
+
+  .invoice-comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    min-height: 500px;
+  }
+
+  .invoice-before, .invoice-after {
+    padding: 30px;
+  }
+
+  .invoice-before {
+    background: #f8f9fa;
+    border-right: 2px solid var(--border);
+  }
+
+  .invoice-after {
+    background: white;
+  }
+
+  .comparison-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+  }
+
+  .comparison-table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+    background: var(--light-bg);
+  }
+
+  .comparison-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .comparison-table .highlight {
+    background: #e8fce8;
+    font-weight: 600;
+  }
+
+  .comparison-table .grey-line-highlight {
+    background: #f0f9ff;
+    color: var(--grey-line);
+    font-style: italic;
+  }
+
+  .reason-selection {
+    padding: 25px;
+    background: #f8f9fa;
+    border-top: 2px solid var(--border);
+  }
+
+  .reason-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .reason-option {
+    padding: 20px;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .reason-option:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
+
+  .reason-option.selected {
+    border-color: var(--grey-line);
+    background: var(--primary-light);
+  }
+
+  .reason-checkbox {
+    margin-right: 10px;
+  }
+
+  .floating-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1999;
+  }
+
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: var(--radius);
+    padding: 30px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .dashboard-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+      display: none;
+    }
+    
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .invoice-comparison {
+      grid-template-columns: 1fr;
+    }
+
+    .invoice-before {
+      border-right: none;
+      border-bottom: 2px solid var(--border);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .main-content {
+      padding: 20px;
+    }
+    
+    .content-header {
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .header-stats {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .action-buttons {
+      grid-template-columns: 1fr;
+    }
+    
+    .control-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .reason-options {
+      grid-template-columns: 1fr;
+    }
+    
+    .btn {
+      width: 100%;
+    }
+
+    .floating-window {
+      width: 95%;
+      max-height: 95vh;
+    }
+  }
+</style>
+</head>
+<body>
+  <!-- Dashboard Container -->
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="admin-profile">
+        <div class="profile-avatar">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <h2 class="admin-name">Billing Intelligence</h2>
+        <p class="admin-role">Grey Line Manager</p>
+        <div style="font-size: 13px; opacity: 0.8;">
+          Access: Managers/Supervisors/Owners Only
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="step12-greyline-feature.html" class="nav-item active">
+          <i class="fas fa-chart-line"></i>
+          Grey Line Dashboard
+        </a>
+        <button onclick="window.open('step12.html', '_blank')" class="nav-item">
+          <i class="fas fa-arrow-left"></i>
+          Back to Finalize Booking
+        </button>
+        <button class="nav-item">
+          <i class="fas fa-file-invoice-dollar"></i>
+          Invoice Management
+        </button>
+        <button class="nav-item">
+          <i class="fas fa-calculator"></i>
+          Revenue Analytics
+          <span class="nav-badge">New</span>
+        </button>
+        <button class="nav-item">
+          <i class="fas fa-history"></i>
+          Grey Line History
+        </button>
+        <button class="nav-item">
+          <i class="fas fa-cog"></i>
+          Configuration Settings
+        </button>
+        <button class="nav-item">
+          <i class="fas fa-question-circle"></i>
+          Help & Documentation
+        </button>
+      </nav>
+
+      <div style="margin-top: auto; padding-top: 20px; font-size: 12px; opacity: 0.7; text-align: center;">
+        <p><i class="fas fa-eye-slash"></i> Internal Billing Intelligence</p>
+        <p>© 2025 CleanPro Systems</p>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="content-header">
+        <div class="header-title">
+          <h1>Grey Line Overbilling Intelligence Dashboard</h1>
+          <p>Hidden billing intelligence for revenue optimization (Internal use only - Clients never see this)</p>
+        </div>
+        <div class="header-stats">
+          <div class="stat-box">
+            <div class="stat-value" id="totalInvoices">24</div>
+            <div class="stat-label">Pending Invoices</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="revenueRecovered">$1,240</div>
+            <div class="stat-label">Revenue Recovered</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="avgGreyLine">+28 min</div>
+            <div class="stat-label">Avg Grey Line</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Global Controls -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon">
+              <i class="fas fa-sliders-h"></i>
+            </div>
+            <div class="card-title">
+              <h2>Global Grey Line Controls</h2>
+              <p>Enable/disable and configure the Grey Line Overbilling feature</p>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 20px;">
+            <span style="font-weight: 600; color: var(--grey-line);">Feature Status:</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="globalGreyLineToggle" checked onchange="toggleGlobalGreyLine()">
+              <span class="toggle-slider"></span>
+            </label>
+            <div class="status-badge status-active" id="globalStatusBadge">
+              <i class="fas fa-toggle-on"></i> Active
+            </div>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="btn btn-grey" onclick="applyToAllPending()">
+            <i class="fas fa-bolt"></i>
+            Apply to All Pending Invoices
+          </button>
+          <button class="btn btn-outline" onclick="openConfigurationWizard()">
+            <i class="fas fa-magic"></i>
+            Smart Configuration Wizard
+          </button>
+          <button class="btn btn-outline" onclick="showGreyLineReport()">
+            <i class="fas fa-chart-bar"></i>
+            Generate Revenue Report
+          </button>
+        </div>
+      </div>
+
+      <!-- Invoice Selection Table -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon">
+              <i class="fas fa-file-invoice"></i>
+            </div>
+            <div class="card-title">
+              <h2>Invoice Management</h2>
+              <p>Select invoices to apply Grey Line adjustments</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-outline" onclick="refreshInvoices()" style="padding: 10px 20px;">
+              <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <button class="btn btn-outline" onclick="filterInvoices()" style="padding: 10px 20px;">
+              <i class="fas fa-filter"></i> Filter
+            </button>
+          </div>
+        </div>
+        
+        <div class="invoice-table-container">
+          <table class="invoice-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">
+                  <input type="checkbox" id="selectAll" onchange="selectAllInvoices()">
+                </th>
+                <th>Invoice #</th>
+                <th>Client</th>
+                <th>Service Type</th>
+                <th>Recurrence</th>
+                <th>Subtotal</th>
+                <th>Grey Line Applied</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="invoiceTableBody">
+              <!-- Invoices will be populated by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="btn btn-primary" id="applySelectedBtn" onclick="applyGreyLineToSelected()">
+            <i class="fas fa-chart-line"></i>
+            Apply Grey Line to Selected Invoices
+          </button>
+          <button class="btn btn-outline" onclick="clearSelection()">
+            <i class="fas fa-times"></i>
+            Clear Selection
+          </button>
+        </div>
+      </div>
+
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+        <!-- Left Column -->
+        <div>
+          <!-- Grey Line Configuration -->
+          <div class="control-panel">
+            <div class="card-header" style="padding: 0; border: none; margin-bottom: 20px;">
+              <div class="card-title-group">
+                <div class="card-icon">
+                  <i class="fas fa-cog"></i>
+                </div>
+                <div class="card-title">
+                  <h2>Grey Line Configuration</h2>
+                  <p>Adjust parameters based on workload conditions</p>
+                </div>
+              </div>
+              <div class="status-badge status-active">
+                <i class="fas fa-eye-slash"></i> Hidden from Clients
+              </div>
+            </div>
+            
+            <div class="control-grid">
+              <!-- Recurrence Intensity -->
+              <div class="control-group">
+                <h4><i class="fas fa-calendar-week"></i> Recurrence Intensity</h4>
+                <div class="control-row">
+                  <span class="control-label">Weekly Client</span>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="range" min="1" max="10" value="4" class="slider" id="recurrenceSlider" onchange="updateControlValue('recurrence', this.value)">
+                    <span class="minutes-badge" id="recurrenceValue">+4 min</span>
+                  </div>
+                </div>
+                <div class="control-row">
+                  <span class="control-label">Residential vs Commercial</span>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="range" min="0" max="5" value="2" class="slider" id="clientTypeSlider" onchange="updateControlValue('clientType', this.value)">
+                    <span class="minutes-badge" id="clientTypeValue">+2 min</span>
+                  </div>
+                </div>
+                <div class="control-row">
+                  <span class="control-label">Client History Modifier</span>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="range" min="0" max="3" value="1" class="slider" id="historySlider" onchange="updateControlValue('history', this.value)">
+                    <span class="minutes-badge" id="historyValue">+1 min</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Site Visit Assessment -->
+              <div class="control-group">
+                <h4><i class="fas fa-home"></i> Site Visit Assessment</h4>
+                <div class="control-row">
+                  <span class="control-label">Dirt Level (Step 3 Data)</span>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="range" min="0" max="10" value="5" class="slider" id="dirtSlider" onchange="updateControlValue('dirt', this.value)">
+                    <span class="minutes-badge" id="dirtValue">+5 min</span>
+                  </div>
+                </div>
+                <div class="control-row">
+                  <span class="control-label">Pets in Home</span>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="range" min="0" max="10" value="5" class="slider" id="petsSlider" onchange="updateControlValue('pets', this.value)">
+                    <span class="minutes-badge" id="petsValue">+5 min</span>
+                  </div>
+                </div>
+                <div class="control-row">
+                  <span class="control-label">Kitchen Severity</span>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="range" min="0" max="8" value="3" class="slider" id="kitchenSlider" onchange="updateControlValue('kitchen', this.value)">
+                    <span class="minutes-badge" id="kitchenValue">+3 min</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Special Conditions -->
+              <div class="control-group">
+                <h4><i class="fas fa-tasks"></i> Special Conditions</h4>
+                <div class="control-row">
+                  <span class="control-label">Seasonal Dirt (Winter)</span>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="range" min="0" max="8" value="4" class="slider" id="seasonalSlider" onchange="updateControlValue('seasonal', this.value)">
+                    <span class="minutes-badge" id="seasonalValue">+4 min</span>
+                  </div>
+                </div>
+                <div class="control-row">
+                  <span class="control-label">Task Expansion</span>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="range" min="0" max="6" value="3" class="slider" id="taskSlider" onchange="updateControlValue('task', this.value)">
+                    <span class="minutes-badge" id="taskValue">+3 min</span>
+                  </div>
+                </div>
+                <div class="control-row">
+                  <span class="control-label">Navigation Time</span>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="range" min="0" max="4" value="2" class="slider" id="navigationSlider" onchange="updateControlValue('navigation', this.value)">
+                    <span class="minutes-badge" id="navigationValue">+2 min</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Total Calculation -->
+            <div class="total-panel">
+              <div class="total-header">
+                <h3><i class="fas fa-calculator"></i> TOTAL GREY LINE MINUTES</h3>
+                <div class="total-value" id="totalMinutes">+28 minutes</div>
+                <p>Hidden from client • Blends with natural variation • 100% safe</p>
+              </div>
+              
+              <div class="total-breakdown">
+                <div class="breakdown-item">
+                  <div class="breakdown-label">Recurrence Factors</div>
+                  <div class="breakdown-value" id="breakdownRecurrence">+7 min</div>
+                </div>
+                <div class="breakdown-item">
+                  <div class="breakdown-label">Site Visit</div>
+                  <div class="breakdown-value" id="breakdownSite">+13 min</div>
+                </div>
+                <div class="breakdown-item">
+                  <div class="breakdown-label">Special Conditions</div>
+                  <div class="breakdown-value" id="breakdownSpecial">+9 min</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reason Panel -->
+          <div class="reason-panel">
+            <div class="reason-header">
+              <div class="reason-icon">
+                <i class="fas fa-lightbulb"></i>
+              </div>
+              <div>
+                <h3 style="color: #856404; margin: 0;">Generated Reasoning for Grey Line</h3>
+                <p style="font-size: 13px; color: #856404;">This justification will be saved in audit logs</p>
+              </div>
+            </div>
+            
+            <div id="reasoningContent" style="padding: 15px; background: white; border-radius: var(--radius-sm); border: 1px solid #ffecb5;">
+              <p style="font-size: 14px; color: var(--text-primary); margin-bottom: 10px;">
+                <strong>Justification for +28 minutes:</strong>
+              </p>
+              <ul style="font-size: 13px; color: var(--text-secondary); margin-left: 20px; line-height: 1.8;">
+                <li>Weekly recurrence (+4 min) - Light weekly buildup requiring extra attention</li>
+                <li>Residential client type (+2 min) - Predictable household dirt patterns</li>
+                <li>Long-term client (+1 min) - Established cleaning patterns with minor variations</li>
+                <li>Moderate dirt level from site visit (+5 min) - Extra wiping and dusting required</li>
+                <li>Pets in home (+5 min) - Additional hair cleanup and odor treatment</li>
+                <li>Kitchen grease buildup (+3 min) - Extra degreasing effort needed</li>
+                <li>Winter seasonal dirt (+4 min) - Salt and slush tracking requires extra mopping</li>
+                <li>Client task expansion (+3 min) - Additional areas requested during service</li>
+                <li>Navigation and setup time (+2 min) - Equipment preparation and moving time</li>
+              </ul>
+              <p style="font-size: 12px; color: var(--grey-line); margin-top: 10px; font-style: italic;">
+                <i class="fas fa-eye-slash"></i> Note: This reasoning is for internal records only. Client sees only rounded total time.
+              </p>
+            </div>
+            
+            <div class="action-buttons" style="margin-top: 20px;">
+              <button class="btn btn-warning" onclick="regenerateReasoning()">
+                <i class="fas fa-redo"></i>
+                Regenerate Reasoning
+              </button>
+              <button class="btn btn-outline" onclick="copyReasoning()">
+                <i class="fas fa-copy"></i>
+                Copy to Clipboard
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <aside>
+          <!-- Selected Invoice Preview -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon">
+                  <i class="fas fa-eye"></i>
+                </div>
+                <div class="card-title">
+                  <h2>Invoice Preview</h2>
+                  <p>Selected invoice with Grey Line applied</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="invoice-preview">
+              <div class="invoice-preview-header">
+                <div>
+                  <h3 style="color: var(--grey-line); margin-bottom: 5px;">INV-2025-03321</h3>
+                  <p style="font-size: 13px; color: var(--text-secondary);">Maria Santos • Weekly Residential</p>
+                </div>
+                <div class="status-badge status-pending">
+                  <i class="fas fa-clock"></i> Preview
+                </div>
+              </div>
+              
+              <table class="preview-table">
+                <thead>
+                  <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Deep Cleaning — 3 Rooms + 2 Bathrooms</td>
+                    <td style="text-align: right;">$280.00</td>
+                  </tr>
+                  <tr>
+                    <td>Add-on: Carpet Steam Clean</td>
+                    <td style="text-align: right;">$50.00</td>
+                  </tr>
+                  <tr>
+                    <td>Add-on: Kitchen Degrease</td>
+                    <td style="text-align: right;">$30.00</td>
+                  </tr>
+                  <tr>
+                    <td>Add-on: Balcony Cleaning</td>
+                    <td style="text-align: right;">$40.00</td>
+                  </tr>
+                  <tr>
+                    <td>Eco-friendly Solutions</td>
+                    <td style="text-align: right;">$20.00</td>
+                  </tr>
+                  <tr style="border-top: 2px solid var(--border);">
+                    <td><strong>Subtotal</strong></td>
+                    <td style="text-align: right;"><strong>$420.00</strong></td>
+                  </tr>
+                  <tr>
+  <td><i class="fas fa-clock"></i> Additional Service Time</td>
+  <td style="text-align: right; color: var(--grey-line);">+$28.00</td>
+</tr>
+                  <tr>
+                    <td>Tax (13% HST)</td>
+                    <td style="text-align: right;">$58.24</td>
+                  </tr>
+                 <tr>
+  <td><strong>Client Sees:</strong></td>
+  <td style="text-align: right; color: var(--primary); font-size: 16px;"><strong>$476.24</strong></td>
+</tr>
+<tr class="grey-line-row" style="display: none;">
+  <td colspan="2" style="text-align: center; font-size: 12px; color: var(--grey-line);">
+    <i class="fas fa-info-circle"></i> Grey Line included in total
+  </td>
+</tr>
+                </tbody>
+              </table>
+              
+              <div class="action-buttons" style="margin-top: 20px;">
+                <button class="btn btn-success" onclick="finalizeGreyLine()">
+                  <i class="fas fa-check-circle"></i>
+                  Finalize Grey Line Application
+                </button>
+                <button class="btn btn-outline" onclick="exportInvoicePreview()">
+                  <i class="fas fa-download"></i>
+                  Export Preview
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Audit Log -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon">
+                  <i class="fas fa-clipboard-list"></i>
+                </div>
+                <div class="card-title">
+                  <h2>Recent Activity</h2>
+                  <p>Grey Line application history</p>
+                </div>
+              </div>
+            </div>
+            
+            <div style="margin-top: 15px;">
+              <div style="max-height: 300px; overflow-y: auto; padding: 10px;">
+                <div style="display: flex; gap: 15px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                  <div style="width: 24px; height: 24px; background: #e8fce8; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2c7a2c; font-size: 12px;">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 12px; color: var(--text-secondary);">Today, 10:30 AM</div>
+                    <div style="font-size: 14px;">Grey Line applied to INV-2025-03320: +32 minutes ($32.00)</div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 15px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                  <div style="width: 24px; height: 24px; background: #e8fce8; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2c7a2c; font-size: 12px;">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 12px; color: var(--text-secondary);">Today, 9:15 AM</div>
+                    <div style="font-size: 14px;">Grey Line applied to INV-2025-03319: +24 minutes ($24.00)</div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 15px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                  <div style="width: 24px; height: 24px; background: #fff3cd; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #856404; font-size: 12px;">
+                    <i class="fas fa-sync-alt"></i>
+                  </div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 12px; color: var(--text-secondary);">Yesterday, 4:45 PM</div>
+                    <div style="font-size: 14px;">Configuration updated: Seasonal dirt modifier increased</div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 15px; padding: 12px 0; border-bottom: 1px solid var(--border);">
+                  <div style="width: 24px; height: 24px; background: #e8fce8; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #2c7a2c; font-size: 12px;">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <div style="flex: 1;">
+                    <div style="font-size: 12px; color: var(--text-secondary);">Yesterday, 2:30 PM</div>
+                    <div style="font-size: 14px;">Batch application: 5 invoices updated with Grey Line</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="action-buttons" style="margin-top: 20px;">
+                <button class="btn btn-outline" onclick="viewFullAuditLog()" style="width: 100%;">
+                  <i class="fas fa-history"></i>
+                  View Full Audit Log
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="card" style="border: 2px solid var(--grey-line);">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon">
+                  <i class="fas fa-bolt"></i>
+                </div>
+                <div class="card-title">
+                  <h2>Quick Actions</h2>
+                  <p>Frequently used Grey Line operations</p>
+                </div>
+              </div>
+            </div>
+            
+            <div style="display: grid; gap: 10px; margin-top: 15px;">
+              <button class="btn btn-outline" onclick="applyPreset('conservative')" style="width: 100%; justify-content: flex-start;">
+                <i class="fas fa-shield-alt"></i>
+                Apply Conservative Preset (+15-20 min)
+              </button>
+              <button class="btn btn-outline" onclick="applyPreset('moderate')" style="width: 100%; justify-content: flex-start;">
+                <i class="fas fa-balance-scale"></i>
+                Apply Moderate Preset (+25-30 min)
+              </button>
+              <button class="btn btn-outline" onclick="applyPreset('aggressive')" style="width: 100%; justify-content: flex-start;">
+                <i class="fas fa-chart-line"></i>
+                Apply Aggressive Preset (+35-45 min)
+              </button>
+              <button class="btn btn-outline" onclick="revertLastAction()" style="width: 100%; justify-content: flex-start;">
+                <i class="fas fa-undo"></i>
+                Revert Last Grey Line Application
+              </button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <!-- NEW: Floating Window for Invoice Comparison -->
+  <div class="floating-overlay" id="floatingOverlay" onclick="closeFloatingWindow()"></div>
+  <div class="floating-window" id="floatingWindow">
+    <div class="floating-header">
+      <div class="floating-title">
+        <i class="fas fa-file-invoice-dollar"></i>
+        <div>
+          <h2 id="floatingInvoiceNumber">INV-2025-03321</h2>
+          <p id="floatingClientInfo">Maria Santos • Weekly Residential</p>
+        </div>
+      </div>
+      <button class="floating-close" onclick="closeFloatingWindow()">×</button>
+    </div>
+    
+    <div class="floating-body">
+      <!-- Invoice Comparison -->
+      <div class="invoice-comparison">
+        <div class="invoice-before">
+          <div class="comparison-header">
+            <h3><i class="fas fa-file-invoice"></i> Before Grey Line</h3>
+            <p>Original invoice without adjustments</p>
+          </div>
+          
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody id="invoiceBeforeBody">
+              <!-- Will be populated by JavaScript -->
+            </tbody>
+          </table>
+          
+          <div style="text-align: center; margin-top: 25px; padding: 15px; background: #f8f9fa; border-radius: var(--radius-sm);">
+            <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Original Total</p>
+            <h3 style="color: var(--grey-line);" id="beforeTotal">$448.00</h3>
+          </div>
+        </div>
+        
+        <div class="invoice-after">
+          <div class="comparison-header">
+            <h3><i class="fas fa-chart-line"></i> After Grey Line</h3>
+            <p>With hidden billing intelligence applied</p>
+          </div>
+          
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody id="invoiceAfterBody">
+              <!-- Will be populated by JavaScript -->
+            </tbody>
+          </table>
+          
+          <div style="text-align: center; margin-top: 25px; padding: 15px; background: #e8fce8; border-radius: var(--radius-sm); border: 2px solid #c3e6cb;">
+            <p style="font-size: 12px; color: #2c7a2c; margin-bottom: 5px;">Client Sees (Rounded)</p>
+            <h3 style="color: #2c7a2c;" id="clientSeesTotal">$448.00</h3>
+            <p style="font-size: 11px; color: var(--grey-line); margin-top: 5px;">
+              <i class="fas fa-eye-slash"></i> Actual total with Grey Line: <span id="actualTotal">$506.60</span>
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Reason Selection -->
+      <div class="reason-selection">
+        <div class="reason-header">
+          <div class="reason-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div>
+            <h3 style="color: #856404; margin: 0;">Select Reasoning for Grey Line</h3>
+            <p style="font-size: 13px; color: #856404;">Choose applicable reasons for the adjustment</p>
+          </div>
+        </div>
+        
+        <div class="reason-options" id="reasonOptions">
+          <!-- Will be populated by JavaScript -->
+        </div>
+        
+        <div class="action-buttons" style="margin-top: 25px;">
+          <button class="btn btn-success" onclick="applyGreyLineWithReasons()">
+            <i class="fas fa-check-circle"></i>
+            Apply Grey Line with Selected Reasons
+          </button>
+          <button class="btn btn-outline" onclick="closeFloatingWindow()">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Configuration Wizard Modal -->
+  <div id="configWizardModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 style="color: var(--grey-line);">
+          <i class="fas fa-magic"></i> Smart Configuration Wizard
+        </h2>
+        <button class="modal-close" onclick="closeConfigWizard()">×</button>
+      </div>
+      
+      <div style="padding: 20px 0;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <div style="font-size: 60px; color: var(--grey-line); margin-bottom: 20px;">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h3>Automated Grey Line Configuration</h3>
+          <p style="color: var(--text-secondary); margin: 10px 0;">The wizard will analyze your invoices and suggest optimal Grey Line settings</p>
+        </div>
+        
+        <div style="margin: 20px 0;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <span style="font-weight: 600;">Analysis Progress</span>
+            <span id="wizardProgressText">0%</span>
+          </div>
+          <div style="height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+            <div id="wizardProgressFill" style="height: 100%; background: var(--grey-line); border-radius: 4px; width: 0%; transition: width 0.5s ease;"></div>
+          </div>
+        </div>
+        
+        <div id="wizardSteps" style="margin-top: 30px;">
+          <!-- Steps will be populated by JavaScript -->
+        </div>
+        
+        <div class="action-buttons" style="margin-top: 30px;">
+          <button class="btn btn-grey" id="startWizardBtn" onclick="startConfigurationWizard()">
+            <i class="fas fa-play"></i>
+            Start Analysis
+          </button>
+          <button class="btn btn-outline" onclick="closeConfigWizard()">
+            <i class="fas fa-times"></i>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State Management
+    let greyLineEnabled = true;
+    let selectedInvoices = new Set();
+    let currentInvoiceId = null;
+    let greyLineValues = {
+      recurrence: 4,
+      clientType: 2,
+      history: 1,
+      dirt: 5,
+      pets: 5,
+      kitchen: 3,
+      seasonal: 4,
+      task: 3,
+      navigation: 2
+    };
+    
+    // Sample invoice data
+    const invoices = [
+      { 
+        id: 1, 
+        number: 'INV-2025-03321', 
+        client: 'Maria Santos', 
+        service: 'Deep Clean', 
+        recurrence: 'Weekly', 
+        subtotal: 420, 
+        greyLine: 28, 
+        status: 'applied',
+        items: [
+          { description: 'Deep Cleaning — 3 Rooms + 2 Bathrooms', amount: 280 },
+          { description: 'Add-on: Carpet Steam Clean', amount: 50 },
+          { description: 'Add-on: Kitchen Degrease', amount: 30 },
+          { description: 'Add-on: Balcony Cleaning', amount: 40 },
+          { description: 'Eco-friendly Solutions', amount: 20 }
+        ]
+      },
+      { 
+        id: 2, 
+        number: 'INV-2025-03322', 
+        client: 'John Smith', 
+        service: 'Standard Clean', 
+        recurrence: 'Bi-Weekly', 
+        subtotal: 280, 
+        greyLine: 18, 
+        status: 'pending',
+        items: [
+          { description: 'Standard Cleaning — 2 Bedrooms, Living Room', amount: 180 },
+          { description: 'Add-on: Window Cleaning', amount: 50 },
+          { description: 'Add-on: Fridge Cleaning', amount: 30 },
+          { description: 'Eco-friendly Products', amount: 20 }
+        ]
+      },
+      { 
+        id: 3, 
+        number: 'INV-2025-03323', 
+        client: 'Office Building A', 
+        service: 'Commercial', 
+        recurrence: 'Monthly', 
+        subtotal: 1250, 
+        greyLine: 45, 
+        status: 'applied',
+        items: [
+          { description: 'Commercial Office Cleaning — 5000 sq ft', amount: 850 },
+          { description: 'Carpet Cleaning — Reception Area', amount: 200 },
+          { description: 'Window Cleaning — Ground Floor', amount: 150 },
+          { description: 'Sanitization Service', amount: 50 }
+        ]
+      }
+    ];
+    
+    // Predefined reasoning options
+    const reasoningOptions = [
+      { id: 'recurrence', label: 'Weekly recurrence buildup', description: 'Light weekly buildup requiring extra attention and wiping' },
+      { id: 'client_type', label: 'Residential client type', description: 'Predictable household dirt patterns with minor variations' },
+      { id: 'long_term', label: 'Long-term client pattern', description: 'Established cleaning patterns with minor weekly variations' },
+      { id: 'dirt_level', label: 'Moderate dirt level', description: 'Extra wiping and dusting required based on site assessment' },
+      { id: 'pets', label: 'Pets in home', description: 'Additional hair cleanup and odor treatment needed' },
+      { id: 'kitchen', label: 'Kitchen grease buildup', description: 'Extra degreasing effort needed for kitchen surfaces' },
+      { id: 'seasonal', label: 'Winter seasonal dirt', description: 'Salt and slush tracking requires extra mopping' },
+      { id: 'task_expansion', label: 'Client task expansion', description: 'Additional areas requested during service execution' },
+      { id: 'navigation', label: 'Navigation and setup time', description: 'Equipment preparation and moving between areas' },
+      { id: 'clutter', label: 'Extra clutter handling', description: 'Additional time moving and cleaning around objects' },
+      { id: 'stains', label: 'Stain treatment', description: 'Extra time for stubborn stain removal' },
+      { id: 'bathroom', label: 'Bathroom severity', description: 'Additional scrubbing for bathroom fixtures and tiles' }
+    ];
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      populateInvoiceTable();
+      updateTotalCalculation();
+      updateReasoning();
+    });
+    
+    // Populate invoice table
+    function populateInvoiceTable() {
+      const tableBody = document.getElementById('invoiceTableBody');
+      tableBody.innerHTML = '';
+      
+      invoices.forEach(invoice => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><input type="checkbox" class="invoice-checkbox" value="${invoice.id}" onchange="toggleInvoiceSelection(${invoice.id})"></td>
+          <td><strong>${invoice.number}</strong></td>
+          <td>${invoice.client}</td>
+          <td>${invoice.service}</td>
+          <td><span class="minutes-badge">${invoice.recurrence}</span></td>
+          <td class="amount-cell">$${invoice.subtotal.toFixed(2)}</td>
+          <td>${invoice.greyLine > 0 ? `<span class="minutes-badge" style="background: #e8fce8; color: #2c7a2c;">+${invoice.greyLine} min</span>` : '<span class="minutes-badge" style="background: #f8f9fa; color: var(--text-secondary);">None</span>'}</td>
+          <td>${invoice.status === 'applied' ? '<span class="status-badge status-applied"><i class="fas fa-check-circle"></i> Applied</span>' : '<span class="status-badge status-pending"><i class="fas fa-clock"></i> Pending</span>'}</td>
+          <td>
+            <button onclick="viewInvoiceComparison(${invoice.id})" style="background: none; border: none; color: var(--primary); cursor: pointer; margin-right: 10px;" title="View Comparison">
+              <i class="fas fa-exchange-alt"></i>
+            </button>
+            <button onclick="applySingleGreyLine(${invoice.id})" style="background: none; border: none; color: var(--grey-line); cursor: pointer;" title="Apply Grey Line">
+              <i class="fas fa-chart-line"></i>
+            </button>
+          </td>
+        `;
+        
+        if (selectedInvoices.has(invoice.id)) {
+          row.classList.add('selected');
+          row.querySelector('.invoice-checkbox').checked = true;
+        }
+        
+        tableBody.appendChild(row);
+      });
+    }
+    
+    // NEW: View invoice comparison in floating window
+    function viewInvoiceComparison(invoiceId) {
+      const invoice = invoices.find(i => i.id === invoiceId);
+      if (!invoice) return;
+      
+      currentInvoiceId = invoiceId;
+      
+      // Set header info
+      document.getElementById('floatingInvoiceNumber').textContent = invoice.number;
+      document.getElementById('floatingClientInfo').textContent = `${invoice.client} • ${invoice.recurrence} ${invoice.service}`;
+      
+      // Calculate totals
+      const subtotal = invoice.subtotal;
+      const greyLineAmount = invoice.greyLine;
+      const taxRate = 0.13;
+      const taxBefore = subtotal * taxRate;
+      const totalBefore = subtotal + taxBefore;
+      
+      const subtotalAfter = subtotal + greyLineAmount;
+      const taxAfter = subtotalAfter * taxRate;
+      const totalAfter = subtotalAfter + taxAfter;
+      
+      // Populate BEFORE table
+      const beforeBody = document.getElementById('invoiceBeforeBody');
+      beforeBody.innerHTML = '';
+      
+      invoice.items.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.description}</td>
+          <td style="text-align: right;">$${item.amount.toFixed(2)}</td>
+        `;
+        beforeBody.appendChild(row);
+      });
+      
+      // Add subtotal and tax rows
+      beforeBody.innerHTML += `
+        <tr style="border-top: 2px solid var(--border);">
+          <td><strong>Subtotal</strong></td>
+          <td style="text-align: right;"><strong>$${subtotal.toFixed(2)}</strong></td>
+        </tr>
+        <tr>
+          <td>Tax (13% HST)</td>
+          <td style="text-align: right;">$${taxBefore.toFixed(2)}</td>
+        </tr>
+        <tr class="highlight">
+          <td><strong>Total</strong></td>
+          <td style="text-align: right; color: var(--primary);"><strong>$${totalBefore.toFixed(2)}</strong></td>
+        </tr>
+      `;
+      
+      // Update before total
+      document.getElementById('beforeTotal').textContent = `$${totalBefore.toFixed(2)}`;
+      
+      // Populate AFTER table
+      const afterBody = document.getElementById('invoiceAfterBody');
+      afterBody.innerHTML = '';
+      
+      invoice.items.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.description}</td>
+          <td style="text-align: right;">$${item.amount.toFixed(2)}</td>
+        `;
+        afterBody.appendChild(row);
+      });
+      
+      // Add subtotal, grey line, and tax rows
+      afterBody.innerHTML += `
+        <tr style="border-top: 2px solid var(--border);">
+          <td><strong>Subtotal</strong></td>
+          <td style="text-align: right;"><strong>$${subtotal.toFixed(2)}</strong></td>
+        </tr>
+        <tr class="grey-line-highlight">
+          <td><i class="fas fa-eye-slash"></i> Grey Line Adjustment (Hidden)</td>
+          <td style="text-align: right; color: var(--grey-line);">+$${greyLineAmount.toFixed(2)}</td>
+        </tr>
+        <tr>
+          <td>Tax (13% HST)</td>
+          <td style="text-align: right;">$${taxAfter.toFixed(2)}</td>
+        </tr>
+       <tr class="highlight">
+  <td><strong>Client Sees</strong></td>
+  <td style="text-align: right; color: var(--success);"><strong>$${totalAfter.toFixed(2)}</strong></td>
+</tr>
+      `;
+      
+      // Update after totals
+     // Update after totals
+document.getElementById('clientSeesTotal').textContent = `$${totalAfter.toFixed(2)}`;
+document.getElementById('actualTotal').textContent = `$${totalAfter.toFixed(2)}`;
+      // Populate reason options
+      populateReasonOptions(invoice);
+      
+      // Show floating window
+      document.getElementById('floatingOverlay').style.display = 'block';
+      document.getElementById('floatingWindow').style.display = 'block';
+    }
+    
+    // Populate reason options based on invoice
+    function populateReasonOptions(invoice) {
+      const reasonOptionsContainer = document.getElementById('reasonOptions');
+      reasonOptionsContainer.innerHTML = '';
+      
+      // Filter and sort reasons based on invoice characteristics
+      let applicableReasons = [...reasoningOptions];
+      
+      // Add recurrence-based reasons
+      if (invoice.recurrence === 'Weekly') {
+        applicableReasons = applicableReasons.filter(r => 
+          r.id !== 'long_term' // Weekly clients aren't long-term yet
+        );
+      } else if (invoice.recurrence === 'Monthly') {
+        // Add monthly-specific reasons
+        applicableReasons.push({
+          id: 'monthly_buildup',
+          label: 'Monthly dirt buildup',
+          description: 'Significant dirt accumulation over monthly period'
+        });
+      }
+      
+      // Add service-specific reasons
+      if (invoice.service === 'Commercial') {
+        applicableReasons.push({
+          id: 'commercial_traffic',
+          label: 'Commercial foot traffic',
+          description: 'High foot traffic requires more frequent cleaning'
+        });
+      }
+      
+      // Render reason options
+      applicableReasons.forEach(reason => {
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'reason-option';
+        optionDiv.innerHTML = `
+          <div style="display: flex; align-items: flex-start; gap: 10px;">
+            <input type="checkbox" class="reason-checkbox" id="reason_${reason.id}" value="${reason.id}">
+            <div style="flex: 1;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <strong>${reason.label}</strong>
+                <span class="minutes-badge">+${getReasonMinutes(reason.id)} min</span>
+              </div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">${reason.description}</p>
+            </div>
+          </div>
+        `;
+        
+        // Add click handler for the whole div
+        optionDiv.onclick = function(e) {
+          if (e.target.type !== 'checkbox') {
+            const checkbox = this.querySelector('.reason-checkbox');
+            checkbox.checked = !checkbox.checked;
+            this.classList.toggle('selected', checkbox.checked);
+          }
+        };
+        
+        // Add change handler for checkbox
+        const checkbox = optionDiv.querySelector('.reason-checkbox');
+        checkbox.onchange = function() {
+          optionDiv.classList.toggle('selected', this.checked);
+        };
+        
+        reasonOptionsContainer.appendChild(optionDiv);
+      });
+    }
+    
+    // Get minutes for a specific reason
+    function getReasonMinutes(reasonId) {
+      const reasonMap = {
+        'recurrence': greyLineValues.recurrence,
+        'client_type': greyLineValues.clientType,
+        'long_term': greyLineValues.history,
+        'dirt_level': greyLineValues.dirt,
+        'pets': greyLineValues.pets,
+        'kitchen': greyLineValues.kitchen,
+        'seasonal': greyLineValues.seasonal,
+        'task_expansion': greyLineValues.task,
+        'navigation': greyLineValues.navigation,
+        'clutter': 3,
+        'stains': 4,
+        'bathroom': 3,
+        'monthly_buildup': 8,
+        'commercial_traffic': 10
+      };
+      
+      return reasonMap[reasonId] || 2;
+    }
+    
+    // Apply grey line with selected reasons
+    function applyGreyLineWithReasons() {
+      const selectedReasons = [];
+      const checkboxes = document.querySelectorAll('.reason-checkbox:checked');
+      
+      checkboxes.forEach(checkbox => {
+        const reasonId = checkbox.value;
+        const reason = reasoningOptions.find(r => r.id === reasonId) || 
+                      { id: reasonId, label: reasonId.replace('_', ' '), description: 'Custom reason' };
+        selectedReasons.push({
+          id: reason.id,
+          label: reason.label,
+          minutes: getReasonMinutes(reason.id)
+        });
+      });
+      
+      if (selectedReasons.length === 0) {
+        alert('Please select at least one reason for the Grey Line adjustment.');
+        return;
+      }
+      
+      const totalMinutes = selectedReasons.reduce((sum, reason) => sum + reason.minutes, 0);
+      
+      if (confirm(`Apply Grey Line with ${selectedReasons.length} selected reasons?\n\nTotal Grey Line: +${totalMinutes} minutes\nThis will update the invoice and generate an audit log.`)) {
+        // Update the invoice
+        const invoice = invoices.find(i => i.id === currentInvoiceId);
+        if (invoice) {
+          invoice.greyLine = totalMinutes;
+          invoice.status = 'applied';
+          
+          // Generate reasoning text
+          const reasonText = selectedReasons.map(r => 
+            `${r.label} (+${r.minutes} min) - ${reasoningOptions.find(ro => ro.id === r.id)?.description || 'Additional workload'}`
+          ).join('\n');
+          
+          showNotification('success', 'Grey Line Applied', 
+            `Successfully applied +${totalMinutes} minutes to ${invoice.number}\n\nSelected reasons:\n${reasonText}`);
+          
+          // Close floating window
+          closeFloatingWindow();
+          
+          // Refresh table
+          populateInvoiceTable();
+          
+          // Update stats
+          const totalInvoices = parseInt(document.getElementById('totalInvoices').textContent);
+          if (invoice.status === 'applied' && invoice.status !== 'applied') {
+            document.getElementById('totalInvoices').textContent = Math.max(0, totalInvoices - 1);
+          }
+        }
+      }
+    }
+    
+    // Close floating window
+    function closeFloatingWindow() {
+      document.getElementById('floatingOverlay').style.display = 'none';
+      document.getElementById('floatingWindow').style.display = 'none';
+      currentInvoiceId = null;
+    }
+    
+    // Toggle invoice selection
+    function toggleInvoiceSelection(invoiceId) {
+      if (selectedInvoices.has(invoiceId)) {
+        selectedInvoices.delete(invoiceId);
+      } else {
+        selectedInvoices.add(invoiceId);
+      }
+      
+      updateSelectedCount();
+      populateInvoiceTable();
+    }
+    
+    // Select all invoices
+    function selectAllInvoices() {
+      const selectAll = document.getElementById('selectAll');
+      const checkboxes = document.querySelectorAll('.invoice-checkbox');
+      
+      if (selectAll.checked) {
+        invoices.forEach(invoice => selectedInvoices.add(invoice.id));
+        checkboxes.forEach(cb => cb.checked = true);
+      } else {
+        selectedInvoices.clear();
+        checkboxes.forEach(cb => cb.checked = false);
+      }
+      
+      updateSelectedCount();
+      populateInvoiceTable();
+    }
+    
+    // Update selected count display
+    function updateSelectedCount() {
+      const btn = document.getElementById('applySelectedBtn');
+      if (selectedInvoices.size > 0) {
+        btn.innerHTML = `<i class="fas fa-chart-line"></i> Apply Grey Line to ${selectedInvoices.size} Selected Invoices`;
+      } else {
+        btn.innerHTML = `<i class="fas fa-chart-line"></i> Apply Grey Line to Selected Invoices`;
+      }
+    }
+    
+    // Clear selection
+    function clearSelection() {
+      selectedInvoices.clear();
+      document.getElementById('selectAll').checked = false;
+      updateSelectedCount();
+      populateInvoiceTable();
+    }
+    
+    // Toggle global grey line
+    function toggleGlobalGreyLine() {
+      const toggle = document.getElementById('globalGreyLineToggle');
+      const badge = document.getElementById('globalStatusBadge');
+      
+      greyLineEnabled = toggle.checked;
+      
+      if (greyLineEnabled) {
+        badge.className = 'status-badge status-active';
+        badge.innerHTML = '<i class="fas fa-toggle-on"></i> Active';
+        showNotification('success', 'Grey Line Enabled', 'Hidden billing intelligence is now active.');
+      } else {
+        badge.className = 'status-badge status-inactive';
+        badge.innerHTML = '<i class="fas fa-toggle-off"></i> Inactive';
+        showNotification('warning', 'Grey Line Disabled', 'Hidden billing intelligence is now inactive.');
+      }
+    }
+    
+    // Update control value
+    function updateControlValue(type, value) {
+      greyLineValues[type] = parseInt(value);
+      document.getElementById(`${type}Value`).textContent = `+${value} min`;
+      updateTotalCalculation();
+      updateReasoning();
+    }
+    
+    // Update total calculation
+    function updateTotalCalculation() {
+      let total = 0;
+      for (const key in greyLineValues) {
+        total += greyLineValues[key];
+      }
+      
+      // Update displays
+      document.getElementById('totalMinutes').textContent = `+${total} minutes`;
+      document.getElementById('avgGreyLine').textContent = `+${total} min`;
+      
+      // Update breakdown
+      const recurrenceTotal = greyLineValues.recurrence + greyLineValues.clientType + greyLineValues.history;
+      const siteTotal = greyLineValues.dirt + greyLineValues.pets + greyLineValues.kitchen;
+      const specialTotal = greyLineValues.seasonal + greyLineValues.task + greyLineValues.navigation;
+      
+      document.getElementById('breakdownRecurrence').textContent = `+${recurrenceTotal} min`;
+      document.getElementById('breakdownSite').textContent = `+${siteTotal} min`;
+      document.getElementById('breakdownSpecial').textContent = `+${specialTotal} min`;
+      
+      // Update revenue recovered estimate
+      const revenueRecovered = total * invoices.length * 0.5; // Assuming $0.50 per minute
+      document.getElementById('revenueRecovered').textContent = `$${revenueRecovered.toFixed(0)}`;
+    }
+    
+    // Update reasoning
+    function updateReasoning() {
+      const reasoning = document.getElementById('reasoningContent');
+      reasoning.innerHTML = `
+        <p style="font-size: 14px; color: var(--text-primary); margin-bottom: 10px;">
+          <strong>Justification for +${Object.values(greyLineValues).reduce((a, b) => a + b, 0)} minutes:</strong>
+        </p>
+        <ul style="font-size: 13px; color: var(--text-secondary); margin-left: 20px; line-height: 1.8;">
+          <li>Weekly recurrence (+${greyLineValues.recurrence} min) - Light weekly buildup requiring extra attention</li>
+          <li>Residential client type (+${greyLineValues.clientType} min) - Predictable household dirt patterns</li>
+          <li>Long-term client (+${greyLineValues.history} min) - Established cleaning patterns with minor variations</li>
+          <li>Moderate dirt level from site visit (+${greyLineValues.dirt} min) - Extra wiping and dusting required</li>
+          <li>Pets in home (+${greyLineValues.pets} min) - Additional hair cleanup and odor treatment</li>
+          <li>Kitchen grease buildup (+${greyLineValues.kitchen} min) - Extra degreasing effort needed</li>
+          <li>Winter seasonal dirt (+${greyLineValues.seasonal} min) - Salt and slush tracking requires extra mopping</li>
+          <li>Client task expansion (+${greyLineValues.task} min) - Additional areas requested during service</li>
+          <li>Navigation and setup time (+${greyLineValues.navigation} min) - Equipment preparation and moving time</li>
+        </ul>
+        <p style="font-size: 12px; color: var(--grey-line); margin-top: 10px; font-style: italic;">
+          <i class="fas fa-eye-slash"></i> Note: This reasoning is for internal records only. Client sees only rounded total time.
+        </p>
+      `;
+    }
+    
+    // Apply grey line to selected invoices
+    function applyGreyLineToSelected() {
+      if (selectedInvoices.size === 0) {
+        alert('Please select at least one invoice to apply Grey Line.');
+        return;
+      }
+      
+      // For single invoice, open comparison window
+      if (selectedInvoices.size === 1) {
+        const invoiceId = Array.from(selectedInvoices)[0];
+        viewInvoiceComparison(invoiceId);
+      } else {
+        // For multiple invoices, use batch processing
+        if (confirm(`Apply Grey Line adjustments to ${selectedInvoices.size} selected invoices?\n\nTotal Grey Line: +${Object.values(greyLineValues).reduce((a, b) => a + b, 0)} minutes per invoice\nThis action will update the invoices and generate audit logs.`)) {
+          // In a real app, this would make an API call
+          showNotification('success', 'Grey Line Applied', `Successfully applied Grey Line adjustments to ${selectedInvoices.size} invoices.`);
+          
+          // Update stats
+          const totalInvoices = parseInt(document.getElementById('totalInvoices').textContent);
+          document.getElementById('totalInvoices').textContent = Math.max(0, totalInvoices - selectedInvoices.size);
+          
+          // Clear selection
+          clearSelection();
+        }
+      }
+    }
+    
+    // Apply to all pending invoices
+    function applyToAllPending() {
+      const pendingCount = invoices.filter(i => i.status === 'pending').length;
+      
+      if (pendingCount === 0) {
+        alert('No pending invoices found.');
+        return;
+      }
+      
+      if (confirm(`Apply Grey Line to all ${pendingCount} pending invoices?\n\nThis will automatically calculate and apply appropriate adjustments based on each invoice's characteristics.`)) {
+        // Simulate processing
+        showNotification('info', 'Processing', `Applying Grey Line to ${pendingCount} invoices...`);
+        
+        setTimeout(() => {
+          showNotification('success', 'Batch Complete', `Successfully applied Grey Line to ${pendingCount} invoices. Total revenue recovered: $${(pendingCount * Object.values(greyLineValues).reduce((a, b) => a + b, 0) * 0.5).toFixed(0)}`);
+          document.getElementById('totalInvoices').textContent = '0';
+        }, 1500);
+      }
+    }
+    
+    // Apply preset configuration
+    function applyPreset(presetType) {
+      let presetValues;
+      
+      switch(presetType) {
+        case 'conservative':
+          presetValues = { recurrence: 3, clientType: 1, history: 1, dirt: 3, pets: 3, kitchen: 2, seasonal: 2, task: 2, navigation: 1 };
+          break;
+        case 'moderate':
+          presetValues = { recurrence: 4, clientType: 2, history: 1, dirt: 5, pets: 5, kitchen: 3, seasonal: 4, task: 3, navigation: 2 };
+          break;
+        case 'aggressive':
+          presetValues = { recurrence: 5, clientType: 3, history: 2, dirt: 7, pets: 7, kitchen: 5, seasonal: 6, task: 5, navigation: 3 };
+          break;
+      }
+      
+      // Update sliders and values
+      for (const key in presetValues) {
+        greyLineValues[key] = presetValues[key];
+        const slider = document.getElementById(`${key}Slider`);
+        const valueSpan = document.getElementById(`${key}Value`);
+        
+        if (slider) slider.value = presetValues[key];
+        if (valueSpan) valueSpan.textContent = `+${presetValues[key]} min`;
+      }
+      
+      updateTotalCalculation();
+      updateReasoning();
+      
+      showNotification('success', 'Preset Applied', `${presetType.charAt(0).toUpperCase() + presetType.slice(1)} preset configuration applied.`);
+    }
+    
+    // Regenerate reasoning
+    function regenerateReasoning() {
+      // In a real app, this would use AI or more sophisticated logic
+      const reasons = [
+        "Based on historical cleaning patterns and site assessment data",
+        "Seasonal variations and client-specific conditions considered",
+        "Extra workload detected from cleaner reports and photo evidence",
+        "Client behavior patterns indicate additional unbilled work",
+        "Recurrence frequency justifies safe, invisible time additions"
+      ];
+      
+      const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
+      
+      showNotification('info', 'Reasoning Regenerated', `New justification: ${randomReason}`);
+      updateReasoning();
+    }
+    
+    // Copy reasoning to clipboard
+    function copyReasoning() {
+      const reasoningText = document.getElementById('reasoningContent').innerText;
+      navigator.clipboard.writeText(reasoningText)
+        .then(() => showNotification('success', 'Copied', 'Reasoning copied to clipboard'))
+        .catch(() => alert('Failed to copy reasoning'));
+    }
+    
+    // Finalize grey line application
+    function finalizeGreyLine() {
+      if (confirm('Finalize Grey Line application?\n\nThis will:\n• Apply Grey Line to selected invoice\n• Generate audit log entry\n• Update invoice in database\n• Sync with accounting system')) {
+        showNotification('success', 'Finalized', 'Grey Line successfully applied and finalized.');
+      }
+    }
+    
+    // Apply grey line to single invoice
+    function applySingleGreyLine(invoiceId) {
+      viewInvoiceComparison(invoiceId);
+    }
+    
+    // Open configuration wizard
+    function openConfigurationWizard() {
+      document.getElementById('configWizardModal').style.display = 'flex';
+    }
+    
+    // Close configuration wizard
+    function closeConfigWizard() {
+      document.getElementById('configWizardModal').style.display = 'none';
+    }
+    
+    // Start configuration wizard
+    function startConfigurationWizard() {
+      const startBtn = document.getElementById('startWizardBtn');
+      const wizardSteps = document.getElementById('wizardSteps');
+      
+      startBtn.disabled = true;
+      startBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Analyzing...';
+      
+      // Simulate analysis steps
+      const steps = [
+        'Analyzing invoice patterns...',
+        'Reviewing site visit assessments...',
+        'Calculating recurrence factors...',
+        'Evaluating seasonal conditions...',
+        'Generating optimal configuration...'
+      ];
+      
+      wizardSteps.innerHTML = '';
+      steps.forEach((step, index) => {
+        const stepDiv = document.createElement('div');
+        stepDiv.style.marginBottom = '15px';
+        stepDiv.style.padding = '10px';
+        stepDiv.style.background = '#f8f9fa';
+        stepDiv.style.borderRadius = '8px';
+        stepDiv.style.display = 'flex';
+        stepDiv.style.alignItems = 'center';
+        stepDiv.style.gap = '10px';
+        stepDiv.innerHTML = `
+          <i class="fas fa-clock" style="color: var(--text-secondary);"></i>
+          <span>${step}</span>
+        `;
+        wizardSteps.appendChild(stepDiv);
+      });
+      
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 20;
+        document.getElementById('wizardProgressFill').style.width = `${progress}%`;
+        document.getElementById('wizardProgressText').textContent = `${progress}%`;
+        
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            wizardSteps.innerHTML = `
+              <div style="text-align: center; padding: 20px; background: #e8fce8; border-radius: 8px;">
+                <i class="fas fa-check-circle" style="font-size: 40px; color: #2c7a2c; margin-bottom: 15px;"></i>
+                <h3 style="color: #2c7a2c;">Analysis Complete!</h3>
+                <p style="color: var(--text-secondary); margin: 10px 0;">Recommended configuration generated based on your invoice patterns.</p>
+                <button class="btn btn-success" onclick="applyWizardRecommendation()" style="margin-top: 15px;">
+                  <i class="fas fa-check"></i> Apply Recommendations
+                </button>
+              </div>
+            `;
+            startBtn.style.display = 'none';
+          }, 500);
+        }
+      }, 300);
+    }
+    
+    // Apply wizard recommendation
+    function applyWizardRecommendation() {
+      // Apply moderate preset as recommendation
+      applyPreset('moderate');
+      closeConfigWizard();
+      showNotification('success', 'Wizard Complete', 'Optimal Grey Line configuration applied based on invoice analysis.');
+    }
+    
+    // Show notification
+    function showNotification(type, title, message) {
+      // In a real app, this would show a toast notification
+      alert(`${title}\n\n${message}`);
+    }
+    
+    // Other functions
+    function refreshInvoices() {
+      showNotification('info', 'Refreshing', 'Invoice list refreshed.');
+      populateInvoiceTable();
+    }
+    
+    function filterInvoices() {
+      alert('Filter functionality would open here.');
+    }
+    
+    function showGreyLineReport() {
+      alert('Revenue report generation would start here.');
+    }
+    
+    function exportInvoicePreview() {
+      alert('Invoice preview exported.');
+    }
+    
+    function viewFullAuditLog() {
+      alert('Full audit log would open here.');
+    }
+    
+    function revertLastAction() {
+      if (confirm('Revert the last Grey Line application?\n\nThis will undo the most recent changes.')) {
+        showNotification('info', 'Reverted', 'Last action reverted.');
+      }
+    }
+    
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('configWizardModal');
+      const overlay = document.getElementById('floatingOverlay');
+      
+      if (event.target === modal) {
+        closeConfigWizard();
+      }
+      
+      if (event.target === overlay) {
+        closeFloatingWindow();
+      }
+    }
+  </script>
+</body>
+</html>

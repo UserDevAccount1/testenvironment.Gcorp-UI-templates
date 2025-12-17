@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cleaning Workflow – 12 Step Visualization</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+    --primary: #4361ee;
+    --neutral: #cfcfcf;
+    --bg: #f4f6f9;
+    --border: #e0e0e0;
+}
+
+body {
+    background: var(--bg);
+    font-family: system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Layout */
+.page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.workflow-container {
+    background: #fff;
+    padding: 40px 20px;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+}
+
+/* Timeline viewport */
+.timeline-viewport {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 20px;
+}
+
+/* Timeline */
+.workflow-timeline {
+    display: flex;
+    gap: 60px;
+    padding: 40px;
+    min-width: 1600px;
+}
+
+/* Step */
+.workflow-step {
+    position: relative;
+    min-width: 150px;
+    text-align: center;
+    cursor: pointer;
+}
+
+/* Connector */
+.workflow-step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 42px;
+    left: 100%;
+    width: 60px;
+    height: 4px;
+    background: var(--border);
+}
+
+/* Circle */
+.step-circle {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    background: var(--neutral);
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    color: #fff;
+    border: 5px solid #fff;
+    transition: 0.3s;
+}
+
+.workflow-step.active .step-circle {
+    background: var(--primary);
+    box-shadow: 0 0 0 14px rgba(67,97,238,0.15);
+}
+
+.step-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.step-subtitle {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Modal */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.overlay.active {
+    display: flex;
+}
+
+.floating-window {
+    background: #fff;
+    width: 90%;
+    max-width: 1400px;
+    height: 85vh;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.floating-header {
+    padding: 25px 30px;
+    background: linear-gradient(to right, #4361ee, #3a0ca3);
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.floating-content {
+    padding: 30px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.close-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    font-size: 20px;
+}
+
+/* Content blocks */
+.content-section {
+    background: #f8f9fa;
+    border-radius: 14px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.content-section h5 {
+    color: var(--primary);
+}
+</style>
+</head>
+
+<body>
+
+<div class="page-wrapper">
+<div class="container-fluid px-4">
+<div class="workflow-container">
+
+<h2 class="text-center mb-4">
+    <i class="fas fa-project-diagram me-2"></i>
+    Cleaning Service – 12 Step Workflow
+</h2>
+
+<div class="timeline-viewport">
+    <div class="workflow-timeline" id="timeline"></div>
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="overlay" id="overlay">
+<div class="floating-window">
+    <div class="floating-header">
+        <h3 id="modalTitle"></h3>
+        <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="floating-content" id="modalContent"></div>
+</div>
+</div>
+
+<script>
+/* ======================================================
+   STEP DATA – ADD CONTENT + BUTTON LINKS PER NODE HERE
+====================================================== */
+const steps = [
+{
+    title: "Client Booking",
+    sub: "Estimate & request",
+    icon: "fa-mobile-alt",
+    action: { label: "Step 1 View Content Node", url: "step1.html" },
+    content: { purpose:"", inputs:"", process:"", outputs:"", rules:"" }
+},
+{
+    title: "Supervisor Review",
+    sub: "Review booking",
+    icon: "fa-user-tie",
+    action: { label: "Step 2 View Content Node", url: "step2.html" },
+    content: { purpose:"", inputs:"", process:"", outputs:"", rules:"" }
+},
+{
+    title: "Site Visit",
+    sub: "Inspection",
+    icon: "fa-clipboard-check",
+    action: { label: "Step 3 View Content Node", url: "step3.html" },
+    content: { purpose:"", inputs:"", process:"", outputs:"", rules:"" }
+},
+{
+    title: "Manager Quotation",
+    sub: "Finalize quote",
+    icon: "fa-file-invoice-dollar",
+    action: { label: "Step 4 View Content Node", url: "step4.html" },
+    content: { purpose:"", inputs:"", process:"", outputs:"", rules:"" }
+},
+{
+    title: "Client Approval",
+    sub: "Approve quote",
+    icon: "fa-user-check",
+    action: { label: "Step 5 View Content Node", url: "step5&6.html" },
+    content: { purpose:"", inputs:"", process:"", outputs:"", rules:"" }
+},
+{
+    title: "Client Payment",
+    sub: "Invoice paid",
+    icon: "fa-credit-card",
+    action: { label: "Step 6 View Content Node", url: "step5&6.html" },
+    content: { purpose:"", inputs:"", process:"", outputs:"", rules:"" }
+},
+{
+    title: "Appointment Created",
+    sub: "Auto generated",
+    icon: "fa-calendar-plus",
+    action: { label: "Step 7 View Content Node", url: "step7.html" },
+    content: { purpose:"", inputs:"", process:"", outputs:"", rules:"" }
+},
+{
+    title: "Assign Cleaner",
+    sub: "Scheduling",
+    icon: "fa-users",
+    action: { label: "Step 8 View Content Node", url: "step8.html" },
+    content: { purpose:"", inputs:"", process:"", outputs:"", rules:"" }
+},
+{
+    title: "Cleaner Accepts",
+    sub: "Equipment check",
+    icon: "fa-check-circle",
+    action: { label: "Step 9 View Content Node", url: "step9.html" },
+    content: { purpose:"", inputs:"", process:"", outputs:"", rules:"" }
+},
+{
+    title: "Service Start",
+    sub: "Cleaning begins",
+    icon: "fa-play-circle",
+    action: { label: "Step 10 View Content Node", url: "step10.html" },
+    content: { purpose:"", inputs:"", process:"", outputs:"", rules:"" }
+},
+{
+    title: "Manager Review",
+    sub: "Post-cleaning",
+    icon: "fa-clipboard-list",
+    action: { label: "Step 11 View Content Node", url: "step11.html" },
+    content: { purpose:"", inputs:"", process:"", outputs:"", rules:"" }
+},
+{
+    title: "Booking Closed",
+    sub: "Accounting sync",
+    icon: "fa-sync-alt",
+    action: { label: "Step 12 View Content Node", url: "step12.html" },
+    content: { purpose:"", inputs:"", process:"", outputs:"", rules:"" }
+}
+];
+
+
+const timeline = document.getElementById("timeline");
+const overlay = document.getElementById("overlay");
+const modalTitle = document.getElementById("modalTitle");
+const modalContent = document.getElementById("modalContent");
+
+/* Render timeline */
+steps.forEach((step, index) => {
+    const el = document.createElement("div");
+    el.className = "workflow-step";
+    el.innerHTML = `
+        <div class="step-circle"><i class="fas ${step.icon}"></i></div>
+        <div class="step-title">${step.title}</div>
+        <div class="step-subtitle">${step.sub}</div>
+    `;
+    el.onclick = () => openStep(index, step, el);
+    timeline.appendChild(el);
+});
+
+function openStep(index, step, el) {
+    document.querySelectorAll(".workflow-step").forEach(s => s.classList.remove("active"));
+    el.classList.add("active");
+
+    modalTitle.textContent = `Step ${index + 1}: ${step.title}`;
+
+    const actionButton = step.action
+        ? `<div class="text-end mt-4">
+             <a href="${step.action.url}" target="_blank"
+                class="btn btn-primary btn-lg">
+                <i class="fas fa-arrow-right me-2"></i>
+                ${step.action.label}
+             </a>
+           </div>`
+        : "";
+
+    modalContent.innerHTML = `
+        <div class="content-section"><h5>Purpose</h5><p>${step.content.purpose}</p></div>
+        <div class="content-section"><h5>Inputs</h5><p>${step.content.inputs}</p></div>
+        <div class="content-section"><h5>Process</h5><p>${step.content.process}</p></div>
+        <div class="content-section"><h5>Outputs</h5><p>${step.content.outputs}</p></div>
+        <div class="content-section"><h5>Rules / Notes</h5><p>${step.content.rules}</p></div>
+        ${actionButton}
+    `;
+
+    overlay.classList.add("active");
+}
+
+function closeModal() {
+    overlay.classList.remove("active");
+}
+</script>
+
+</body>
+</html>

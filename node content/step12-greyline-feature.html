@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 12 — Finalize Booking & Grey Line Overbilling</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --primary: #2b5fad;
+    --primary-dark: #1f4e8a;
+    --primary-light: #eef5ff;
+    --secondary: #10b981;
+    --secondary-dark: #0da271;
+    --warning: #f59e0b;
+    --danger: #dc3545;
+    --success: #28a745;
+    --light-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --grey-line: #6b7280;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f6f9ff 0%, #f1f5f9 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Dashboard Layout */
+  .dashboard-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 25px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .admin-profile {
+    text-align: center;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 25px;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+  }
+
+  .admin-name {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .admin-role {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 10px;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .nav-item.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-weight: 600;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--warning);
+    color: white;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  /* Main Content */
+  .main-content {
+    padding: 30px;
+    overflow-y: auto;
+  }
+
+  /* Header */
+  .content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .header-title h1 {
+    font-size: 28px;
+    color: var(--primary-dark);
+    margin-bottom: 8px;
+  }
+
+  .header-title p {
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 15px;
+  }
+
+  .stat-box {
+    background: var(--card-bg);
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    text-align: center;
+    min-width: 120px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 5px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Dashboard Grid */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  /* Card Styles */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: var(--shadow);
+    margin-bottom: 25px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .card-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  .card-title h2 {
+    font-size: 20px;
+    color: var(--primary-dark);
+    margin-bottom: 4px;
+  }
+
+  .card-title p {
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  /* Grey Line Feature Panel */
+  .grey-line-panel {
+    background: #f8f9fa;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 20px 0;
+    border-left: 4px solid var(--grey-line);
+  }
+
+  .grey-line-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+  }
+
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+  }
+
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  input:checked + .toggle-slider {
+    background-color: var(--primary);
+  }
+
+  input:checked + .toggle-slider:before {
+    transform: translateX(30px);
+  }
+
+  .grey-line-controls {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  .control-group {
+    padding: 15px;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+
+  .control-group h4 {
+    color: var(--primary-dark);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .control-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  .control-label {
+    font-size: 14px;
+    color: var(--text-primary);
+  }
+
+  .control-value {
+    font-weight: 600;
+    color: var(--primary);
+  }
+
+  .minutes-badge {
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .slider-container {
+    margin-top: 15px;
+  }
+
+  .slider {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+    outline: none;
+    -webkit-appearance: none;
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+  }
+
+  .total-minutes {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    border-radius: var(--radius);
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .total-minutes h3 {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 5px;
+  }
+
+  .total-minutes-value {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  /* Status Badge */
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .status-closed {
+    background: #e8fce8;
+    color: #2c7a2c;
+  }
+
+  .status-pending {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .status-synced {
+    background: #e6f0ff;
+    color: var(--primary);
+  }
+
+  /* Invoice Table */
+  .invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+
+  .invoice-table thead {
+    background: var(--light-bg);
+  }
+
+  .invoice-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border);
+  }
+
+  .invoice-table td {
+    padding: 15px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .invoice-table tbody tr:hover {
+    background: #f9f9ff;
+  }
+
+  .amount-cell {
+    text-align: right;
+    font-weight: 600;
+  }
+
+  .invoice-total-row {
+    background: var(--light-bg);
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  /* Invoice Actions */
+  .invoice-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 25px;
+  }
+
+  .btn {
+    padding: 16px 24px;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(43, 95, 173, 0.3);
+  }
+
+  .btn-success {
+    background: var(--success);
+    color: white;
+  }
+
+  .btn-success:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+  }
+
+  .btn-success:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .btn-warning {
+    background: var(--warning);
+    color: white;
+  }
+
+  .btn-warning:hover {
+    background: #d97706;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+  }
+
+  .btn-outline {
+    background: white;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+  }
+
+  .btn-outline:hover {
+    background: var(--primary-light);
+  }
+
+  .btn-grey {
+    background: var(--grey-line);
+    color: white;
+  }
+
+  .btn-grey:hover {
+    background: #4b5563;
+    transform: translateY(-2px);
+  }
+
+  /* Notification Panel */
+  .notification-panel {
+    background: #f8f9fa;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 20px 0;
+    border-left: 4px solid var(--primary);
+  }
+
+  .notification-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+
+  .notification-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--primary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  /* Survey Section */
+  .survey-section {
+    background: linear-gradient(135deg, #fff8e6 0%, #ffecb5 100%);
+    border-radius: var(--radius);
+    padding: 25px;
+    margin: 25px 0;
+    border: 1px solid var(--warning);
+  }
+
+  .survey-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .survey-option {
+    padding: 20px;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid #ffecb5;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .survey-option:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
+
+  .survey-option.selected {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+
+  /* Audit Trail */
+  .audit-trail {
+    background: var(--light-bg);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 25px;
+  }
+
+  .timeline {
+    margin-top: 15px;
+  }
+
+  .timeline-item {
+    display: flex;
+    gap: 15px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .timeline-item:last-child {
+    border-bottom: none;
+  }
+
+  .timeline-icon {
+    width: 24px;
+    height: 24px;
+    background: var(--light-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 12px;
+  }
+
+  .timeline-content {
+    flex: 1;
+  }
+
+  .timeline-time {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+  }
+
+  .timeline-text {
+    font-size: 14px;
+  }
+
+  /* Right Sidebar */
+  .right-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .widget {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .widget-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .widget-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--primary-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 18px;
+  }
+
+  /* QuickBooks Status */
+  .quickbooks-status {
+    margin-top: 15px;
+  }
+
+  .sync-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: #e8fce8;
+    border-radius: var(--radius-sm);
+    border: 1px solid #c3e6cb;
+    margin-bottom: 10px;
+  }
+
+  .sync-status.pending {
+    background: #fff3cd;
+    border-color: #ffeaa7;
+  }
+
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: var(--radius);
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  /* Progress Bar */
+  .progress-bar {
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 15px 0;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--secondary);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .dashboard-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+      display: none;
+    }
+    
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .main-content {
+      padding: 20px;
+    }
+    
+    .content-header {
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .header-stats {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .invoice-actions {
+      grid-template-columns: 1fr;
+    }
+    
+    .survey-options {
+      grid-template-columns: 1fr;
+    }
+    
+    .btn {
+      width: 100%;
+    }
+    
+    .grey-line-controls {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+  <!-- Dashboard Container -->
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="admin-profile">
+        <div class="profile-avatar">
+          <i class="fas fa-user-tie"></i>
+        </div>
+        <h2 class="admin-name">Finance Manager</h2>
+        <p class="admin-role">Accounting & Billing</p>
+        <div style="font-size: 13px; opacity: 0.8;">
+          Manager ID: FM-2025-001
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button onclick="location.href='step12.html'" class="nav-item">
+          <i class="fas fa-arrow-left"></i>
+          Back to step 12 no grey line feature
+        </button>
+        <button onclick="location.href='ManageBooking-nodecontent.html'" class="nav-item">
+          <i class="fas fa-sitemap"></i>
+          Back to Node Presentation
+        </button>
+         <button onclick="location.href='GreyLineFeature.html'" class="nav-item">
+          <i class="fas fa-chart-line"></i>
+          greyline feature
+        </button>
+        <button class="nav-item active">
+          <i class="fas fa-file-invoice-dollar"></i>
+          Finalize Booking
+        </button>
+        <button class="nav-item">
+          <i class="fas fa-sync-alt"></i>
+          QuickBooks Sync
+          <span class="nav-badge">12</span>
+        </button>
+        <button class="nav-item">
+          <i class="fas fa-chart-line"></i>
+          Grey Line Analytics
+        </button>
+        <button class="nav-item">
+          <i class="fas fa-history"></i>
+          Invoice History
+        </button>
+        <button class="nav-item">
+          <i class="fas fa-chart-bar"></i>
+          Financial Reports
+        </button>
+        <button class="nav-item">
+          <i class="fas fa-cog"></i>
+          Accounting Settings
+        </button>
+      </nav>
+
+      <div style="margin-top: auto; padding-top: 20px; font-size: 12px; opacity: 0.7; text-align: center;">
+        <p>Step 12: Final Invoice & Sync</p>
+        <p>© 2025 CleanPro Systems</p>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="content-header">
+        <div class="header-title">
+          <h1>Finalize Booking & Sync to QuickBooks</h1>
+          <p>Complete appointment closure, sync invoices, and manage client follow-up</p>
+        </div>
+        <div class="header-stats">
+          <div class="stat-box">
+            <div class="stat-value" id="invoicesToday">8</div>
+            <div class="stat-label">Today's Invoices</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">$3,240</div>
+            <div class="stat-label">Total Revenue</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="greyLineMinutes">+28</div>
+            <div class="stat-label">Grey Line Minutes</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Grey Line Overbilling Feature Panel -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="card-title">
+            <h2>Grey Line Overbilling Feature</h2>
+            <p>Internal billing intelligence for revenue optimization (Managers/Supervisors/Owners only)</p>
+          </div>
+          <div class="status-badge" id="greyLineStatus" style="background: #e6f0ff; color: var(--primary);">
+            <i class="fas fa-toggle-on"></i> Active
+          </div>
+        </div>
+        
+        <div class="grey-line-panel">
+          <div class="grey-line-header">
+            <div>
+              <h3 style="color: var(--grey-line); margin-bottom: 5px;">
+                <i class="fas fa-eye-slash"></i> Hidden Billing Intelligence
+              </h3>
+              <p style="color: var(--text-secondary); font-size: 14px;">
+                Automatically adds safe, invisible extra minutes based on workload conditions
+              </p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+              <span style="font-weight: 600;">Enable Grey Line:</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="greyLineToggle" checked onchange="toggleGreyLine()">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="invoice-actions" style="margin-bottom: 20px;">
+            <button class="btn btn-grey" onclick="openGreyLineControlPanel()">
+              <i class="fas fa-sliders-h"></i>
+              Open Grey Line Control Panel
+            </button>
+            <button class="btn btn-outline" onclick="showGreyLineExplanation()">
+              <i class="fas fa-info-circle"></i>
+              How Grey Line Works
+            </button>
+            <button class="btn btn-outline" onclick="calculateGreyLine()">
+              <i class="fas fa-calculator"></i>
+              Recalculate Grey Line
+            </button>
+          </div>
+          
+          <!-- Grey Line Summary -->
+          <div class="grey-line-controls">
+            <div class="control-group">
+              <h4><i class="fas fa-calendar-week"></i> Recurrence Intensity</h4>
+              <div class="control-row">
+                <span class="control-label">Weekly Client</span>
+                <span class="control-value">+4 minutes</span>
+              </div>
+              <div class="control-row">
+                <span class="control-label">Residential Type</span>
+                <span class="control-value">+2 minutes</span>
+              </div>
+              <div class="control-row">
+                <span class="control-label">Long-Term Client</span>
+                <span class="control-value">+1 minute</span>
+              </div>
+            </div>
+            
+            <div class="control-group">
+              <h4><i class="fas fa-home"></i> Site Visit Assessment</h4>
+              <div class="control-row">
+                <span class="control-label">Moderate Dirt Level</span>
+                <span class="control-value">+5 minutes</span>
+              </div>
+              <div class="control-row">
+                <span class="control-label">Pets in Home</span>
+                <span class="control-value">+5 minutes</span>
+              </div>
+              <div class="control-row">
+                <span class="control-label">Kitchen Severity</span>
+                <span class="control-value">+3 minutes</span>
+              </div>
+            </div>
+            
+            <div class="control-group">
+              <h4><i class="fas fa-tasks"></i> Special Conditions</h4>
+              <div class="control-row">
+                <span class="control-label">Seasonal Dirt (Winter)</span>
+                <span class="control-value">+4 minutes</span>
+              </div>
+              <div class="control-row">
+                <span class="control-label">Task Expansion</span>
+                <span class="control-value">+3 minutes</span>
+              </div>
+              <div class="control-row">
+                <span class="control-label">Navigation Time</span>
+                <span class="control-value">+2 minutes</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="total-minutes">
+            <h3><i class="fas fa-clock"></i> TOTAL GREY LINE MINUTES</h3>
+            <div class="total-minutes-value" id="totalGreyLineMinutes">+28 minutes</div>
+            <p>Invisible to client • Blends with natural variation • 100% safe</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+        <!-- Left Column -->
+        <div>
+          <!-- Appointment Summary -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="fas fa-calendar-check"></i>
+              </div>
+              <div class="card-title">
+                <h2>Appointment Finalization</h2>
+                <p>APT-2025-3321 - Ready for closure</p>
+              </div>
+              <div class="status-badge status-pending">
+                <i class="fas fa-clock"></i> Awaiting Finalization
+              </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+              <div style="padding: 15px; background: var(--light-bg); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Client</div>
+                <div style="font-weight: 600;">Maria Santos</div>
+              </div>
+              <div style="padding: 15px; background: var(--light-bg); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Service Date</div>
+                <div style="font-weight: 600;">Feb 15, 2025</div>
+              </div>
+              <div style="padding: 15px; background: var(--light-bg); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Billing Cycle</div>
+                <div style="font-weight: 600;">Residential - Weekly</div>
+              </div>
+              <div style="padding: 15px; background: var(--light-bg); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">Grey Line Applied</div>
+                <div style="font-weight: 600; color: var(--grey-line);">+28 minutes</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Final Invoice Table -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="fas fa-file-invoice"></i>
+              </div>
+              <div class="card-title">
+                <h2>Final Invoice Summary</h2>
+                <p>Generated from completed services in Step 11</p>
+              </div>
+              <div style="font-weight: 600; color: var(--primary);">
+                Invoice #: INV-2025-03321
+              </div>
+            </div>
+            
+            <table class="invoice-table">
+              <thead>
+                <tr>
+                  <th>Item / Service</th>
+                  <th>Quantity</th>
+                  <th>Unit Price (CAD)</th>
+                  <th>Total (CAD)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Deep Cleaning — 3 Rooms + 2 Bathrooms</td>
+                  <td>1</td>
+                  <td class="amount-cell">$280.00</td>
+                  <td class="amount-cell">$280.00</td>
+                </tr>
+                <tr>
+                  <td>Add-on: Carpet Steam Clean (Living Room)</td>
+                  <td>1</td>
+                  <td class="amount-cell">$50.00</td>
+                  <td class="amount-cell">$50.00</td>
+                </tr>
+                <tr>
+                  <td>Add-on: Kitchen Degrease Service</td>
+                  <td>1</td>
+                  <td class="amount-cell">$30.00</td>
+                  <td class="amount-cell">$30.00</td>
+                </tr>
+                <tr>
+                  <td>Add-on: Balcony Cleaning</td>
+                  <td>1</td>
+                  <td class="amount-cell">$40.00</td>
+                  <td class="amount-cell">$40.00</td>
+                </tr>
+                <tr>
+                  <td>Eco-friendly Solutions (Client Request)</td>
+                  <td>1</td>
+                  <td class="amount-cell">$20.00</td>
+                  <td class="amount-cell">$20.00</td>
+                </tr>
+                <tr style="border-top: 2px solid var(--border);">
+                  <td><strong>Subtotal</strong></td>
+                  <td></td>
+                  <td></td>
+                  <td class="amount-cell"><strong>$420.00</strong></td>
+                </tr>
+                <tr>
+                  <td>Grey Line Adjustment (Hidden from Client)</td>
+                  <td></td>
+                  <td></td>
+                  <td class="amount-cell" style="color: var(--grey-line);">+$28.00</td>
+                </tr>
+                <tr>
+                  <td>Tax (13% HST)</td>
+                  <td></td>
+                  <td></td>
+                  <td class="amount-cell">$58.24</td>
+                </tr>
+                <tr class="invoice-total-row">
+                  <td><strong>GRAND TOTAL (Client Sees)</strong></td>
+                  <td></td>
+                  <td></td>
+                  <td class="amount-cell" style="color: var(--primary); font-size: 18px;"><strong>$448.00 CAD</strong></td>
+                </tr>
+                <tr style="background: #f8f9fa; font-style: italic;">
+                  <td colspan="3" style="color: var(--grey-line); font-size: 12px;">
+                    <i class="fas fa-eye-slash"></i> Grey Line adds $28.00 (28 minutes) to recover unbilled extra work
+                  </td>
+                  <td class="amount-cell" style="color: var(--grey-line); font-size: 12px;">
+                    <strong>Actual: $476.24</strong>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            
+            <div class="invoice-actions">
+              <button class="btn btn-primary" onclick="viewInvoicePDF()">
+                <i class="fas fa-file-pdf"></i>
+                View Invoice PDF
+              </button>
+              <button class="btn btn-outline" onclick="downloadInvoice()">
+                <i class="fas fa-download"></i>
+                Download Invoice
+              </button>
+              <button class="btn btn-outline" onclick="reissueInvoice()">
+                <i class="fas fa-redo"></i>
+                Reissue Invoice
+              </button>
+            </div>
+          </div>
+
+          <!-- QuickBooks Integration -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="fas fa-sync-alt"></i>
+              </div>
+              <div class="card-title">
+                <h2>QuickBooks Integration</h2>
+                <p>Sync invoice to accounting software</p>
+              </div>
+              <div class="status-badge status-pending" id="syncStatusBadge">
+                <i class="fas fa-clock"></i> Awaiting Sync
+              </div>
+            </div>
+            
+            <div class="quickbooks-status">
+              <div class="sync-status" id="quickbooksStatus">
+                <i class="fas fa-check-circle" style="color: var(--success);"></i>
+                <div>
+                  <strong>QuickBooks Connection Active</strong>
+                  <div style="font-size: 13px; color: var(--text-secondary);">Last synced: Today 10:30 AM</div>
+                </div>
+              </div>
+              
+              <div style="margin-top: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                  <span style="font-weight: 600;">Sync Progress</span>
+                  <span id="syncProgressText">0%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" id="syncProgressFill" style="width: 0%"></div>
+                </div>
+              </div>
+              
+              <div class="invoice-actions" style="margin-top: 25px;">
+                <button class="btn btn-success" id="syncBtn" onclick="syncToQuickBooks()">
+                  <i class="fas fa-sync-alt"></i>
+                  Sync Invoice to QuickBooks
+                </button>
+                <button class="btn btn-outline" onclick="viewSyncHistory()">
+                  <i class="fas fa-history"></i>
+                  View Sync History
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+          <!-- Client Notifications -->
+          <div class="widget">
+            <div class="widget-header">
+              <div class="widget-icon">
+                <i class="fas fa-envelope"></i>
+              </div>
+              <div>
+                <h3>Client Notifications</h3>
+                <p style="font-size: 13px; color: var(--text-secondary);">Automated thank-you messages</p>
+              </div>
+            </div>
+            
+            <div class="notification-panel">
+              <div class="notification-header">
+                <div class="notification-icon">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div>
+                  <h4 style="margin: 0; color: var(--primary-dark);">Thank-You Notification Ready</h4>
+                  <p style="font-size: 13px; color: var(--text-secondary);">Will send upon booking closure</p>
+                </div>
+              </div>
+              
+              <div style="margin-top: 15px;">
+                <div style="font-size: 14px; color: var(--text-primary);">
+                  <strong>Email Template:</strong> "Thank you for your booking! Your final invoice is attached."
+                </div>
+                <div style="margin-top: 10px; font-size: 13px; color: var(--text-secondary);">
+                  <i class="fas fa-paperclip"></i> Invoice PDF will be attached
+                </div>
+                <div style="font-size: 13px; color: var(--text-secondary); margin-top: 5px;">
+                  <i class="fas fa-mobile-alt"></i> App notification will also be sent
+                </div>
+              </div>
+              
+              <div class="invoice-actions" style="margin-top: 20px;">
+                <button class="btn btn-outline" onclick="previewNotification()" style="width: 100%;">
+                  <i class="fas fa-eye"></i>
+                  Preview Notification
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Follow-Up Survey -->
+          <div class="survey-section">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 15px;">
+              <i class="fas fa-poll" style="color: var(--warning); font-size: 22px;"></i>
+              <div>
+                <h3 style="color: #856404; margin: 0;">Follow-Up Engagement</h3>
+                <p style="font-size: 13px; color: #856404; opacity: 0.9;">Optional client follow-up</p>
+              </div>
+            </div>
+            
+            <p style="color: #856404; margin-bottom: 15px;">
+              Trigger optional survey or next-service offer to enhance client engagement:
+            </p>
+            
+            <div class="survey-options">
+              <div class="survey-option" onclick="selectSurveyOption('satisfaction')" id="satisfactionOption">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                  <i class="fas fa-star" style="color: var(--warning);"></i>
+                  <strong>Customer Satisfaction Survey</strong>
+                </div>
+                <p style="font-size: 13px; color: var(--text-secondary);">
+                  Gather feedback on service quality and cleaner performance
+                </p>
+              </div>
+              
+              <div class="survey-option" onclick="selectSurveyOption('nextService')" id="nextServiceOption">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                  <i class="fas fa-calendar-plus" style="color: var(--primary);"></i>
+                  <strong>Next Service Scheduling</strong>
+                </div>
+                <p style="font-size: 13px; color: var(--text-secondary);">
+                  Offer to schedule next cleaning appointment with 10% discount
+                </p>
+              </div>
+              
+              <div class="survey-option" onclick="selectSurveyOption('referral')" id="referralOption">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                  <i class="fas fa-user-friends" style="color: var(--secondary);"></i>
+                  <strong>Referral Program</strong>
+                </div>
+                <p style="font-size: 13px; color: var(--text-secondary);">
+                  Invite to refer friends and earn $50 credit
+                </p>
+              </div>
+            </div>
+            
+            <div class="invoice-actions" style="margin-top: 20px;">
+              <button class="btn btn-warning" id="surveyBtn" onclick="triggerSurvey()">
+                <i class="fas fa-paper-plane"></i>
+                Send Selected Follow-Up
+              </button>
+            </div>
+          </div>
+
+          <!-- Audit Trail -->
+          <div class="widget">
+            <div class="widget-header">
+              <div class="widget-icon">
+                <i class="fas fa-clipboard-list"></i>
+              </div>
+              <div>
+                <h3>Finalization Audit Trail</h3>
+                <p style="font-size: 13px; color: var(--text-secondary);">Booking closure history</p>
+              </div>
+            </div>
+            
+            <div class="audit-trail">
+              <div class="timeline">
+                <div class="timeline-item">
+                  <div class="timeline-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <div class="timeline-content">
+                    <div class="timeline-time">Today, 6:35 PM</div>
+                    <div class="timeline-text">Service completed by cleaner</div>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-icon">
+                    <i class="fas fa-clipboard-check"></i>
+                  </div>
+                  <div class="timeline-content">
+                    <div class="timeline-time">Today, 7:10 PM</div>
+                    <div class="timeline-text">Manager verified task completion (Step 11)</div>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-icon">
+                    <i class="fas fa-chart-line"></i>
+                  </div>
+                  <div class="timeline-content">
+                    <div class="timeline-time">Today, 7:25 PM</div>
+                    <div class="timeline-text">Grey Line applied: +28 minutes ($28.00)</div>
+                  </div>
+                </div>
+                <div class="timeline-item">
+                  <div class="timeline-icon">
+                    <i class="fas fa-file-invoice"></i>
+                  </div>
+                  <div class="timeline-content">
+                    <div class="timeline-time">Now</div>
+                    <div class="timeline-text">Final invoice generated - Ready for QuickBooks sync</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Booking Closure -->
+          <div class="widget" style="border: 2px solid var(--primary);">
+            <div class="widget-header">
+              <div class="widget-icon">
+                <i class="fas fa-lock"></i>
+              </div>
+              <div>
+                <h3>Final Booking Closure</h3>
+                <p style="font-size: 13px; color: var(--text-secondary);">Complete the workflow</p>
+              </div>
+            </div>
+            
+            <div style="margin-top: 15px;">
+              <p style="font-size: 14px; color: var(--text-primary); margin-bottom: 15px;">
+                <strong>Prerequisites completed:</strong>
+              </p>
+              <ul style="font-size: 13px; color: var(--text-secondary); margin-left: 20px; line-height: 1.8;">
+                <li>✓ All tasks completed and verified (Step 11)</li>
+                <li>✓ Grey Line applied: +28 minutes</li>
+                <li>✓ Equipment usage confirmed</li>
+                <li>✓ Photos uploaded for quality assurance</li>
+                <li>✓ Invoice generated and verified</li>
+              </ul>
+              
+              <div class="invoice-actions" style="margin-top: 20px;">
+                <button class="btn btn-success" id="closeBookingBtn" onclick="closeBooking()">
+                  <i class="fas fa-lock"></i>
+                  Close Booking & Complete Workflow
+                </button>
+              </div>
+              
+              <p style="font-size: 12px; color: var(--text-secondary); margin-top: 15px;">
+                <i class="fas fa-info-circle"></i>
+                Closing will: Update KPI, archive data, and mark appointment as complete
+              </p>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- System Status Panel -->
+      <div class="card" style="margin-top: 30px;">
+        <div class="card-header">
+          <div class="card-icon">
+            <i class="fas fa-server"></i>
+          </div>
+          <div class="card-title">
+            <h2>System Integration Status</h2>
+            <p>All integrated systems for this workflow</p>
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+          <div style="padding: 15px; background: #e8fce8; border-radius: var(--radius-sm); border: 1px solid #c3e6cb;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+              <i class="fas fa-check-circle" style="color: var(--success);"></i>
+              <strong>CRM System</strong>
+            </div>
+            <div style="font-size: 13px; color: #666;">Client data synchronized</div>
+          </div>
+          
+          <div style="padding: 15px; background: #fff3cd; border-radius: var(--radius-sm); border: 1px solid #ffeaa7;" id="qbStatus">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+              <i class="fas fa-sync-alt" style="color: var(--warning);"></i>
+              <strong>QuickBooks</strong>
+            </div>
+            <div style="font-size: 13px; color: #666;" id="qbStatusText">Ready for invoice sync</div>
+          </div>
+          
+          <div style="padding: 15px; background: #e8fce8; border-radius: var(--radius-sm); border: 1px solid #c3e6cb;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+              <i class="fas fa-check-circle" style="color: var(--success);"></i>
+              <strong>Grey Line Engine</strong>
+            </div>
+            <div style="font-size: 13px; color: #666;">Active (+28 minutes applied)</div>
+          </div>
+          
+          <div style="padding: 15px; background: #e8fce8; border-radius: var(--radius-sm); border: 1px solid #c3e6cb;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+              <i class="fas fa-check-circle" style="color: var(--success);"></i>
+              <strong>Analytics Dashboard</strong>
+            </div>
+            <div style="font-size: 13px; color: #666;">KPI tracking active</div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal for Sync Progress -->
+  <div id="syncModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 style="color: var(--primary-dark);">QuickBooks Sync in Progress</h2>
+        <button class="modal-close" onclick="closeSyncModal()">×</button>
+      </div>
+      <div style="text-align: center; padding: 30px 0;">
+        <div style="font-size: 60px; color: var(--primary); margin-bottom: 20px;">
+          <i class="fas fa-sync-alt fa-spin"></i>
+        </div>
+        <h3 id="syncModalTitle">Syncing Invoice to QuickBooks</h3>
+        <p id="syncModalMessage" style="color: var(--text-secondary); margin: 15px 0;">
+          Please wait while we sync your invoice to the accounting system...
+        </p>
+        <div class="progress-bar" style="margin: 30px 0;">
+          <div class="progress-fill" id="modalProgressFill" style="width: 0%"></div>
+        </div>
+        <div style="font-weight: 600; color: var(--primary);" id="modalProgressText">0%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grey Line Control Panel Modal -->
+  <div id="greyLineControlModal" class="modal">
+    <div class="modal-content" style="max-width: 700px;">
+      <div class="modal-header">
+        <h2 style="color: var(--grey-line);">
+          <i class="fas fa-sliders-h"></i> Grey Line Control Panel
+        </h2>
+        <button class="modal-close" onclick="closeGreyLineControlPanel()">×</button>
+      </div>
+      
+      <div style="max-height: 500px; overflow-y: auto; padding: 10px;">
+        <div style="background: #f8f9fa; padding: 15px; border-radius: var(--radius-sm); margin-bottom: 20px;">
+          <h4 style="color: var(--grey-line); margin-bottom: 10px;">
+            <i class="fas fa-eye-slash"></i> Internal Billing Intelligence Only
+          </h4>
+          <p style="font-size: 13px; color: var(--text-secondary);">
+            This panel controls the hidden Grey Line Overbilling feature. Adjustments are invisible to clients and based on workload conditions.
+          </p>
+        </div>
+        
+        <!-- Recurrence Settings -->
+        <div class="control-group" style="margin-bottom: 20px;">
+          <h4><i class="fas fa-calendar-week"></i> Recurrence Intensity Settings</h4>
+          <div class="control-row">
+            <span class="control-label">Weekly Client</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input type="range" min="1" max="10" value="4" class="slider" id="weeklySlider" onchange="updateGreyLineValue('weekly', this.value)">
+              <span class="minutes-badge" id="weeklyValue">+4 min</span>
+            </div>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Residential Modifier</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input type="range" min="0" max="5" value="2" class="slider" id="residentialSlider" onchange="updateGreyLineValue('residential', this.value)">
+              <span class="minutes-badge" id="residentialValue">+2 min</span>
+            </div>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Long-Term Client Discount</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input type="range" min="0" max="3" value="1" class="slider" id="longtermSlider" onchange="updateGreyLineValue('longterm', this.value)">
+              <span class="minutes-badge" id="longtermValue">+1 min</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Site Visit Assessment -->
+        <div class="control-group" style="margin-bottom: 20px;">
+          <h4><i class="fas fa-home"></i> Site Visit Assessment</h4>
+          <div class="control-row">
+            <span class="control-label">Dirt Level (Moderate)</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input type="range" min="0" max="10" value="5" class="slider" id="dirtSlider" onchange="updateGreyLineValue('dirt', this.value)">
+              <span class="minutes-badge" id="dirtValue">+5 min</span>
+            </div>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Pets in Home</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input type="range" min="0" max="10" value="5" class="slider" id="petsSlider" onchange="updateGreyLineValue('pets', this.value)">
+              <span class="minutes-badge" id="petsValue">+5 min</span>
+            </div>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Kitchen Severity</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input type="range" min="0" max="8" value="3" class="slider" id="kitchenSlider" onchange="updateGreyLineValue('kitchen', this.value)">
+              <span class="minutes-badge" id="kitchenValue">+3 min</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Special Conditions -->
+        <div class="control-group" style="margin-bottom: 20px;">
+          <h4><i class="fas fa-tasks"></i> Special Conditions</h4>
+          <div class="control-row">
+            <span class="control-label">Seasonal Dirt (Winter)</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input type="range" min="0" max="8" value="4" class="slider" id="seasonalSlider" onchange="updateGreyLineValue('seasonal', this.value)">
+              <span class="minutes-badge" id="seasonalValue">+4 min</span>
+            </div>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Task Expansion</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input type="range" min="0" max="6" value="3" class="slider" id="taskSlider" onchange="updateGreyLineValue('task', this.value)">
+              <span class="minutes-badge" id="taskValue">+3 min</span>
+            </div>
+          </div>
+          <div class="control-row">
+            <span class="control-label">Navigation Time</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <input type="range" min="0" max="4" value="2" class="slider" id="navigationSlider" onchange="updateGreyLineValue('navigation', this.value)">
+              <span class="minutes-badge" id="navigationValue">+2 min</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Total Calculation -->
+        <div class="total-minutes" style="margin-top: 20px;">
+          <h3><i class="fas fa-calculator"></i> TOTAL GREY LINE MINUTES</h3>
+          <div class="total-minutes-value" id="controlTotalMinutes">+28 minutes</div>
+          <p>Adjust sliders to modify grey line intensity</p>
+        </div>
+      </div>
+      
+      <div class="invoice-actions" style="margin-top: 20px;">
+        <button class="btn btn-grey" onclick="applyGreyLineSettings()">
+          <i class="fas fa-check"></i>
+          Apply Grey Line Settings
+        </button>
+        <button class="btn btn-outline" onclick="resetGreyLineSettings()">
+          <i class="fas fa-redo"></i>
+          Reset to Defaults
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Grey Line State Management
+    let greyLineEnabled = true;
+    let greyLineValues = {
+      weekly: 4,
+      residential: 2,
+      longterm: 1,
+      dirt: 5,
+      pets: 5,
+      kitchen: 3,
+      seasonal: 4,
+      task: 3,
+      navigation: 2
+    };
+    
+    let syncInProgress = false;
+    let bookingClosed = false;
+    let selectedSurveyOption = null;
+    
+    // Toggle Grey Line feature
+    function toggleGreyLine() {
+      const toggle = document.getElementById('greyLineToggle');
+      const statusBadge = document.getElementById('greyLineStatus');
+      
+      greyLineEnabled = toggle.checked;
+      
+      if (greyLineEnabled) {
+        statusBadge.innerHTML = '<i class="fas fa-toggle-on"></i> Active';
+        statusBadge.style.background = '#e6f0ff';
+        statusBadge.style.color = 'var(--primary)';
+        showNotification('success', 'Grey Line Enabled', 'Hidden billing intelligence is now active.');
+        calculateGreyLine();
+      } else {
+        statusBadge.innerHTML = '<i class="fas fa-toggle-off"></i> Disabled';
+        statusBadge.style.background = '#f8f9fa';
+        statusBadge.style.color = 'var(--text-secondary)';
+        showNotification('warning', 'Grey Line Disabled', 'Hidden billing intelligence is now inactive.');
+        updateTotalGreyLine(0);
+      }
+    }
+    
+    // Calculate total grey line minutes
+    function calculateGreyLine() {
+      if (!greyLineEnabled) {
+        updateTotalGreyLine(0);
+        return;
+      }
+      
+      let total = 0;
+      for (const key in greyLineValues) {
+        total += greyLineValues[key];
+      }
+      
+      updateTotalGreyLine(total);
+      showNotification('info', 'Grey Line Recalculated', `Total grey line minutes: +${total} minutes`);
+    }
+    
+    // Update total grey line display
+    function updateTotalGreyLine(total) {
+      document.getElementById('totalGreyLineMinutes').textContent = `+${total} minutes`;
+      document.getElementById('controlTotalMinutes').textContent = `+${total} minutes`;
+      document.getElementById('greyLineMinutes').textContent = `+${total}`;
+      
+      // Update invoice table
+      const greyLineCell = document.querySelector('.invoice-table tbody tr:nth-child(7) td.amount-cell');
+      if (greyLineCell) {
+        greyLineCell.textContent = `+$${total}.00`;
+      }
+      
+      // Update total calculation
+      const subtotal = 420;
+      const greyLineAmount = total;
+      const tax = (subtotal + greyLineAmount) * 0.13;
+      const grandTotal = subtotal + greyLineAmount + tax;
+      
+      const taxCell = document.querySelector('.invoice-table tbody tr:nth-child(8) td.amount-cell');
+      const totalCell = document.querySelector('.invoice-table tbody tr:nth-child(9) td.amount-cell');
+      const actualCell = document.querySelector('.invoice-table tbody tr:nth-child(10) td.amount-cell');
+      
+      if (taxCell) taxCell.textContent = `$${tax.toFixed(2)}`;
+      if (totalCell) totalCell.textContent = `$${(subtotal + tax).toFixed(2)} CAD`;
+      if (actualCell) actualCell.innerHTML = `<strong>Actual: $${grandTotal.toFixed(2)}</strong>`;
+    }
+    
+    // Open Grey Line Control Panel
+    function openGreyLineControlPanel() {
+      document.getElementById('greyLineControlModal').style.display = 'flex';
+      
+      // Initialize sliders with current values
+      for (const key in greyLineValues) {
+        const slider = document.getElementById(`${key}Slider`);
+        const valueSpan = document.getElementById(`${key}Value`);
+        
+        if (slider) {
+          slider.value = greyLineValues[key];
+        }
+        if (valueSpan) {
+          valueSpan.textContent = `+${greyLineValues[key]} min`;
+        }
+      }
+    }
+    
+    // Close Grey Line Control Panel
+    function closeGreyLineControlPanel() {
+      document.getElementById('greyLineControlModal').style.display = 'none';
+    }
+    
+    // Update grey line value from slider
+    function updateGreyLineValue(type, value) {
+      greyLineValues[type] = parseInt(value);
+      document.getElementById(`${type}Value`).textContent = `+${value} min`;
+      
+      // Recalculate total
+      let total = 0;
+      for (const key in greyLineValues) {
+        total += greyLineValues[key];
+      }
+      document.getElementById('controlTotalMinutes').textContent = `+${total} minutes`;
+    }
+    
+    // Apply grey line settings
+    function applyGreyLineSettings() {
+      calculateGreyLine();
+      closeGreyLineControlPanel();
+      showNotification('success', 'Grey Line Settings Applied', 'New grey line parameters have been applied to the invoice.');
+    }
+    
+    // Reset grey line settings to defaults
+    function resetGreyLineSettings() {
+      greyLineValues = {
+        weekly: 4,
+        residential: 2,
+        longterm: 1,
+        dirt: 5,
+        pets: 5,
+        kitchen: 3,
+        seasonal: 4,
+        task: 3,
+        navigation: 2
+      };
+      
+      // Reset sliders
+      for (const key in greyLineValues) {
+        const slider = document.getElementById(`${key}Slider`);
+        const valueSpan = document.getElementById(`${key}Value`);
+        
+        if (slider) {
+          slider.value = greyLineValues[key];
+        }
+        if (valueSpan) {
+          valueSpan.textContent = `+${greyLineValues[key]} min`;
+        }
+      }
+      
+      calculateGreyLine();
+      showNotification('info', 'Grey Line Reset', 'All settings have been reset to default values.');
+    }
+    
+    // Show grey line explanation
+    function showGreyLineExplanation() {
+      const message = `
+        <h3 style="color: var(--grey-line); margin-bottom: 15px;">Grey Line Overbilling Feature</h3>
+        <p><strong>Purpose:</strong> To recover lost income from unbilled extra workload by automatically calculating safe, invisible extra minutes.</p>
+        
+        <p style="margin-top: 10px;"><strong>How it works:</strong></p>
+        <ul style="margin-left: 20px; margin-bottom: 15px;">
+          <li>Analyzes recurrence, site-visit evidence, client type, and workload conditions</li>
+          <li>Adds extra minutes for: extra wiping, additional dusting, vacuuming more rooms, cleaning extra clutter, pet hair cleanup, strong stains, etc.</li>
+          <li>Hidden from clients - only visible to managers, supervisors, and owners</li>
+          <li>Feeds the quotation/billing engine for revenue optimization</li>
+        </ul>
+        
+        <p><strong>Not based on:</strong> Cleaner behavior, attendance, clock-in/out, GPS, or compliance.</p>
+        <p><strong>Based on:</strong> Extra work, heavy dirt, client habits, recurrence, site visit evidence, and special conditions.</p>
+      `;
+      
+      alert(message.replace(/<[^>]*>/g, ''));
+    }
+    
+    // Select survey option
+    function selectSurveyOption(option) {
+      selectedSurveyOption = option;
+      
+      // Remove selected class from all options
+      document.querySelectorAll('.survey-option').forEach(el => {
+        el.classList.remove('selected');
+      });
+      
+      // Add selected class to clicked option
+      document.getElementById(`${option}Option`).classList.add('selected');
+      
+      // Update button text
+      const surveyBtn = document.getElementById('surveyBtn');
+      const optionNames = {
+        'satisfaction': 'Satisfaction Survey',
+        'nextService': 'Next Service Offer',
+        'referral': 'Referral Program'
+      };
+      surveyBtn.innerHTML = `<i class="fas fa-paper-plane"></i> Send ${optionNames[option]}`;
+    }
+    
+    // Sync to QuickBooks
+    function syncToQuickBooks() {
+      if (syncInProgress) return;
+      
+      syncInProgress = true;
+      const syncBtn = document.getElementById('syncBtn');
+      const syncStatusBadge = document.getElementById('syncStatusBadge');
+      const qbStatus = document.getElementById('qbStatus');
+      const qbStatusText = document.getElementById('qbStatusText');
+      
+      // Update UI
+      syncBtn.disabled = true;
+      syncBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Syncing...';
+      syncStatusBadge.className = 'status-badge status-pending';
+      syncStatusBadge.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Syncing';
+      
+      // Open modal
+      openSyncModal();
+      
+      // Simulate sync progress
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        
+        // Update progress bars
+        document.getElementById('syncProgressFill').style.width = `${progress}%`;
+        document.getElementById('syncProgressText').textContent = `${progress}%`;
+        document.getElementById('modalProgressFill').style.width = `${progress}%`;
+        document.getElementById('modalProgressText').textContent = `${progress}%`;
+        
+        // Update modal messages
+        const messages = [
+          'Connecting to QuickBooks API...',
+          'Validating invoice data...',
+          'Applying Grey Line adjustments...',
+          'Creating invoice record...',
+          'Applying tax rules...',
+          'Saving to QuickBooks...',
+          'Finalizing sync...'
+        ];
+        
+        const messageIndex = Math.min(Math.floor(progress / 15), messages.length - 1);
+        document.getElementById('syncModalMessage').textContent = messages[messageIndex];
+        
+        if (progress >= 100) {
+          clearInterval(interval);
+          
+          // Success
+          setTimeout(() => {
+            closeSyncModal();
+            
+            // Update UI for success
+            syncBtn.disabled = false;
+            syncBtn.innerHTML = '<i class="fas fa-check"></i> Synced to QuickBooks';
+            syncStatusBadge.className = 'status-badge status-synced';
+            syncStatusBadge.innerHTML = '<i class="fas fa-check-circle"></i> Synced';
+            
+            qbStatus.style.background = '#e8fce8';
+            qbStatus.style.borderColor = '#c3e6cb';
+            qbStatusText.innerHTML = '<i class="fas fa-check-circle" style="color: var(--success);"></i> Invoice synced at ' + new Date().toLocaleTimeString();
+            
+            // Enable booking closure
+            document.getElementById('closeBookingBtn').disabled = false;
+            
+            syncInProgress = false;
+            
+            // Show success notification
+            showNotification('success', 'QuickBooks Sync Complete', 'Invoice successfully synced to accounting system with Grey Line adjustments.');
+          }, 500);
+        }
+      }, 300);
+    }
+    
+    // Open sync modal
+    function openSyncModal() {
+      document.getElementById('syncModal').style.display = 'flex';
+    }
+    
+    // Close sync modal
+    function closeSyncModal() {
+      document.getElementById('syncModal').style.display = 'none';
+    }
+    
+    // Close booking
+    function closeBooking() {
+      if (bookingClosed) return;
+      
+      if (confirm('Close this booking and complete the workflow?\n\nThis will:\n• Mark appointment as "Closed"\n• Send thank-you notification to client\n• Apply Grey Line adjustments\n• Update KPI and analytics\n• Archive all appointment data')) {
+        bookingClosed = true;
+        const closeBtn = document.getElementById('closeBookingBtn');
+        const syncStatusBadge = document.getElementById('syncStatusBadge');
+        
+        // Update UI
+        closeBtn.disabled = true;
+        closeBtn.innerHTML = '<i class="fas fa-check"></i> Booking Closed';
+        syncStatusBadge.className = 'status-badge status-closed';
+        syncStatusBadge.innerHTML = '<i class="fas fa-lock"></i> Booking Closed';
+        
+        // Update stats
+        updateTodayInvoices();
+        
+        // Show success notification
+        showNotification('success', 'Booking Successfully Closed', `
+          <p><strong>Appointment APT-2025-3321</strong> has been closed.</p>
+          <p style="margin-top: 10px;">✅ Grey Line adjustments applied: +28 minutes</p>
+          <p>✅ Thank-you notification sent to client</p>
+          <p>✅ KPI and analytics updated</p>
+          <p>✅ Data archived for reporting</p>
+          <p>✅ Workflow completed successfully</p>
+          <p style="margin-top: 10px; font-size: 14px; color: var(--text-secondary);">
+            This appointment is now complete and closed in the system.
+          </p>
+        `);
+      }
+    }
+    
+    // Trigger survey
+    function triggerSurvey() {
+      if (!selectedSurveyOption) {
+        alert('Please select a follow-up option first.');
+        return;
+      }
+      
+      const optionNames = {
+        'satisfaction': 'Customer Satisfaction Survey',
+        'nextService': 'Next Service Scheduling Offer',
+        'referral': 'Referral Program Invitation'
+      };
+      
+      if (confirm(`Send ${optionNames[selectedSurveyOption]} to client?\n\nThis will send via email and app notification.`)) {
+        const surveyBtn = document.getElementById('surveyBtn');
+        surveyBtn.disabled = true;
+        surveyBtn.innerHTML = '<i class="fas fa-check"></i> Follow-Up Sent';
+        
+        showNotification('success', 'Follow-Up Triggered', `${optionNames[selectedSurveyOption]} has been sent to the client.`);
+      }
+    }
+    
+    // View invoice PDF
+    function viewInvoicePDF() {
+      alert('Opening invoice PDF in new tab...\n\nInvoice #: INV-2025-03321\nSubtotal: $420.00\nGrey Line: +$28.00\nTax: $58.24\nTotal: $476.24\nClient Sees: $448.00');
+    }
+    
+    // Download invoice
+    function downloadInvoice() {
+      alert('Downloading invoice PDF...');
+    }
+    
+    // Reissue invoice
+    function reissueInvoice() {
+      alert('Reissuing invoice with updated Grey Line adjustments...');
+    }
+    
+    // View sync history
+    function viewSyncHistory() {
+      alert('Opening QuickBooks sync history...');
+    }
+    
+    // Preview notification
+    function previewNotification() {
+      alert('Previewing thank-you notification email...');
+    }
+    
+    // Update today's invoice count
+    function updateTodayInvoices() {
+      const countElement = document.getElementById('invoicesToday');
+      if (countElement) {
+        const currentCount = parseInt(countElement.textContent);
+        countElement.textContent = currentCount + 1;
+      }
+    }
+    
+    // Show notification
+    function showNotification(type, title, message) {
+      // In a real app, this would show a toast notification
+      alert(`${title}\n\n${message.replace(/<[^>]*>/g, '')}`);
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      // Disable booking closure until sync is done
+      document.getElementById('closeBookingBtn').disabled = true;
+      
+      // Auto-select first survey option
+      selectSurveyOption('satisfaction');
+      
+      // Calculate initial grey line
+      calculateGreyLine();
+    });
+    
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+      const syncModal = document.getElementById('syncModal');
+      const greyLineModal = document.getElementById('greyLineControlModal');
+      
+      if (event.target === syncModal) {
+        closeSyncModal();
+      }
+      if (event.target === greyLineModal) {
+        closeGreyLineControlPanel();
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cleaner Dashboard - Accept Appointment</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --primary: #2b5fad;
+    --primary-dark: #1f4e8a;
+    --primary-light: #eef5ff;
+    --secondary: #10b981;
+    --secondary-dark: #0da271;
+    --warning: #f59e0b;
+    --danger: #dc3545;
+    --light-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f6f9ff 0%, #f1f5f9 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Dashboard Layout */
+  .dashboard-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--primary);
+    color: white;
+    padding: 25px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .cleaner-profile {
+    text-align: center;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 25px;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+  }
+
+  .cleaner-name {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .cleaner-id {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 10px;
+  }
+
+  .cleaner-rating {
+    color: var(--warning);
+    font-size: 14px;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .nav-item.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-weight: 600;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--warning);
+    color: white;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  /* Main Content */
+  .main-content {
+    padding: 30px;
+    overflow-y: auto;
+  }
+
+  /* Header */
+  .content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .header-title h1 {
+    font-size: 28px;
+    color: var(--primary-dark);
+    margin-bottom: 8px;
+  }
+
+  .header-title p {
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 20px;
+  }
+
+  .stat-box {
+    background: var(--card-bg);
+    padding: 15px 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    text-align: center;
+    min-width: 120px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 5px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Dashboard Grid */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  /* Appointment Cards */
+  .appointment-section {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: var(--shadow);
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  .section-title h2 {
+    font-size: 20px;
+    color: var(--primary-dark);
+  }
+
+  .section-title p {
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  /* Appointment Card */
+  .appointment-card {
+    background: var(--light-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .appointment-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, #f6f9ff 0%, #e8efff 100%);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .appointment-id {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .status-ready {
+    background: #e6f0ff;
+    color: var(--primary);
+  }
+
+  .status-in-progress {
+    background: #e8fce8;
+    color: #2c7a2c;
+  }
+
+  .card-body {
+    padding: 25px;
+  }
+
+  /* Info Grid */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+  }
+
+  .info-item {
+    padding: 15px;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+
+  .info-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .info-value {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  /* Task List */
+  .task-section {
+    margin: 25px 0;
+  }
+
+  .task-list {
+    list-style: none;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .task-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .task-item:last-child {
+    border-bottom: none;
+  }
+
+  .task-icon {
+    color: var(--secondary);
+    margin-right: 12px;
+    font-size: 16px;
+  }
+
+  .task-text {
+    flex: 1;
+    font-size: 15px;
+  }
+
+  /* Equipment Checklist */
+  .equipment-section {
+    background: #fff8e6;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 25px 0;
+    border: 1px solid #ffecb5;
+  }
+
+  .equipment-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    color: #856404;
+  }
+
+  .equipment-header i {
+    font-size: 22px;
+  }
+
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid #ffecb5;
+  }
+
+  .checklist-item.required {
+    border-left: 4px solid var(--danger);
+  }
+
+  .checklist-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--warning);
+  }
+
+  /* Special Notes */
+  .notes-section {
+    background: #f8f9fa;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 25px 0;
+    border-left: 4px solid var(--primary);
+  }
+
+  /* Action Section */
+  .action-section {
+    background: linear-gradient(135deg, #f6f9ff 0%, #e8efff 100%);
+    border-radius: var(--radius);
+    padding: 25px;
+    margin-top: 30px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 25px;
+  }
+
+  .btn {
+    padding: 16px 32px;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 200px;
+    justify-content: center;
+  }
+
+  .btn-accept {
+    background: var(--secondary);
+    color: white;
+  }
+
+  .btn-accept:hover:not(:disabled) {
+    background: var(--secondary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+  }
+
+  .btn-accept:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .btn-view {
+    background: white;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+  }
+
+  .btn-view:hover {
+    background: var(--primary-light);
+  }
+
+  /* Right Sidebar */
+  .right-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .widget {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: var(--shadow);
+  }
+
+  .widget-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .widget-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--primary-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 18px;
+  }
+
+  /* Progress Indicators */
+  .progress-section {
+    margin: 15px 0;
+  }
+
+  .progress-item {
+    margin-bottom: 20px;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  .progress-bar {
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--secondary);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+
+  /* Equipment Status */
+  .equipment-status {
+    margin-top: 15px;
+  }
+
+  .equipment-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .equipment-item:last-child {
+    border-bottom: none;
+  }
+
+  .equipment-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .equipment-status-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .status-available {
+    background: #e8fce8;
+    color: #2c7a2c;
+  }
+
+  .status-checking {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .status-unavailable {
+    background: #fde8e8;
+    color: var(--danger);
+  }
+
+  /* Calendar Widget */
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+
+  .calendar-day {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding: 8px;
+  }
+
+  .calendar-date {
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .calendar-date:hover {
+    background: var(--light-bg);
+  }
+
+  .calendar-date.appointment {
+    background: var(--secondary);
+    color: white;
+  }
+
+  /* Notification */
+  .notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 1000;
+    display: none;
+    max-width: 400px;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .notification-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+
+  .notification-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .dashboard-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+      display: none;
+    }
+    
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .main-content {
+      padding: 20px;
+    }
+    
+    .content-header {
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .header-stats {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .stat-box {
+      min-width: auto;
+      flex: 1;
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+    }
+    
+    .btn {
+      width: 100%;
+    }
+  }
+</style>
+</head>
+
+<body>
+  <!-- Dashboard Container -->
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="cleaner-profile">
+        <div class="profile-avatar">
+          <i class="fas fa-user-tie"></i>
+        </div>
+        <h2 class="cleaner-name">John M. (Team Lead)</h2>
+        <p class="cleaner-id">Cleaner ID: CL-2025-001</p>
+        <div class="cleaner-rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star-half-alt"></i>
+          4.8/5.0
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active">
+          <i class="fas fa-calendar-check"></i>
+          Accept Appointments
+          <span class="nav-badge">2</span>
+        </a>
+        <a href="#" class="nav-item">
+          <i class="fas fa-tasks"></i>
+          Active Appointments
+        </a>
+        <a href="#" class="nav-item">
+          <i class="fas fa-history"></i>
+          Appointment History
+        </a>
+        <a href="#" class="nav-item">
+          <i class="fas fa-chart-line"></i>
+          Performance
+        </a>
+        <a href="#" class="nav-item">
+          <i class="fas fa-tools"></i>
+          Equipment Inventory
+        </a>
+        <button onclick="location.href='step10.html'" 
+        class="nav-item" 
+        style="background:none; border:none; cursor:pointer; width:100%; text-align:left;">
+  <i class="fas fa-arrow-right"></i>
+  Go to Step 10
+</button>
+
+        <button onclick="location.href='ManageBooking-nodecontent.html'" class="nav-item" style="background: none; border: none; cursor: pointer; width: 100%; text-align: left;">
+    <i class="fas fa-cog"></i>
+   go back to node presentation
+  </button>
+        
+      </nav>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="content-header">
+        <div class="header-title">
+          <h1>Appointment Acceptance Panel</h1>
+          <p>Review and accept assigned appointments. All appointments are mandatory.</p>
+        </div>
+        <div class="header-stats">
+          <div class="stat-box">
+            <div class="stat-value" id="pendingCount">2</div>
+            <div class="stat-label">Pending Acceptance</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="inprogressCount">0</div>
+            <div class="stat-label">In Progress</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value">12</div>
+            <div class="stat-label">Completed</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+        <!-- Main Appointment Section -->
+        <div class="appointment-section">
+          <div class="section-header">
+            <div class="section-title">
+              <div class="section-icon">
+                <i class="fas fa-calendar-alt"></i>
+              </div>
+              <div>
+                <h2>Appointment Details</h2>
+                <p>Review all information before acceptance</p>
+              </div>
+            </div>
+            <div class="status-badge status-ready">
+              <i class="fas fa-clock"></i> Ready for Acceptance
+            </div>
+          </div>
+
+          <!-- Appointment Card -->
+          <div class="appointment-card">
+            <div class="card-header">
+              <div class="appointment-id">APT-CA-2025-010</div>
+              <div class="status-badge status-ready">
+                <i class="fas fa-clock"></i> Requires Acceptance
+              </div>
+            </div>
+
+            <div class="card-body">
+              <!-- Appointment Info -->
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">Client Name</div>
+                  <div class="info-value">Sarah Johnson</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Date & Time</div>
+                  <div class="info-value">Nov 10, 2025 — 10:00 AM</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Service Type</div>
+                  <div class="info-value">Deep Cleaning Package</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Estimated Duration</div>
+                  <div class="info-value">4 hours</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Client Contact</div>
+                  <div class="info-value">(416) 555-1234</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Total Value</div>
+                  <div class="info-value">$450.00</div>
+                </div>
+              </div>
+
+              <!-- Address -->
+              <div class="info-item" style="margin: 20px 0;">
+                <div class="info-label">Service Address</div>
+                <div class="info-value">123 Maple Street, Toronto, ON M5V 2T6</div>
+              </div>
+
+              <!-- Task List -->
+              <div class="task-section">
+                <div class="section-title" style="margin-bottom: 15px;">
+                  <i class="fas fa-clipboard-list"></i>
+                  <h3>Task List (View Only)</h3>
+                </div>
+                <ul class="task-list">
+                  <li class="task-item">
+                    <i class="fas fa-check-circle task-icon"></i>
+                    <span class="task-text">Carpet steam cleaning in all rooms (3 bedrooms, living room)</span>
+                  </li>
+                  <li class="task-item">
+                    <i class="fas fa-check-circle task-icon"></i>
+                    <span class="task-text">Deep clean kitchen appliances (oven, refrigerator, microwave)</span>
+                  </li>
+                  <li class="task-item">
+                    <i class="fas fa-check-circle task-icon"></i>
+                    <span class="task-text">Wash and sanitize bathrooms (2 full bathrooms)</span>
+                  </li>
+                  <li class="task-item">
+                    <i class="fas fa-check-circle task-icon"></i>
+                    <span class="task-text">Window cleaning (interior only)</span>
+                  </li>
+                  <li class="task-item">
+                    <i class="fas fa-check-circle task-icon"></i>
+                    <span class="task-text">Floor mopping and vacuuming throughout</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Equipment Checklist -->
+              <div class="equipment-section">
+                <div class="equipment-header">
+                  <i class="fas fa-tools"></i>
+                  <div>
+                    <h3 style="color: #856404;">Mandatory Equipment Checklist</h3>
+                    <p style="font-size: 14px; opacity: 0.9;">All items must be verified before acceptance</p>
+                  </div>
+                </div>
+                
+                <div class="checklist-grid">
+                  <div class="checklist-item required">
+                    <input type="checkbox" id="equip1" onchange="validateChecklist()">
+                    <label for="equip1">
+                      <strong>Carpet Steamer</strong>
+                      <div style="font-size: 13px; color: #666;">Heavy-duty steam cleaner</div>
+                    </label>
+                  </div>
+                  <div class="checklist-item required">
+                    <input type="checkbox" id="equip2" onchange="validateChecklist()">
+                    <label for="equip2">
+                      <strong>High-power Vacuum</strong>
+                      <div style="font-size: 13px; color: #666;">HEPA filter vacuum cleaner</div>
+                    </label>
+                  </div>
+                  <div class="checklist-item required">
+                    <input type="checkbox" id="equip3" onchange="validateChecklist()">
+                    <label for="equip3">
+                      <strong>Microfiber Cloths</strong>
+                      <div style="font-size: 13px; color: #666;">Clean set (minimum 20)</div>
+                    </label>
+                  </div>
+                  <div class="checklist-item required">
+                    <input type="checkbox" id="equip4" onchange="validateChecklist()">
+                    <label for="equip4">
+                      <strong>Eco-friendly Solutions</strong>
+                      <div style="font-size: 13px; color: #666;">Client requested eco-friendly</div>
+                    </label>
+                  </div>
+                  <div class="checklist-item">
+                    <input type="checkbox" id="equip5" onchange="validateChecklist()">
+                    <label for="equip5">
+                      <strong>Extension Ladder</strong>
+                      <div style="font-size: 13px; color: #666;">For high windows (optional)</div>
+                    </label>
+                  </div>
+                  <div class="checklist-item">
+                    <input type="checkbox" id="equip6" onchange="validateChecklist()">
+                    <label for="equip6">
+                      <strong>Floor Buffer</strong>
+                      <div style="font-size: 13px; color: #666;">For hardwood floors</div>
+                    </label>
+                  </div>
+                </div>
+                
+                <div class="progress-section" style="margin-top: 20px;">
+                  <div class="progress-label">
+                    <span>Checklist Completion</span>
+                    <span id="checklistProgress">0/4</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                  </div>
+                  <p style="font-size: 13px; color: #856404; margin-top: 8px;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    All required equipment must be verified before acceptance
+                  </p>
+                </div>
+              </div>
+
+              <!-- Special Notes -->
+              <div class="notes-section">
+                <div class="section-title" style="margin-bottom: 15px;">
+                  <i class="fas fa-sticky-note"></i>
+                  <h3>Special Instructions & Notes</h3>
+                </div>
+                <div style="font-size: 15px; line-height: 1.6;">
+                  <p><strong>Client Notes:</strong> Use eco-friendly cleaning products only (client allergy concern)</p>
+                  <p><strong>Access Instructions:</strong> Parking available in visitor lot. Key will be under the mat.</p>
+                  <p><strong>Pets:</strong> 2 cats in the house - be mindful of allergies</p>
+                  <p><strong>Special Requests:</strong> Focus on kitchen grease removal, extra attention to master bathroom</p>
+                  <p><strong>Contact:</strong> Call client 15 minutes before arrival</p>
+                </div>
+              </div>
+
+              <!-- Action Section -->
+              <div class="action-section">
+                <h3 style="color: var(--primary-dark); margin-bottom: 10px;">Ready to Accept Appointment?</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                  By accepting, you confirm that:
+                </p>
+                <ul style="text-align: left; margin: 0 auto 20px; max-width: 500px; color: var(--text-secondary);">
+                  <li>All required equipment is available and functional</li>
+                  <li>You understand the task requirements</li>
+                  <li>You will arrive on time at the scheduled appointment</li>
+                  <li>You will follow all client instructions</li>
+                </ul>
+                
+                <div class="action-buttons">
+                  <button class="btn btn-accept" id="acceptBtn" disabled onclick="acceptAppointment()">
+                    <i class="fas fa-check-circle"></i>
+                    Accept Appointment
+                  </button>
+                  <button class="btn btn-view" onclick="viewFullDetails()">
+                    <i class="fas fa-file-alt"></i>
+                    View Full Details
+                  </button>
+                </div>
+                
+                <p style="font-size: 13px; color: var(--text-secondary); margin-top: 20px;">
+                  <i class="fas fa-info-circle"></i>
+                  Note: All appointments are mandatory. This appointment will be marked as "In Progress" upon acceptance.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+          <!-- Equipment Status Widget -->
+          <div class="widget">
+            <div class="widget-header">
+              <div class="widget-icon">
+                <i class="fas fa-toolbox"></i>
+              </div>
+              <div>
+                <h3>Equipment Status</h3>
+                <p style="font-size: 13px; color: var(--text-secondary);">Current equipment availability</p>
+              </div>
+            </div>
+            
+            <div class="equipment-status">
+              <div class="equipment-item">
+                <div class="equipment-name">
+                  <i class="fas fa-fan" style="color: var(--secondary);"></i>
+                  <span>Carpet Steamer</span>
+                </div>
+                <span class="equipment-status-badge status-available">Available</span>
+              </div>
+              <div class="equipment-item">
+                <div class="equipment-name">
+                  <i class="fas fa-wind" style="color: var(--primary);"></i>
+                  <span>HEPA Vacuum</span>
+                </div>
+                <span class="equipment-status-badge status-available">Available</span>
+              </div>
+              <div class="equipment-item">
+                <div class="equipment-name">
+                  <i class="fas fa-tint" style="color: var(--warning);"></i>
+                  <span>Steam Solution</span>
+                </div>
+                <span class="equipment-status-badge status-checking">Checking Stock</span>
+              </div>
+              <div class="equipment-item">
+                <div class="equipment-name">
+                  <i class="fas fa-broom" style="color: var(--danger);"></i>
+                  <span>Microfiber Cloths</span>
+                </div>
+                <span class="equipment-status-badge status-unavailable">Need Restock</span>
+              </div>
+            </div>
+            
+            <button class="btn btn-view" style="width: 100%; margin-top: 15px;">
+              <i class="fas fa-sync-alt"></i>
+              Update Equipment Status
+            </button>
+          </div>
+
+          <!-- Next Appointments Widget -->
+          <div class="widget">
+            <div class="widget-header">
+              <div class="widget-icon">
+                <i class="fas fa-calendar-day"></i>
+              </div>
+              <div>
+                <h3>Upcoming Schedule</h3>
+                <p style="font-size: 13px; color: var(--text-secondary);">Next 7 days</p>
+              </div>
+            </div>
+            
+            <div style="margin-top: 15px;">
+              <div class="calendar-header">
+                <button style="background: none; border: none; cursor: pointer; color: var(--primary);">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <span style="font-weight: 600;">November 2025</span>
+                <button style="background: none; border: none; cursor: pointer; color: var(--primary);">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+              
+              <div class="calendar-days">
+                <div class="calendar-day">Mon</div>
+                <div class="calendar-day">Tue</div>
+                <div class="calendar-day">Wed</div>
+                <div class="calendar-day">Thu</div>
+                <div class="calendar-day">Fri</div>
+                <div class="calendar-day">Sat</div>
+                <div class="calendar-day">Sun</div>
+              </div>
+              
+              <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;">
+                <!-- Calendar dates would go here -->
+                <div class="calendar-date">10</div>
+                <div class="calendar-date appointment">11</div>
+                <div class="calendar-date">12</div>
+                <div class="calendar-date">13</div>
+                <div class="calendar-date">14</div>
+                <div class="calendar-date appointment">15</div>
+                <div class="calendar-date">16</div>
+              </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border);">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <div style="width: 12px; height: 12px; background: var(--secondary); border-radius: 50%;"></div>
+                <span style="font-size: 14px;">Appointment Day</span>
+              </div>
+              <p style="font-size: 13px; color: var(--text-secondary);">
+                Next: <strong>Nov 11 - Move-Out Cleaning</strong><br>
+                Duration: 5 hours
+              </p>
+            </div>
+          </div>
+
+          <!-- Quick Stats Widget -->
+          <div class="widget">
+            <div class="widget-header">
+              <div class="widget-icon">
+                <i class="fas fa-chart-bar"></i>
+              </div>
+              <div>
+                <h3>Quick Stats</h3>
+                <p style="font-size: 13px; color: var(--text-secondary);">Your performance metrics</p>
+              </div>
+            </div>
+            
+            <div class="progress-section">
+              <div class="progress-item">
+                <div class="progress-label">
+                  <span>On-time Arrival</span>
+                  <span>98%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 98%"></div>
+                </div>
+              </div>
+              
+              <div class="progress-item">
+                <div class="progress-label">
+                  <span>Client Satisfaction</span>
+                  <span>4.8/5</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 96%"></div>
+                </div>
+              </div>
+              
+              <div class="progress-item">
+                <div class="progress-label">
+                  <span>Task Completion</span>
+                  <span>100%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width: 100%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <!-- Notification -->
+  <div id="notification" class="notification">
+    <div class="notification-header">
+      <div class="notification-icon">
+        <i class="fas fa-check"></i>
+      </div>
+      <div>
+        <h3 style="color: var(--primary-dark);">Appointment Accepted!</h3>
+        <p style="font-size: 14px; color: var(--text-secondary);">Status updated successfully</p>
+      </div>
+    </div>
+    <div id="notificationMessage" style="font-size: 15px; margin-bottom: 20px;">
+      <!-- Message will be inserted here -->
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button onclick="closeNotification()" style="flex: 1; padding: 12px; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600;">
+        OK
+      </button>
+      <button onclick="viewNextAppointment()" style="flex: 1; padding: 12px; background: white; color: var(--primary); border: 1px solid var(--primary); border-radius: var(--radius-sm); cursor: pointer; font-weight: 600;">
+        Next Appointment
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Initialize
+    let checklistComplete = false;
+    const requiredCheckboxes = ['equip1', 'equip2', 'equip3', 'equip4'];
+    
+    // Validate equipment checklist
+    function validateChecklist() {
+      let checkedCount = 0;
+      
+      requiredCheckboxes.forEach(id => {
+        if (document.getElementById(id).checked) {
+          checkedCount++;
+        }
+      });
+      
+      // Update progress
+      const progressFill = document.getElementById('progressFill');
+      const progressText = document.getElementById('checklistProgress');
+      const acceptBtn = document.getElementById('acceptBtn');
+      
+      const percentage = (checkedCount / requiredCheckboxes.length) * 100;
+      progressFill.style.width = `${percentage}%`;
+      progressText.textContent = `${checkedCount}/${requiredCheckboxes.length}`;
+      
+      // Enable/disable accept button
+      checklistComplete = checkedCount === requiredCheckboxes.length;
+      acceptBtn.disabled = !checklistComplete;
+      
+      if (checklistComplete) {
+        acceptBtn.innerHTML = '<i class="fas fa-check-circle"></i> Accept Appointment';
+        progressFill.style.background = var('--secondary');
+      } else {
+        acceptBtn.innerHTML = `<i class="fas fa-exclamation-circle"></i> Complete Checklist (${checkedCount}/${requiredCheckboxes.length})`;
+        progressFill.style.background = var('--warning');
+      }
+    }
+    
+    // Accept appointment
+    function acceptAppointment() {
+      if (!checklistComplete) {
+        alert('Please complete all required equipment checks before accepting.');
+        return;
+      }
+      
+      // Update status
+      const statusBadge = document.querySelector('.appointment-card .status-badge');
+      const acceptBtn = document.getElementById('acceptBtn');
+      
+      if (statusBadge) {
+        statusBadge.className = 'status-badge status-in-progress';
+        statusBadge.innerHTML = '<i class="fas fa-play-circle"></i> In Progress';
+      }
+      
+      if (acceptBtn) {
+        acceptBtn.disabled = true;
+        acceptBtn.innerHTML = '<i class="fas fa-check"></i> Appointment Accepted';
+      }
+      
+      // Update counts
+      updateAppointmentCounts();
+      
+      // Show notification
+      showNotification();
+    }
+    
+    // Show notification
+    function showNotification() {
+      const notification = document.getElementById('notification');
+      const message = document.getElementById('notificationMessage');
+      
+      message.innerHTML = `
+        <p><strong>Appointment APT-CA-2025-010</strong> has been accepted.</p>
+        <p style="margin-top: 10px;">✅ Status updated to: <strong>In Progress</strong></p>
+        <p>✅ Notifications sent to:</p>
+        <ul style="margin-left: 20px; margin-top: 5px;">
+          <li>Client: Sarah Johnson</li>
+          <li>Manager: Assignment confirmed</li>
+          <li>System: Updated in database</li>
+        </ul>
+        <p style="margin-top: 10px; font-size: 14px; color: var(--text-secondary);">
+          Next step: Proceed to appointment location.
+        </p>
+      `;
+      
+      notification.style.display = 'block';
+      
+      // Auto-hide after 10 seconds
+      setTimeout(() => {
+        if (notification.style.display === 'block') {
+          notification.style.display = 'none';
+        }
+      }, 10000);
+    }
+    
+    // Close notification
+    function closeNotification() {
+      document.getElementById('notification').style.display = 'none';
+    }
+    
+    // View next appointment
+    function viewNextAppointment() {
+      closeNotification();
+      alert('Loading next appointment...');
+      // In a real app, this would load the next appointment
+    }
+    
+    // View full details
+    function viewFullDetails() {
+      alert('Opening full appointment details...\n\nThis would show:\n• Complete client history\n• Previous service notes\n• Property details\n• Full task breakdown\n• Equipment requirements\n• Access instructions\n• Contact information\n\nAll in a detailed modal view.');
+    }
+    
+    // Update appointment counts
+    function updateAppointmentCounts() {
+      const pendingCount = document.getElementById('pendingCount');
+      const inprogressCount = document.getElementById('inprogressCount');
+      
+      // Simulate count updates
+      if (pendingCount.textContent === '2') {
+        pendingCount.textContent = '1';
+        inprogressCount.textContent = '1';
+      }
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      validateChecklist();
+      
+      // Simulate equipment status
+      setTimeout(() => {
+        // Auto-check some equipment for demo
+        document.getElementById('equip1').checked = true;
+        document.getElementById('equip3').checked = true;
+        validateChecklist();
+      }, 1000);
+    });
+    
+    // Close notification when clicking outside
+    window.onclick = function(event) {
+      const notification = document.getElementById('notification');
+      if (event.target === notification) {
+        closeNotification();
+      }
+    }
+  </script>
+</body>
+</html>

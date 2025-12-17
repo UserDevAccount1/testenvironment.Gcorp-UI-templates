@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manager Review & Finalize Quotation</title>
+  <style>
+    :root {
+      --primary: #2c5aa0;
+      --primary-dark: #1e3a6b;
+      --primary-light: #4a7fd4;
+      --secondary: #10b981;
+      --warning: #f59e0b;
+      --danger: #dc3545;
+      --light-bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --border: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #f6f9ff 0%, #f1f5f9 100%);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 25px 30px;
+      border-radius: var(--radius);
+      margin-bottom: 25px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-title h1 {
+      font-size: 28px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .header-title p {
+      opacity: 0.9;
+      font-size: 16px;
+    }
+
+    .status-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Main Layout */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 1200px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Card Styling */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 25px;
+      box-shadow: var(--shadow);
+      border-left: 5px solid var(--primary);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+    }
+
+    .card-title h2 {
+      font-size: 20px;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+    }
+
+    .card-title p {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    /* Data Display */
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .data-item {
+      padding: 12px;
+      background: var(--light-bg);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .data-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+    }
+
+    .data-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .recurrence-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #e8f4fd;
+      color: var(--primary);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-left: 10px;
+    }
+
+    /* Text Areas */
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 14px;
+      line-height: 1.5;
+      resize: vertical;
+      min-height: 100px;
+      transition: border 0.3s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+    }
+
+    /* Estimation Table */
+    .estimation-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 14px;
+    }
+
+    .estimation-table thead {
+      background: var(--light-bg);
+    }
+
+    .estimation-table th {
+      padding: 12px 15px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-primary);
+      border-bottom: 2px solid var(--border);
+    }
+
+    .estimation-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s ease;
+    }
+
+    .estimation-table tbody tr:hover {
+      background: var(--light-bg);
+    }
+
+    .estimation-table td {
+      padding: 12px 15px;
+    }
+
+    .service-category {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    /* Image Gallery */
+    .image-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .image-item {
+      position: relative;
+      aspect-ratio: 4/3;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .image-item:hover {
+      transform: scale(1.05);
+    }
+
+    .image-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Checkbox Group */
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 15px 0;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: white;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
+    }
+
+    .checkbox-item:hover {
+      border-color: var(--primary);
+      background: #f0f8ff;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary);
+    }
+
+    .checkbox-label {
+      flex: 1;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .checkbox-price {
+      font-weight: 600;
+      color: var(--secondary);
+      font-size: 16px;
+    }
+
+    /* Price Computation */
+    .price-computation {
+      background: linear-gradient(135deg, #f6f9ff 0%, #e8efff 100%);
+      border-radius: var(--radius);
+      padding: 25px;
+      margin: 20px 0;
+      border: 1px solid var(--border);
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .price-row:last-child {
+      border-bottom: none;
+    }
+
+    .price-label {
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .price-value {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .price-total {
+      font-size: 24px;
+      color: var(--primary);
+      margin-top: 10px;
+      padding-top: 15px;
+      border-top: 2px solid var(--border);
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      justify-content: center;
+    }
+
+    .action-btn {
+      padding: 16px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 200px;
+      justify-content: center;
+    }
+
+    .action-btn.approve {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .action-btn.approve:hover {
+      background: #0da271;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .action-btn.revise {
+      background: var(--warning);
+      color: white;
+    }
+
+    .action-btn.revise:hover {
+      background: #d97706;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+    }
+
+    .action-btn.reject {
+      background: var(--danger);
+      color: white;
+    }
+
+    .action-btn.reject:hover {
+      background: #b91c1c;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      padding: 30px;
+      max-width: 800px;
+      width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-close:hover {
+      color: var(--danger);
+    }
+
+    .full-image {
+      width: 100%;
+      max-height: 70vh;
+      object-fit: contain;
+      border-radius: var(--radius-sm);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+      
+      .data-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .action-btn {
+        min-width: 100%;
+      }
+      
+      .estimation-table {
+        font-size: 13px;
+      }
+      
+      .estimation-table th,
+      .estimation-table td {
+        padding: 8px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+  <div class="header-title">
+    <h1>Review & Finalize Quotation</h1>
+    <p>Manager Dashboard - Finalize client quotation before sending</p>
+  </div>
+  <div style="display: flex; align-items: center; gap: 20px;">
+    <div class="status-badge">
+      <span>📋</span>
+      <span id="statusDisplay">Visit Completed</span>
+    </div>
+    <button class="view-site-report-btn" onclick="location.href='./ManageBooking-nodecontent.html'">
+      <span>📋</span> Go back to step 4 node presentation
+    </button>
+  </div>
+</div>
+
+    <!-- Main Content Grid -->
+    <div class="main-grid">
+      <!-- Column 1 -->
+      <div>
+        <!-- Client & Booking Info -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">👤</div>
+            <div class="card-title">
+              <h2>Client & Booking Information</h2>
+              <p>Details from Step 1 & Step 2</p>
+            </div>
+          </div>
+          
+          <div class="data-grid">
+            <div class="data-item">
+              <div class="data-label">Client Name</div>
+              <div class="data-value" id="clientName">Jane Doe</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Contact Info</div>
+              <div class="data-value" id="clientContact">+63 912 345 6789</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Service Address</div>
+              <div class="data-value" id="clientAddress">25 Jupiter St., Canada City</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Service Type</div>
+              <div class="data-value">
+                Move-Out Cleaning
+                <span class="recurrence-badge">🔄 Weekly</span>
+              </div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Booking Date & Time</div>
+              <div class="data-value" id="bookingDate">Nov 10, 2025 - 10:00 AM</div>
+            </div>
+            <div class="data-item">
+              <div class="data-label">Booking Status</div>
+              <div class="data-value">
+                <span id="statusText">Visit Completed</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Supervisor Report -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">📋</div>
+            <div class="card-title">
+              <h2>Supervisor Report</h2>
+              <p>Site assessment from Step 3</p>
+            </div>
+          </div>
+          
+          <div style="margin-top: 15px;">
+            <label class="data-label">Site Notes & Observations</label>
+            <textarea id="siteNotes" rows="4">Client requested detailed carpet cleaning. Property well-maintained, requires deep clean for kitchen and living area. Additional staining found in master bedroom carpet.</textarea>
+          </div>
+          
+          <div style="margin-top: 20px;">
+            <label class="data-label">Updated Price Estimate</label>
+            <input type="text" id="updatedEstimate" value="$340 - $380 (before tax)" 
+                   style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 16px;">
+          </div>
+          
+          <div style="margin-top: 20px;">
+            <label class="data-label">Site Photos / Evidence</label>
+            <div class="image-gallery">
+              <div class="image-item" onclick="openImageModal('https://placehold.co/400x300/2c5aa0/ffffff?text=Living+Room')">
+                <img src="https://placehold.co/150x100/2c5aa0/ffffff?text=Living+Room" alt="Living Room">
+              </div>
+              <div class="image-item" onclick="openImageModal('https://placehold.co/400x300/10b981/ffffff?text=Kitchen')">
+                <img src="https://placehold.co/150x100/10b981/ffffff?text=Kitchen" alt="Kitchen">
+              </div>
+              <div class="image-item" onclick="openImageModal('https://placehold.co/400x300/f59e0b/ffffff?text=Bedroom')">
+                <img src="https://placehold.co/150x100/f59e0b/ffffff?text=Bedroom" alt="Bedroom">
+              </div>
+              <div class="image-item" onclick="openImageModal('https://placehold.co/400x300/dc3545/ffffff?text=Carpet+Stain')">
+                <img src="https://placehold.co/150x100/dc3545/ffffff?text=Carpet+Stain" alt="Carpet Stain">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Column 2 -->
+      <div>
+        <!-- Estimation Breakdown -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">💰</div>
+            <div class="card-title">
+              <h2>Estimation Breakdown</h2>
+              <p>Itemized costs from Step 1 & Step 3</p>
+            </div>
+          </div>
+          
+          <table class="estimation-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Steam Clean Services -->
+              <tr class="service-category">
+                <td colspan="4">Steam Clean Services</td>
+              </tr>
+              <tr>
+                <td>Carpets - Large Room 10x10</td>
+                <td>1</td>
+                <td>$75.00</td>
+                <td>$75.00</td>
+              </tr>
+              <tr>
+                <td>Carpets - Regular Room 8x8</td>
+                <td>2</td>
+                <td>$60.00</td>
+                <td>$120.00</td>
+              </tr>
+              <tr>
+                <td>Rug - Area Rug</td>
+                <td>1</td>
+                <td>$30.00</td>
+                <td>$30.00</td>
+              </tr>
+              <tr>
+                <td>Stair Flight (5 flights)</td>
+                <td>5</td>
+                <td>$5.00</td>
+                <td>$25.00</td>
+              </tr>
+              
+              <!-- Maintenance Clean -->
+              <tr class="service-category">
+                <td colspan="4">Maintenance Clean</td>
+              </tr>
+              <tr>
+                <td>Kitchen (Large, 3 hrs)</td>
+                <td>1</td>
+                <td>$38/hr</td>
+                <td>$114.00</td>
+              </tr>
+              <tr>
+                <td>Bathroom (2.5 hrs)</td>
+                <td>1</td>
+                <td>$38/hr</td>
+                <td>$95.00</td>
+              </tr>
+              <tr>
+                <td>Bedroom (1 hr)</td>
+                <td>1</td>
+                <td>$38/hr</td>
+                <td>$38.00</td>
+              </tr>
+              
+              <!-- Move Out Clean -->
+              <tr class="service-category">
+                <td colspan="4">Move Out Clean</td>
+              </tr>
+              <tr>
+                <td>Deep Clean (9 hrs)</td>
+                <td>1</td>
+                <td>$50/hr</td>
+                <td>$450.00</td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <div class="price-computation">
+            <div class="price-row">
+              <span class="price-label">Subtotal:</span>
+              <span class="price-value" id="subtotalDisplay">$947.00</span>
+            </div>
+            <div class="price-row">
+              <span class="price-label">Tax (5%):</span>
+              <span class="price-value" id="taxDisplay">$47.35</span>
+            </div>
+            <div class="price-row">
+              <span class="price-label">Upsells:</span>
+              <span class="price-value" id="upsellsDisplay">$0.00</span>
+            </div>
+            <div class="price-row price-total">
+              <span class="price-label">Final Total:</span>
+              <span class="price-value" id="finalTotalDisplay">$994.35</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task List -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">✅</div>
+            <div class="card-title">
+              <h2>Task List</h2>
+              <p>Finalize tasks for cleaning team</p>
+            </div>
+          </div>
+          
+          <textarea id="taskList" rows="5">✓ Carpet steam cleaning in all rooms
+✓ Deep clean kitchen appliances (oven, refrigerator)
+✓ Wash and sanitize bathrooms (2)
+✓ Window cleaning (interior only)
+✓ Floor mopping and vacuuming
+✓ Dusting of all surfaces
+✓ Empty all trash bins</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full Width Sections -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-bottom: 30px;">
+      <!-- Upselling Options -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">📈</div>
+          <div class="card-title">
+            <h2>Upselling Options</h2>
+            <p>Add optional services to increase revenue</p>
+          </div>
+        </div>
+        
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="addDeepClean" data-price="120" onchange="updatePricing()">
+            <div class="checkbox-label">
+              <strong>Add Deep Clean Service</strong>
+              <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">
+                Intensive cleaning including hard-to-reach areas and detailed sanitization
+              </div>
+            </div>
+            <div class="checkbox-price">+$120</div>
+          </div>
+          
+          <div class="checkbox-item">
+            <input type="checkbox" id="addCarpetProtect" data-price="60" onchange="updatePricing()">
+            <div class="checkbox-label">
+              <strong>Add Carpet Protection Treatment</strong>
+              <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">
+                Professional-grade stain protection for carpets (lasts 6 months)
+              </div>
+            </div>
+            <div class="checkbox-price">+$60</div>
+          </div>
+          
+          <div class="checkbox-item">
+            <input type="checkbox" id="addWindowExterior" data-price="85" onchange="updatePricing()">
+            <div class="checkbox-label">
+              <strong>Add Exterior Window Cleaning</strong>
+              <div style="font-size: 14px; color: var(--text-secondary); margin-top: 4px;">
+                Professional exterior window cleaning (ground floor only)
+              </div>
+            </div>
+            <div class="checkbox-price">+$85</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Internal Notes -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">📄</div>
+          <div class="card-title">
+            <h2>Internal Notes</h2>
+            <p>Team communication only</p>
+          </div>
+        </div>
+        
+        <textarea id="internalNotes" rows="8">Ensure all optional tasks are included in final invoice
+Client requested eco-friendly cleaning products
+Special attention to master bedroom carpet stain
+Backyard access through side gate - key provided
+Pet owner - be mindful of allergies
+Schedule morning crew for this booking</textarea>
+      </div>
+    </div>
+
+    <!-- Manager Actions -->
+    <div style="text-align: center; margin-top: 30px;">
+      <div class="action-buttons">
+        <button class="action-btn approve" onclick="generateQuotation()">
+          <span>✅</span> Generate Quotation
+        </button>
+        <button class="action-btn revise" onclick="requestRevision()">
+          <span>🔁</span> Request Revision
+        </button>
+        <button class="action-btn reject" onclick="rejectBooking()">
+          <span>❌</span> Reject Booking
+        </button>
+      </div>
+      
+      <p style="margin-top: 15px; color: var(--text-secondary); font-size: 14px;">
+        Finalizing this quotation will send it to accounting and update the booking status
+      </p>
+    </div>
+  </div>
+
+  <!-- Image Modal -->
+  <div id="imageModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 style="color: var(--primary-dark);">Site Photo</h2>
+        <button class="modal-close" onclick="closeImageModal()">×</button>
+      </div>
+      <img id="modalImage" class="full-image" src="" alt="Full size site photo">
+      <div style="text-align: center; margin-top: 20px;">
+        <button onclick="closeImageModal()" style="padding: 10px 24px; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600;">
+          Close Preview
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize data
+    const bookingData = {
+      subtotal: 947.00,
+      taxRate: 0.05,
+      upsells: 0
+    };
+
+    // Update pricing when checkboxes change
+    function updatePricing() {
+      let upsells = 0;
+      
+      // Calculate upsell total
+      const checkboxes = document.querySelectorAll('.checkbox-item input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+          upsells += parseFloat(checkbox.dataset.price) || 0;
+        }
+      });
+      
+      bookingData.upsells = upsells;
+      
+      // Calculate tax and total
+      const tax = bookingData.subtotal * bookingData.taxRate;
+      const total = bookingData.subtotal + tax + upsells;
+      
+      // Update displays
+      document.getElementById('subtotalDisplay').textContent = `$${bookingData.subtotal.toFixed(2)}`;
+      document.getElementById('taxDisplay').textContent = `$${tax.toFixed(2)}`;
+      document.getElementById('upsellsDisplay').textContent = `$${upsells.toFixed(2)}`;
+      document.getElementById('finalTotalDisplay').textContent = `$${total.toFixed(2)}`;
+    }
+
+    // Image modal functions
+    function openImageModal(src) {
+      document.getElementById('modalImage').src = src;
+      document.getElementById('imageModal').style.display = 'flex';
+    }
+
+    function closeImageModal() {
+      document.getElementById('imageModal').style.display = 'none';
+    }
+
+    // Manager action functions
+    function generateQuotation() {
+      const total = parseFloat(document.getElementById('finalTotalDisplay').textContent.replace('$', ''));
+      const siteNotes = document.getElementById('siteNotes').value;
+      const taskList = document.getElementById('taskList').value;
+      
+      // Show confirmation with details
+      if (confirm(`Generate official quotation for $${total.toFixed(2)}?\n\nThis will:\n• Send quotation to accounting\n• Update status to "quotation_sent"\n• Notify client`)) {
+        // Update status
+        document.getElementById('statusDisplay').textContent = 'Quotation Sent';
+        document.getElementById('statusText').textContent = 'quotation_sent';
+        
+        // Save data (simulated)
+        const quotationData = {
+          total: total,
+          date: new Date().toISOString(),
+          client: document.getElementById('clientName').textContent,
+          tasks: taskList,
+          notes: siteNotes
+        };
+        
+        localStorage.setItem('quotationData', JSON.stringify(quotationData));
+        
+        // Show success message
+        alert(`✅ Quotation generated successfully!\n\nTotal: $${total.toFixed(2)}\n\nStatus updated to: quotation_sent\n\nQuotation has been sent to accounting and the client has been notified.`);
+      }
+    }
+
+    function requestRevision() {
+      const revisionReason = prompt("Please provide revision notes for the supervisor:");
+      if (revisionReason && revisionReason.trim() !== '') {
+        // Update status
+        document.getElementById('statusDisplay').textContent = 'Revision Requested';
+        document.getElementById('statusText').textContent = 'revision_requested';
+        
+        // Show confirmation
+        alert(`🔁 Revision request sent to supervisor.\n\nNotes: "${revisionReason}"\n\nStatus updated to: revision_requested`);
+      }
+    }
+
+    function rejectBooking() {
+      const rejectionReason = prompt("Please provide reason for rejection:");
+      if (rejectionReason && rejectionReason.trim() !== '') {
+        if (confirm(`Are you sure you want to reject this booking?\n\nReason: "${rejectionReason}"`)) {
+          // Update status
+          document.getElementById('statusDisplay').textContent = 'Rejected';
+          document.getElementById('statusText').textContent = 'rejected';
+          
+          // Show confirmation
+          alert(`❌ Booking has been rejected.\n\nReason: "${rejectionReason}"\n\nStatus updated to: rejected\n\nClient will be notified of cancellation.`);
+        }
+      }
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('imageModal');
+      if (event.target == modal) {
+        closeImageModal();
+      }
+    }
+
+    // Initialize pricing on load
+    document.addEventListener('DOMContentLoaded', updatePricing);
+  </script>
+</body>
+</html>
