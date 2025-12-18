@@ -25,6 +25,12 @@
     --radius-sm: 8px;
     --grey-line: #6b7280;
     --grey-line-light: #9ca3af;
+    /* Threshold Colors */
+    --threshold-green: #10b981;
+    --threshold-blue: #3b82f6;
+    --threshold-yellow: #f59e0b;
+    --threshold-red: #dc3545;
+    --threshold-purple: #8b5cf6;
   }
 
   * {
@@ -432,14 +438,23 @@
     font-weight: 600;
   }
 
+  .threshold-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+  }
+
   .slider-container {
     margin-top: 10px;
+    position: relative;
   }
 
   .slider {
     width: 100%;
-    height: 6px;
-    border-radius: 3px;
+    height: 8px;
+    border-radius: 4px;
     background: var(--border);
     outline: none;
     -webkit-appearance: none;
@@ -447,11 +462,75 @@
 
   .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: var(--grey-line);
     cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+
+  /* Threshold Visualization */
+  .threshold-visualization {
+    margin-top: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+
+  .threshold-scale {
+    display: flex;
+    height: 30px;
+    border-radius: 15px;
+    overflow: hidden;
+    margin: 10px 0;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .threshold-segment {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .threshold-segment:hover {
+    transform: scale(1.05);
+    z-index: 1;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  }
+
+  .threshold-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+
+  .threshold-current {
+    text-align: center;
+    margin-top: 15px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--border);
+  }
+
+  .current-threshold-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    margin-top: 5px;
   }
 
   /* Total Calculation Panel */
@@ -850,6 +929,71 @@
     line-height: 1;
   }
 
+  /* Calculator Panel */
+  .calculator-panel {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px;
+    border-radius: var(--radius);
+    margin-top: 20px;
+  }
+
+  .calculator-display {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    text-align: right;
+    margin-bottom: 20px;
+    font-family: monospace;
+  }
+
+  .calculator-current {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .calculator-equation {
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  .calculator-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+
+  .calc-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 15px;
+    border-radius: var(--radius-sm);
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .calc-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .calc-btn.operator {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .calc-btn.equals {
+    background: var(--success);
+    grid-column: span 2;
+  }
+
+  .calc-btn.clear {
+    background: var(--danger);
+  }
+
   /* Responsive */
   @media (max-width: 1200px) {
     .dashboard-container {
@@ -909,6 +1053,10 @@
       width: 95%;
       max-height: 95vh;
     }
+
+    .calculator-buttons {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 </style>
 </head>
@@ -937,15 +1085,16 @@
           <i class="fas fa-arrow-left"></i>
           Back to Finalize Booking
         </button>
-        <button class="nav-item">
-          <i class="fas fa-file-invoice-dollar"></i>
-          Invoice Management
-        </button>
-        <button class="nav-item">
+        <button class="nav-item" onclick="openThresholdCalculator()">
           <i class="fas fa-calculator"></i>
-          Revenue Analytics
+          Threshold Calculator
           <span class="nav-badge">New</span>
         </button>
+       <button class="nav-item" onclick="window.location.href='greyline-analyzer.html'">
+  <i class="fas fa-chart-bar"></i>
+  Grey Line Analyzer
+</button>
+
         <button class="nav-item">
           <i class="fas fa-history"></i>
           Grey Line History
@@ -958,6 +1107,10 @@
           <i class="fas fa-question-circle"></i>
           Help & Documentation
         </button>
+        <a href="invoice-history.html" class="nav-item">
+          <i class="fas fa-chart-line"></i>
+          Invoice History & Management
+        </a>
       </nav>
 
       <div style="margin-top: auto; padding-top: 20px; font-size: 12px; opacity: 0.7; text-align: center;">
@@ -1023,6 +1176,10 @@
             <i class="fas fa-magic"></i>
             Smart Configuration Wizard
           </button>
+          <button class="btn btn-outline" onclick="openThresholdCalculator()">
+            <i class="fas fa-calculator"></i>
+            Open Threshold Calculator
+          </button>
           <button class="btn btn-outline" onclick="showGreyLineReport()">
             <i class="fas fa-chart-bar"></i>
             Generate Revenue Report
@@ -1049,6 +1206,9 @@
             <button class="btn btn-outline" onclick="filterInvoices()" style="padding: 10px 20px;">
               <i class="fas fa-filter"></i> Filter
             </button>
+            <button class="btn btn-outline" onclick="exportInvoices()" style="padding: 10px 20px;">
+              <i class="fas fa-download"></i> Export
+            </button>
           </div>
         </div>
         
@@ -1065,6 +1225,7 @@
                 <th>Recurrence</th>
                 <th>Subtotal</th>
                 <th>Grey Line Applied</th>
+                <th>Threshold Level</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -1083,6 +1244,10 @@
           <button class="btn btn-outline" onclick="clearSelection()">
             <i class="fas fa-times"></i>
             Clear Selection
+          </button>
+          <button class="btn btn-outline" onclick="batchEditThresholds()">
+            <i class="fas fa-sliders-h"></i>
+            Batch Edit Thresholds
           </button>
         </div>
       </div>
@@ -1187,6 +1352,44 @@
                 </div>
               </div>
             </div>
+
+            <!-- Threshold Visualization -->
+            <div class="threshold-visualization">
+              <h4><i class="fas fa-layer-group"></i> Threshold Visualization</h4>
+              <div class="threshold-scale">
+                <div class="threshold-segment" style="background: var(--threshold-green);" title="0.10-0.11: Green (Stable)">
+                  Green
+                </div>
+                <div class="threshold-segment" style="background: var(--threshold-blue);" title="0.11-0.14: Blue (Caution)">
+                  Blue
+                </div>
+                <div class="threshold-segment" style="background: var(--threshold-yellow);" title="0.15-0.16: Yellow (Warning)">
+                  Yellow
+                </div>
+                <div class="threshold-segment" style="background: var(--threshold-red);" title="0.17-0.20: Red (High)">
+                  Red
+                </div>
+                <div class="threshold-segment" style="background: var(--threshold-purple);" title="0.21-0.30: Purple (Critical)">
+                  Purple
+                </div>
+              </div>
+              <div class="threshold-labels">
+                <span>0.10</span>
+                <span>0.11</span>
+                <span>0.14</span>
+                <span>0.16</span>
+                <span>0.20</span>
+                <span>0.30</span>
+              </div>
+              <div class="threshold-current">
+                <p>Current Threshold Level:</p>
+                <div id="currentThreshold" class="current-threshold-badge" style="background: var(--threshold-blue); color: white;">
+                  <i class="fas fa-circle"></i>
+                  Blue (0.11-0.14) - Moderate
+                </div>
+                <p style="font-size: 12px; margin-top: 8px;">Adjust sliders to change threshold level</p>
+              </div>
+            </div>
             
             <!-- Total Calculation -->
             <div class="total-panel">
@@ -1254,12 +1457,55 @@
                 <i class="fas fa-copy"></i>
                 Copy to Clipboard
               </button>
+              <button class="btn btn-outline" onclick="saveReasoningTemplate()">
+                <i class="fas fa-save"></i>
+                Save as Template
+              </button>
             </div>
           </div>
         </div>
 
         <!-- Right Sidebar -->
         <aside>
+          <!-- Calculator Panel -->
+          <div class="calculator-panel">
+            <h3 style="text-align: center; margin-bottom: 20px;">
+              <i class="fas fa-calculator"></i> Grey Line Calculator
+            </h3>
+            <div class="calculator-display">
+              <div class="calculator-current" id="calcCurrent">0.00</div>
+              <div class="calculator-equation" id="calcEquation"></div>
+            </div>
+            <div class="calculator-buttons">
+              <button class="calc-btn clear" onclick="calcClear()">C</button>
+              <button class="calc-btn" onclick="calcAppend('.')">.</button>
+              <button class="calc-btn" onclick="calcBackspace()">⌫</button>
+              <button class="calc-btn operator" onclick="calcAppend('0.10')">0.10</button>
+              <button class="calc-btn" onclick="calcAppend('7')">7</button>
+              <button class="calc-btn" onclick="calcAppend('8')">8</button>
+              <button class="calc-btn" onclick="calcAppend('9')">9</button>
+              <button class="calc-btn operator" onclick="calcAppend('0.14')">0.14</button>
+              <button class="calc-btn" onclick="calcAppend('4')">4</button>
+              <button class="calc-btn" onclick="calcAppend('5')">5</button>
+              <button class="calc-btn" onclick="calcAppend('6')">6</button>
+              <button class="calc-btn operator" onclick="calcAppend('0.16')">0.16</button>
+              <button class="calc-btn" onclick="calcAppend('1')">1</button>
+              <button class="calc-btn" onclick="calcAppend('2')">2</button>
+              <button class="calc-btn" onclick="calcAppend('3')">3</button>
+              <button class="calc-btn operator" onclick="calcAppend('0.18')">0.18</button>
+              <button class="calc-btn" onclick="calcAppend('0')">0</button>
+              <button class="calc-btn operator" onclick="calcAppend('+')">+</button>
+              <button class="calc-btn operator" onclick="calcAppend('-')">-</button>
+              <button class="calc-btn operator" onclick="calcAppend('0.20')">0.20</button>
+              <button class="calc-btn equals" onclick="calcCalculate()">=</button>
+            </div>
+            <div style="margin-top: 15px; text-align: center;">
+              <button class="btn btn-outline" onclick="applyCalculatorValue()" style="padding: 10px 20px; width: 100%; background: white; color: var(--primary);">
+                <i class="fas fa-plus-circle"></i> Apply to Selected Invoice
+              </button>
+            </div>
+          </div>
+
           <!-- Selected Invoice Preview -->
           <div class="card">
             <div class="card-header">
@@ -1317,23 +1563,20 @@
                     <td><strong>Subtotal</strong></td>
                     <td style="text-align: right;"><strong>$420.00</strong></td>
                   </tr>
-                  <tr>
-  <td><i class="fas fa-clock"></i> Additional Service Time</td>
-  <td style="text-align: right; color: var(--grey-line);">+$28.00</td>
-</tr>
+                  <tr class="grey-line-highlight">
+                    <td><i class="fas fa-eye-slash"></i> Grey Line Adjustment</td>
+                    <td style="text-align: right; color: var(--grey-line);">+$28.00</td>
+                  </tr>
                   <tr>
                     <td>Tax (13% HST)</td>
                     <td style="text-align: right;">$58.24</td>
                   </tr>
-                 <tr>
-  <td><strong>Client Sees:</strong></td>
-  <td style="text-align: right; color: var(--primary); font-size: 16px;"><strong>$476.24</strong></td>
-</tr>
-<tr class="grey-line-row" style="display: none;">
-  <td colspan="2" style="text-align: center; font-size: 12px; color: var(--grey-line);">
-    <i class="fas fa-info-circle"></i> Grey Line included in total
-  </td>
-</tr>
+                  <tr style="background: #e8fce8;">
+                    <td><strong>Client Sees:</strong></td>
+                    <td style="text-align: right; color: var(--success); font-size: 16px; font-weight: 700;">
+                      <strong>$476.24</strong>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
               
@@ -1444,6 +1687,10 @@
                 <i class="fas fa-undo"></i>
                 Revert Last Grey Line Application
               </button>
+              <button class="btn btn-outline" onclick="openThresholdCalculator()" style="width: 100%; justify-content: flex-start;">
+                <i class="fas fa-calculator"></i>
+                Open Threshold Calculator
+              </button>
             </div>
           </div>
         </aside>
@@ -1451,7 +1698,7 @@
     </main>
   </div>
 
-  <!-- NEW: Floating Window for Invoice Comparison -->
+  <!-- Floating Window for Invoice Comparison -->
   <div class="floating-overlay" id="floatingOverlay" onclick="closeFloatingWindow()"></div>
   <div class="floating-window" id="floatingWindow">
     <div class="floating-header">
@@ -1466,7 +1713,6 @@
     </div>
     
     <div class="floating-body">
-      <!-- Invoice Comparison -->
       <div class="invoice-comparison">
         <div class="invoice-before">
           <div class="comparison-header">
@@ -1512,15 +1758,14 @@
           
           <div style="text-align: center; margin-top: 25px; padding: 15px; background: #e8fce8; border-radius: var(--radius-sm); border: 2px solid #c3e6cb;">
             <p style="font-size: 12px; color: #2c7a2c; margin-bottom: 5px;">Client Sees (Rounded)</p>
-            <h3 style="color: #2c7a2c;" id="clientSeesTotal">$448.00</h3>
+            <h3 style="color: #2c7a2c;" id="clientSeesTotal">$476.24</h3>
             <p style="font-size: 11px; color: var(--grey-line); margin-top: 5px;">
-              <i class="fas fa-eye-slash"></i> Actual total with Grey Line: <span id="actualTotal">$506.60</span>
+              <i class="fas fa-eye-slash"></i> Grey Line applied: <span id="actualTotal">+$28.00</span>
             </p>
           </div>
         </div>
       </div>
       
-      <!-- Reason Selection -->
       <div class="reason-selection">
         <div class="reason-header">
           <div class="reason-icon">
@@ -1597,8 +1842,76 @@
     </div>
   </div>
 
+  <!-- Threshold Calculator Modal -->
+  <div id="thresholdCalculatorModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 style="color: var(--grey-line);">
+          <i class="fas fa-calculator"></i> Threshold Calculator
+        </h2>
+        <button class="modal-close" onclick="closeThresholdCalculator()">×</button>
+      </div>
+      
+      <div style="padding: 20px 0;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h3>Advanced Threshold Configuration</h3>
+          <p style="color: var(--text-secondary); margin: 10px 0;">Fine-tune your Grey Line thresholds for optimal billing</p>
+        </div>
+        
+        <div class="threshold-visualization">
+          <h4 style="margin-bottom: 15px;">Threshold Levels Configuration</h4>
+          <div class="threshold-scale">
+            <div class="threshold-segment" style="background: var(--threshold-green);" onclick="selectThreshold(0.10)">
+              Green
+            </div>
+            <div class="threshold-segment" style="background: var(--threshold-blue);" onclick="selectThreshold(0.12)">
+              Blue
+            </div>
+            <div class="threshold-segment" style="background: var(--threshold-yellow);" onclick="selectThreshold(0.15)">
+              Yellow
+            </div>
+            <div class="threshold-segment" style="background: var(--threshold-red);" onclick="selectThreshold(0.18)">
+              Red
+            </div>
+            <div class="threshold-segment" style="background: var(--threshold-purple);" onclick="selectThreshold(0.25)">
+              Purple
+            </div>
+          </div>
+          
+          <div style="margin-top: 25px;">
+            <label style="display: block; margin-bottom: 10px; font-weight: 600;">Custom Threshold Value:</label>
+            <input type="range" min="0.10" max="0.30" step="0.01" value="0.14" class="slider" id="customThresholdSlider" onchange="updateCustomThreshold(this.value)" style="width: 100%;">
+            <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+              <span id="thresholdMin">0.10</span>
+              <span id="thresholdCurrent" style="font-weight: 600; color: var(--primary);">0.14</span>
+              <span id="thresholdMax">0.30</span>
+            </div>
+          </div>
+          
+          <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: var(--radius-sm);">
+            <h4 style="margin-bottom: 15px;">Threshold Actions</h4>
+            <div class="action-buttons" style="grid-template-columns: 1fr;">
+              <button class="btn btn-primary" onclick="applyThresholdToSelected()">
+                <i class="fas fa-check-circle"></i>
+                Apply to Selected Invoices
+              </button>
+              <button class="btn btn-outline" onclick="saveThresholdPreset()">
+                <i class="fas fa-save"></i>
+                Save as Preset
+              </button>
+              <button class="btn btn-outline" onclick="closeThresholdCalculator()">
+                <i class="fas fa-times"></i>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // State Management
+    // Enhanced State Management
     let greyLineEnabled = true;
     let selectedInvoices = new Set();
     let currentInvoiceId = null;
@@ -1613,8 +1926,21 @@
       task: 3,
       navigation: 2
     };
-    
-    // Sample invoice data
+
+    // Calculator state
+    let calcValue = '0';
+    let calcEquation = '';
+
+    // Threshold ranges
+    const thresholds = {
+      green: { min: 0.10, max: 0.11, label: 'Green (Stable)', color: 'var(--threshold-green)' },
+      blue: { min: 0.11, max: 0.14, label: 'Blue (Moderate)', color: 'var(--threshold-blue)' },
+      yellow: { min: 0.15, max: 0.16, label: 'Yellow (Warning)', color: 'var(--threshold-yellow)' },
+      red: { min: 0.17, max: 0.20, label: 'Red (High)', color: 'var(--threshold-red)' },
+      purple: { min: 0.21, max: 0.30, label: 'Purple (Critical)', color: 'var(--threshold-purple)' }
+    };
+
+    // Sample invoice data with thresholds
     const invoices = [
       { 
         id: 1, 
@@ -1624,6 +1950,7 @@
         recurrence: 'Weekly', 
         subtotal: 420, 
         greyLine: 28, 
+        threshold: 0.14,
         status: 'applied',
         items: [
           { description: 'Deep Cleaning — 3 Rooms + 2 Bathrooms', amount: 280 },
@@ -1641,6 +1968,7 @@
         recurrence: 'Bi-Weekly', 
         subtotal: 280, 
         greyLine: 18, 
+        threshold: 0.12,
         status: 'pending',
         items: [
           { description: 'Standard Cleaning — 2 Bedrooms, Living Room', amount: 180 },
@@ -1657,6 +1985,7 @@
         recurrence: 'Monthly', 
         subtotal: 1250, 
         greyLine: 45, 
+        threshold: 0.18,
         status: 'applied',
         items: [
           { description: 'Commercial Office Cleaning — 5000 sq ft', amount: 850 },
@@ -1682,20 +2011,177 @@
       { id: 'stains', label: 'Stain treatment', description: 'Extra time for stubborn stain removal' },
       { id: 'bathroom', label: 'Bathroom severity', description: 'Additional scrubbing for bathroom fixtures and tiles' }
     ];
-    
+
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
       populateInvoiceTable();
       updateTotalCalculation();
       updateReasoning();
+      updateThresholdDisplay();
+      initializeCalculator();
     });
-    
-    // Populate invoice table
+
+    // Initialize calculator
+    function initializeCalculator() {
+      updateCalculatorDisplay();
+    }
+
+    // Calculator functions
+    function calcAppend(value) {
+      if (calcValue === '0' && value !== '.') {
+        calcValue = value;
+      } else {
+        calcValue += value;
+      }
+      updateCalculatorDisplay();
+    }
+
+    function calcClear() {
+      calcValue = '0';
+      calcEquation = '';
+      updateCalculatorDisplay();
+    }
+
+    function calcBackspace() {
+      if (calcValue.length > 1) {
+        calcValue = calcValue.slice(0, -1);
+      } else {
+        calcValue = '0';
+      }
+      updateCalculatorDisplay();
+    }
+
+    function calcCalculate() {
+      try {
+        // Safe evaluation
+        const result = eval(calcValue.replace(/[^-()\d/*+.]/g, ''));
+        calcEquation = calcValue + ' =';
+        calcValue = result.toString();
+        updateCalculatorDisplay();
+      } catch (error) {
+        calcValue = 'Error';
+        updateCalculatorDisplay();
+      }
+    }
+
+    function updateCalculatorDisplay() {
+      document.getElementById('calcCurrent').textContent = calcValue;
+      document.getElementById('calcEquation').textContent = calcEquation;
+    }
+
+    function applyCalculatorValue() {
+      const value = parseFloat(calcValue);
+      if (!isNaN(value) && selectedInvoices.size > 0) {
+        // Apply calculator value to selected invoices
+        selectedInvoices.forEach(invoiceId => {
+          const invoice = invoices.find(i => i.id === invoiceId);
+          if (invoice) {
+            // Convert calculator value to grey line amount
+            const greyLineAmount = Math.round(invoice.subtotal * value);
+            invoice.greyLine = greyLineAmount;
+            invoice.threshold = value;
+            invoice.status = 'applied';
+          }
+        });
+        populateInvoiceTable();
+        showNotification('success', 'Calculator Value Applied', `Applied ${calcValue} to ${selectedInvoices.size} invoices`);
+      } else {
+        showNotification('error', 'Error', 'Please select invoices first and enter a valid number');
+      }
+    }
+
+    // Threshold functions
+    function getThresholdForValue(value) {
+      for (const [key, range] of Object.entries(thresholds)) {
+        if (value >= range.min && value <= range.max) {
+          return { key, ...range };
+        }
+      }
+      return thresholds.blue; // Default
+    }
+
+    function updateThresholdDisplay() {
+      const totalMinutes = Object.values(greyLineValues).reduce((a, b) => a + b, 0);
+      const thresholdValue = totalMinutes / 100; // Convert to threshold scale
+      const threshold = getThresholdForValue(thresholdValue);
+      
+      const badge = document.getElementById('currentThreshold');
+      badge.style.background = threshold.color;
+      badge.innerHTML = `<i class="fas fa-circle"></i> ${threshold.label} (${thresholdValue.toFixed(2)})`;
+    }
+
+    function selectThreshold(value) {
+      // Convert threshold value to grey line minutes
+      const greyLineMinutes = Math.round(value * 100);
+      
+      // Update all sliders proportionally
+      const currentTotal = Object.values(greyLineValues).reduce((a, b) => a + b, 0);
+      const ratio = greyLineMinutes / currentTotal;
+      
+      for (const key in greyLineValues) {
+        greyLineValues[key] = Math.round(greyLineValues[key] * ratio);
+        const slider = document.getElementById(`${key}Slider`);
+        const valueSpan = document.getElementById(`${key}Value`);
+        
+        if (slider) slider.value = greyLineValues[key];
+        if (valueSpan) valueSpan.textContent = `+${greyLineValues[key]} min`;
+      }
+      
+      updateTotalCalculation();
+      updateThresholdDisplay();
+      showNotification('success', 'Threshold Applied', `Applied threshold ${value} to configuration`);
+    }
+
+    function updateCustomThreshold(value) {
+      document.getElementById('thresholdCurrent').textContent = value;
+      selectThreshold(parseFloat(value));
+    }
+
+    function openThresholdCalculator() {
+      document.getElementById('thresholdCalculatorModal').style.display = 'flex';
+    }
+
+    function closeThresholdCalculator() {
+      document.getElementById('thresholdCalculatorModal').style.display = 'none';
+    }
+
+    function applyThresholdToSelected() {
+      const thresholdValue = parseFloat(document.getElementById('thresholdCurrent').textContent);
+      if (selectedInvoices.size > 0) {
+        selectedInvoices.forEach(invoiceId => {
+          const invoice = invoices.find(i => i.id === invoiceId);
+          if (invoice) {
+            const greyLineAmount = Math.round(invoice.subtotal * thresholdValue);
+            invoice.greyLine = greyLineAmount;
+            invoice.threshold = thresholdValue;
+            invoice.status = 'applied';
+          }
+        });
+        populateInvoiceTable();
+        showNotification('success', 'Threshold Applied', `Applied threshold ${thresholdValue} to ${selectedInvoices.size} invoices`);
+        closeThresholdCalculator();
+      } else {
+        showNotification('error', 'Error', 'Please select invoices first');
+      }
+    }
+
+    function saveThresholdPreset() {
+      const thresholdValue = parseFloat(document.getElementById('thresholdCurrent').textContent);
+      const threshold = getThresholdForValue(thresholdValue);
+      showNotification('success', 'Preset Saved', `Saved threshold preset: ${threshold.label} (${thresholdValue})`);
+      closeThresholdCalculator();
+    }
+
+    // Populate invoice table with threshold indicators
     function populateInvoiceTable() {
       const tableBody = document.getElementById('invoiceTableBody');
       tableBody.innerHTML = '';
       
       invoices.forEach(invoice => {
+        const threshold = getThresholdForValue(invoice.threshold);
+        const thresholdColor = threshold.color;
+        const thresholdLabel = threshold.label.split(' ')[0];
+        
         const row = document.createElement('tr');
         row.innerHTML = `
           <td><input type="checkbox" class="invoice-checkbox" value="${invoice.id}" onchange="toggleInvoiceSelection(${invoice.id})"></td>
@@ -1705,6 +2191,10 @@
           <td><span class="minutes-badge">${invoice.recurrence}</span></td>
           <td class="amount-cell">$${invoice.subtotal.toFixed(2)}</td>
           <td>${invoice.greyLine > 0 ? `<span class="minutes-badge" style="background: #e8fce8; color: #2c7a2c;">+${invoice.greyLine} min</span>` : '<span class="minutes-badge" style="background: #f8f9fa; color: var(--text-secondary);">None</span>'}</td>
+          <td>
+            <span class="threshold-indicator" style="background: ${thresholdColor};"></span>
+            <span style="font-size: 12px; font-weight: 600;">${thresholdLabel}</span>
+          </td>
           <td>${invoice.status === 'applied' ? '<span class="status-badge status-applied"><i class="fas fa-check-circle"></i> Applied</span>' : '<span class="status-badge status-pending"><i class="fas fa-clock"></i> Pending</span>'}</td>
           <td>
             <button onclick="viewInvoiceComparison(${invoice.id})" style="background: none; border: none; color: var(--primary); cursor: pointer; margin-right: 10px;" title="View Comparison">
@@ -1725,7 +2215,7 @@
       });
     }
     
-    // NEW: View invoice comparison in floating window
+    // View invoice comparison in floating window
     function viewInvoiceComparison(invoiceId) {
       const invoice = invoices.find(i => i.id === invoiceId);
       if (!invoice) return;
@@ -1807,15 +2297,15 @@
           <td style="text-align: right;">$${taxAfter.toFixed(2)}</td>
         </tr>
        <tr class="highlight">
-  <td><strong>Client Sees</strong></td>
-  <td style="text-align: right; color: var(--success);"><strong>$${totalAfter.toFixed(2)}</strong></td>
-</tr>
+          <td><strong>Client Sees</strong></td>
+          <td style="text-align: right; color: var(--success);"><strong>$${totalAfter.toFixed(2)}</strong></td>
+        </tr>
       `;
       
       // Update after totals
-     // Update after totals
-document.getElementById('clientSeesTotal').textContent = `$${totalAfter.toFixed(2)}`;
-document.getElementById('actualTotal').textContent = `$${totalAfter.toFixed(2)}`;
+      document.getElementById('clientSeesTotal').textContent = `$${totalAfter.toFixed(2)}`;
+      document.getElementById('actualTotal').textContent = `+$${greyLineAmount.toFixed(2)}`;
+      
       // Populate reason options
       populateReasonOptions(invoice);
       
@@ -1941,6 +2431,7 @@ document.getElementById('actualTotal').textContent = `$${totalAfter.toFixed(2)}`
         const invoice = invoices.find(i => i.id === currentInvoiceId);
         if (invoice) {
           invoice.greyLine = totalMinutes;
+          invoice.threshold = totalMinutes / 100;
           invoice.status = 'applied';
           
           // Generate reasoning text
@@ -2044,6 +2535,7 @@ document.getElementById('actualTotal').textContent = `$${totalAfter.toFixed(2)}`
       document.getElementById(`${type}Value`).textContent = `+${value} min`;
       updateTotalCalculation();
       updateReasoning();
+      updateThresholdDisplay();
     }
     
     // Update total calculation
@@ -2109,7 +2601,17 @@ document.getElementById('actualTotal').textContent = `$${totalAfter.toFixed(2)}`
       } else {
         // For multiple invoices, use batch processing
         if (confirm(`Apply Grey Line adjustments to ${selectedInvoices.size} selected invoices?\n\nTotal Grey Line: +${Object.values(greyLineValues).reduce((a, b) => a + b, 0)} minutes per invoice\nThis action will update the invoices and generate audit logs.`)) {
-          // In a real app, this would make an API call
+          // Apply to all selected invoices
+          selectedInvoices.forEach(invoiceId => {
+            const invoice = invoices.find(i => i.id === invoiceId);
+            if (invoice) {
+              const totalMinutes = Object.values(greyLineValues).reduce((a, b) => a + b, 0);
+              invoice.greyLine = totalMinutes;
+              invoice.threshold = totalMinutes / 100;
+              invoice.status = 'applied';
+            }
+          });
+          
           showNotification('success', 'Grey Line Applied', `Successfully applied Grey Line adjustments to ${selectedInvoices.size} invoices.`);
           
           // Update stats
@@ -2118,6 +2620,9 @@ document.getElementById('actualTotal').textContent = `$${totalAfter.toFixed(2)}`
           
           // Clear selection
           clearSelection();
+          
+          // Refresh table
+          populateInvoiceTable();
         }
       }
     }
@@ -2136,8 +2641,18 @@ document.getElementById('actualTotal').textContent = `$${totalAfter.toFixed(2)}`
         showNotification('info', 'Processing', `Applying Grey Line to ${pendingCount} invoices...`);
         
         setTimeout(() => {
-          showNotification('success', 'Batch Complete', `Successfully applied Grey Line to ${pendingCount} invoices. Total revenue recovered: $${(pendingCount * Object.values(greyLineValues).reduce((a, b) => a + b, 0) * 0.5).toFixed(0)}`);
+          const totalMinutes = Object.values(greyLineValues).reduce((a, b) => a + b, 0);
+          invoices.forEach(invoice => {
+            if (invoice.status === 'pending') {
+              invoice.greyLine = totalMinutes;
+              invoice.threshold = totalMinutes / 100;
+              invoice.status = 'applied';
+            }
+          });
+          
+          showNotification('success', 'Batch Complete', `Successfully applied Grey Line to ${pendingCount} invoices. Total revenue recovered: $${(pendingCount * totalMinutes * 0.5).toFixed(0)}`);
           document.getElementById('totalInvoices').textContent = '0';
+          populateInvoiceTable();
         }, 1500);
       }
     }
@@ -2170,6 +2685,7 @@ document.getElementById('actualTotal').textContent = `$${totalAfter.toFixed(2)}`
       
       updateTotalCalculation();
       updateReasoning();
+      updateThresholdDisplay();
       
       showNotification('success', 'Preset Applied', `${presetType.charAt(0).toUpperCase() + presetType.slice(1)} preset configuration applied.`);
     }
@@ -2198,6 +2714,10 @@ document.getElementById('actualTotal').textContent = `$${totalAfter.toFixed(2)}`
         .then(() => showNotification('success', 'Copied', 'Reasoning copied to clipboard'))
         .catch(() => alert('Failed to copy reasoning'));
     }
+
+    function saveReasoningTemplate() {
+      showNotification('success', 'Template Saved', 'Reasoning template saved for future use');
+    }
     
     // Finalize grey line application
     function finalizeGreyLine() {
@@ -2209,6 +2729,14 @@ document.getElementById('actualTotal').textContent = `$${totalAfter.toFixed(2)}`
     // Apply grey line to single invoice
     function applySingleGreyLine(invoiceId) {
       viewInvoiceComparison(invoiceId);
+    }
+
+    function batchEditThresholds() {
+      if (selectedInvoices.size > 0) {
+        openThresholdCalculator();
+      } else {
+        showNotification('error', 'Error', 'Please select invoices first to edit thresholds');
+      }
     }
     
     // Open configuration wizard
@@ -2287,11 +2815,88 @@ document.getElementById('actualTotal').textContent = `$${totalAfter.toFixed(2)}`
       closeConfigWizard();
       showNotification('success', 'Wizard Complete', 'Optimal Grey Line configuration applied based on invoice analysis.');
     }
+
+    // New functions
+    function openGreyLineAnalyzer() {
+      showNotification('info', 'Coming Soon', 'Grey Line Analyzer feature coming in next update');
+    }
+
+    function exportInvoices() {
+      showNotification('success', 'Export Started', 'Invoice data export has been initiated');
+    }
+
+    function saveReasoningTemplate() {
+      showNotification('success', 'Template Saved', 'Reasoning template saved successfully');
+    }
     
     // Show notification
     function showNotification(type, title, message) {
-      // In a real app, this would show a toast notification
-      alert(`${title}\n\n${message}`);
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.style.position = 'fixed';
+      notification.style.top = '20px';
+      notification.style.right = '20px';
+      notification.style.padding = '15px 20px';
+      notification.style.borderRadius = '8px';
+      notification.style.color = 'white';
+      notification.style.fontWeight = '600';
+      notification.style.zIndex = '9999';
+      notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+      notification.style.maxWidth = '400px';
+      notification.style.transform = 'translateX(120%)';
+      notification.style.transition = 'transform 0.3s ease';
+      
+      // Set colors based on type
+      switch(type) {
+        case 'success':
+          notification.style.background = 'linear-gradient(135deg, #10b981 0%, #0da271 100%)';
+          break;
+        case 'error':
+          notification.style.background = 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
+          break;
+        case 'warning':
+          notification.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+          break;
+        default:
+          notification.style.background = 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)';
+      }
+      
+      notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+          <div>
+            <div style="font-size: 14px; font-weight: 700;">${title}</div>
+            <div style="font-size: 13px; opacity: 0.9; margin-top: 2px;">${message}</div>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Animate in
+      setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+      }, 10);
+      
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        notification.style.transform = 'translateX(120%)';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      }, 5000);
+      
+      // Click to dismiss
+      notification.onclick = function() {
+        notification.style.transform = 'translateX(120%)';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      };
     }
     
     // Other functions
@@ -2325,10 +2930,15 @@ document.getElementById('actualTotal').textContent = `$${totalAfter.toFixed(2)}`
     // Close modals when clicking outside
     window.onclick = function(event) {
       const modal = document.getElementById('configWizardModal');
+      const thresholdModal = document.getElementById('thresholdCalculatorModal');
       const overlay = document.getElementById('floatingOverlay');
       
       if (event.target === modal) {
         closeConfigWizard();
+      }
+      
+      if (event.target === thresholdModal) {
+        closeThresholdCalculator();
       }
       
       if (event.target === overlay) {

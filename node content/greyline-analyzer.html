@@ -1,0 +1,2185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grey Line Analyzer - Deep Insights Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --primary: #2b5fad;
+    --primary-dark: #1f4e8a;
+    --primary-light: #eef5ff;
+    --secondary: #10b981;
+    --secondary-dark: #0da271;
+    --warning: #f59e0b;
+    --danger: #dc3545;
+    --success: #28a745;
+    --light-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --grey-line: #6b7280;
+    --grey-line-light: #9ca3af;
+    /* Analyzer-specific colors */
+    --analyzer-blue: #3b82f6;
+    --analyzer-green: #10b981;
+    --analyzer-yellow: #f59e0b;
+    --analyzer-red: #dc3545;
+    --analyzer-purple: #8b5cf6;
+    --analyzer-teal: #06b6d4;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f6f9ff 0%, #f1f5f9 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Dashboard Layout */
+  .dashboard-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: linear-gradient(180deg, var(--grey-line) 0%, #4b5563 100%);
+    color: white;
+    padding: 25px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .admin-profile {
+    text-align: center;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 25px;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+  }
+
+  .admin-name {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .admin-role {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 10px;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .nav-item.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-weight: 600;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--warning);
+    color: white;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  /* Main Content */
+  .main-content {
+    padding: 30px;
+    overflow-y: auto;
+  }
+
+  /* Header */
+  .content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .header-title h1 {
+    font-size: 28px;
+    color: var(--grey-line);
+    margin-bottom: 8px;
+  }
+
+  .header-title p {
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 15px;
+  }
+
+  .stat-box {
+    background: var(--card-bg);
+    padding: 12px 20px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    text-align: center;
+    min-width: 120px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--grey-line);
+    margin-bottom: 5px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Dashboard Grid */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  /* Analyzer-specific layouts */
+  .analyzer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+
+  /* Card Styles */
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: var(--shadow);
+    margin-bottom: 25px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .card-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .card-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--grey-line), #4b5563);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  .card-title h2 {
+    font-size: 20px;
+    color: var(--grey-line);
+    margin-bottom: 4px;
+  }
+
+  .card-title p {
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  /* Charts */
+  .chart-container {
+    height: 300px;
+    width: 100%;
+    margin: 20px 0;
+    position: relative;
+  }
+
+  .chart-placeholder {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(45deg, #f8fafc 25%, #f1f5f9 25%, #f1f5f9 50%, #f8fafc 50%, #f8fafc 75%, #f1f5f9 75%, #f1f5f9 100%);
+    background-size: 20px 20px;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-style: italic;
+  }
+
+  /* Performance Metrics */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .metric-card {
+    background: var(--light-bg);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    text-align: center;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+  }
+
+  .metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+
+  .metric-value {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .metric-trend {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .trend-up {
+    background: #e8fce8;
+    color: #2c7a2c;
+  }
+
+  .trend-down {
+    background: #fde8e8;
+    color: #c53030;
+  }
+
+  .trend-neutral {
+    background: #f0f0f0;
+    color: #666;
+  }
+
+  /* Pattern Analysis */
+  .pattern-indicator {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 15px;
+    background: var(--light-bg);
+    border-radius: var(--radius-sm);
+  }
+
+  .pattern-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-right: 15px;
+    flex-shrink: 0;
+  }
+
+  .pattern-info {
+    flex: 1;
+  }
+
+  .pattern-bar {
+    height: 10px;
+    background: #e2e8f0;
+    border-radius: 5px;
+    margin: 10px 0;
+    overflow: hidden;
+  }
+
+  .pattern-fill {
+    height: 100%;
+    border-radius: 5px;
+  }
+
+  /* Risk Assessment */
+  .risk-matrix {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .risk-cell {
+    padding: 20px;
+    border-radius: var(--radius-sm);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .risk-cell:hover {
+    transform: scale(1.05);
+  }
+
+  .risk-low {
+    background: #e8fce8;
+    border: 2px solid #c3e6cb;
+  }
+
+  .risk-medium {
+    background: #fff3cd;
+    border: 2px solid #ffeaa7;
+  }
+
+  .risk-high {
+    background: #fde8e8;
+    border: 2px solid #f5c6cb;
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    margin: 30px 0;
+    padding-left: 30px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -26px;
+    top: 20px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--grey-line);
+    border: 3px solid white;
+  }
+
+  /* Data Table */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+
+  .data-table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border);
+    background: var(--light-bg);
+  }
+
+  .data-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .data-table tbody tr:hover {
+    background: #f9f9ff;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 16px 24px;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(43, 95, 173, 0.3);
+  }
+
+  .btn-grey {
+    background: var(--grey-line);
+    color: white;
+  }
+
+  .btn-grey:hover {
+    background: #4b5563;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(107, 114, 128, 0.3);
+  }
+
+  .btn-success {
+    background: var(--success);
+    color: white;
+  }
+
+  .btn-success:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+  }
+
+  .btn-outline {
+    background: white;
+    color: var(--grey-line);
+    border: 2px solid var(--grey-line);
+  }
+
+  .btn-outline:hover {
+    background: #f9fafb;
+  }
+
+  .action-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 25px;
+  }
+
+  /* Filter Controls */
+  .filter-panel {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 25px;
+    border: 1px solid var(--border);
+  }
+
+  .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .filter-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .filter-select {
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: white;
+    color: var(--text-primary);
+    font-size: 14px;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 25px;
+  }
+
+  .tab {
+    padding: 15px 25px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .tab:hover {
+    color: var(--grey-line);
+  }
+
+  .tab.active {
+    color: var(--grey-line);
+    border-bottom-color: var(--grey-line);
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  /* Insight Cards */
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .insight-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+  }
+
+  .insight-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+
+  .insight-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .insight-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+  }
+
+  /* Threshold Legend */
+  .threshold-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .dashboard-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+      display: none;
+    }
+    
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .analyzer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .main-content {
+      padding: 20px;
+    }
+    
+    .content-header {
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .header-stats {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .action-buttons {
+      grid-template-columns: 1fr;
+    }
+    
+    .metric-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .risk-matrix {
+      grid-template-columns: 1fr;
+    }
+
+    .insight-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .btn {
+      width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+  <!-- Dashboard Container -->
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="admin-profile">
+        <div class="profile-avatar">
+          <i class="fas fa-chart-bar"></i>
+        </div>
+        <h2 class="admin-name">Grey Line Analyzer</h2>
+        <p class="admin-role">Analytics & Insights Dashboard</p>
+        <div style="font-size: 13px; opacity: 0.8;">
+          Advanced Pattern Detection & Revenue Intelligence
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button onclick="window.open('GreyLineFeature.html', '_blank')" class="nav-item">
+          <i class="fas fa-arrow-left"></i>
+          Back to Grey Line Dashboard
+        </button>
+        <a href="#" class="nav-item active">
+          <i class="fas fa-chart-bar"></i>
+          Grey Line Analyzer
+        </a>
+        <button class="nav-item" onclick="switchTab('trends')">
+          <i class="fas fa-chart-line"></i>
+          Revenue Trends
+        </button>
+        <button class="nav-item" onclick="switchTab('patterns')">
+          <i class="fas fa-brain"></i>
+          Pattern Analysis
+        </button>
+        <button class="nav-item" onclick="switchTab('risk')">
+          <i class="fas fa-shield-alt"></i>
+          Risk Assessment
+        </button>
+        <button class="nav-item" onclick="switchTab('clients')">
+          <i class="fas fa-users"></i>
+          Client Intelligence
+        </button>
+        <button class="nav-item" onclick="switchTab('thresholds')">
+          <i class="fas fa-sliders-h"></i>
+          Threshold Optimization
+        </button>
+        <button class="nav-item" onclick="generateFullReport()">
+          <i class="fas fa-file-pdf"></i>
+          Generate Full Report
+          <span class="nav-badge">New</span>
+        </button>
+        <button class="nav-item" onclick="openPredictiveAnalytics()">
+          <i class="fas fa-robot"></i>
+          Predictive Analytics
+          <span class="nav-badge">AI</span>
+        </button>
+      </nav>
+
+      <div style="margin-top: auto; padding-top: 20px; font-size: 12px; opacity: 0.7; text-align: center;">
+        <p><i class="fas fa-chart-network"></i> Advanced Analytics Engine</p>
+        <p>© 2025 CleanPro Systems</p>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="content-header">
+        <div class="header-title">
+          <h1>Grey Line Analyzer Dashboard</h1>
+          <p>Deep insights, pattern detection, and optimization intelligence for Grey Line billing</p>
+        </div>
+        <div class="header-stats">
+          <div class="stat-box">
+            <div class="stat-value" id="totalAnalyzed">1,247</div>
+            <div class="stat-label">Invoices Analyzed</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="totalRevenue">$28,450</div>
+            <div class="stat-label">Grey Line Revenue</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="avgEffectiveness">94.2%</div>
+            <div class="stat-label">Effectiveness</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Filter Panel -->
+      <div class="filter-panel">
+        <div class="card-header" style="padding: 0; border: none; margin-bottom: 15px;">
+          <div class="card-title-group">
+            <div class="card-icon">
+              <i class="fas fa-filter"></i>
+            </div>
+            <div class="card-title">
+              <h2>Analysis Filters</h2>
+              <p>Filter data by date range, client type, and other parameters</p>
+            </div>
+          </div>
+          <button class="btn btn-outline" onclick="resetFilters()" style="padding: 10px 20px;">
+            <i class="fas fa-redo"></i>
+            Reset Filters
+          </button>
+        </div>
+        
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label class="filter-label">Date Range</label>
+            <select class="filter-select" id="dateRange">
+              <option value="last30">Last 30 Days</option>
+              <option value="last90">Last 90 Days</option>
+              <option value="last365">Last Year</option>
+              <option value="quarter">This Quarter</option>
+              <option value="month">This Month</option>
+              <option value="custom">Custom Range</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">Client Type</label>
+            <select class="filter-select" id="clientType">
+              <option value="all">All Clients</option>
+              <option value="residential">Residential Only</option>
+              <option value="commercial">Commercial Only</option>
+              <option value="weekly">Weekly Recurrence</option>
+              <option value="biweekly">Bi-Weekly Recurrence</option>
+              <option value="monthly">Monthly Recurrence</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">Threshold Level</label>
+            <select class="filter-select" id="thresholdLevel">
+              <option value="all">All Thresholds</option>
+              <option value="green">Green (0.10-0.11)</option>
+              <option value="blue">Blue (0.11-0.14)</option>
+              <option value="yellow">Yellow (0.15-0.16)</option>
+              <option value="red">Red (0.17-0.20)</option>
+              <option value="purple">Purple (0.21-0.30)</option>
+            </select>
+          </div>
+          
+          <div class="filter-group">
+            <label class="filter-label">Analysis Type</label>
+            <select class="filter-select" id="analysisType">
+              <option value="revenue">Revenue Analysis</option>
+              <option value="effectiveness">Effectiveness Analysis</option>
+              <option value="risk">Risk Assessment</option>
+              <option value="patterns">Pattern Detection</option>
+              <option value="optimization">Optimization Potential</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="action-buttons" style="margin-top: 20px;">
+          <button class="btn btn-primary" onclick="applyFilters()">
+            <i class="fas fa-chart-bar"></i>
+            Apply Filters & Analyze
+          </button>
+          <button class="btn btn-outline" onclick="exportFilteredData()">
+            <i class="fas fa-download"></i>
+            Export Filtered Data
+          </button>
+          <button class="btn btn-outline" onclick="saveFilterPreset()">
+            <i class="fas fa-save"></i>
+            Save Filter Preset
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('overview')">Overview Dashboard</button>
+        <button class="tab" onclick="switchTab('trends')">Revenue Trends</button>
+        <button class="tab" onclick="switchTab('patterns')">Pattern Analysis</button>
+        <button class="tab" onclick="switchTab('risk')">Risk Assessment</button>
+        <button class="tab" onclick="switchTab('clients')">Client Intelligence</button>
+        <button class="tab" onclick="switchTab('thresholds')">Threshold Optimization</button>
+      </div>
+
+      <!-- Tab Contents -->
+      
+      <!-- Overview Tab -->
+      <div id="overview-tab" class="tab-content active">
+        <div class="analyzer-grid">
+          <!-- Performance Metrics -->
+          <div class="card full-width">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon">
+                  <i class="fas fa-tachometer-alt"></i>
+                </div>
+                <div class="card-title">
+                  <h2>Performance Metrics</h2>
+                  <p>Key performance indicators for Grey Line effectiveness</p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 10px;">
+                <button class="btn btn-outline" onclick="refreshMetrics()" style="padding: 8px 16px;">
+                  <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+              </div>
+            </div>
+            
+            <div class="metric-grid">
+              <div class="metric-card">
+                <div class="metric-value" style="color: var(--analyzer-green);">94.2%</div>
+                <div class="metric-label">Grey Line Effectiveness</div>
+                <div class="metric-trend trend-up">
+                  <i class="fas fa-arrow-up"></i> 2.3%
+                </div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                  Rate of successful applications
+                </div>
+              </div>
+              
+              <div class="metric-card">
+                <div class="metric-value" style="color: var(--analyzer-blue);">$28,450</div>
+                <div class="metric-label">Total Grey Line Revenue</div>
+                <div class="metric-trend trend-up">
+                  <i class="fas fa-arrow-up"></i> 15.7%
+                </div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                  Last 90 days
+                </div>
+              </div>
+              
+              <div class="metric-card">
+                <div class="metric-value" style="color: var(--analyzer-purple);">+24.5 min</div>
+                <div class="metric-label">Average Grey Line</div>
+                <div class="metric-trend trend-neutral">
+                  <i class="fas fa-minus"></i> 0.5%
+                </div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                  Per invoice average
+                </div>
+              </div>
+              
+              <div class="metric-card">
+                <div class="metric-value" style="color: var(--analyzer-teal);">1,247</div>
+                <div class="metric-label">Invoices Analyzed</div>
+                <div class="metric-trend trend-up">
+                  <i class="fas fa-arrow-up"></i> 8.2%
+                </div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 8px;">
+                  With Grey Line applied
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Revenue Trend Chart -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="card-title">
+                  <h2>Revenue Trend</h2>
+                  <p>Monthly Grey Line revenue over time</p>
+                </div>
+              </div>
+              <select class="filter-select" style="width: 150px;" onchange="updateChartType(this.value)">
+                <option value="line">Line Chart</option>
+                <option value="bar">Bar Chart</option>
+                <option value="area">Area Chart</option>
+              </select>
+            </div>
+            
+            <div class="chart-container">
+              <div class="chart-placeholder">
+                <div style="text-align: center;">
+                  <i class="fas fa-chart-line" style="font-size: 48px; color: var(--analyzer-blue); margin-bottom: 15px;"></i>
+                  <p>Revenue Trend Visualization</p>
+                  <p style="font-size: 12px; margin-top: 5px;">Monthly Grey Line Revenue: $28,450</p>
+                </div>
+              </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: var(--light-bg); border-radius: var(--radius-sm);">
+              <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                <div>
+                  <strong>Peak Month:</strong> March 2025 ($4,280)
+                </div>
+                <div>
+                  <strong>Growth:</strong> +15.7% vs previous period
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Threshold Distribution -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon">
+                  <i class="fas fa-layer-group"></i>
+                </div>
+                <div class="card-title">
+                  <h2>Threshold Distribution</h2>
+                  <p>How Grey Line thresholds are distributed</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="chart-container">
+              <div class="chart-placeholder">
+                <div style="text-align: center;">
+                  <i class="fas fa-chart-pie" style="font-size: 48px; color: var(--analyzer-purple); margin-bottom: 15px;"></i>
+                  <p>Threshold Distribution Chart</p>
+                  <div class="threshold-legend" style="margin-top: 20px; justify-content: center;">
+                    <div class="legend-item">
+                      <div class="legend-color" style="background: var(--analyzer-green);"></div>
+                      <span>Green: 12%</span>
+                    </div>
+                    <div class="legend-item">
+                      <div class="legend-color" style="background: var(--analyzer-blue);"></div>
+                      <span>Blue: 45%</span>
+                    </div>
+                    <div class="legend-item">
+                      <div class="legend-color" style="background: var(--analyzer-yellow);"></div>
+                      <span>Yellow: 28%</span>
+                    </div>
+                    <div class="legend-item">
+                      <div class="legend-color" style="background: var(--analyzer-red);"></div>
+                      <span>Red: 10%</span>
+                    </div>
+                    <div class="legend-item">
+                      <div class="legend-color" style="background: var(--analyzer-purple);"></div>
+                      <span>Purple: 5%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+              <div class="pattern-indicator">
+                <div class="pattern-icon" style="background: var(--analyzer-blue);">
+                  <i class="fas fa-balance-scale"></i>
+                </div>
+                <div class="pattern-info">
+                  <div style="font-weight: 600;">Most Common: Blue Threshold</div>
+                  <div style="font-size: 13px; color: var(--text-secondary);">45% of invoices use moderate (0.11-0.14) threshold</div>
+                  <div class="pattern-bar">
+                    <div class="pattern-fill" style="width: 45%; background: var(--analyzer-blue);"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity Timeline -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon">
+                  <i class="fas fa-history"></i>
+                </div>
+                <div class="card-title">
+                  <h2>Recent Analysis Activity</h2>
+                  <p>Latest insights and pattern detections</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="timeline">
+              <div class="timeline-item">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <div style="font-weight: 600;">Weekly Client Pattern Detected</div>
+                  <div style="font-size: 12px; color: var(--text-secondary);">Today, 10:30 AM</div>
+                </div>
+                <div style="font-size: 14px; color: var(--text-secondary);">
+                  Weekly residential clients show 18% higher Grey Line acceptance rate
+                </div>
+                <div class="metric-trend trend-up" style="margin-top: 10px; width: fit-content;">
+                  <i class="fas fa-lightbulb"></i> Optimization Opportunity
+                </div>
+              </div>
+              
+              <div class="timeline-item">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <div style="font-weight: 600;">Threshold Adjustment Recommended</div>
+                  <div style="font-size: 12px; color: var(--text-secondary);">Yesterday, 3:45 PM</div>
+                </div>
+                <div style="font-size: 14px; color: var(--text-secondary);">
+                  Blue threshold clients can safely move to Yellow (0.15) without detection risk
+                </div>
+                <div class="metric-trend trend-up" style="margin-top: 10px; width: fit-content;">
+                  <i class="fas fa-chart-line"></i> +$1,200/mo Potential
+                </div>
+              </div>
+              
+              <div class="timeline-item">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                  <div style="font-weight: 600;">Risk Detected in Commercial Clients</div>
+                  <div style="font-size: 12px; color: var(--text-secondary);">2 days ago</div>
+                </div>
+                <div style="font-size: 14px; color: var(--text-secondary);">
+                  3 commercial clients showing pattern recognition - consider reducing Grey Line
+                </div>
+                <div class="metric-trend trend-down" style="margin-top: 10px; width: fit-content;">
+                  <i class="fas fa-exclamation-triangle"></i> Risk Level: Medium
+                </div>
+              </div>
+            </div>
+            
+            <div class="action-buttons" style="margin-top: 20px;">
+              <button class="btn btn-outline" onclick="viewAllInsights()">
+                <i class="fas fa-list"></i>
+                View All Insights
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trends Tab -->
+      <div id="trends-tab" class="tab-content">
+        <div class="analyzer-grid">
+          <div class="card full-width">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="card-title">
+                  <h2>Revenue Trend Analysis</h2>
+                  <p>Detailed analysis of Grey Line revenue patterns</p>
+                </div>
+              </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 25px;">
+              <div>
+                <div class="chart-container" style="height: 400px;">
+                  <div class="chart-placeholder">
+                    <div style="text-align: center;">
+                      <i class="fas fa-chart-area" style="font-size: 60px; color: var(--analyzer-blue); margin-bottom: 15px;"></i>
+                      <h3>Revenue Trend Chart</h3>
+                      <p>Monthly Grey Line revenue with projections</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <div style="padding: 20px; background: var(--light-bg); border-radius: var(--radius-sm);">
+                  <h3 style="margin-bottom: 15px; color: var(--grey-line);">Key Trends</h3>
+                  
+                  <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                      <span>Monthly Growth Rate</span>
+                      <span style="font-weight: 600; color: var(--analyzer-green);">+5.2%</span>
+                    </div>
+                    <div class="pattern-bar">
+                      <div class="pattern-fill" style="width: 52%; background: var(--analyzer-green);"></div>
+                    </div>
+                  </div>
+                  
+                  <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                      <span>Quarter-over-Quarter Growth</span>
+                      <span style="font-weight: 600; color: var(--analyzer-green);">+15.7%</span>
+                    </div>
+                    <div class="pattern-bar">
+                      <div class="pattern-fill" style="width: 78%; background: var(--analyzer-green);"></div>
+                    </div>
+                  </div>
+                  
+                  <div style="margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                      <span>Seasonal Variation</span>
+                      <span style="font-weight: 600; color: var(--analyzer-yellow);">±12.3%</span>
+                    </div>
+                    <div class="pattern-bar">
+                      <div class="pattern-fill" style="width: 45%; background: var(--analyzer-yellow);"></div>
+                    </div>
+                  </div>
+                  
+                  <div style="margin-top: 25px;">
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;">
+                      <i class="fas fa-lightbulb"></i> <strong>Insight:</strong> Revenue peaks in March and September
+                    </div>
+                    <div style="font-size: 14px; color: var(--text-secondary);">
+                      <i class="fas fa-lightbulb"></i> <strong>Recommendation:</strong> Increase thresholds during peak seasons
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+              <h3 style="margin-bottom: 15px; color: var(--grey-line);">Revenue by Client Type</h3>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Client Type</th>
+                    <th>Total Revenue</th>
+                    <th>Avg Grey Line</th>
+                    <th>Effectiveness</th>
+                    <th>Growth Trend</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Weekly Residential</td>
+                    <td>$12,450</td>
+                    <td>+28.5 min</td>
+                    <td>96.7%</td>
+                    <td>
+                      <span class="metric-trend trend-up" style="padding: 3px 8px;">
+                        <i class="fas fa-arrow-up"></i> +8.2%
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Bi-Weekly Residential</td>
+                    <td>$8,320</td>
+                    <td>+22.3 min</td>
+                    <td>92.5%</td>
+                    <td>
+                      <span class="metric-trend trend-up" style="padding: 3px 8px;">
+                        <i class="fas fa-arrow-up"></i> +4.7%
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Monthly Commercial</td>
+                    <td>$5,180</td>
+                    <td>+35.2 min</td>
+                    <td>88.3%</td>
+                    <td>
+                      <span class="metric-trend trend-neutral" style="padding: 3px 8px;">
+                        <i class="fas fa-minus"></i> +0.3%
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>One-Time Clients</td>
+                    <td>$2,500</td>
+                    <td>+18.7 min</td>
+                    <td>91.2%</td>
+                    <td>
+                      <span class="metric-trend trend-down" style="padding: 3px 8px;">
+                        <i class="fas fa-arrow-down"></i> -2.1%
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pattern Analysis Tab -->
+      <div id="patterns-tab" class="tab-content">
+        <div class="analyzer-grid">
+          <div class="card full-width">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon">
+                  <i class="fas fa-brain"></i>
+                </div>
+                <div class="card-title">
+                  <h2>Pattern Detection Analysis</h2>
+                  <p>Advanced pattern recognition in Grey Line applications</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="insight-grid">
+              <div class="insight-card">
+                <div class="insight-header">
+                  <div class="insight-icon" style="background: var(--analyzer-green);">
+                    <i class="fas fa-calendar-week"></i>
+                  </div>
+                  <div>
+                    <h3>Recurrence Pattern</h3>
+                    <p style="font-size: 13px; color: var(--text-secondary);">Weekly vs Monthly</p>
+                  </div>
+                </div>
+                <div style="margin-top: 15px;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span>Weekly Clients</span>
+                    <span style="font-weight: 600;">+28.5 min avg</span>
+                  </div>
+                  <div class="pattern-bar">
+                    <div class="pattern-fill" style="width: 85%; background: var(--analyzer-green);"></div>
+                  </div>
+                  
+                  <div style="display: flex; justify-content: space-between; margin: 15px 0 5px;">
+                    <span>Monthly Clients</span>
+                    <span style="font-weight: 600;">+35.2 min avg</span>
+                  </div>
+                  <div class="pattern-bar">
+                    <div class="pattern-fill" style="width: 72%; background: var(--analyzer-blue);"></div>
+                  </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 13px; color: var(--text-secondary);">
+                  <i class="fas fa-lightbulb"></i> Weekly clients accept higher Grey Line percentages
+                </div>
+              </div>
+              
+              <div class="insight-card">
+                <div class="insight-header">
+                  <div class="insight-icon" style="background: var(--analyzer-blue);">
+                    <i class="fas fa-home"></i>
+                  </div>
+                  <div>
+                    <h3>Client Type Pattern</h3>
+                    <p style="font-size: 13px; color: var(--text-secondary);">Residential vs Commercial</p>
+                  </div>
+                </div>
+                <div style="margin-top: 15px;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span>Residential</span>
+                    <span style="font-weight: 600;">94.5% effective</span>
+                  </div>
+                  <div class="pattern-bar">
+                    <div class="pattern-fill" style="width: 94%; background: var(--analyzer-green);"></div>
+                  </div>
+                  
+                  <div style="display: flex; justify-content: space-between; margin: 15px 0 5px;">
+                    <span>Commercial</span>
+                    <span style="font-weight: 600;">88.3% effective</span>
+                  </div>
+                  <div class="pattern-bar">
+                    <div class="pattern-fill" style="width: 88%; background: var(--analyzer-yellow);"></div>
+                  </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 13px; color: var(--text-secondary);">
+                  <i class="fas fa-lightbulb"></i> Commercial clients more likely to question charges
+                </div>
+              </div>
+              
+              <div class="insight-card">
+                <div class="insight-header">
+                  <div class="insight-icon" style="background: var(--analyzer-purple);">
+                    <i class="fas fa-clock"></i>
+                  </div>
+                  <div>
+                    <h3>Time-of-Day Pattern</h3>
+                    <p style="font-size: 13px; color: var(--text-secondary);">Morning vs Afternoon</p>
+                  </div>
+                </div>
+                <div style="margin-top: 15px;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span>Morning (8AM-12PM)</span>
+                    <span style="font-weight: 600;">+26.3 min avg</span>
+                  </div>
+                  <div class="pattern-bar">
+                    <div class="pattern-fill" style="width: 78%; background: var(--analyzer-blue);"></div>
+                  </div>
+                  
+                  <div style="display: flex; justify-content: space-between; margin: 15px 0 5px;">
+                    <span>Afternoon (12PM-4PM)</span>
+                    <span style="font-weight: 600;">+30.2 min avg</span>
+                  </div>
+                  <div class="pattern-bar">
+                    <div class="pattern-fill" style="width: 90%; background: var(--analyzer-green);"></div>
+                  </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 13px; color: var(--text-secondary);">
+                  <i class="fas fa-lightbulb"></i> Afternoon cleanings yield higher Grey Line tolerance
+                </div>
+              </div>
+              
+              <div class="insight-card">
+                <div class="insight-header">
+                  <div class="insight-icon" style="background: var(--analyzer-teal);">
+                    <i class="fas fa-cloud-sun"></i>
+                  </div>
+                  <div>
+                    <h3>Seasonal Pattern</h3>
+                    <p style="font-size: 13px; color: var(--text-secondary);">Weather Impact</p>
+                  </div>
+                </div>
+                <div style="margin-top: 15px;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span>Winter Months</span>
+                    <span style="font-weight: 600;">+32.5 min avg</span>
+                  </div>
+                  <div class="pattern-bar">
+                    <div class="pattern-fill" style="width: 92%; background: var(--analyzer-green);"></div>
+                  </div>
+                  
+                  <div style="display: flex; justify-content: space-between; margin: 15px 0 5px;">
+                    <span>Summer Months</span>
+                    <span style="font-weight: 600;">+22.8 min avg</span>
+                  </div>
+                  <div class="pattern-bar">
+                    <div class="pattern-fill" style="width: 68%; background: var(--analyzer-yellow);"></div>
+                  </div>
+                </div>
+                <div style="margin-top: 15px; font-size: 13px; color: var(--text-secondary);">
+                  <i class="fas fa-lightbulb"></i> Winter yields 42% higher Grey Line acceptance
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Risk Assessment Tab -->
+      <div id="risk-tab" class="tab-content">
+        <div class="analyzer-grid">
+          <div class="card full-width">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon">
+                  <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="card-title">
+                  <h2>Risk Assessment Matrix</h2>
+                  <p>Identify and manage Grey Line application risks</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="risk-matrix">
+              <div class="risk-cell risk-low">
+                <div style="font-size: 48px; margin-bottom: 15px;">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <h3>Low Risk</h3>
+                <div style="font-size: 14px; margin-top: 10px; color: var(--text-secondary);">
+                  1,042 invoices<br>
+                  <strong>94.2% effectiveness</strong>
+                </div>
+              </div>
+              
+              <div class="risk-cell risk-medium">
+                <div style="font-size: 48px; margin-bottom: 15px;">
+                  <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3>Medium Risk</h3>
+                <div style="font-size: 14px; margin-top: 10px; color: var(--text-secondary);">
+                  185 invoices<br>
+                  <strong>87.5% effectiveness</strong>
+                </div>
+              </div>
+              
+              <div class="risk-cell risk-high">
+                <div style="font-size: 48px; margin-bottom: 15px;">
+                  <i class="fas fa-times-circle"></i>
+                </div>
+                <h3>High Risk</h3>
+                <div style="font-size: 14px; margin-top: 10px; color: var(--text-secondary);">
+                  20 invoices<br>
+                  <strong>65.3% effectiveness</strong>
+                </div>
+              </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+              <h3 style="margin-bottom: 15px; color: var(--grey-line);">High-Risk Clients</h3>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Client</th>
+                    <th>Risk Factors</th>
+                    <th>Effectiveness</th>
+                    <th>Grey Line Amount</th>
+                    <th>Recommended Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Office Building A</td>
+                    <td>Detailed invoicing, Accountant review</td>
+                    <td>62.5%</td>
+                    <td>+45 min</td>
+                    <td>
+                      <button class="btn btn-outline" style="padding: 5px 10px; font-size: 12px;">
+                        Reduce to +30 min
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Smith Family</td>
+                    <td>Price-sensitive, Multiple inquiries</td>
+                    <td>68.3%</td>
+                    <td>+28 min</td>
+                    <td>
+                      <button class="btn btn-outline" style="padding: 5px 10px; font-size: 12px;">
+                        Reduce to +20 min
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Restaurant B</td>
+                    <td>Owner reviews line items</td>
+                    <td>58.7%</td>
+                    <td>+38 min</td>
+                    <td>
+                      <button class="btn btn-outline" style="padding: 5px 10px; font-size: 12px;">
+                        Split into smaller increments
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Client Intelligence Tab -->
+      <div id="clients-tab" class="tab-content">
+        <div class="analyzer-grid">
+          <div class="card full-width">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div class="card-title">
+                  <h2>Client Intelligence Dashboard</h2>
+                  <p>Deep insights into client-specific Grey Line patterns</p>
+                </div>
+              </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+              <div>
+                <h3 style="margin-bottom: 15px; color: var(--grey-line);">Top Performing Clients</h3>
+                <div style="max-height: 400px; overflow-y: auto;">
+                  <div style="display: flex; align-items: center; padding: 15px; background: #f8f9fa; border-radius: var(--radius-sm); margin-bottom: 10px;">
+                    <div style="width: 40px; height: 40px; background: var(--analyzer-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: 15px;">
+                      <i class="fas fa-crown"></i>
+                    </div>
+                    <div style="flex: 1;">
+                      <div style="font-weight: 600;">Maria Santos</div>
+                      <div style="font-size: 13px; color: var(--text-secondary);">Weekly Residential</div>
+                    </div>
+                    <div style="text-align: right;">
+                      <div style="font-weight: 600;">98.5%</div>
+                      <div style="font-size: 12px; color: var(--text-secondary);">Effectiveness</div>
+                    </div>
+                  </div>
+                  
+                  <div style="display: flex; align-items: center; padding: 15px; background: #f8f9fa; border-radius: var(--radius-sm); margin-bottom: 10px;">
+                    <div style="width: 40px; height: 40px; background: var(--analyzer-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: 15px;">
+                      <i class="fas fa-medal"></i>
+                    </div>
+                    <div style="flex: 1;">
+                      <div style="font-weight: 600;">Johnson Family</div>
+                      <div style="font-size: 13px; color: var(--text-secondary);">Bi-Weekly Residential</div>
+                    </div>
+                    <div style="text-align: right;">
+                      <div style="font-weight: 600;">97.2%</div>
+                      <div style="font-size: 12px; color: var(--text-secondary);">Effectiveness</div>
+                    </div>
+                  </div>
+                  
+                  <div style="display: flex; align-items: center; padding: 15px; background: #f8f9fa; border-radius: var(--radius-sm); margin-bottom: 10px;">
+                    <div style="width: 40px; height: 40px; background: var(--analyzer-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin-right: 15px;">
+                      <i class="fas fa-medal"></i>
+                    </div>
+                    <div style="flex: 1;">
+                      <div style="font-weight: 600;">Thompson Office</div>
+                      <div style="font-size: 13px; color: var(--text-secondary);">Monthly Commercial</div>
+                    </div>
+                    <div style="text-align: right;">
+                      <div style="font-weight: 600;">95.8%</div>
+                      <div style="font-size: 12px; color: var(--text-secondary);">Effectiveness</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h3 style="margin-bottom: 15px; color: var(--grey-line);">Client Segmentation</h3>
+                <div class="chart-container" style="height: 300px;">
+                  <div class="chart-placeholder">
+                    <div style="text-align: center;">
+                      <i class="fas fa-chart-pie" style="font-size: 48px; color: var(--analyzer-purple); margin-bottom: 15px;"></i>
+                      <p>Client Segmentation Chart</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>Weekly Residential Clients</span>
+                    <span style="font-weight: 600;">42% of revenue</span>
+                  </div>
+                  <div class="pattern-bar">
+                    <div class="pattern-fill" style="width: 42%; background: var(--analyzer-green);"></div>
+                  </div>
+                  
+                  <div style="display: flex; justify-content: space-between; margin: 15px 0 10px;">
+                    <span>Commercial Clients</span>
+                    <span style="font-weight: 600;">28% of revenue</span>
+                  </div>
+                  <div class="pattern-bar">
+                    <div class="pattern-fill" style="width: 28%; background: var(--analyzer-blue);"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Threshold Optimization Tab -->
+      <div id="thresholds-tab" class="tab-content">
+        <div class="analyzer-grid">
+          <div class="card full-width">
+            <div class="card-header">
+              <div class="card-title-group">
+                <div class="card-icon">
+                  <i class="fas fa-sliders-h"></i>
+                </div>
+                <div class="card-title">
+                  <h2>Threshold Optimization Engine</h2>
+                  <p>AI-powered threshold recommendations for maximum revenue</p>
+                </div>
+              </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 25px;">
+              <div>
+                <h3 style="margin-bottom: 15px; color: var(--grey-line);">Current Threshold Performance</h3>
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Threshold Level</th>
+                      <th># of Invoices</th>
+                      <th>Avg Effectiveness</th>
+                      <th>Avg Revenue</th>
+                      <th>Optimization Potential</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="legend-item">
+                          <div class="legend-color" style="background: var(--analyzer-green);"></div>
+                          <span>Green (0.10-0.11)</span>
+                        </div>
+                      </td>
+                      <td>150</td>
+                      <td>98.5%</td>
+                      <td>$1,250</td>
+                      <td>
+                        <button class="btn btn-outline" style="padding: 5px 10px; font-size: 12px;">
+                          Increase to Blue
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="legend-item">
+                          <div class="legend-color" style="background: var(--analyzer-blue);"></div>
+                          <span>Blue (0.11-0.14)</span>
+                        </div>
+                      </td>
+                      <td>560</td>
+                      <td>94.2%</td>
+                      <td>$18,450</td>
+                      <td>
+                        <button class="btn btn-outline" style="padding: 5px 10px; font-size: 12px;">
+                          Increase to Yellow
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="legend-item">
+                          <div class="legend-color" style="background: var(--analyzer-yellow);"></div>
+                          <span>Yellow (0.15-0.16)</span>
+                        </div>
+                      </td>
+                      <td>350</td>
+                      <td>90.7%</td>
+                      <td>$6,820</td>
+                      <td>
+                        <button class="btn btn-outline" style="padding: 5px 10px; font-size: 12px;">
+                          Maintain Current
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="legend-item">
+                          <div class="legend-color" style="background: var(--analyzer-red);"></div>
+                          <span>Red (0.17-0.20)</span>
+                        </div>
+                      </td>
+                      <td>125</td>
+                      <td>85.3%</td>
+                      <td>$1,580</td>
+                      <td>
+                        <button class="btn btn-outline" style="padding: 5px 10px; font-size: 12px;">
+                          Reduce to Yellow
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="legend-item">
+                          <div class="legend-color" style="background: var(--analyzer-purple);"></div>
+                          <span>Purple (0.21-0.30)</span>
+                        </div>
+                      </td>
+                      <td>62</td>
+                      <td>78.5%</td>
+                      <td>$350</td>
+                      <td>
+                        <button class="btn btn-outline" style="padding: 5px 10px; font-size: 12px;">
+                          Reduce to Red
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <div>
+                <div style="padding: 20px; background: var(--light-bg); border-radius: var(--radius-sm);">
+                  <h3 style="margin-bottom: 15px; color: var(--grey-line);">Optimization Summary</h3>
+                  
+                  <div style="margin-bottom: 20px; padding: 15px; background: white; border-radius: var(--radius-sm);">
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;">
+                      <i class="fas fa-robot"></i> <strong>AI Recommendation:</strong>
+                    </div>
+                    <div style="font-size: 16px; font-weight: 600; color: var(--analyzer-green);">
+                      Move 75% of Blue to Yellow
+                    </div>
+                    <div style="font-size: 13px; margin-top: 10px;">
+                      Expected revenue increase: <strong>$3,200/month</strong>
+                    </div>
+                  </div>
+                  
+                  <div style="margin-top: 25px;">
+                    <h4 style="margin-bottom: 15px;">Quick Actions</h4>
+                    <div style="display: grid; gap: 10px;">
+                      <button class="btn btn-success" onclick="applyOptimization()">
+                        <i class="fas fa-check"></i>
+                        Apply AI Recommendations
+                      </button>
+                      <button class="btn btn-outline" onclick="simulateOptimization()">
+                        <i class="fas fa-chart-line"></i>
+                        Simulate Changes
+                      </button>
+                      <button class="btn btn-outline" onclick="exportOptimizationPlan()">
+                        <i class="fas fa-download"></i>
+                        Export Optimization Plan
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Action Panel -->
+      <div class="card" style="margin-top: 30px; border: 2px solid var(--grey-line);">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon">
+              <i class="fas fa-rocket"></i>
+            </div>
+            <div class="card-title">
+              <h2>Advanced Actions & Reports</h2>
+              <p>Generate comprehensive reports and take advanced actions</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="btn btn-primary" onclick="generateFullReport()">
+            <i class="fas fa-file-pdf"></i>
+            Generate Full Analysis Report
+          </button>
+          <button class="btn btn-grey" onclick="openPredictiveAnalytics()">
+            <i class="fas fa-robot"></i>
+            Open Predictive Analytics
+          </button>
+          <button class="btn btn-outline" onclick="exportAllData()">
+            <i class="fas fa-database"></i>
+            Export All Analytics Data
+          </button>
+          <button class="btn btn-outline" onclick="scheduleAutomatedReport()">
+            <i class="fas fa-calendar-alt"></i>
+            Schedule Automated Reports
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Predictive Analytics Modal -->
+  <div id="predictiveModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 style="color: var(--grey-line);">
+          <i class="fas fa-robot"></i> Predictive Analytics Engine
+        </h2>
+        <button class="modal-close" onclick="closePredictiveModal()">×</button>
+      </div>
+      
+      <div style="padding: 20px 0;">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <div style="font-size: 60px; color: var(--analyzer-purple); margin-bottom: 20px;">
+            <i class="fas fa-brain"></i>
+          </div>
+          <h3>AI-Powered Grey Line Predictions</h3>
+          <p style="color: var(--text-secondary); margin: 10px 0;">Machine learning predictions for optimal Grey Line strategies</p>
+        </div>
+        
+        <div style="padding: 20px; background: #f8f9fa; border-radius: var(--radius-sm); margin: 20px 0;">
+          <h4 style="margin-bottom: 15px;">Predicted Outcomes</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div style="padding: 15px; background: white; border-radius: var(--radius-sm);">
+              <div style="font-size: 12px; color: var(--text-secondary);">Next 30 Days</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--analyzer-green);">+12.5%</div>
+              <div>Revenue Increase</div>
+            </div>
+            <div style="padding: 15px; background: white; border-radius: var(--radius-sm);">
+              <div style="font-size: 12px; color: var(--text-secondary);">Risk Level</div>
+              <div style="font-size: 24px; font-weight: 600; color: var(--analyzer-yellow);">Low</div>
+              <div>Detection Probability</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="btn btn-success" onclick="applyPredictiveRecommendations()">
+            <i class="fas fa-check"></i>
+            Apply Predictive Recommendations
+          </button>
+          <button class="btn btn-outline" onclick="closePredictiveModal()">
+            <i class="fas fa-times"></i>
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Analyzer State Management
+    let currentTab = 'overview';
+    let analysisData = {
+      totalInvoices: 1247,
+      totalRevenue: 28450,
+      effectiveness: 94.2,
+      thresholdDistribution: {
+        green: 12,
+        blue: 45,
+        yellow: 28,
+        red: 10,
+        purple: 5
+      }
+    };
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      updateStats();
+      initializeTabs();
+    });
+
+    // Switch tabs
+    function switchTab(tabName) {
+      currentTab = tabName;
+      
+      // Update tab buttons
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.textContent.toLowerCase().includes(tabName)) {
+          tab.classList.add('active');
+        }
+      });
+      
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(`${tabName}-tab`).classList.add('active');
+      
+      // Update URL hash
+      window.location.hash = tabName;
+    }
+
+    // Initialize tabs from URL hash
+    function initializeTabs() {
+      const hash = window.location.hash.replace('#', '');
+      if (hash && document.getElementById(`${hash}-tab`)) {
+        switchTab(hash);
+      }
+    }
+
+    // Update statistics
+    function updateStats() {
+      document.getElementById('totalAnalyzed').textContent = analysisData.totalInvoices.toLocaleString();
+      document.getElementById('totalRevenue').textContent = `$${analysisData.totalRevenue.toLocaleString()}`;
+      document.getElementById('avgEffectiveness').textContent = `${analysisData.effectiveness}%`;
+    }
+
+    // Apply filters
+    function applyFilters() {
+      const dateRange = document.getElementById('dateRange').value;
+      const clientType = document.getElementById('clientType').value;
+      const thresholdLevel = document.getElementById('thresholdLevel').value;
+      const analysisType = document.getElementById('analysisType').value;
+      
+      // Simulate API call
+      showNotification('info', 'Applying Filters', `Analyzing data with selected filters...`);
+      
+      // Update data based on filters (simulated)
+      setTimeout(() => {
+        if (dateRange === 'last30') {
+          analysisData.totalRevenue = 8450;
+          analysisData.totalInvoices = 342;
+        } else if (dateRange === 'last90') {
+          analysisData.totalRevenue = 28450;
+          analysisData.totalInvoices = 1247;
+        }
+        
+        updateStats();
+        showNotification('success', 'Analysis Complete', `Applied ${analysisType} analysis with ${clientType} filter`);
+      }, 1000);
+    }
+
+    // Reset filters
+    function resetFilters() {
+      document.getElementById('dateRange').value = 'last90';
+      document.getElementById('clientType').value = 'all';
+      document.getElementById('thresholdLevel').value = 'all';
+      document.getElementById('analysisType').value = 'revenue';
+      
+      // Reset data
+      analysisData.totalRevenue = 28450;
+      analysisData.totalInvoices = 1247;
+      updateStats();
+      
+      showNotification('info', 'Filters Reset', 'All filters have been reset to default values');
+    }
+
+    // Export filtered data
+    function exportFilteredData() {
+      showNotification('info', 'Export Started', 'Preparing data export...');
+      setTimeout(() => {
+        showNotification('success', 'Export Complete', 'Data exported to CSV format');
+      }, 1500);
+    }
+
+    // Save filter preset
+    function saveFilterPreset() {
+      const presetName = prompt('Enter a name for this filter preset:');
+      if (presetName) {
+        showNotification('success', 'Preset Saved', `Filter preset "${presetName}" saved successfully`);
+      }
+    }
+
+    // Generate full report
+    function generateFullReport() {
+      showNotification('info', 'Generating Report', 'Creating comprehensive analysis report...');
+      
+      // Simulate report generation
+      setTimeout(() => {
+        const reportWindow = window.open('', '_blank');
+        reportWindow.document.write(`
+          <html>
+            <head><title>Grey Line Analysis Report</title></head>
+            <body>
+              <h1>Grey Line Analysis Report</h1>
+              <p>Generated: ${new Date().toLocaleString()}</p>
+              <hr>
+              <h2>Executive Summary</h2>
+              <p>Total Grey Line Revenue: $${analysisData.totalRevenue.toLocaleString()}</p>
+              <p>Effectiveness Rate: ${analysisData.effectiveness}%</p>
+              <p>Invoices Analyzed: ${analysisData.totalInvoices.toLocaleString()}</p>
+              <hr>
+              <h2>Detailed Analysis</h2>
+              <p>Report content would include charts, graphs, and detailed analysis here...</p>
+            </body>
+          </html>
+        `);
+        reportWindow.document.close();
+        
+        showNotification('success', 'Report Generated', 'Full analysis report opened in new window');
+      }, 2000);
+    }
+
+    // Open predictive analytics
+    function openPredictiveAnalytics() {
+      document.getElementById('predictiveModal').style.display = 'flex';
+    }
+
+    // Close predictive modal
+    function closePredictiveModal() {
+      document.getElementById('predictiveModal').style.display = 'none';
+    }
+
+    // Apply predictive recommendations
+    function applyPredictiveRecommendations() {
+      showNotification('info', 'Applying Recommendations', 'Updating thresholds based on AI predictions...');
+      setTimeout(() => {
+        showNotification('success', 'Recommendations Applied', 'AI recommendations successfully implemented');
+        closePredictiveModal();
+      }, 1500);
+    }
+
+    // Apply optimization
+    function applyOptimization() {
+      if (confirm('Apply threshold optimization recommendations?\n\nThis will update thresholds for selected invoices based on AI analysis.')) {
+        showNotification('info', 'Optimizing', 'Applying threshold optimizations...');
+        setTimeout(() => {
+          showNotification('success', 'Optimization Complete', 'Thresholds optimized for maximum revenue');
+        }, 2000);
+      }
+    }
+
+    // Simulate optimization
+    function simulateOptimization() {
+      showNotification('info', 'Simulating', 'Running optimization simulation...');
+      setTimeout(() => {
+        alert('Simulation Results:\n\nExpected Revenue Increase: $3,200/month\nEffectiveness Impact: -2.3%\nRisk Increase: Low\n\nRecommended Action: Proceed with optimization');
+      }, 1500);
+    }
+
+    // Export optimization plan
+    function exportOptimizationPlan() {
+      showNotification('success', 'Plan Exported', 'Threshold optimization plan exported to PDF');
+    }
+
+    // Export all data
+    function exportAllData() {
+      showNotification('info', 'Exporting Data', 'Preparing all analytics data for export...');
+      setTimeout(() => {
+        showNotification('success', 'Export Complete', 'All analytics data exported successfully');
+      }, 2000);
+    }
+
+    // Schedule automated report
+    function scheduleAutomatedReport() {
+      const frequency = prompt('Enter report frequency (daily, weekly, monthly):', 'weekly');
+      if (frequency) {
+        showNotification('success', 'Report Scheduled', `Automated reports scheduled ${frequency}`);
+      }
+    }
+
+    // View all insights
+    function viewAllInsights() {
+      alert('All insights would be displayed in a detailed view here.');
+    }
+
+    // Refresh metrics
+    function refreshMetrics() {
+      showNotification('info', 'Refreshing', 'Updating performance metrics...');
+      setTimeout(() => {
+        // Simulate data refresh
+        analysisData.effectiveness = 94.2 + (Math.random() * 2 - 1);
+        analysisData.totalRevenue = 28450 + Math.floor(Math.random() * 1000);
+        updateStats();
+        showNotification('success', 'Metrics Updated', 'Performance metrics refreshed successfully');
+      }, 1000);
+    }
+
+    // Update chart type
+    function updateChartType(type) {
+      const chartTypes = {
+        line: 'Line Chart',
+        bar: 'Bar Chart',
+        area: 'Area Chart'
+      };
+      showNotification('info', 'Chart Updated', `Switched to ${chartTypes[type] || type} visualization`);
+    }
+
+    // Show notification
+    function showNotification(type, title, message) {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.style.position = 'fixed';
+      notification.style.top = '20px';
+      notification.style.right = '20px';
+      notification.style.padding = '15px 20px';
+      notification.style.borderRadius = '8px';
+      notification.style.color = 'white';
+      notification.style.fontWeight = '600';
+      notification.style.zIndex = '9999';
+      notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+      notification.style.maxWidth = '400px';
+      notification.style.transform = 'translateX(120%)';
+      notification.style.transition = 'transform 0.3s ease';
+      
+      // Set colors based on type
+      switch(type) {
+        case 'success':
+          notification.style.background = 'linear-gradient(135deg, #10b981 0%, #0da271 100%)';
+          break;
+        case 'error':
+          notification.style.background = 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
+          break;
+        case 'warning':
+          notification.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+          break;
+        default:
+          notification.style.background = 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)';
+      }
+      
+      notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+          <div>
+            <div style="font-size: 14px; font-weight: 700;">${title}</div>
+            <div style="font-size: 13px; opacity: 0.9; margin-top: 2px;">${message}</div>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Animate in
+      setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+      }, 10);
+      
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        notification.style.transform = 'translateX(120%)';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      }, 5000);
+      
+      // Click to dismiss
+      notification.onclick = function() {
+        notification.style.transform = 'translateX(120%)';
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 300);
+      };
+    }
+
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('predictiveModal');
+      if (event.target === modal) {
+        closePredictiveModal();
+      }
+    }
+  </script>
+</body>
+</html>
