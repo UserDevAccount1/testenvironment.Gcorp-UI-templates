@@ -1201,30 +1201,38 @@
 
 
 
-
-
+<!-- Add this CSS link in your head section -->
 <link rel="stylesheet" href="./assets/css MB-Subpages/MB-FinalQuotation.css">
-
-<!--**********************************
-    Content body start
-***********************************-->
+<link rel="stylesheet" href="./assets/css MB-Subpages/MB-FinalQuotation-Floatingwindow.css">
+<link rel="stylesheet" href="./assets/css MB-Subpages/BillingSettings.css">
+<style>
+    
+</style>
 <div class="content-body default-height">
     <div class="container-fluid">
-        <!-- Add the container that matches CSS -->
+        <!-- Main Container with unique ID -->
         <div id="MBFinalQuotationContainer">
             <div class="row">
                 <div class="col-12">
-                    <!-- Header -->
+                    <!-- Header Section -->
                     <div class="mbqf-header mb-4">
                         <div class="mbqf-header-title">
                             <h1><i class="fas fa-file-invoice-dollar"></i> Quotation Management System</h1>
                             <p>Manager Dashboard - Review, Finalize & Manage Client Quotations</p>
                         </div>
                         <div class="mbqf-header-controls">
+                            <!-- Search and Filters -->
                             <div class="mbqf-filters-container">
+                                <!-- Search Bar -->
+                                <div class="mbqf-filter-group mbqf-search-container">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="mbqfSearchQuotations" class="mbqf-search-input" placeholder="Search by ID, client, address...">
+                                </div>
+                                
+                                <!-- Filters -->
                                 <div class="mbqf-filter-group">
-                                    <label for="statusFilter"><i class="fas fa-filter"></i> Status:</label>
-                                    <select id="statusFilter" class="mbqf-filter-select">
+                                    <label for="mbqfStatusFilter"><i class="fas fa-filter"></i> Status:</label>
+                                    <select id="mbqfStatusFilter" class="mbqf-filter-select">
                                         <option value="all">All Status</option>
                                         <option value="visit_completed">Visit Completed</option>
                                         <option value="pending_review">Pending Review</option>
@@ -1234,9 +1242,10 @@
                                         <option value="rejected">Rejected</option>
                                     </select>
                                 </div>
+                                
                                 <div class="mbqf-filter-group">
-                                    <label for="serviceFilter">Service:</label>
-                                    <select id="serviceFilter" class="mbqf-filter-select">
+                                    <label for="mbqfServiceFilter">Service:</label>
+                                    <select id="mbqfServiceFilter" class="mbqf-filter-select">
                                         <option value="all">All Services</option>
                                         <option value="move_out">Move-Out Cleaning</option>
                                         <option value="deep_clean">Deep Cleaning</option>
@@ -1245,25 +1254,64 @@
                                         <option value="commercial">Commercial Cleaning</option>
                                     </select>
                                 </div>
+                                
                                 <div class="mbqf-filter-group">
-                                    <label for="dateFilter">Date:</label>
-                                    <input type="date" id="dateFilter" class="mbqf-filter-input">
+                                    <label for="mbqfPropertyFilter">Property:</label>
+                                    <select id="mbqfPropertyFilter" class="mbqf-filter-select">
+                                        <option value="all">All Types</option>
+                                        <option value="residential">Residential</option>
+                                        <option value="commercial">Commercial</option>
+                                    </select>
                                 </div>
-                                <button class="mbqf-filter-btn" id="applyFilters"><i class="fas fa-search"></i> Apply</button>
-                                <button class="mbqf-filter-btn mbqf-reset" id="resetFilters"><i class="fas fa-redo"></i> Reset</button>
+                                
+                                <div class="mbqf-filter-group">
+                                    <label for="mbqfBillingFilter">Billing Type:</label>
+                                    <select id="mbqfBillingFilter" class="mbqf-filter-select">
+                                        <option value="all">All Billing</option>
+                                        <option value="commercial">Commercial</option>
+                                        <option value="residential_recurring">Residential Recurring</option>
+                                        <option value="residential_onetime">Residential One-Time</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mbqf-filter-group">
+                                    <label for="mbqfDepositFilter">Deposit:</label>
+                                    <select id="mbqfDepositFilter" class="mbqf-filter-select">
+                                        <option value="all">All</option>
+                                        <option value="required">Required</option>
+                                        <option value="paid">Paid</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="not_required">Not Required</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mbqf-filter-group">
+                                    <label for="mbqfDateFilter">Date:</label>
+                                    <input type="date" id="mbqfDateFilter" class="mbqf-filter-input">
+                                </div>
+                                
+                                <button class="mbqf-filter-btn" id="mbqfApplyFilters">
+                                    <i class="fas fa-search"></i> Apply
+                                </button>
+                                
+                                <button class="mbqf-filter-btn mbqf-reset" id="mbqfResetFilters">
+                                    <i class="fas fa-redo"></i> Reset
+                                </button>
                             </div>
+                            
+                            <!-- Stats Summary -->
                             <div class="mbqf-stats-summary">
                                 <div class="mbqf-stat-item">
                                     <span class="mbqf-stat-label">Total:</span>
-                                    <span class="mbqf-stat-value" id="totalQuotations">10</span>
+                                    <span class="mbqf-stat-value" id="mbqfTotalQuotations">10</span>
                                 </div>
                                 <div class="mbqf-stat-item">
                                     <span class="mbqf-stat-label">Pending:</span>
-                                    <span class="mbqf-stat-value mbqf-pending">4</span>
+                                    <span class="mbqf-stat-value mbqf-pending" id="mbqfPendingQuotations">4</span>
                                 </div>
                                 <div class="mbqf-stat-item">
                                     <span class="mbqf-stat-label">Sent:</span>
-                                    <span class="mbqf-stat-value mbqf-sent">3</span>
+                                    <span class="mbqf-stat-value mbqf-sent" id="mbqfSentQuotations">3</span>
                                 </div>
                             </div>
                         </div>
@@ -1275,30 +1323,36 @@
                             <div class="mbqf-table-header">
                                 <h2><i class="fas fa-list"></i> Quotation List</h2>
                                 <div class="mbqf-table-actions">
-                                    <button class="mbqf-action-btn mbqf-export" id="exportBtn">
+                                    <button class="mbqf-action-btn mbqf-settings" id="mbqfBillingSettingsBtn">
+                                        <i class="fas fa-cog"></i> Billing Settings
+                                    </button>
+                                    <button class="mbqf-action-btn mbqf-export" id="mbqfExportBtn">
                                         <i class="fas fa-file-export"></i> Export
                                     </button>
-                                    <button class="mbqf-action-btn mbqf-refresh" id="refreshBtn">
+                                    <button class="mbqf-action-btn mbqf-refresh" id="mbqfRefreshBtn">
                                         <i class="fas fa-sync-alt"></i> Refresh
                                     </button>
                                 </div>
                             </div>
                             
                             <div class="table-responsive">
-                                <table class="mbqf-quotations-table table table-striped" id="quotationsTable">
+                                <table class="mbqf-quotations-table table table-striped" id="mbqfQuotationsTable">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
                                             <th>Client</th>
                                             <th>Service Type</th>
+                                            <th>Property Type</th>
                                             <th>Date/Time</th>
                                             <th>Address</th>
+                                            <th>Deposit</th>
+                                            <th>Billing Type</th>
                                             <th>Estimated Price</th>
                                             <th>Status</th>
                                             <th class="text-center">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="quotationsTableBody">
+                                    <tbody id="mbqfQuotationsTableBody">
                                         <!-- Data will be populated by JavaScript -->
                                     </tbody>
                                 </table>
@@ -1306,13 +1360,19 @@
                             
                             <div class="mbqf-table-footer">
                                 <div class="mbqf-pagination">
-                                    <button class="mbqf-pagination-btn" id="prevPage"><i class="fas fa-chevron-left"></i> Previous</button>
-                                    <span class="mbqf-page-info">Page <span id="currentPage">1</span> of <span id="totalPages">2</span></span>
-                                    <button class="mbqf-pagination-btn" id="nextPage">Next <i class="fas fa-chevron-right"></i></button>
+                                    <button class="mbqf-pagination-btn" id="mbqfPrevPage">
+                                        <i class="fas fa-chevron-left"></i> Previous
+                                    </button>
+                                    <span class="mbqf-page-info">
+                                        Page <span id="mbqfCurrentPage">1</span> of <span id="mbqfTotalPages">2</span>
+                                    </span>
+                                    <button class="mbqf-pagination-btn" id="mbqfNextPage">
+                                        Next <i class="fas fa-chevron-right"></i>
+                                    </button>
                                 </div>
                                 <div class="mbqf-items-per-page">
-                                    <label for="itemsPerPage">Items per page:</label>
-                                    <select id="itemsPerPage" class="form-select form-select-sm">
+                                    <label for="mbqfItemsPerPage">Items per page:</label>
+                                    <select id="mbqfItemsPerPage" class="form-select form-select-sm">
                                         <option value="5">5</option>
                                         <option value="10" selected>10</option>
                                         <option value="20">20</option>
@@ -1323,7 +1383,7 @@
                         </div>
                     </div>
 
-                    <!-- Quick Stats -->
+                    <!-- Quick Stats Grid -->
                     <div class="row mbqf-stats-grid">
                         <div class="col-xl-3 col-lg-6 col-sm-6">
                             <div class="mbqf-stat-card">
@@ -1332,7 +1392,7 @@
                                 </div>
                                 <div class="mbqf-stat-content">
                                     <h3>Total Value</h3>
-                                    <p class="mbqf-stat-number">$8,450.75</p>
+                                    <p class="mbqf-stat-number" id="mbqfTotalValue">$8,450.75</p>
                                     <p class="mbqf-stat-change"><i class="fas fa-arrow-up"></i> 12% from last week</p>
                                 </div>
                             </div>
@@ -1344,7 +1404,7 @@
                                 </div>
                                 <div class="mbqf-stat-content">
                                     <h3>Approved</h3>
-                                    <p class="mbqf-stat-number">3</p>
+                                    <p class="mbqf-stat-number" id="mbqfApprovedCount">3</p>
                                     <p class="mbqf-stat-change">60% conversion rate</p>
                                 </div>
                             </div>
@@ -1356,7 +1416,7 @@
                                 </div>
                                 <div class="mbqf-stat-content">
                                     <h3>Pending Review</h3>
-                                    <p class="mbqf-stat-number">4</p>
+                                    <p class="mbqf-stat-number" id="mbqfPendingReviewCount">4</p>
                                     <p class="mbqf-stat-change">Avg. 2 days pending</p>
                                 </div>
                             </div>
@@ -1368,7 +1428,7 @@
                                 </div>
                                 <div class="mbqf-stat-content">
                                     <h3>Upsell Revenue</h3>
-                                    <p class="mbqf-stat-number">$1,240.50</p>
+                                    <p class="mbqf-stat-number" id="mbqfUpsellRevenue">$1,240.50</p>
                                     <p class="mbqf-stat-change"><i class="fas fa-arrow-up"></i> 18% this month</p>
                                 </div>
                             </div>
@@ -1377,49 +1437,75 @@
                 </div>
             </div>
 
-            <!-- Quotation Detail Modal - NOW INSIDE CONTAINER -->
-            <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+            <!-- Quotation Detail Modal -->
+            <div class="modal fade" id="mbqfDetailModal" tabindex="-1" aria-labelledby="mbqfDetailModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header mbqf-modal-header">
-                            <div class="mbqf-modal-tabs" id="modalTabs">
-                                <button class="mbqf-tab-btn active" data-tab="overview"><i class="fas fa-eye"></i> Overview</button>
-                                <button class="mbqf-tab-btn" data-tab="estimation"><i class="fas fa-calculator"></i> Estimation</button>
-                                <button class="mbqf-tab-btn" data-tab="supervisor"><i class="fas fa-clipboard-check"></i> Supervisor Report</button>
-                                <button class="mbqf-tab-btn" data-tab="photos"><i class="fas fa-images"></i> Photos/Evidence</button>
-                                <button class="mbqf-tab-btn" data-tab="upselling"><i class="fas fa-chart-line"></i> Upselling</button>
-                                <button class="mbqf-tab-btn" data-tab="internal"><i class="fas fa-sticky-note"></i> Internal Notes</button>
+                            <div class="mbqf-modal-tabs" id="mbqfModalTabs">
+                                <button class="mbqf-tab-btn active" data-tab="overview">
+                                    <i class="fas fa-eye"></i> Overview
+                                </button>
+                                <button class="mbqf-tab-btn" data-tab="estimation">
+                                    <i class="fas fa-calculator"></i> Estimation
+                                </button>
+                                <button class="mbqf-tab-btn" data-tab="supervisor">
+                                    <i class="fas fa-clipboard-check"></i> Supervisor Report
+                                </button>
+                                <button class="mbqf-tab-btn" data-tab="gallery">
+                                    <i class="fas fa-images"></i> Photos/Evidence
+                                </button>
+                                <button class="mbqf-tab-btn" data-tab="upselling">
+                                    <i class="fas fa-chart-line"></i> Upselling
+                                </button>
+                                <button class="mbqf-tab-btn" data-tab="settings">
+                                    <i class="fas fa-cog"></i> Billing Settings
+                                </button>
+                                <button class="mbqf-tab-btn" data-tab="internal">
+                                    <i class="fas fa-sticky-note"></i> Internal Notes
+                                </button>
                             </div>
                             <button type="button" class="mbqf-modal-close" data-bs-dismiss="modal" aria-label="Close">×</button>
                         </div>
                         
                         <div class="modal-body">
-                            <!-- Tab Content -->
-                            <div class="mbqf-tab-content active" id="overviewTab">
+                            <!-- Overview Tab -->
+                            <div class="mbqf-tab-content active" id="mbqfOverviewTab">
                                 <div class="row mbqf-overview-grid">
+                                    <!-- Client Information -->
                                     <div class="col-md-6">
                                         <div class="mbqf-overview-card">
                                             <h3><i class="fas fa-user"></i> Client Information</h3>
                                             <div class="mbqf-info-grid">
                                                 <div class="mbqf-info-item">
                                                     <span class="mbqf-info-label">Client Name:</span>
-                                                    <span class="mbqf-info-value" id="modalClientName">Jane Doe</span>
+                                                    <span class="mbqf-info-value" id="mbqfModalClientName">-</span>
                                                 </div>
                                                 <div class="mbqf-info-item">
                                                     <span class="mbqf-info-label">Contact:</span>
-                                                    <span class="mbqf-info-value" id="modalClientContact">+63 912 345 6789</span>
+                                                    <span class="mbqf-info-value" id="mbqfModalClientContact">-</span>
                                                 </div>
                                                 <div class="mbqf-info-item">
                                                     <span class="mbqf-info-label">Email:</span>
-                                                    <span class="mbqf-info-value" id="modalClientEmail">jane.doe@example.com</span>
+                                                    <span class="mbqf-info-value" id="mbqfModalClientEmail">-</span>
                                                 </div>
                                                 <div class="mbqf-info-item">
                                                     <span class="mbqf-info-label">Service Address:</span>
-                                                    <span class="mbqf-info-value" id="modalClientAddress">25 Jupiter St., Canada City</span>
+                                                    <span class="mbqf-info-value" id="mbqfModalClientAddress">-</span>
+                                                </div>
+                                                <div class="mbqf-info-item">
+                                                    <span class="mbqf-info-label">Property Type:</span>
+                                                    <span class="mbqf-info-value" id="mbqfModalPropertyType">-</span>
+                                                </div>
+                                                <div class="mbqf-info-item">
+                                                    <span class="mbqf-info-label">Billing Type:</span>
+                                                    <span class="mbqf-info-value" id="mbqfModalBillingType">-</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                    <!-- Booking Details -->
                                     <div class="col-md-6">
                                         <div class="mbqf-overview-card">
                                             <h3><i class="fas fa-calendar-alt"></i> Booking Details</h3>
@@ -1427,56 +1513,70 @@
                                                 <div class="mbqf-info-item">
                                                     <span class="mbqf-info-label">Service Type:</span>
                                                     <span class="mbqf-info-value">
-                                                        <span id="modalServiceType">Move-Out Cleaning</span>
-                                                        <span class="mbqf-recurrence-badge" id="modalRecurrence">Weekly</span>
+                                                        <span id="mbqfModalServiceType">-</span>
+                                                        <span class="mbqf-recurrence-badge" id="mbqfModalRecurrence">-</span>
                                                     </span>
                                                 </div>
                                                 <div class="mbqf-info-item">
                                                     <span class="mbqf-info-label">Booking Date:</span>
-                                                    <span class="mbqf-info-value" id="modalBookingDate">Nov 10, 2025 - 10:00 AM</span>
+                                                    <span class="mbqf-info-value" id="mbqfModalBookingDate">-</span>
+                                                </div>
+                                                <div class="mbqf-info-item">
+                                                    <span class="mbqf-info-label">Deposit Status:</span>
+                                                    <span class="mbqf-info-value" id="mbqfModalDepositStatus">-</span>
                                                 </div>
                                                 <div class="mbqf-info-item">
                                                     <span class="mbqf-info-label">Status:</span>
-                                                    <span class="mbqf-status-badge" id="modalStatus">visit_completed</span>
+                                                    <span class="mbqf-status-badge" id="mbqfModalStatus">-</span>
                                                 </div>
                                                 <div class="mbqf-info-item">
                                                     <span class="mbqf-info-label">Supervisor:</span>
-                                                    <span class="mbqf-info-value" id="modalSupervisor">John Smith</span>
+                                                    <span class="mbqf-info-value" id="mbqfModalSupervisor">-</span>
+                                                </div>
+                                                <div class="mbqf-info-item">
+                                                    <span class="mbqf-info-label">Travel Time:</span>
+                                                    <span class="mbqf-info-value" id="mbqfModalTravelTime">-</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                    <!-- Task List -->
                                     <div class="col-md-6">
                                         <div class="mbqf-overview-card">
                                             <h3><i class="fas fa-tasks"></i> Task List</h3>
-                                            <textarea class="mbqf-task-list form-control" id="modalTaskList" rows="6">✓ Carpet steam cleaning in all rooms
-✓ Deep clean kitchen appliances (oven, refrigerator)
-✓ Wash and sanitize bathrooms (2)
-✓ Window cleaning (interior only)
-✓ Floor mopping and vacuuming
-✓ Dusting of all surfaces
-✓ Empty all trash bins</textarea>
+                                            <textarea class="mbqf-task-list form-control" id="mbqfModalTaskList" rows="6" placeholder="Enter task list..."></textarea>
                                         </div>
                                     </div>
+                                    
+                                    <!-- Price Summary -->
                                     <div class="col-md-6">
                                         <div class="mbqf-overview-card mbqf-price-summary">
                                             <h3><i class="fas fa-file-invoice-dollar"></i> Price Summary</h3>
                                             <div class="mbqf-price-computation">
                                                 <div class="mbqf-price-row">
                                                     <span class="mbqf-price-label">Subtotal:</span>
-                                                    <span class="mbqf-price-value" id="modalSubtotal">$947.00</span>
+                                                    <span class="mbqf-price-value" id="mbqfModalSubtotal">$0.00</span>
+                                                </div>
+                                                <div class="mbqf-price-row">
+                                                    <span class="mbqf-price-label">Travel Time:</span>
+                                                    <span class="mbqf-price-value" id="mbqfModalTravelCost">$0.00</span>
                                                 </div>
                                                 <div class="mbqf-price-row">
                                                     <span class="mbqf-price-label">Tax (5%):</span>
-                                                    <span class="mbqf-price-value" id="modalTax">$47.35</span>
+                                                    <span class="mbqf-price-value" id="mbqfModalTax">$0.00</span>
                                                 </div>
                                                 <div class="mbqf-price-row">
                                                     <span class="mbqf-price-label">Upsells:</span>
-                                                    <span class="mbqf-price-value" id="modalUpsells">$0.00</span>
+                                                    <span class="mbqf-price-value" id="mbqfModalUpsells">$0.00</span>
+                                                </div>
+                                                <div class="mbqf-price-row">
+                                                    <span class="mbqf-price-label">Deposit:</span>
+                                                    <span class="mbqf-price-value" id="mbqfModalDepositAmount">$0.00</span>
                                                 </div>
                                                 <div class="mbqf-price-row mbqf-total-row">
                                                     <span class="mbqf-price-label">Final Total:</span>
-                                                    <span class="mbqf-price-value" id="modalFinalTotal">$994.35</span>
+                                                    <span class="mbqf-price-value" id="mbqfModalFinalTotal">$0.00</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -1484,9 +1584,66 @@
                                 </div>
                             </div>
                             
-                            <div class="mbqf-tab-content" id="estimationTab">
+                            <!-- Estimation Tab -->
+                            <div class="mbqf-tab-content" id="mbqfEstimationTab">
                                 <div class="mbqf-estimation-container">
                                     <h3><i class="fas fa-calculator"></i> Estimation Breakdown</h3>
+                                    
+                                    <!-- Control Settings -->
+                                    <div class="mbqf-control-settings mb-4">
+                                        <h4><i class="fas fa-sliders-h"></i> Calculation Controls</h4>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-check form-switch mb-3">
+                                                    <input class="form-check-input" type="checkbox" id="mbqfToggleDeposit" checked>
+                                                    <label class="form-check-label" for="mbqfToggleDeposit">Require Deposit</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-switch mb-3">
+                                                    <input class="form-check-input" type="checkbox" id="mbqfToggleSquareFootage" checked>
+                                                    <label class="form-check-label" for="mbqfToggleSquareFootage">Enable Square Footage</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-check form-switch mb-3">
+                                                    <input class="form-check-input" type="checkbox" id="mbqfToggleHourlyRate" checked>
+                                                    <label class="form-check-label" for="mbqfToggleHourlyRate">Enable Hourly Rate</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Travel Time Input -->
+                                        <div class="mbqf-travel-time-input mb-3">
+                                            <label for="mbqfTravelTimeInput"><i class="fas fa-car"></i> Travel Time (minutes):</label>
+                                            <div class="input-group">
+                                                <input type="number" id="mbqfTravelTimeInput" class="form-control" value="45" min="0" max="240">
+                                                <button class="btn btn-outline-primary" type="button" id="mbqfAddTravelTime">
+                                                    <i class="fas fa-plus"></i> Add to Calculation
+                                                </button>
+                                            </div>
+                                            <small class="text-muted">Travel time is charged at $38/hour</small>
+                                        </div>
+                                        
+                                        <!-- Square Footage Input -->
+                                        <div class="mbqf-square-footage-input mb-3" id="mbqfSquareFootageSection" style="display: block;">
+                                            <label for="mbqfSquareFootageInput"><i class="fas fa-ruler-combined"></i> Square Footage:</label>
+                                            <input type="number" id="mbqfSquareFootageInput" class="form-control" value="1500" min="100">
+                                            <small class="text-muted">Price per square foot: $0.50</small>
+                                        </div>
+                                        
+                                        <!-- Deposit Proof Upload -->
+                                        <div class="mbqf-deposit-upload mb-4" id="mbqfDepositSection" style="display: block;">
+                                            <h5><i class="fas fa-file-invoice-dollar"></i> Deposit Proof</h5>
+                                            <div class="mb-3">
+                                                <input type="file" id="mbqfDepositProofFile" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+                                                <small class="text-muted">Upload deposit receipt or proof of payment</small>
+                                            </div>
+                                            <div id="mbqfDepositProofPreview"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Estimation Items Table -->
                                     <div class="table-responsive">
                                         <table class="mbqf-estimation-table table table-bordered">
                                             <thead class="table-light">
@@ -1497,7 +1654,7 @@
                                                     <th width="120">Total</th>
                                                 </tr>
                                             </thead>
-                                            <tbody id="estimationTableBody">
+                                            <tbody id="mbqfEstimationTableBody">
                                                 <!-- Will be populated by JavaScript -->
                                             </tbody>
                                         </table>
@@ -1508,82 +1665,212 @@
                                 </div>
                             </div>
                             
-                            <div class="mbqf-tab-content" id="supervisorTab">
+                            <!-- Supervisor Tab -->
+                            <div class="mbqf-tab-content" id="mbqfSupervisorTab">
                                 <div class="mbqf-supervisor-container">
                                     <h3><i class="fas fa-clipboard-check"></i> Supervisor Report</h3>
                                     <div class="mbqf-supervisor-section">
                                         <h4>Site Notes & Observations</h4>
-                                        <textarea class="mbqf-supervisor-notes form-control" id="modalSiteNotes" rows="5">Client requested detailed carpet cleaning. Property well-maintained, requires deep clean for kitchen and living area. Additional staining found in master bedroom carpet.</textarea>
+                                        <textarea class="mbqf-supervisor-notes form-control" id="mbqfModalSiteNotes" rows="5" placeholder="Enter site notes and observations..."></textarea>
                                     </div>
                                     <div class="mbqf-supervisor-section">
                                         <h4>Updated Price Estimate</h4>
                                         <div class="mbqf-price-estimate">
-                                            <input type="text" id="modalUpdatedEstimate" value="$340 - $380 (before tax)" class="mbqf-estimate-input form-control">
+                                            <input type="text" id="mbqfModalUpdatedEstimate" class="mbqf-estimate-input form-control" placeholder="$0.00 - $0.00 (before tax)">
                                         </div>
                                     </div>
                                     <div class="mbqf-supervisor-section">
                                         <h4>Special Instructions</h4>
-                                        <textarea class="mbqf-special-instructions form-control" id="modalSpecialInstructions" rows="3">Client has pets (2 cats). Use eco-friendly products only. Side gate access required.</textarea>
+                                        <textarea class="mbqf-special-instructions form-control" id="mbqfModalSpecialInstructions" rows="3" placeholder="Enter special instructions..."></textarea>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="mbqf-tab-content" id="photosTab">
-                                <div class="mbqf-photos-container">
-                                    <h3><i class="fas fa-images"></i> Site Photos / Evidence</h3>
-                                    <div class="mbqf-photos-grid row" id="photosGrid">
-                                        <!-- Will be populated by JavaScript -->
+                            <!-- Gallery Tab -->
+                            <div class="mbqf-tab-content" id="mbqfGalleryTab">
+                                <div class="gallery-container">
+                                    <div class="gallery-header">
+                                        <h4><i class="fas fa-camera"></i> Site Photos & Media</h4>
+                                        <div class="gallery-actions">
+                                            <button class="add-media-btn" id="mbqfBtnAddMedia">
+                                                <i class="fas fa-plus"></i> Add Media
+                                            </button>
+                                            <button class="view-toggle-btn" id="mbqfBtnToggleView">
+                                                <i class="fas fa-th"></i> Grid View
+                                            </button>
+                                            <input type="file" id="mbqfMediaUpload" accept="image/*,video/*,audio/*" multiple style="display: none;">
+                                        </div>
                                     </div>
-                                    <div class="mbqf-photos-count">
-                                        <p><i class="fas fa-info-circle"></i> <span id="photosCount">4</span> photos uploaded by supervisor</p>
+
+                                    <!-- Horizontal Gallery Slider -->
+                                    <div class="horizontal-gallery-container" id="mbqfHorizontalGallery" style="display: none;">
+                                        <div class="slider-nav">
+                                            <button class="slider-prev" id="mbqfSliderPrev">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </button>
+                                            <button class="slider-next" id="mbqfSliderNext">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </button>
+                                        </div>
+                                        <div class="horizontal-slider" id="mbqfHorizontalSlider">
+                                            <!-- Horizontal slider items will be loaded here -->
+                                        </div>
+                                        <div class="slider-info">
+                                            <span id="mbqfCurrentSlide">1</span> / <span id="mbqfTotalSlides">0</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Grid Gallery -->
+                                    <div class="gallery-grid" id="mbqfMediaGrid">
+                                        <div class="no-media">
+                                            <i class="fas fa-images fa-3x"></i>
+                                            <p>No photos or videos added yet</p>
+                                            <button class="btn-add-first" id="mbqfBtnAddFirstMedia">
+                                                <i class="fas fa-plus"></i> Add First Photo/Video
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="mbqf-tab-content" id="upsellingTab">
+                            <!-- Upselling Tab -->
+                            <div class="mbqf-tab-content" id="mbqfUpsellingTab">
                                 <div class="mbqf-upselling-container">
                                     <h3><i class="fas fa-chart-line"></i> Upselling Options</h3>
                                     <p class="mbqf-upselling-description">Select optional services to increase revenue. Total updates automatically when upsells are selected.</p>
                                     
-                                    <div class="mbqf-upselling-options" id="upsellingOptions">
+                                    <!-- Add Custom Upsell -->
+                                    <div class="mbqf-add-upsell mb-4">
+                                        <h5><i class="fas fa-plus-circle"></i> Add Custom Upsell Product</h5>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <input type="text" id="mbqfCustomUpsellName" class="form-control mb-2" placeholder="Product Name">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input type="text" id="mbqfCustomUpsellDescription" class="form-control mb-2" placeholder="Description">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input type="number" id="mbqfCustomUpsellPrice" class="form-control mb-2" placeholder="Price" step="0.01">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button class="btn btn-success w-100" id="mbqfAddCustomUpsell">
+                                                    <i class="fas fa-plus"></i> Add
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Upselling Options -->
+                                    <div class="mbqf-upselling-options" id="mbqfUpsellingOptions">
                                         <!-- Will be populated by JavaScript -->
                                     </div>
                                     
+                                    <!-- Upsells Total -->
                                     <div class="mbqf-upselling-total">
-                                        <h4>Selected Upsells Total: <span id="selectedUpsellsTotal">$0.00</span></h4>
+                                        <h4>Selected Upsells Total: <span id="mbqfSelectedUpsellsTotal">$0.00</span></h4>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="mbqf-tab-content" id="internalTab">
+                            <!-- Billing Settings Tab -->
+                            <div class="mbqf-tab-content" id="mbqfSettingsTab">
+                                <div class="mbqf-settings-container">
+                                    <h3><i class="fas fa-cog"></i> Billing Settings Management</h3>
+                                    
+                                    <!-- Billing Type Details -->
+                                    <div class="mbqf-billing-details">
+                                        <div class="mbqf-billing-card" id="mbqfCommercialBillingCard">
+                                            <h4><i class="fas fa-building"></i> Commercial Billing</h4>
+                                            <ul class="mbqf-billing-list">
+                                                <li>All commercial recurring services (weekly, bi-weekly, monthly) are billed once at the end of the month.</li>
+                                                <li>Commercial invoices are consolidated into one monthly invoice, regardless of service frequency.</li>
+                                                <li>Applies to all commercial recurring cleanings.</li>
+                                            </ul>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="mbqfToggleCommercialAuto" checked>
+                                                <label class="form-check-label" for="mbqfToggleCommercialAuto">Automate Commercial Invoicing</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mbqf-billing-card" id="mbqfResidentialRecurringCard">
+                                            <h4><i class="fas fa-home"></i> Residential Billing – Recurring</h4>
+                                            <ul class="mbqf-billing-list">
+                                                <li>Recurring residential services receive one invoice on the 15th of the month.</li>
+                                                <li>Services include weekly, bi-weekly, and monthly cleaning schedules.</li>
+                                            </ul>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="mbqfToggleResidentialRecurringAuto" checked>
+                                                <label class="form-check-label" for="mbqfToggleResidentialRecurringAuto">Automate Recurring Invoicing</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mbqf-billing-card" id="mbqfResidentialOnetimeCard">
+                                            <h4><i class="fas fa-calendar-times"></i> Residential Billing – One-Time</h4>
+                                            <ul class="mbqf-billing-list">
+                                                <li>One-time residential cleanings are billed once upon service completion.</li>
+                                                <li>Invoice is generated immediately after service confirmation.</li>
+                                            </ul>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="mbqfToggleResidentialOnetimeAuto" checked>
+                                                <label class="form-check-label" for="mbqfToggleResidentialOnetimeAuto">Automate One-Time Invoicing</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mbqf-billing-card" id="mbqfOnetimeGeneralCard">
+                                            <h4><i class="fas fa-clock"></i> One-Time Cleans (General)</h4>
+                                            <ul class="mbqf-billing-list">
+                                                <li>All one-time cleans are billed immediately after the cleaning is completed.</li>
+                                                <li>Includes both residential and commercial one-time services.</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Automation Settings -->
+                                    <div class="mbqf-automation-settings mt-4">
+                                        <h4><i class="fas fa-robot"></i> Invoicing Automation</h4>
+                                        <div class="alert alert-info">
+                                            <p><strong>End-of-day automation reviews logged work hours.</strong></p>
+                                            <p>Invoices are built automatically based on:</p>
+                                            <ul>
+                                                <li>Hours worked</li>
+                                                <li>Recurrence rules</li>
+                                                <li>Service type</li>
+                                            </ul>
+                                        </div>
+                                        <div class="alert alert-success">
+                                            <p><strong>Financing Automation</strong></p>
+                                            <p>Invoices are generated automatically based on service and work data.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Internal Notes Tab -->
+                            <div class="mbqf-tab-content" id="mbqfInternalTab">
                                 <div class="mbqf-internal-container">
                                     <h3><i class="fas fa-sticky-note"></i> Internal Notes</h3>
                                     <p class="mbqf-internal-description">For internal team communication only (non-client facing).</p>
-                                    <textarea class="mbqf-internal-notes form-control" id="modalInternalNotes" rows="8">Ensure all optional tasks are included in final invoice
-Client requested eco-friendly cleaning products
-Special attention to master bedroom carpet stain
-Backyard access through side gate - key provided
-Pet owner - be mindful of allergies
-Schedule morning crew for this booking</textarea>
+                                    <textarea class="mbqf-internal-notes form-control" id="mbqfModalInternalNotes" rows="8" placeholder="Enter internal notes..."></textarea>
                                 </div>
                             </div>
                         </div>
                         
+                        <!-- Modal Footer Actions -->
                         <div class="modal-footer mbqf-modal-footer">
                             <div class="mbqf-modal-actions d-flex justify-content-between w-100">
                                 <div class="d-flex gap-2">
-                                    <button class="mbqf-action-btn mbqf-generate" id="generateQuotationBtn">
+                                    <button class="mbqf-action-btn mbqf-generate" id="mbqfGenerateQuotationBtn">
                                         <i class="fas fa-file-pdf"></i> Generate Quotation
                                     </button>
-                                    <button class="mbqf-action-btn mbqf-revise" id="requestRevisionBtn">
+                                    <button class="mbqf-action-btn mbqf-revise" id="mbqfRequestRevisionBtn">
                                         <i class="fas fa-edit"></i> Request Revision
                                     </button>
                                 </div>
                                 <div class="d-flex gap-2">
-                                    <button class="mbqf-action-btn mbqf-save" id="saveChangesBtn">
+                                    <button class="mbqf-action-btn mbqf-save" id="mbqfSaveChangesBtn">
                                         <i class="fas fa-save"></i> Save Changes
                                     </button>
-                                    <button class="mbqf-action-btn mbqf-reject" id="rejectBookingBtn">
+                                    <button class="mbqf-action-btn mbqf-reject" id="mbqfRejectBookingBtn">
                                         <i class="fas fa-ban"></i> Reject Booking
                                     </button>
                                 </div>
@@ -1593,11 +1880,1303 @@ Schedule morning crew for this booking</textarea>
                 </div>
             </div>
 
-            <!-- Success/Error Messages -->
-            <div class="mbqf-message-toast" id="messageToast">
+            <!-- Billing Settings Management Modal -->
+            <!-- Billing Settings Management Modal -->
+<div class="modal fade" id="mbqfBillingSettingsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fas fa-cog me-2"></i>Advanced Billing Settings Management</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Tabs Navigation -->
+                <ul class="nav nav-tabs mb-4" id="mbqfBillingTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="mbqf-tab-overview" data-bs-toggle="tab" data-bs-target="#mbqf-tab-overview-content" type="button">Overview & Analysis</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="mbqf-tab-rules" data-bs-toggle="tab" data-bs-target="#mbqf-tab-rules-content" type="button">Billing Rules</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="mbqf-tab-automation" data-bs-toggle="tab" data-bs-target="#mbqf-tab-automation-content" type="button">Automation</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="mbqf-tab-documents" data-bs-toggle="tab" data-bs-target="#mbqf-tab-documents-content" type="button">Documents</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+    <button class="nav-link" id="mbqf-tab-deposit" data-bs-toggle="tab" 
+            data-bs-target="#mbqf-tab-deposit-content" type="button" role="tab">
+        <i class="fas fa-money-bill-wave me-2"></i>Deposit Settings
+    </button>
+</li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="mbqfBillingTabContent">
+                    
+                    <!-- Overview & Analysis Tab -->
+                    <div class="tab-pane fade show active" id="mbqf-tab-overview-content" role="tabpanel">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-filter me-2"></i>Client Filters</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-3">
+                                            <div class="col-12">
+                                                <label class="form-label">Client Type</label>
+                                                <select class="form-select mbqf-client-type-filter" id="mbqfClientTypeFilter">
+                                                    <option value="all">All Types</option>
+                                                    <option value="recurring_residential">Recurring Residential</option>
+                                                    <option value="first_time_commercial">First Time Commercial</option>
+                                                    <option value="first_time_residential">First Time Residential</option>
+                                                    <option value="recurring_commercial">Recurring Commercial</option>
+                                                    <option value="onetime_residential">One-Time Residential</option>
+                                                    <option value="onetime_commercial">One-Time Commercial</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label">Billing Schedule</label>
+                                                <select class="form-select mbqf-billing-schedule-filter" id="mbqfBillingScheduleFilter">
+                                                    <option value="all">All Schedules</option>
+                                                    <option value="end_of_month">End of Month</option>
+                                                    <option value="15th_of_month">15th of Month</option>
+                                                    <option value="after_service">After Service</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-12">
+                                                <button class="btn btn-primary w-100" id="mbqfApplyFilters">
+                                                    <i class="fas fa-search me-2"></i>Apply Filters
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Client Distribution</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mbqf-chart-container" style="height: 200px;">
+                                            <canvas id="mbqfClientDistributionChart"></canvas>
+                                        </div>
+                                        <div class="mt-3">
+                                            <div class="d-flex justify-content-between mb-1">
+                                                <span>Recurring Residential</span>
+                                                <span class="badge bg-primary" id="mbqfCountRR">0</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-1">
+                                                <span>First Time Commercial</span>
+                                                <span class="badge bg-success" id="mbqfCountFTC">0</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-1">
+                                                <span>First Time Residential</span>
+                                                <span class="badge bg-info" id="mbqfCountFTR">0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Client Overview Table -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0"><i class="fas fa-list me-2"></i>Client Overview</h6>
+                                <button class="btn btn-sm btn-outline-primary" id="mbqfExportOverview">
+                                    <i class="fas fa-download me-1"></i>Export
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="mbqfClientOverviewTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Client Name</th>
+                                                <th>Type</th>
+                                                <th>Billing Schedule</th>
+                                                <th>Service Frequency</th>
+                                                <th>Auto Invoice</th>
+                                                <th>Last Invoice</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="mbqfClientOverviewBody">
+                                            <!-- Dynamic content will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Billing Rules Tab -->
+<div class="tab-pane fade" id="mbqf-tab-rules-content" role="tabpanel">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-sliders-h me-2"></i>Billing Rules Configuration</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="mbqfBillingRulesTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th width="15%">Client Type</th>
+                                    <th width="25%">Description</th>
+                                    <th width="15%">Invoice Trigger</th>
+                                    <th width="15%">Consolidation</th>
+                                    <th width="10%">Auto Invoice</th>
+                                    <th width="10%">Smart Settings</th>
+                                    <th width="10%">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Commercial Billing Rule -->
+                                <tr data-rule-id="commercial">
+                                    <td>
+                                        <div class="mbqf-client-type">
+                                            <strong>Commercial</strong>
+                                            <div class="small text-muted mt-1">
+                                                <i class="fas fa-building me-1"></i>Business Properties
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-rule-desc-container">
+                                            <div class="mbqf-rule-desc">
+                                                <i class="fas fa-info-circle text-primary me-2"></i>
+                                                <span class="mbqf-desc-text">
+                                                    All commercial recurring services (weekly, bi-weekly, monthly) are billed once at the end of the month. Commercial invoices are consolidated into one monthly invoice, regardless of service frequency.
+                                                </span>
+                                            </div>
+                                            <div class="mbqf-rule-details mt-2">
+                                                <div class="mbqf-detail-item">
+                                                    <span class="badge bg-info me-2">Feature</span>
+                                                    <small>Consolidated billing</small>
+                                                </div>
+                                                <div class="mbqf-detail-item">
+                                                    <span class="badge bg-success me-2">Frequency</span>
+                                                    <small>Weekly, Bi-weekly, Monthly</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-trigger-container">
+                                            <select class="form-select form-select-sm mbqf-invoice-trigger" data-rule-id="commercial">
+                                                <option value="end_of_month" selected>End of Month</option>
+                                                <option value="15th_of_month">15th of Month</option>
+                                                <option value="after_service">After Service</option>
+                                                <option value="custom">Custom Date</option>
+                                            </select>
+                                            <div class="mbqf-trigger-info small text-muted mt-1">
+                                                <i class="fas fa-calendar-alt me-1"></i>
+                                                Monthly consolidation
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-consolidation-container">
+                                            <div class="form-check">
+                                                <input class="form-check-input mbqf-consolidation" type="checkbox" data-rule-id="commercial" checked>
+                                                <label class="form-check-label small fw-bold">Consolidated Monthly</label>
+                                            </div>
+                                            <div class="mbqf-consolidation-desc small text-muted mt-1">
+                                                <i class="fas fa-file-invoice-dollar me-1"></i>
+                                                Single invoice per month
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-auto-invoice-container">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input mbqf-auto-invoice" type="checkbox" data-rule-id="commercial" checked>
+                                            </div>
+                                            <div class="mbqf-auto-status small text-success mt-1">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                Active
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-smart-settings-container">
+                                            <div class="form-check">
+                                                <input class="form-check-input mbqf-smart-settings" type="checkbox" data-rule-id="commercial" checked>
+                                                <label class="form-check-label small fw-bold">Exclusive Rule</label>
+                                            </div>
+                                            <div class="mbqf-smart-info small text-primary mt-1">
+                                                <i class="fas fa-brain me-1"></i>
+                                                Prevents overlap
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button class="btn btn-outline-primary mbqf-edit-rule" data-rule-id="commercial" title="Edit Rule">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-info mbqf-view-details" data-rule-id="commercial" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Residential Recurring Rule -->
+                                <tr data-rule-id="residential_recurring">
+                                    <td>
+                                        <div class="mbqf-client-type">
+                                            <strong>Residential Recurring</strong>
+                                            <div class="small text-muted mt-1">
+                                                <i class="fas fa-home me-1"></i>Homes & Apartments
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-rule-desc-container">
+                                            <div class="mbqf-rule-desc">
+                                                <i class="fas fa-info-circle text-primary me-2"></i>
+                                                <span class="mbqf-desc-text">
+                                                    Recurring residential services receive one invoice on the 15th of the month. Applies to all scheduled residential cleanings (weekly, bi-weekly, monthly).
+                                                </span>
+                                            </div>
+                                            <div class="mbqf-rule-details mt-2">
+                                                <div class="mbqf-detail-item">
+                                                    <span class="badge bg-info me-2">Schedule</span>
+                                                    <small>15th of each month</small>
+                                                </div>
+                                                <div class="mbqf-detail-item">
+                                                    <span class="badge bg-success me-2">Frequency</span>
+                                                    <small>Weekly, Bi-weekly, Monthly</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-trigger-container">
+                                            <select class="form-select form-select-sm mbqf-invoice-trigger" data-rule-id="residential_recurring">
+                                                <option value="end_of_month">End of Month</option>
+                                                <option value="15th_of_month" selected>15th of Month</option>
+                                                <option value="after_service">After Service</option>
+                                                <option value="custom">Custom Date</option>
+                                            </select>
+                                            <div class="mbqf-trigger-info small text-muted mt-1">
+                                                <i class="fas fa-calendar-check me-1"></i>
+                                                Mid-month billing
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-consolidation-container">
+                                            <div class="form-check">
+                                                <input class="form-check-input mbqf-consolidation" type="checkbox" data-rule-id="residential_recurring" checked>
+                                                <label class="form-check-label small fw-bold">Monthly Invoice</label>
+                                            </div>
+                                            <div class="mbqf-consolidation-desc small text-muted mt-1">
+                                                <i class="fas fa-calendar-alt me-1"></i>
+                                                Scheduled monthly
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-auto-invoice-container">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input mbqf-auto-invoice" type="checkbox" data-rule-id="residential_recurring" checked>
+                                            </div>
+                                            <div class="mbqf-auto-status small text-success mt-1">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                Active
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-smart-settings-container">
+                                            <div class="form-check">
+                                                <input class="form-check-input mbqf-smart-settings" type="checkbox" data-rule-id="residential_recurring" checked>
+                                                <label class="form-check-label small fw-bold">Exclusive Rule</label>
+                                            </div>
+                                            <div class="mbqf-smart-info small text-primary mt-1">
+                                                <i class="fas fa-brain me-1"></i>
+                                                Disables others
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button class="btn btn-outline-primary mbqf-edit-rule" data-rule-id="residential_recurring" title="Edit Rule">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-info mbqf-view-details" data-rule-id="residential_recurring" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Residential One-Time Rule -->
+                                <tr data-rule-id="residential_onetime">
+                                    <td>
+                                        <div class="mbqf-client-type">
+                                            <strong>Residential One-Time</strong>
+                                            <div class="small text-muted mt-1">
+                                                <i class="fas fa-broom me-1"></i>Single Cleanings
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-rule-desc-container">
+                                            <div class="mbqf-rule-desc">
+                                                <i class="fas fa-info-circle text-primary me-2"></i>
+                                                <span class="mbqf-desc-text">
+                                                    One-time residential cleanings are billed immediately upon service completion. Invoice is generated and sent right after the cleaning is finished.
+                                                </span>
+                                            </div>
+                                            <div class="mbqf-rule-details mt-2">
+                                                <div class="mbqf-detail-item">
+                                                    <span class="badge bg-warning me-2">Timing</span>
+                                                    <small>Immediate billing</small>
+                                                </div>
+                                                <div class="mbqf-detail-item">
+                                                    <span class="badge bg-secondary me-2">Type</span>
+                                                    <small>Single service</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-trigger-container">
+                                            <select class="form-select form-select-sm mbqf-invoice-trigger" data-rule-id="residential_onetime">
+                                                <option value="end_of_month">End of Month</option>
+                                                <option value="15th_of_month">15th of Month</option>
+                                                <option value="after_service" selected>After Service</option>
+                                                <option value="custom">Custom Date</option>
+                                            </select>
+                                            <div class="mbqf-trigger-info small text-muted mt-1">
+                                                <i class="fas fa-clock me-1"></i>
+                                                Real-time billing
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-consolidation-container">
+                                            <div class="form-check">
+                                                <input class="form-check-input mbqf-consolidation" type="checkbox" data-rule-id="residential_onetime" disabled>
+                                                <label class="form-check-label small text-muted">N/A</label>
+                                            </div>
+                                            <div class="mbqf-consolidation-desc small text-muted mt-1">
+                                                <i class="fas fa-times-circle me-1"></i>
+                                                Not applicable
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-auto-invoice-container">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input mbqf-auto-invoice" type="checkbox" data-rule-id="residential_onetime" checked>
+                                            </div>
+                                            <div class="mbqf-auto-status small text-success mt-1">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                Active
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-smart-settings-container">
+                                            <div class="form-check">
+                                                <input class="form-check-input mbqf-smart-settings" type="checkbox" data-rule-id="residential_onetime" checked>
+                                                <label class="form-check-label small fw-bold">Exclusive Rule</label>
+                                            </div>
+                                            <div class="mbqf-smart-info small text-primary mt-1">
+                                                <i class="fas fa-brain me-1"></i>
+                                                Prevents overlap
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button class="btn btn-outline-primary mbqf-edit-rule" data-rule-id="residential_onetime" title="Edit Rule">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-info mbqf-view-details" data-rule-id="residential_onetime" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Commercial One-Time Rule -->
+                                <tr data-rule-id="commercial_onetime">
+                                    <td>
+                                        <div class="mbqf-client-type">
+                                            <strong>Commercial One-Time</strong>
+                                            <div class="small text-muted mt-1">
+                                                <i class="fas fa-briefcase me-1"></i>Single Business Services
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-rule-desc-container">
+                                            <div class="mbqf-rule-desc">
+                                                <i class="fas fa-info-circle text-primary me-2"></i>
+                                                <span class="mbqf-desc-text">
+                                                    One-time commercial cleanings are billed immediately after service completion. All one-time commercial cleans are billed immediately after the cleaning is completed.
+                                                </span>
+                                            </div>
+                                            <div class="mbqf-rule-details mt-2">
+                                                <div class="mbqf-detail-item">
+                                                    <span class="badge bg-warning me-2">Timing</span>
+                                                    <small>Immediate billing</small>
+                                                </div>
+                                                <div class="mbqf-detail-item">
+                                                    <span class="badge bg-secondary me-2">Type</span>
+                                                    <small>Single service</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-trigger-container">
+                                            <select class="form-select form-select-sm mbqf-invoice-trigger" data-rule-id="commercial_onetime">
+                                                <option value="end_of_month">End of Month</option>
+                                                <option value="15th_of_month">15th of Month</option>
+                                                <option value="after_service" selected>After Service</option>
+                                                <option value="custom">Custom Date</option>
+                                            </select>
+                                            <div class="mbqf-trigger-info small text-muted mt-1">
+                                                <i class="fas fa-clock me-1"></i>
+                                                Real-time billing
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-consolidation-container">
+                                            <div class="form-check">
+                                                <input class="form-check-input mbqf-consolidation" type="checkbox" data-rule-id="commercial_onetime" disabled>
+                                                <label class="form-check-label small text-muted">N/A</label>
+                                            </div>
+                                            <div class="mbqf-consolidation-desc small text-muted mt-1">
+                                                <i class="fas fa-times-circle me-1"></i>
+                                                Not applicable
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-auto-invoice-container">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input mbqf-auto-invoice" type="checkbox" data-rule-id="commercial_onetime" checked>
+                                            </div>
+                                            <div class="mbqf-auto-status small text-success mt-1">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                Active
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-smart-settings-container">
+                                            <div class="form-check">
+                                                <input class="form-check-input mbqf-smart-settings" type="checkbox" data-rule-id="commercial_onetime" checked>
+                                                <label class="form-check-label small fw-bold">Exclusive Rule</label>
+                                            </div>
+                                            <div class="mbqf-smart-info small text-primary mt-1">
+                                                <i class="fas fa-brain me-1"></i>
+                                                Prevents overlap
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button class="btn btn-outline-primary mbqf-edit-rule" data-rule-id="commercial_onetime" title="Edit Rule">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-info mbqf-view-details" data-rule-id="commercial_onetime" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Description Legend -->
+                    <div class="mt-4">
+                        <div class="alert alert-light border">
+                            <h6 class="mb-2"><i class="fas fa-lightbulb me-2"></i>Description Features</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fas fa-info-circle text-primary me-2"></i>
+                                        <small>Main rule description with complete details</small>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="badge bg-info me-2">Feature</span>
+                                        <small>Key characteristics of the billing rule</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="badge bg-success me-2">Frequency</span>
+                                        <small>Service frequency coverage</small>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="badge bg-warning me-2">Timing</span>
+                                        <small>Billing timing information</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Smart Settings Info</h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-brain me-2"></i>Smart Settings Logic</h6>
+                        <p class="small mb-2">When enabled, exclusive rules prevent overlapping billing:</p>
+                        <ul class="small mb-0">
+                            <li>If Residential Recurring is enabled, other residential types are disabled</li>
+                            <li>If Commercial is enabled, other commercial types are disabled</li>
+                            <li>One-time services always override recurring for same client</li>
+                        </ul>
+                    </div>
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>Consolidation Rules</h6>
+                        <p class="small mb-0">Commercial recurring services are always consolidated into one monthly invoice regardless of service frequency.</p>
+                    </div>
+                    
+                    <!-- Quick Stats -->
+                    <div class="card mt-3">
+                        <div class="card-body p-3">
+                            <h6 class="mb-3"><i class="fas fa-chart-bar me-2"></i>Quick Stats</h6>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <small>Active Rules:</small>
+                                    <small class="fw-bold">4</small>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <small>Auto Invoice Enabled:</small>
+                                    <small class="fw-bold text-success">4</small>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <small>Smart Settings Active:</small>
+                                    <small class="fw-bold text-primary">4</small>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <small>Consolidated Rules:</small>
+                                    <small class="fw-bold text-info">2</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                    <!-- Automation Tab -->
+                    <div class="tab-pane fade" id="mbqf-tab-automation-content" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-robot me-2"></i>Invoicing Automation</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-4">
+                                            <div class="form-check form-switch mb-3">
+                                                <input class="form-check-input" type="checkbox" id="mbqfAutoInvoiceGeneration" checked>
+                                                <label class="form-check-label" for="mbqfAutoInvoiceGeneration">
+                                                    <strong>Automatic Invoice Generation</strong>
+                                                </label>
+                                                <div class="form-text small">Invoices are generated automatically based on service completion and billing rules</div>
+                                            </div>
+
+                                            <div class="form-check form-switch mb-3">
+                                                <input class="form-check-input" type="checkbox" id="mbqfEndOfDayReview" checked>
+                                                <label class="form-check-label" for="mbqfEndOfDayReview">
+                                                    <strong>End-of-Day Automation</strong>
+                                                </label>
+                                                <div class="form-text small">Reviews logged work hours at end of each business day</div>
+                                            </div>
+
+                                            <div class="form-check form-switch mb-3">
+                                                <input class="form-check-input" type="checkbox" id="mbqfAutoClientCategorization" checked>
+                                                <label class="form-check-label" for="mbqfAutoClientCategorization">
+                                                    <strong>Automatic Client Categorization</strong>
+                                                </label>
+                                                <div class="form-text small">Clients are automatically categorized based on property type and service frequency</div>
+                                            </div>
+                                        </div>
+
+                                        <hr>
+
+                                        <h6 class="mt-4 mb-3">Invoice Generation Rules</h6>
+                                        <div class="mb-3">
+                                            <label class="form-label">Invoice Build Criteria</label>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="mbqfCriteriaHours" checked>
+                                                <label class="form-check-label small" for="mbqfCriteriaHours">Based on hours worked</label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="mbqfCriteriaRecurrence" checked>
+                                                <label class="form-check-label small" for="mbqfCriteriaRecurrence">Based on recurrence rules</label>
+                                            </div>
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" id="mbqfCriteriaServiceType" checked>
+                                                <label class="form-check-label small" for="mbqfCriteriaServiceType">Based on service type</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Financing Automation</label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="mbqfFinancingAutomation" checked>
+                                                <label class="form-check-label small" for="mbqfFinancingAutomation">
+                                                    Generate invoices automatically based on service and work data
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Automation Schedule</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">End-of-Month Processing</label>
+                                            <select class="form-select" id="mbqfEOMProcessing">
+                                                <option value="last_business_day">Last Business Day</option>
+                                                <option value="last_day">Last Day of Month</option>
+                                                <option value="25th">25th of Month</option>
+                                                <option value="custom">Custom Date</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Mid-Month Processing (15th)</label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="mbqfMidMonthProcessing" checked>
+                                                <label class="form-check-label small" for="mbqfMidMonthProcessing">
+                                                    Process residential recurring invoices on 15th
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Real-time Processing</label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="mbqfRealTimeProcessing" checked>
+                                                <label class="form-check-label small" for="mbqfRealTimeProcessing">
+                                                    Process one-time services immediately
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <hr>
+
+                                        <h6 class="mt-4 mb-3">Notification Settings</h6>
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="mbqfNotifyAdmin" checked>
+                                                <label class="form-check-label small" for="mbqfNotifyAdmin">
+                                                    Notify administrator of automation runs
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="mbqfNotifyErrors" checked>
+                                                <label class="form-check-label small" for="mbqfNotifyErrors">
+                                                    Notify of automation errors immediately
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Automation Log Retention</label>
+                                            <select class="form-select" id="mbqfLogRetention">
+                                                <option value="30">30 days</option>
+                                                <option value="60">60 days</option>
+                                                <option value="90">90 days</option>
+                                                <option value="365">1 year</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deposit Settings Tab -->
+<div class="tab-pane fade" id="mbqf-tab-deposit-content" role="tabpanel">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>Deposit Settings Configuration</h6>
+                </div>
+                <div class="card-body">
+                    <!-- QuickBooks Integration -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0"><i class="fas fa-sync-alt me-2"></i>QuickBooks Deposit Integration</h6>
+                            <button class="btn btn-sm btn-outline-primary" id="mbqfSyncQuickBooks">
+                                <i class="fas fa-sync me-1"></i>Sync Now
+                            </button>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle me-2"></i>QuickBooks Connection</h6>
+                            <p class="small mb-2">Connect to QuickBooks to pull deposit data and sync deposit transactions.</p>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <small>Connection Status:</small>
+                                    <small class="fw-bold text-success" id="mbqfQBStatus">Connected</small>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <small>Last Sync:</small>
+                                    <small class="fw-bold" id="mbqfLastSync">Today, 10:30 AM</small>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-outline-secondary mt-1" id="mbqfConfigureQB">
+                                <i class="fas fa-cog me-1"></i>Configure Connection
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Global Deposit Activation -->
+                    <div class="mb-4">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="mbqfDepositActivation" checked>
+                            <label class="form-check-label fw-bold" for="mbqfDepositActivation">
+                                <i class="fas fa-toggle-on me-2"></i>Activate Deposit Requirements
+                            </label>
+                        </div>
+                        <p class="small text-muted mb-3">
+                            When enabled, clients will see a deposit tab in their dashboard and will be required to make deposits for new services.
+                        </p>
+                    </div>
+                    
+                    <!-- Deposit Rules Table -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" id="mbqfDepositRulesTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th width="20%">Client Type</th>
+                                    <th width="15%">Deposit Required</th>
+                                    <th width="20%">Deposit Amount</th>
+                                    <th width="20%">When to Collect</th>
+                                    <th width="15%">Apply to QuickBooks</th>
+                                    <th width="10%">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Commercial Deposit Rule -->
+                                <tr data-deposit-rule-id="commercial">
+                                    <td>
+                                        <div class="mbqf-client-type">
+                                            <strong>Commercial</strong>
+                                            <div class="small text-muted mt-1">
+                                                <i class="fas fa-building me-1"></i>Business Properties
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-deposit-required-container">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input mbqf-deposit-required" type="checkbox" data-rule-id="commercial" checked>
+                                            </div>
+                                            <div class="mbqf-deposit-status small text-success mt-1">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                Required
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-deposit-amount-container">
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" class="form-control mbqf-deposit-amount" data-rule-id="commercial" value="120" min="0" step="50">
+                                            </div>
+                                            <div class="mbqf-amount-info small text-muted mt-1">
+                                                <i class="fas fa-percentage me-1"></i>
+                                                Or 50% of service
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-deposit-timing-container">
+                                            <select class="form-select form-select-sm mbqf-deposit-timing" data-rule-id="commercial">
+                                                <option value="booking_confirmation" selected>At Booking</option>
+                                                <option value="48_hours_before">48 Hours Before</option>
+                                                <option value="week_before">1 Week Before</option>
+                                                <option value="custom">Custom Timeline</option>
+                                            </select>
+                                            <div class="mbqf-timing-info small text-muted mt-1">
+                                                <i class="fas fa-calendar-check me-1"></i>
+                                                Upon confirmation
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-qb-sync-container">
+                                            <div class="form-check">
+                                                <input class="form-check-input mbqf-qb-sync" type="checkbox" data-rule-id="commercial" checked>
+                                                <label class="form-check-label small fw-bold">Sync to QB</label>
+                                            </div>
+                                            <div class="mbqf-qb-info small text-primary mt-1">
+                                                <i class="fas fa-file-invoice-dollar me-1"></i>
+                                                Auto-create deposit
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button class="btn btn-outline-primary mbqf-edit-deposit-rule" data-rule-id="commercial" title="Edit Rule">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Residential Recurring Deposit Rule -->
+                                <tr data-deposit-rule-id="residential_recurring">
+                                    <td>
+                                        <div class="mbqf-client-type">
+                                            <strong>Residential Recurring</strong>
+                                            <div class="small text-muted mt-1">
+                                                <i class="fas fa-home me-1"></i>Homes & Apartments
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-deposit-required-container">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input mbqf-deposit-required" type="checkbox" data-rule-id="residential_recurring" checked>
+                                            </div>
+                                            <div class="mbqf-deposit-status small text-success mt-1">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                Required
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-deposit-amount-container">
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" class="form-control mbqf-deposit-amount" data-rule-id="residential_recurring" value="120" min="0" step="25">
+                                            </div>
+                                            <div class="mbqf-amount-info small text-muted mt-1">
+                                                <i class="fas fa-percentage me-1"></i>
+                                                Or 25% of service
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-deposit-timing-container">
+                                            <select class="form-select form-select-sm mbqf-deposit-timing" data-rule-id="residential_recurring">
+                                                <option value="booking_confirmation" selected>At Booking</option>
+                                                <option value="48_hours_before">48 Hours Before</option>
+                                                <option value="week_before">1 Week Before</option>
+                                                <option value="custom">Custom Timeline</option>
+                                            </select>
+                                            <div class="mbqf-timing-info small text-muted mt-1">
+                                                <i class="fas fa-calendar-check me-1"></i>
+                                                Upon confirmation
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-qb-sync-container">
+                                            <div class="form-check">
+                                                <input class="form-check-input mbqf-qb-sync" type="checkbox" data-rule-id="residential_recurring" checked>
+                                                <label class="form-check-label small fw-bold">Sync to QB</label>
+                                            </div>
+                                            <div class="mbqf-qb-info small text-primary mt-1">
+                                                <i class="fas fa-file-invoice-dollar me-1"></i>
+                                                Auto-create deposit
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button class="btn btn-outline-primary mbqf-edit-deposit-rule" data-rule-id="residential_recurring" title="Edit Rule">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Residential One-Time Deposit Rule -->
+                                <tr data-deposit-rule-id="residential_onetime">
+                                    <td>
+                                        <div class="mbqf-client-type">
+                                            <strong>Residential One-Time</strong>
+                                            <div class="small text-muted mt-1">
+                                                <i class="fas fa-broom me-1"></i>Single Cleanings
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-deposit-required-container">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input mbqf-deposit-required" type="checkbox" data-rule-id="residential_onetime" checked>
+                                            </div>
+                                            <div class="mbqf-deposit-status small text-success mt-1">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                Required
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-deposit-amount-container">
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" class="form-control mbqf-deposit-amount" data-rule-id="residential_onetime" value="120" min="0" step="25">
+                                            </div>
+                                            <div class="mbqf-amount-info small text-muted mt-1">
+                                                <i class="fas fa-percentage me-1"></i>
+                                                Or 30% of service
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-deposit-timing-container">
+                                            <select class="form-select form-select-sm mbqf-deposit-timing" data-rule-id="residential_onetime">
+                                                <option value="booking_confirmation" selected>At Booking</option>
+                                                <option value="48_hours_before">48 Hours Before</option>
+                                                <option value="week_before">1 Week Before</option>
+                                                <option value="custom">Custom Timeline</option>
+                                            </select>
+                                            <div class="mbqf-timing-info small text-muted mt-1">
+                                                <i class="fas fa-calendar-check me-1"></i>
+                                                Upon confirmation
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-qb-sync-container">
+                                            <div class="form-check">
+                                                <input class="form-check-input mbqf-qb-sync" type="checkbox" data-rule-id="residential_onetime" checked>
+                                                <label class="form-check-label small fw-bold">Sync to QB</label>
+                                            </div>
+                                            <div class="mbqf-qb-info small text-primary mt-1">
+                                                <i class="fas fa-file-invoice-dollar me-1"></i>
+                                                Auto-create deposit
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button class="btn btn-outline-primary mbqf-edit-deposit-rule" data-rule-id="residential_onetime" title="Edit Rule">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Commercial One-Time Deposit Rule -->
+                                <tr data-deposit-rule-id="commercial_onetime">
+                                    <td>
+                                        <div class="mbqf-client-type">
+                                            <strong>Commercial One-Time</strong>
+                                            <div class="small text-muted mt-1">
+                                                <i class="fas fa-briefcase me-1"></i>Single Business Services
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-deposit-required-container">
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input mbqf-deposit-required" type="checkbox" data-rule-id="commercial_onetime" checked>
+                                            </div>
+                                            <div class="mbqf-deposit-status small text-success mt-1">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                Required
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-deposit-amount-container">
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" class="form-control mbqf-deposit-amount" data-rule-id="commercial_onetime" value="120" min="0" step="100">
+                                            </div>
+                                            <div class="mbqf-amount-info small text-muted mt-1">
+                                                <i class="fas fa-percentage me-1"></i>
+                                                Or 50% of service
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-deposit-timing-container">
+                                            <select class="form-select form-select-sm mbqf-deposit-timing" data-rule-id="commercial_onetime">
+                                                <option value="booking_confirmation" selected>At Booking</option>
+                                                <option value="48_hours_before">48 Hours Before</option>
+                                                <option value="week_before">1 Week Before</option>
+                                                <option value="custom">Custom Timeline</option>
+                                            </select>
+                                            <div class="mbqf-timing-info small text-muted mt-1">
+                                                <i class="fas fa-calendar-check me-1"></i>
+                                                Upon confirmation
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="mbqf-qb-sync-container">
+                                            <div class="form-check">
+                                                <input class="form-check-input mbqf-qb-sync" type="checkbox" data-rule-id="commercial_onetime" checked>
+                                                <label class="form-check-label small fw-bold">Sync to QB</label>
+                                            </div>
+                                            <div class="mbqf-qb-info small text-primary mt-1">
+                                                <i class="fas fa-file-invoice-dollar me-1"></i>
+                                                Auto-create deposit
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <button class="btn btn-outline-primary mbqf-edit-deposit-rule" data-rule-id="commercial_onetime" title="Edit Rule">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>Deposit Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-lightbulb me-2"></i>How Deposits Work</h6>
+                        <p class="small mb-2">When deposit requirements are activated:</p>
+                        <ul class="small mb-0">
+                            <li>Clients see a "Deposit" tab in their dashboard</li>
+                            <li>Deposit payment is required before service confirmation</li>
+                            <li>Deposits sync to QuickBooks as separate transactions</li>
+                            <li>Remaining balance is billed according to billing rules</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-exclamation-triangle me-2"></i>QuickBooks Integration</h6>
+                        <p class="small mb-0">Ensure QuickBooks is properly configured to receive deposit transactions. Deposits will appear as separate line items in QuickBooks.</p>
+                    </div>
+                    
+                    <!-- Deposit Stats -->
+                    <div class="card mt-3">
+                        <div class="card-body p-3">
+                            <h6 class="mb-3"><i class="fas fa-chart-line me-2"></i>Deposit Stats</h6>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <small>Active Deposit Rules:</small>
+                                    <small class="fw-bold" id="mbqfActiveDepositRules">4</small>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <small>QuickBooks Sync Active:</small>
+                                    <small class="fw-bold text-success" id="mbqfQBSyncActive">4</small>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <small>Deposit Required:</small>
+                                    <small class="fw-bold text-primary" id="mbqfDepositRequired">4</small>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <small>Avg. Deposit Amount:</small>
+                                    <small class="fw-bold text-info" id="mbqfAvgDeposit">$120</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                    <!-- Documents Tab -->
+                    <div class="tab-pane fade" id="mbqf-tab-documents-content" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h6 class="mb-0"><i class="fas fa-folder me-2"></i>Document Categories</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="list-group list-group-flush" id="mbqfDocumentCategories">
+                                            <a href="#" class="list-group-item list-group-item-action active" data-category="all">
+                                                <i class="fas fa-folder-open me-2"></i>All Documents
+                                            </a>
+                                            <a href="#" class="list-group-item list-group-item-action" data-category="billing_templates">
+                                                <i class="fas fa-file-invoice me-2"></i>Billing Templates
+                                            </a>
+                                            <a href="#" class="list-group-item list-group-item-action" data-category="contracts">
+                                                <i class="fas fa-file-contract me-2"></i>Contracts
+                                            </a>
+                                            <a href="#" class="list-group-item list-group-item-action" data-category="automation_rules">
+                                                <i class="fas fa-robot me-2"></i>Automation Rules
+                                            </a>
+                                            <a href="#" class="list-group-item list-group-item-action" data-category="compliance">
+                                                <i class="fas fa-shield-alt me-2"></i>Compliance Documents
+                                            </a>
+                                            <a href="#" class="list-group-item list-group-item-action" data-category="settings_backup">
+                                                <i class="fas fa-save me-2"></i>Settings Backups
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0"><i class="fas fa-files me-2"></i>Document Library</h6>
+                                        <button class="btn btn-sm btn-primary" id="mbqfUploadDocument">
+                                            <i class="fas fa-upload me-1"></i>Upload
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="mbqfDocumentsTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Document Name</th>
+                                                        <th>Category</th>
+                                                        <th>Type</th>
+                                                        <th>Size</th>
+                                                        <th>Uploaded</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="mbqfDocumentsBody">
+                                                    <!-- Documents will be loaded here -->
+                                                    <tr>
+                                                        <td>Commercial Billing Template</td>
+                                                        <td><span class="badge bg-info">billing_templates</span></td>
+                                                        <td>PDF</td>
+                                                        <td>245 KB</td>
+                                                        <td>2024-01-15</td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-outline-primary">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-success">
+                                                                <i class="fas fa-download"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Residential Recurring Contract</td>
+                                                        <td><span class="badge bg-success">contracts</span></td>
+                                                        <td>DOCX</td>
+                                                        <td>512 KB</td>
+                                                        <td>2024-01-10</td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-outline-primary">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-success">
+                                                                <i class="fas fa-download"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Automation Rules Guide</td>
+                                                        <td><span class="badge bg-warning">automation_rules</span></td>
+                                                        <td>PDF</td>
+                                                        <td>1.2 MB</td>
+                                                        <td>2024-01-05</td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-outline-primary">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-success">
+                                                                <i class="fas fa-download"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="mbqfSaveAllSettings">
+                    <i class="fas fa-save me-2"></i>Save All Settings
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Rule Modal -->
+<div class="modal fade" id="mbqfEditRuleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Billing Rule</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="mbqfEditRuleContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="mbqfSaveRuleChanges">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- Success/Error Messages Toast -->
+            <div class="mbqf-message-toast" id="mbqfMessageToast">
                 <div class="mbqf-toast-content">
                     <span class="mbqf-toast-icon">✓</span>
-                    <span class="mbqf-toast-text" id="toastText">Operation completed successfully!</span>
+                    <span class="mbqf-toast-text" id="mbqfToastText">Operation completed successfully!</span>
                 </div>
             </div>
         </div>
@@ -1605,10 +3184,9 @@ Schedule morning crew for this booking</textarea>
 
     <!-- Link JavaScript -->
     <script src="./assets/js/MB-FinalQuotation.js"></script>
+    <script src="./assets/js/MB-FinalQuotation-Floatingwindow.js"></script>
+    <script src="./assets/js/BillingSettings.js"></script>
 </div>
-<!--**********************************
-    Content body end
-***********************************-->
 
         <!--**********************************
     Footer start

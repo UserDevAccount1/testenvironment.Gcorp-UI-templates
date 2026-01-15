@@ -1224,29 +1224,29 @@
                 <div class="cleaner-header-content">
                     <div class="cleaner-logo">
                         <i class="fas fa-broom"></i>
-                        <h1>CleanFlow Manager</h1>
+                      
                         <span class="cleaner-version">Step 8 - Cleaner Assignment Dashboard</span>
                     </div>
                     <div class="cleaner-header-stats">
                         <div class="cleaner-stat">
                             <i class="fas fa-user-clock"></i>
                             <div>
-                                <span class="cleaner-stat-value" id="pending-count">5</span>
-                                <span class="cleaner-stat-label">Pending Assignments</span>
+                                <span class="cleaner-stat-value cleaner-white-text" id="cleaner-pending-count">5</span>
+                                <span class="cleaner-stat-label cleaner-white-text">Pending Assignments</span>
                             </div>
                         </div>
                         <div class="cleaner-stat">
                             <i class="fas fa-users"></i>
                             <div>
-                                <span class="cleaner-stat-value" id="active-cleaners">12</span>
-                                <span class="cleaner-stat-label">Active Cleaners</span>
+                                <span class="cleaner-stat-value cleaner-white-text" id="cleaner-active-cleaners">12</span>
+                                <span class="cleaner-stat-label cleaner-white-text">Active Cleaners</span>
                             </div>
                         </div>
                         <div class="cleaner-stat">
                             <i class="fas fa-clipboard-check"></i>
                             <div>
-                                <span class="cleaner-stat-value" id="completed-today">8</span>
-                                <span class="cleaner-stat-label">Completed Today</span>
+                                <span class="cleaner-stat-value cleaner-white-text" id="cleaner-completed-today">8</span>
+                                <span class="cleaner-stat-label cleaner-white-text">Completed Today</span>
                             </div>
                         </div>
                     </div>
@@ -1258,8 +1258,8 @@
                 <!-- Filters Section -->
                 <div class="cleaner-filters-section">
                     <div class="cleaner-filter-group">
-                        <label for="status-filter"><i class="fas fa-filter"></i> Status:</label>
-                        <select id="status-filter">
+                        <label for="cleaner-status-filter"><i class="fas fa-filter"></i> Status:</label>
+                        <select id="cleaner-status-filter">
                             <option value="all">All Status</option>
                             <option value="ready">Ready for Scheduling</option>
                             <option value="scheduled">Scheduled</option>
@@ -1268,12 +1268,12 @@
                         </select>
                     </div>
                     <div class="cleaner-filter-group">
-                        <label for="date-filter"><i class="far fa-calendar"></i> Date:</label>
-                        <input type="date" id="date-filter" value="2025-11-10">
+                        <label for="cleaner-date-filter"><i class="far fa-calendar"></i> Date:</label>
+                        <input type="date" id="cleaner-date-filter" value="2025-11-10">
                     </div>
                     <div class="cleaner-filter-group">
-                        <label for="service-filter"><i class="fas fa-concierge-bell"></i> Service:</label>
-                        <select id="service-filter">
+                        <label for="cleaner-service-filter"><i class="fas fa-concierge-bell"></i> Service:</label>
+                        <select id="cleaner-service-filter">
                             <option value="all">All Services</option>
                             <option value="deep">Deep Cleaning</option>
                             <option value="standard">Standard Cleaning</option>
@@ -1281,13 +1281,21 @@
                             <option value="move">Move In/Out</option>
                         </select>
                     </div>
-                    <button class="cleaner-btn cleaner-btn-primary" id="apply-filters">
+                    <div class="cleaner-filter-group">
+                        <label for="cleaner-property-filter"><i class="fas fa-home"></i> Property:</label>
+                        <select id="cleaner-property-filter">
+                            <option value="all">All Properties</option>
+                            <option value="residential">Residential</option>
+                            <option value="commercial">Commercial</option>
+                        </select>
+                    </div>
+                    <button class="cleaner-btn cleaner-btn-primary" id="cleaner-apply-filters">
                         <i class="fas fa-search"></i> Apply Filters
                     </button>
-                    <button class="cleaner-btn cleaner-btn-secondary" id="clear-filters">
+                    <button class="cleaner-btn cleaner-btn-secondary" id="cleaner-clear-filters">
                         <i class="fas fa-redo"></i> Clear
                     </button>
-                    <button class="cleaner-btn cleaner-btn-success" id="export-data">
+                    <button class="cleaner-btn cleaner-btn-success" id="cleaner-export-data">
                         <i class="fas fa-file-export"></i> Export
                     </button>
                 </div>
@@ -1297,31 +1305,45 @@
                     <div class="cleaner-section-header">
                         <h2><i class="fas fa-table"></i> Appointment Management Table</h2>
                         <div class="cleaner-table-info">
-                            <span id="table-count">Showing 5 appointments</span>
-                            <button class="cleaner-btn cleaner-btn-sm cleaner-btn-refresh" id="refresh-table">
+                            <span id="cleaner-table-count">Showing 5 appointments</span>
+                            <button class="cleaner-btn cleaner-btn-sm cleaner-btn-refresh" id="cleaner-refresh-table">
                                 <i class="fas fa-sync-alt"></i> Refresh
                             </button>
                         </div>
                     </div>
                     
                     <div class="cleaner-table-container">
-                        <table class="cleaner-management-table" id="appointment-table">
+                        <table class="cleaner-management-table" id="cleaner-appointment-table">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Client</th>
                                     <th>Date & Time</th>
                                     <th>Service Type</th>
+                                    <th>Property Type</th>
                                     <th>Cleaner Assigned</th>
                                     <th>Status</th>
                                     <th>Equipment</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="cleaner-table-body">
                                 <!-- Data will be populated by JavaScript -->
                             </tbody>
                         </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="cleaner-pagination" id="cleaner-pagination-container">
+                        <button class="cleaner-pagination-btn" id="cleaner-prev-page" disabled>
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        <div class="cleaner-pagination-pages" id="cleaner-pagination-pages">
+                            <!-- Pages will be generated here -->
+                        </div>
+                        <button class="cleaner-pagination-btn" id="cleaner-next-page">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -1335,6 +1357,7 @@
                         <div class="cleaner-card-body">
                             <p><strong>Purpose:</strong> Assign cleaners to confirmed appointments, update status to "Scheduled", and trigger notifications.</p>
                             <p><strong>Visibility:</strong> Only appointments with "Paid" or "Ready for Scheduling" status appear here.</p>
+                            <p><strong>New Features:</strong> Property type classification, equipment photo validation, and chat system.</p>
                         </div>
                     </div>
                     <div class="cleaner-card">
@@ -1349,12 +1372,12 @@
                                     <span>Client & cleaner notifications sent on assignment</span>
                                 </div>
                                 <div class="cleaner-notification">
-                                    <i class="fas fa-tasks"></i>
-                                    <span>Equipment checklist verification required</span>
+                                    <i class="fas fa-camera"></i>
+                                    <span>Equipment photo validation required</span>
                                 </div>
                                 <div class="cleaner-notification">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span>Live location tracking enabled</span>
+                                    <i class="fas fa-comments"></i>
+                                    <span>Chat system available for cleaner communication</span>
                                 </div>
                             </div>
                         </div>
@@ -1363,38 +1386,41 @@
             </div>
 
             <!-- View Details Modal -->
-            <div class="cleaner-modal" id="details-modal">
+            <div class="cleaner-modal" id="cleaner-details-modal">
                 <div class="cleaner-modal-content cleaner-large-modal">
                     <div class="cleaner-modal-header">
                         <h2>
                             <i class="fas fa-eye"></i>
-                            Appointment Details: <span id="modal-appointment-id">APT-CA-2025-010</span>
-                            <span class="cleaner-status-badge" id="modal-status-badge">Ready for Scheduling</span>
+                            Appointment Details: <span id="cleaner-modal-appointment-id">APT-CA-2025-010</span>
+                            <span class="cleaner-status-badge" id="cleaner-modal-status-badge">Ready for Scheduling</span>
                         </h2>
-                        <button class="cleaner-close-modal">&times;</button>
+                        <button class="cleaner-close-modal" id="cleaner-close-modal">&times;</button>
                     </div>
                     
                     <!-- Tab Navigation -->
                     <div class="cleaner-tab-navigation">
-                        <button class="cleaner-tab-btn active" data-tab="appointment">
+                        <button class="cleaner-tab-btn active" data-tab="cleaner-appointment">
                             <i class="fas fa-calendar-alt"></i> Appointment
                         </button>
-                        <button class="cleaner-tab-btn" data-tab="cleaner">
+                        <button class="cleaner-tab-btn" data-tab="cleaner-cleaner">
                             <i class="fas fa-user-check"></i> Cleaner Assignment
                         </button>
-                        <button class="cleaner-tab-btn" data-tab="notes">
+                        <button class="cleaner-tab-btn" data-tab="cleaner-notes">
                             <i class="fas fa-sticky-note"></i> Special Notes
                         </button>
-                        <button class="cleaner-tab-btn" data-tab="cleaner-status">
+                        <button class="cleaner-tab-btn" data-tab="cleaner-cleaner-status">
                             <i class="fas fa-user-circle"></i> Cleaner Status
                         </button>
-                        <button class="cleaner-tab-btn" data-tab="tasks">
+                        <button class="cleaner-tab-btn" data-tab="cleaner-tasks">
                             <i class="fas fa-clipboard-check"></i> Task Completion
                         </button>
-                        <button class="cleaner-tab-btn" data-tab="location">
+                        <button class="cleaner-tab-btn" data-tab="cleaner-chat">
+                            <i class="fas fa-comments"></i> Chat
+                        </button>
+                        <button class="cleaner-tab-btn" data-tab="cleaner-location">
                             <i class="fas fa-map-marker-alt"></i> Live Location
                         </button>
-                        <button class="cleaner-tab-btn" data-tab="equipment">
+                        <button class="cleaner-tab-btn" data-tab="cleaner-equipment">
                             <i class="fas fa-tools"></i> Equipment
                         </button>
                     </div>
@@ -1402,63 +1428,70 @@
                     <!-- Tab Content -->
                     <div class="cleaner-tab-content">
                         <!-- Appointment Tab -->
-                        <div class="cleaner-tab-pane active" id="appointment-tab">
+                        <div class="cleaner-tab-pane active" id="cleaner-appointment-tab">
                             <div class="cleaner-form-grid">
                                 <div class="cleaner-form-group">
                                     <label>Client Name</label>
-                                    <input type="text" id="modal-client-name" value="Sarah Johnson" readonly>
+                                    <input type="text" id="cleaner-modal-client-name" value="Sarah Johnson" readonly>
                                 </div>
                                 <div class="cleaner-form-group">
                                     <label>Service Type</label>
-                                    <input type="text" id="modal-service-type" value="Deep Cleaning" readonly>
+                                    <input type="text" id="cleaner-modal-service-type" value="Deep Cleaning" readonly>
+                                </div>
+                                <div class="cleaner-form-group">
+                                    <label>Property Type</label>
+                                    <select id="cleaner-modal-property-type" disabled>
+                                        <option value="residential">Residential</option>
+                                        <option value="commercial">Commercial</option>
+                                    </select>
                                 </div>
                                 <div class="cleaner-form-group">
                                     <label>Appointment Date</label>
-                                    <input type="text" id="modal-date" value="Nov 10, 2025" readonly>
+                                    <input type="text" id="cleaner-modal-date" value="Nov 10, 2025" readonly>
                                 </div>
                                 <div class="cleaner-form-group">
                                     <label>Appointment Time</label>
-                                    <input type="text" id="modal-time" value="10:00 AM" readonly>
+                                    <input type="text" id="cleaner-modal-time" value="10:00 AM" readonly>
                                 </div>
                                 <div class="cleaner-form-group cleaner-full-width">
                                     <label>Client Address</label>
-                                    <textarea id="modal-address" rows="2" readonly>123 Main Street, Toronto, ON M5V 2T6</textarea>
+                                    <textarea id="cleaner-modal-address" rows="2" readonly>123 Main Street, Toronto, ON M5V 2T6</textarea>
                                 </div>
                                 <div class="cleaner-form-group cleaner-full-width">
                                     <label>Special Instructions</label>
-                                    <textarea id="modal-instructions" rows="3">Please use eco-friendly products. Client has pet allergies. Key in lockbox with code 4521.</textarea>
+                                    <textarea id="cleaner-modal-instructions" rows="3">Please use eco-friendly products. Client has pet allergies. Key in lockbox with code 4521.</textarea>
                                 </div>
                                 <div class="cleaner-form-group">
                                     <label>Estimated Duration</label>
-                                    <input type="text" id="modal-duration" value="3.5 hours" readonly>
+                                    <input type="text" id="cleaner-modal-duration" value="3.5 hours" readonly>
                                 </div>
                                 <div class="cleaner-form-group">
                                     <label>Number of Cleaners</label>
-                                    <input type="text" id="modal-cleaner-count" value="2" readonly>
+                                    <input type="text" id="cleaner-modal-cleaner-count" value="2" readonly>
                                 </div>
                             </div>
                             
                             <div class="cleaner-form-actions">
-                                <button class="cleaner-btn cleaner-btn-secondary" id="edit-appointment">
+                                <button class="cleaner-btn cleaner-btn-secondary" id="cleaner-edit-appointment">
                                     <i class="fas fa-edit"></i> Edit Details
                                 </button>
-                                <button class="cleaner-btn cleaner-btn-success" id="save-appointment" style="display: none;">
+                                <button class="cleaner-btn cleaner-btn-success" id="cleaner-save-appointment" style="display: none;">
                                     <i class="fas fa-save"></i> Save Changes
                                 </button>
                             </div>
                         </div>
                         
                         <!-- Cleaner Assignment Tab -->
-                        <div class="cleaner-tab-pane" id="cleaner-tab">
+                        <div class="cleaner-tab-pane" id="cleaner-cleaner-tab">
                             <div class="cleaner-assignment">
                                 <div class="cleaner-assignment-header">
                                     <h3>Assign Cleaner or Team</h3>
-                                    <span class="cleaner-badge" id="assignment-status">Not Assigned</span>
+                                    <span class="cleaner-badge" id="cleaner-assignment-status">Not Assigned</span>
                                 </div>
                                 
                                 <div class="cleaner-cleaner-selection">
-                                    <label for="cleaner-select">Select Cleaner:</label>
-                                    <select id="cleaner-select">
+                                    <label for="cleaner-cleaner-select">Select Cleaner:</label>
+                                    <select id="cleaner-cleaner-select">
                                         <option value="">-- Select Cleaner --</option>
                                         <option value="john">John Martinez (Rating: 4.8/5)</option>
                                         <option value="emily">Emily Rodriguez (Rating: 4.7/5)</option>
@@ -1467,19 +1500,19 @@
                                         <option value="team-b">Team B (3 Cleaners)</option>
                                     </select>
                                     
-                                    <div class="cleaner-cleaner-details" id="selected-cleaner-details">
+                                    <div class="cleaner-cleaner-details" id="cleaner-selected-cleaner-details">
                                         <!-- Will be populated when cleaner is selected -->
                                     </div>
                                 </div>
                                 
                                 <div class="cleaner-assignment-actions">
-                                    <button class="cleaner-btn cleaner-btn-primary" id="assign-cleaner-btn">
+                                    <button class="cleaner-btn cleaner-btn-primary" id="cleaner-assign-cleaner-btn">
                                         <i class="fas fa-user-check"></i> Assign Cleaner
                                     </button>
-                                    <button class="cleaner-btn cleaner-btn-secondary" id="send-notifications">
+                                    <button class="cleaner-btn cleaner-btn-secondary" id="cleaner-send-notifications">
                                         <i class="fas fa-bell"></i> Send Notifications
                                     </button>
-                                    <button class="cleaner-btn cleaner-btn-warning" id="change-cleaner" style="display: none;">
+                                    <button class="cleaner-btn cleaner-btn-warning" id="cleaner-change-cleaner" style="display: none;">
                                         <i class="fas fa-exchange-alt"></i> Change Cleaner
                                     </button>
                                 </div>
@@ -1487,97 +1520,167 @@
                         </div>
                         
                         <!-- Special Notes Tab -->
-                        <div class="cleaner-tab-pane" id="notes-tab">
-                            <div class="cleaner-notes-management">
-                                <div class="cleaner-notes-header">
-                                    <h3>Special Notes & Requirements</h3>
-                                    <button class="cleaner-btn cleaner-btn-sm cleaner-btn-primary" id="add-note-btn">
-                                        <i class="fas fa-plus"></i> Add Note
-                                    </button>
-                                </div>
-                                
-                                <div class="cleaner-notes-list" id="notes-list">
-                                    <!-- Notes will be populated here -->
-                                </div>
-                                
-                                <div class="cleaner-add-note-form" id="add-note-form" style="display: none;">
-                                    <textarea id="new-note" placeholder="Enter new note or requirement..." rows="3"></textarea>
-                                    <div class="cleaner-note-actions">
-                                        <button class="cleaner-btn cleaner-btn-sm cleaner-btn-success" id="save-note">
-                                            <i class="fas fa-save"></i> Save Note
-                                        </button>
-                                        <button class="cleaner-btn cleaner-btn-sm cleaner-btn-secondary" id="cancel-note">
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+<div class="cleaner-tab-pane" id="cleaner-notes-tab">
+    <div class="cleaner-notes-management">
+        <div class="cleaner-notes-header">
+            <h3>Special Notes & Requirements
+                <span class="cleaner-notes-count" id="cleaner-notes-count">0</span>
+            </h3>
+            <div class="cleaner-notes-controls">
+                <div class="cleaner-search-box">
+                    <input type="text" id="cleaner-notes-search" placeholder="Search notes...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <select id="cleaner-notes-filter">
+                    <option value="all">All Sources</option>
+                    <option value="manager">Manager</option>
+                    <option value="client">Client</option>
+                    <option value="cleaner">Cleaner</option>
+                </select>
+                <button class="cleaner-btn cleaner-btn-sm cleaner-btn-primary" id="cleaner-add-note-btn">
+                    <i class="fas fa-plus"></i> Add Note
+                </button>
+            </div>
+        </div>
+        
+        <!-- Sample Media Files Info -->
+        <div class="cleaner-sample-media-info" style="background: #f0f9ff; padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 1rem; font-size: 0.875rem;">
+            <strong><i class="fas fa-info-circle"></i> Sample Media Files Available:</strong>
+            <div class="cleaner-sample-media-grid" style="margin-top: 0.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-image" style="color: #92400e;"></i>
+                    <span>sample-image.jpg</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-video" style="color: #9d174d;"></i>
+                    <span>sample-video.mp4</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-volume-up" style="color: #0c4a6e;"></i>
+                    <span>sample-audio.mp3</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cleaner-notes-table-container">
+            <table class="cleaner-notes-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Notes</th>
+                        <th>Media Type</th>
+                        <th>Added By</th>
+                        <th>Date</th>
+                        <th>Convert to Task</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="cleaner-notes-table-body">
+                    <!-- Notes will be populated here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="cleaner-add-note-form" id="cleaner-add-note-form" style="display: none;">
+            <div class="cleaner-form-grid">
+                <div class="cleaner-form-group cleaner-full-width">
+                    <label>Note Content</label>
+                    <textarea id="cleaner-new-note" placeholder="Enter note or requirement..." rows="3"></textarea>
+                </div>
+                <div class="cleaner-form-group">
+                    <label>Media Type</label>
+                    <select id="cleaner-note-media-type">
+                        <option value="text">Text Only</option>
+                        <option value="image">Image</option>
+                        <option value="audio">Audio</option>
+                        <option value="video">Video</option>
+                    </select>
+                </div>
+                <div class="cleaner-form-group">
+                    <label>Upload Media File</label>
+                    <input type="text" id="cleaner-media-file" placeholder="Enter filename (e.g., sample-image.jpg)" value="sample-image.jpg">
+                    <small style="color: var(--text-light); font-size: 0.75rem;">Use sample files: sample-image.jpg, sample-video.mp4, sample-audio.mp3</small>
+                </div>
+                <div class="cleaner-form-group">
+                    <label>Added By</label>
+                    <select id="cleaner-note-added-by">
+                        <option value="manager">Manager</option>
+                        <option value="client">Client</option>
+                        <option value="cleaner">Cleaner</option>
+                    </select>
+                </div>
+                <div class="cleaner-form-group">
+                    <label>Convert to Task?</label>
+                    <label class="cleaner-switch">
+                        <input type="checkbox" id="cleaner-convert-to-task">
+                        <span class="cleaner-slider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="cleaner-note-actions">
+                <button class="cleaner-btn cleaner-btn-sm cleaner-btn-success" id="cleaner-save-note">
+                    <i class="fas fa-save"></i> Save Note
+                </button>
+                <button class="cleaner-btn cleaner-btn-sm cleaner-btn-secondary" id="cleaner-cancel-note">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
                         
                         <!-- Cleaner Status Tab -->
-                        <div class="cleaner-tab-pane" id="cleaner-status-tab">
+                        <div class="cleaner-tab-pane" id="cleaner-cleaner-status-tab">
                             <div class="cleaner-status-container">
                                 <div class="cleaner-cleaner-info-card">
                                     <div class="cleaner-cleaner-avatar">
                                         <i class="fas fa-user-circle"></i>
                                     </div>
                                     <div class="cleaner-cleaner-details">
-                                        <h3 id="cleaner-name">Not Assigned</h3>
+                                        <h3 id="cleaner-cleaner-name">Not Assigned</h3>
                                         <div class="cleaner-cleaner-stats">
                                             <div class="cleaner-stat-item">
                                                 <span class="cleaner-stat-label">Rating</span>
-                                                <span class="cleaner-stat-value" id="cleaner-rating">-</span>
+                                                <span class="cleaner-stat-value" id="cleaner-cleaner-rating">-</span>
                                             </div>
                                             <div class="cleaner-stat-item">
                                                 <span class="cleaner-stat-label">On-time Rate</span>
-                                                <span class="cleaner-stat-value" id="cleaner-on-time">-</span>
+                                                <span class="cleaner-stat-value" id="cleaner-cleaner-on-time">-</span>
                                             </div>
                                             <div class="cleaner-stat-item">
                                                 <span class="cleaner-stat-label">Tasks Completed</span>
-                                                <span class="cleaner-stat-value" id="cleaner-tasks">-</span>
+                                                <span class="cleaner-stat-value" id="cleaner-cleaner-tasks">-</span>
                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="cleaner-current-status">
+                                        <div class="cleaner-status-indicator">
+                                            <div class="cleaner-status-dot" id="cleaner-cleaner-status-dot"></div>
+                                            <span id="cleaner-cleaner-current-status-text">Offline</span>
                                         </div>
                                     </div>
                                 </div>
                                 
                                 <div class="cleaner-status-timeline">
                                     <h4>Status Timeline</h4>
-                                    <div class="cleaner-timeline">
-                                        <div class="cleaner-timeline-item">
-                                            <div class="cleaner-timeline-marker"></div>
-                                            <div class="cleaner-timeline-content">
-                                                <span class="cleaner-timeline-time">10:30 AM</span>
-                                                <span class="cleaner-timeline-event">Appointment assigned</span>
-                                            </div>
-                                        </div>
-                                        <div class="cleaner-timeline-item">
-                                            <div class="cleaner-timeline-marker"></div>
-                                            <div class="cleaner-timeline-content">
-                                                <span class="cleaner-timeline-time">11:00 AM</span>
-                                                <span class="cleaner-timeline-event">Cleaner accepted appointment</span>
-                                            </div>
-                                        </div>
-                                        <div class="cleaner-timeline-item">
-                                            <div class="cleaner-timeline-marker cleaner-pending"></div>
-                                            <div class="cleaner-timeline-content">
-                                                <span class="cleaner-timeline-time">Pending</span>
-                                                <span class="cleaner-timeline-event">Traveling to location</span>
-                                            </div>
-                                        </div>
-                                        <div class="cleaner-timeline-item">
-                                            <div class="cleaner-timeline-marker cleaner-pending"></div>
-                                            <div class="cleaner-timeline-content">
-                                                <span class="cleaner-timeline-time">Pending</span>
-                                                <span class="cleaner-timeline-event">Service started</span>
-                                            </div>
-                                        </div>
+                                    <div class="cleaner-timeline" id="cleaner-status-timeline">
+                                        <!-- Timeline items will be populated here -->
                                     </div>
+                                </div>
+                                
+                                <div class="cleaner-status-actions">
+                                    <button class="cleaner-btn cleaner-btn-primary" id="cleaner-update-cleaner-status">
+                                        <i class="fas fa-sync-alt"></i> Update Status
+                                    </button>
+                                    <button class="cleaner-btn cleaner-btn-secondary" id="cleaner-send-status-reminder">
+                                        <i class="fas fa-bell"></i> Send Reminder
+                                    </button>
                                 </div>
                             </div>
                         </div>
                         
                         <!-- Task Completion Tab -->
-                        <div class="cleaner-tab-pane" id="tasks-tab">
+                        <div class="cleaner-tab-pane" id="cleaner-tasks-tab">
                             <div class="cleaner-task-management">
                                 <div class="cleaner-task-header">
                                     <h3>Task Completion Progress</h3>
@@ -1589,110 +1692,185 @@
                                     </div>
                                 </div>
                                 
-                                <div class="cleaner-task-categories">
-                                    <div class="cleaner-category">
-                                        <h4><i class="fas fa-bed"></i> Bedroom Tasks</h4>
-                                        <div class="cleaner-task-list">
-                                            <div class="cleaner-task-item cleaner-completed">
-                                                <input type="checkbox" checked disabled>
-                                                <label>Change bed sheets</label>
-                                                <span class="cleaner-task-status">Completed</span>
-                                            </div>
-                                            <div class="cleaner-task-item cleaner-completed">
-                                                <input type="checkbox" checked disabled>
-                                                <label>Wipe all surfaces</label>
-                                                <span class="cleaner-task-status">Completed</span>
-                                            </div>
-                                            <div class="cleaner-task-item">
-                                                <input type="checkbox" disabled>
-                                                <label>Vacuum carpet</label>
-                                                <span class="cleaner-task-status">Pending</span>
-                                            </div>
-                                        </div>
+                                <div class="cleaner-task-categories" id="cleaner-task-categories-container">
+                                    <!-- Task categories will be populated here -->
+                                </div>
+                                
+                                <div class="cleaner-task-validation">
+                                    <h4>Task Validation</h4>
+                                    <div class="cleaner-validation-list" id="cleaner-validation-list">
+                                        <!-- Validation items will be populated here -->
                                     </div>
-                                    
-                                    <div class="cleaner-category">
-                                        <h4><i class="fas fa-utensils"></i> Kitchen Tasks</h4>
-                                        <div class="cleaner-task-list">
-                                            <div class="cleaner-task-item cleaner-completed">
-                                                <input type="checkbox" checked disabled>
-                                                <label>Degrease stove</label>
-                                                <span class="cleaner-task-status">Completed</span>
-                                            </div>
-                                            <div class="cleaner-task-item">
-                                                <input type="checkbox" disabled>
-                                                <label>Clean countertops</label>
-                                                <span class="cleaner-task-status">In Progress</span>
-                                            </div>
-                                            <div class="cleaner-task-item">
-                                                <input type="checkbox" disabled>
-                                                <label>Spot clean cabinets</label>
-                                                <span class="cleaner-task-status">Pending</span>
-                                            </div>
-                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Tab -->
+                        <div class="cleaner-tab-pane" id="cleaner-chat-tab">
+                            <div class="cleaner-chat-container">
+                                <div class="cleaner-chat-header">
+                                    <h3>Chat with Cleaner</h3>
+                                    <div class="cleaner-chat-status">
+                                        <span id="cleaner-chat-partner">John Martinez</span>
+                                        <span class="cleaner-status-dot active"></span>
+                                        <span>Online</span>
                                     </div>
+                                </div>
+                                
+                                <div class="cleaner-chat-messages" id="cleaner-chat-messages">
+                                    <!-- Chat messages will be populated here -->
+                                </div>
+                                
+                                <div class="cleaner-chat-input">
+                                    <input type="text" id="cleaner-chat-input" placeholder="Type your message...">
+                                    <button class="cleaner-btn cleaner-btn-primary" id="cleaner-send-chat">
+                                        <i class="fas fa-paper-plane"></i> Send
+                                    </button>
                                 </div>
                             </div>
                         </div>
                         
                         <!-- Live Location Tab -->
-                        <div class="cleaner-tab-pane" id="location-tab">
-                            <div class="cleaner-location-tracking">
-                                <div class="cleaner-location-header">
-                                    <h3>Live Location Tracking</h3>
-                                    <div class="cleaner-location-status">
-                                        <i class="fas fa-circle cleaner-status-active"></i>
-                                        <span>Live Tracking Active</span>
+                        <div class="cleaner-tab-pane" id="cleaner-location-tab">
+                            <div class="gcorp-floating-pane active">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="gcorp-card" style="margin-bottom: 1rem; border: 2px solid #06b6d4;">
+                                            <div class="gcorp-card-header">
+                                                <h5><i class="fas fa-satellite"></i> Live Geofence Monitoring System</h5>
+                                                <div class="auto-detection-status auto-detection-active">
+                                                    <i class="fas fa-radar"></i>
+                                                    <span>Auto-Detection: <strong>ACTIVE</strong> (Updates every 30s)</span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="distance-indicator">
+                                                        <div class="distance-value" id="cleaner-floatingDistanceValue">-- m</div>
+                                                        <div class="distance-label">Distance to Job Location</div>
+                                                        <div style="font-size: 0.75rem; color: #6b7280; margin-top: 0.5rem;">
+                                                            <i class="fas fa-sync-alt"></i> Last update: <span id="cleaner-floatingLastUpdate">--:--</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="geofence-status" id="cleaner-floatingGeofenceStatus">
+                                                        <i class="fas fa-circle" style="color: #ef4444;"></i>
+                                                        <span>Status: OUTSIDE geofence</span>
+                                                    </div>
+                                                    <div style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem;">
+                                                        <i class="fas fa-info-circle"></i> Service Start: 
+                                                        <span id="cleaner-floatingServiceLockStatus" style="color: #ef4444; font-weight: 600;">LOCKED</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Geofence Visualization -->
+                                            <div style="text-align: center; margin: 1.5rem 0;">
+                                                <div style="font-weight: 600; margin-bottom: 1rem;">Cleaner Position Relative to Job Location</div>
+                                                <div class="geofence-visual">
+                                                    <div class="geofence-circle geofence-circle-30m"></div>
+                                                    <div class="geofence-circle geofence-circle-15m"></div>
+                                                    <div class="cleaner-dot" id="cleaner-floatingCleanerDot" style="top: 180px; left: 180px;"></div>
+                                                </div>
+                                                <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 2rem;">
+                                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                                        <div style="width: 12px; height: 12px; border-radius: 50%; border: 2px dashed #06b6d4;"></div>
+                                                        <span style="font-size: 0.875rem;">30m Detection Zone</span>
+                                                    </div>
+                                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                                        <div style="width: 12px; height: 12px; border-radius: 50%; border: 2px dashed #10b981;"></div>
+                                                        <span style="font-size: 0.875rem;">15m Service Zone</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="gcorp-info-grid">
+                                                        <div class="gcorp-info-item">
+                                                            <span class="gcorp-info-label">Zone Status:</span>
+                                                            <span class="gcorp-info-value" id="cleaner-floatingZoneStatus">Outside</span>
+                                                        </div>
+                                                        <div class="gcorp-info-item">
+                                                            <span class="gcorp-info-label">Auto-Detected Arrival:</span>
+                                                            <span class="gcorp-info-value" id="cleaner-floatingAutoArrivalTime">--:--</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <button class="gcorp-btn gcorp-btn-primary" id="cleaner-forceArrivalBtn" style="width: 100%; margin-top: 1rem;">
+                                                        <i class="fas fa-check-circle"></i> Mark as Arrived
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                
-                                <div class="cleaner-map-container">
-                                    <div class="cleaner-map-placeholder">
-                                        <i class="fas fa-map-marked-alt"></i>
-                                        <h4>Interactive Map View</h4>
-                                        <p>Real-time location tracking of assigned cleaner</p>
+                                    <div class="col-md-4">
+                                        <div class="gcorp-card">
+                                            <h5><i class="fas fa-info-circle"></i> Geofence Details</h5>
+                                            <div class="gcorp-info-grid">
+                                                <div class="gcorp-info-item">
+                                                    <span class="gcorp-info-label">Current Job:</span>
+                                                    <span class="gcorp-info-value" id="cleaner-floatingCurrentJob">Johnson Residence</span>
+                                                </div>
+                                                <div class="gcorp-info-item">
+                                                    <span class="gcorp-info-label">Job Address:</span>
+                                                    <span class="gcorp-info-value" id="cleaner-floatingJobAddress">123 Main St, NYC</span>
+                                                </div>
+                                                <div class="gcorp-info-item">
+                                                    <span class="gcorp-info-label">Assigned Time:</span>
+                                                    <span class="gcorp-info-value" id="cleaner-floatingJobTime">9:00 AM - 12:00 PM</span>
+                                                </div>
+                                                <div class="gcorp-info-item">
+                                                    <span class="gcorp-info-label">Property Type:</span>
+                                                    <span class="gcorp-info-value" id="cleaner-floatingPropertyType">Residential</span>
+                                                </div>
+                                                <div class="gcorp-info-item">
+                                                    <span class="gcorp-info-label">Estimation:</span>
+                                                    <span class="gcorp-info-value" id="cleaner-floatingEstimation">$1,250.00</span>
+                                                </div>
+                                                <div class="gcorp-info-item">
+                                                    <span class="gcorp-info-label">Geofence Type:</span>
+                                                    <span class="gcorp-info-value">Dual-radius (15m/30m)</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                         
-                                        <div class="cleaner-location-details">
-                                            <div class="cleaner-detail-row">
-                                                <span class="cleaner-detail-label">Current Location:</span>
-                                                <span class="cleaner-detail-value" id="current-location">Traveling to appointment</span>
-                                            </div>
-                                            <div class="cleaner-detail-row">
-                                                <span class="cleaner-detail-label">Distance to Destination:</span>
-                                                <span class="cleaner-detail-value" id="distance">2.3 km</span>
-                                            </div>
-                                            <div class="cleaner-detail-row">
-                                                <span class="cleaner-detail-label">ETA:</span>
-                                                <span class="cleaner-detail-value" id="eta">15 minutes</span>
-                                            </div>
-                                            <div class="cleaner-detail-row">
-                                                <span class="cleaner-detail-label">Last Updated:</span>
-                                                <span class="cleaner-detail-value" id="last-updated">5 minutes ago</span>
+                                        <div class="gcorp-card" style="margin-top: 1rem;">
+                                            <h5><i class="fas fa-bell"></i> Recent Alerts</h5>
+                                            <div id="cleaner-floatingGeofenceAlerts" style="max-height: 150px; overflow-y: auto;">
+                                                <div style="padding: 0.5rem; background: #fee2e2; border-radius: 0.5rem; margin-bottom: 0.5rem; font-size: 0.875rem;">
+                                                    <strong>🚨 Outside Geofence</strong><br>
+                                                    45m from assigned job location
+                                                </div>
+                                                <div style="padding: 0.5rem; background: #fef3c7; border-radius: 0.5rem; margin-bottom: 0.5rem; font-size: 0.875rem;">
+                                                    <strong>⚠️ Service Start Blocked</strong><br>
+                                                    Too far to start service
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                
-                                <div class="cleaner-location-actions">
-                                    <button class="cleaner-btn cleaner-btn-primary">
-                                        <i class="fas fa-sync-alt"></i> Refresh Location
-                                    </button>
-                                    <button class="cleaner-btn cleaner-btn-secondary">
-                                        <i class="fas fa-directions"></i> Get Directions
-                                    </button>
-                                    <button class="cleaner-btn cleaner-btn-warning">
-                                        <i class="fas fa-phone"></i> Call Cleaner
-                                    </button>
-                                </div>
+                            </div>
+                            <div class="cleaner-location-actions">
+                                <button class="cleaner-btn cleaner-btn-primary" id="cleaner-refresh-location">
+                                    <i class="fas fa-sync-alt"></i> Refresh Location
+                                </button>
+                                <a href="../GEOFENCING FEATURE/ManageStaff.html" class="cleaner-btn cleaner-btn-secondary" id="cleaner-view-more-details">
+  <i class="fas fa-external-link-alt"></i> View More Details
+</a>
+
                             </div>
                         </div>
                         
                         <!-- Equipment Tab -->
-                        <div class="cleaner-tab-pane" id="equipment-tab">
+                        <div class="cleaner-tab-pane" id="cleaner-equipment-tab">
                             <div class="cleaner-equipment-management">
                                 <div class="cleaner-equipment-header">
-                                    <h3>Equipment Management</h3>
-                                    <button class="cleaner-btn cleaner-btn-primary" id="add-equipment-btn">
+                                    <h3>Equipment Management & Validation</h3>
+                                    <button class="cleaner-btn cleaner-btn-primary" id="cleaner-add-equipment-btn">
                                         <i class="fas fa-plus"></i> Add Equipment
                                     </button>
                                 </div>
@@ -1705,29 +1883,31 @@
                                                 <th>Name</th>
                                                 <th>Type</th>
                                                 <th>Status</th>
+                                                <th>Photo</th>
                                                 <th>Checked By</th>
                                                 <th>Check Time</th>
                                                 <th>Last Maintenance</th>
+                                                <th>Manager Comment</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="equipment-table-body">
+                                        <tbody id="cleaner-equipment-table-body">
                                             <!-- Equipment data will be populated here -->
                                         </tbody>
                                     </table>
                                 </div>
                                 
                                 <!-- Add Equipment Form -->
-                                <div class="cleaner-add-equipment-form" id="add-equipment-form" style="display: none;">
+                                <div class="cleaner-add-equipment-form" id="cleaner-add-equipment-form" style="display: none;">
                                     <h4>Add New Equipment</h4>
                                     <div class="cleaner-form-grid">
                                         <div class="cleaner-form-group">
                                             <label>Equipment Name</label>
-                                            <input type="text" id="equipment-name" placeholder="e.g., Steam Cleaning Machine">
+                                            <input type="text" id="cleaner-equipment-name" placeholder="e.g., Steam Cleaning Machine">
                                         </div>
                                         <div class="cleaner-form-group">
                                             <label>Type</label>
-                                            <select id="equipment-type">
+                                            <select id="cleaner-equipment-type">
                                                 <option value="steam">Steam Cleaning</option>
                                                 <option value="vacuum">Vacuum</option>
                                                 <option value="chemical">Chemical/Supplies</option>
@@ -1737,23 +1917,27 @@
                                         </div>
                                         <div class="cleaner-form-group">
                                             <label>Status</label>
-                                            <select id="equipment-status">
+                                            <select id="cleaner-equipment-status">
                                                 <option value="available">Available</option>
                                                 <option value="in-use">In Use</option>
                                                 <option value="maintenance">Maintenance</option>
                                                 <option value="unavailable">Unavailable</option>
                                             </select>
                                         </div>
+                                        <div class="cleaner-form-group">
+                                            <label>Upload Photo</label>
+                                            <input type="file" id="cleaner-equipment-photo" accept="image/*" style="padding: 0.5rem;">
+                                        </div>
                                         <div class="cleaner-form-group cleaner-full-width">
-                                            <label>Notes</label>
-                                            <textarea id="equipment-notes" rows="2" placeholder="Any special notes or instructions"></textarea>
+                                            <label>Initial Comment</label>
+                                            <textarea id="cleaner-equipment-notes" rows="2" placeholder="Any special notes or instructions"></textarea>
                                         </div>
                                     </div>
                                     <div class="cleaner-form-actions">
-                                        <button class="cleaner-btn cleaner-btn-success" id="save-equipment">
+                                        <button class="cleaner-btn cleaner-btn-success" id="cleaner-save-equipment">
                                             <i class="fas fa-save"></i> Save Equipment
                                         </button>
-                                        <button class="cleaner-btn cleaner-btn-secondary" id="cancel-equipment">
+                                        <button class="cleaner-btn cleaner-btn-secondary" id="cleaner-cancel-equipment">
                                             Cancel
                                         </button>
                                     </div>
@@ -1763,10 +1947,10 @@
                     </div>
                     
                     <div class="cleaner-modal-footer">
-                        <button class="cleaner-btn cleaner-btn-secondary" id="close-details">
-                            <i class="fas fa-times"></i> Close
+                        <button class="cleaner-btn cleaner-btn-primary" id="cleaner-message-cleaner">
+                            <i class="fas fa-comments"></i> Message Cleaner
                         </button>
-                        <button class="cleaner-btn cleaner-btn-primary" id="save-all-changes">
+                        <button class="cleaner-btn cleaner-btn-success" id="cleaner-save-all-changes">
                             <i class="fas fa-save"></i> Save All Changes
                         </button>
                     </div>
@@ -1774,44 +1958,44 @@
             </div>
 
             <!-- Equipment View Modal (Separate modal for table view) -->
-            <div class="cleaner-modal" id="equipment-view-modal">
+            <div class="cleaner-modal" id="cleaner-equipment-view-modal">
                 <div class="cleaner-modal-content cleaner-large-modal">
                     <div class="cleaner-modal-header">
                         <h2>
                             <i class="fas fa-tools"></i>
-                            Equipment Details: <span id="equipment-modal-appointment-id">APT-CA-2025-010</span>
+                            Equipment Details: <span id="cleaner-equipment-modal-appointment-id">APT-CA-2025-010</span>
                         </h2>
-                        <button class="cleaner-close-equipment-modal">&times;</button>
+                        <button class="cleaner-close-equipment-modal" id="cleaner-close-equipment-modal">&times;</button>
                     </div>
                     
                     <div class="cleaner-modal-body">
                         <div class="cleaner-equipment-summary">
                             <div class="cleaner-summary-item">
                                 <span class="cleaner-summary-label">Total Equipment</span>
-                                <span class="cleaner-summary-value" id="equipment-total">0</span>
+                                <span class="cleaner-summary-value" id="cleaner-equipment-total">0</span>
                             </div>
                             <div class="cleaner-summary-item">
                                 <span class="cleaner-summary-label">Available</span>
-                                <span class="cleaner-summary-value cleaner-available" id="equipment-available">0</span>
+                                <span class="cleaner-summary-value cleaner-available" id="cleaner-equipment-available">0</span>
                             </div>
                             <div class="cleaner-summary-item">
                                 <span class="cleaner-summary-label">In Use</span>
-                                <span class="cleaner-summary-value cleaner-in-use" id="equipment-in-use">0</span>
+                                <span class="cleaner-summary-value cleaner-in-use" id="cleaner-equipment-in-use">0</span>
                             </div>
                             <div class="cleaner-summary-item">
                                 <span class="cleaner-summary-label">Maintenance</span>
-                                <span class="cleaner-summary-value cleaner-maintenance" id="equipment-maintenance">0</span>
+                                <span class="cleaner-summary-value cleaner-maintenance" id="cleaner-equipment-maintenance">0</span>
                             </div>
                         </div>
                         
                         <div class="cleaner-equipment-controls">
-                            <button class="cleaner-btn cleaner-btn-primary" id="equipment-quick-add">
+                            <button class="cleaner-btn cleaner-btn-primary" id="cleaner-equipment-quick-add">
                                 <i class="fas fa-plus"></i> Quick Add
                             </button>
-                            <button class="cleaner-btn cleaner-btn-secondary" id="equipment-check-all">
+                            <button class="cleaner-btn cleaner-btn-secondary" id="cleaner-equipment-check-all">
                                 <i class="fas fa-check-double"></i> Check All
                             </button>
-                            <button class="cleaner-btn cleaner-btn-success" id="equipment-print-report">
+                            <button class="cleaner-btn cleaner-btn-success" id="cleaner-equipment-print-report">
                                 <i class="fas fa-print"></i> Print Report
                             </button>
                         </div>
@@ -1824,14 +2008,16 @@
                                         <th>Name</th>
                                         <th>Type</th>
                                         <th>Status</th>
+                                        <th>Photo</th>
                                         <th>Assigned To</th>
                                         <th>Checked By</th>
                                         <th>Check Time</th>
-                                        <th>Last Maintenance</th>
+                                        <th>Photo Approved</th>
+                                        <th>Manager Comment</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="equipment-view-list">
+                                <tbody id="cleaner-equipment-view-list">
                                     <!-- Equipment items will be populated here -->
                                 </tbody>
                             </table>
@@ -1839,29 +2025,62 @@
                     </div>
                     
                     <div class="cleaner-modal-footer">
-                        <button class="cleaner-btn cleaner-btn-secondary" id="equipment-close">
+                        <button class="cleaner-btn cleaner-btn-secondary" id="cleaner-equipment-close">
                             Close
                         </button>
-                        <button class="cleaner-btn cleaner-btn-primary" id="equipment-save-changes">
+                        <button class="cleaner-btn cleaner-btn-primary" id="cleaner-equipment-save-changes">
                             <i class="fas fa-save"></i> Save Equipment Status
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Add loading state indicator -->
-<div id="cleaner-loading" style="display: none;">
-    <div class="cleaner-spinner"></div>
-</div>
+            <!-- Photo View Modal -->
+            <div class="cleaner-modal" id="cleaner-photo-modal">
+                <div class="cleaner-modal-content">
+                    <div class="cleaner-modal-header">
+                        <h2>
+                            <i class="fas fa-camera"></i>
+                            Equipment Photo: <span id="cleaner-photo-equipment-name">Steam Cleaning Machine</span>
+                        </h2>
+                        <button class="cleaner-close-photo-modal" id="cleaner-close-photo-modal">&times;</button>
+                    </div>
+                    <div class="cleaner-modal-body">
+                        <div class="cleaner-photo-container">
+                            <img id="cleaner-photo-display" src="" alt="Equipment Photo" style="width: 100%; max-height: 400px; object-fit: contain;">
+                        </div>
+                        <div class="cleaner-photo-actions">
+                            <button class="cleaner-btn cleaner-btn-success" id="cleaner-approve-photo">
+                                <i class="fas fa-check"></i> Approve Photo
+                            </button>
+                            <button class="cleaner-btn cleaner-btn-danger" id="cleaner-reject-photo">
+                                <i class="fas fa-times"></i> Reject Photo
+                            </button>
+                        </div>
+                        <div class="cleaner-comment-section">
+                            <label>Add Comment:</label>
+                            <textarea id="cleaner-photo-comment" rows="3" placeholder="Add your comment about this photo..."></textarea>
+                            <button class="cleaner-btn cleaner-btn-primary" id="cleaner-save-photo-comment">
+                                <i class="fas fa-save"></i> Save Comment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-<!-- Add empty state template -->
-<div id="cleaner-empty-state" style="display: none;">
-    <div class="cleaner-empty-state">
-        <i class="fas fa-inbox"></i>
-        <h3>No appointments found</h3>
-        <p>Try adjusting your filters or check back later</p>
-    </div>
-</div>
+            <!-- Add loading state indicator -->
+            <div id="cleaner-loading" style="display: none;">
+                <div class="cleaner-spinner"></div>
+            </div>
+
+            <!-- Add empty state template -->
+            <div id="cleaner-empty-state" style="display: none;">
+                <div class="cleaner-empty-state">
+                    <i class="fas fa-inbox"></i>
+                    <h3>No appointments found</h3>
+                    <p>Try adjusting your filters or check back later</p>
+                </div>
+            </div>
             
             <!-- Add JavaScript at the end -->
             <script src="./assets/js/MB-Cleaner.js"></script>

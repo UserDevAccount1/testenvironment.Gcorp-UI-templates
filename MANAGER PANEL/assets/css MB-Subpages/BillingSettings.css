@@ -1,0 +1,571 @@
+/* Billing Settings Specific Styles */
+.mbqf-settings-container {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.mbqf-rule-desc {
+    font-size: 0.85rem;
+    color: #666;
+    max-width: 250px;
+}
+
+.mbqf-chart-container {
+    position: relative;
+}
+
+/* Smart Settings Highlight */
+tr[data-rule-id] .mbqf-smart-settings:checked + label {
+    color: #198754;
+    font-weight: 500;
+}
+
+/* Rule Row Highlighting */
+tr[data-rule-id]:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s;
+}
+
+/* Tab Customization */
+#mbqfBillingTabs .nav-link {
+    color: #495057;
+    font-weight: 500;
+    border: none;
+    padding: 0.75rem 1.25rem;
+}
+
+#mbqfBillingTabs .nav-link.active {
+    color: #0d6efd;
+    border-bottom: 3px solid #0d6efd;
+    background-color: transparent;
+}
+
+/* Card Styling */
+.card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 1rem;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0.75rem 1rem;
+}
+
+/* Form Control Styling */
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: #0d6efd;
+}
+
+/* Table Styling */
+.table-hover tbody tr:hover {
+    background-color: #f5f9ff;
+}
+
+.table thead th {
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+}
+
+/* Badge Customization */
+.badge {
+    font-size: 0.75em;
+    font-weight: 500;
+}
+
+/* Modal Customization */
+.modal-xl .modal-content {
+    border-radius: 10px;
+}
+
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+/* Button Styling */
+.btn-outline-primary {
+    border-color: #0d6efd;
+    color: #0d6efd;
+}
+
+.btn-outline-primary:hover {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Alert Styling */
+.alert {
+    border-radius: 6px;
+    border: none;
+}
+
+.alert-info {
+    background-color: #e7f1ff;
+    color: #084298;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #664d03;
+}
+
+/* List Group Customization */
+.list-group-item {
+    border: none;
+    padding: 0.75rem 1rem;
+}
+
+.list-group-item.active {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Status Indicators */
+.status-active {
+    color: #198754;
+    font-weight: 500;
+}
+
+.status-inactive {
+    color: #6c757d;
+}
+
+/* Custom Scrollbar */
+.mbqf-settings-container ::-webkit-scrollbar {
+    width: 6px;
+}
+
+.mbqf-settings-container ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.mbqf-settings-container ::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.mbqf-settings-container ::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Animation for tab switching */
+.tab-pane {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .modal-xl {
+        margin: 0.5rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+}
+
+/* Filter Section */
+.mbqf-filter-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Export Button */
+#mbqfExportOverview {
+    transition: all 0.3s ease;
+}
+
+#mbqfExportOverview:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Document Preview */
+.document-preview {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+}
+
+/* Tooltip Enhancement */
+[data-bs-toggle="tooltip"] {
+    cursor: help;
+}
+
+/* Loading State */
+.mbqf-loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* ==================== BILLING RULES TABLE ==================== */
+
+/* Fix table layout */
+#mbqfBillingRulesTable {
+    table-layout: auto;
+    width: 100%;
+}
+
+/* Set column widths */
+#mbqfBillingRulesTable th:nth-child(1),
+#mbqfBillingRulesTable td:nth-child(1) {
+    width: 15%;
+    min-width: 120px;
+}
+
+#mbqfBillingRulesTable th:nth-child(2),
+#mbqfBillingRulesTable td:nth-child(2) {
+    width: 25%;
+    min-width: 300px;
+}
+
+#mbqfBillingRulesTable th:nth-child(3),
+#mbqfBillingRulesTable td:nth-child(3) {
+    width: 15%;
+    min-width: 140px;
+}
+
+#mbqfBillingRulesTable th:nth-child(4),
+#mbqfBillingRulesTable td:nth-child(4) {
+    width: 15%;
+    min-width: 140px;
+}
+
+#mbqfBillingRulesTable th:nth-child(5),
+#mbqfBillingRulesTable td:nth-child(5) {
+    width: 10%;
+    min-width: 100px;
+}
+
+#mbqfBillingRulesTable th:nth-child(6),
+#mbqfBillingRulesTable td:nth-child(6) {
+    width: 10%;
+    min-width: 100px;
+}
+
+#mbqfBillingRulesTable th:nth-child(7),
+#mbqfBillingRulesTable td:nth-child(7) {
+    width: 10%;
+    min-width: 100px;
+}
+
+/* Fix cell content */
+#mbqfBillingRulesTable th,
+#mbqfBillingRulesTable td {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    vertical-align: top;
+    padding: 12px 8px;
+    border: 1px solid #dee2e6;
+    box-sizing: border-box;
+    white-space: normal;
+}
+
+/* Fix content containers */
+.mbqf-rule-desc-container,
+.mbqf-trigger-container,
+.mbqf-consolidation-container,
+.mbqf-auto-invoice-container,
+.mbqf-smart-settings-container,
+.mbqf-client-type {
+    width: 100%;
+    display: block;
+    min-height: 80px;
+}
+
+/* Fix description text */
+.mbqf-desc-text {
+    display: block;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    width: 100%;
+}
+
+/* Fix rule details */
+.mbqf-rule-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.mbqf-detail-item {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+/* Fix dropdowns */
+.mbqf-invoice-trigger {
+    width: 100%;
+    font-size: 0.85rem;
+}
+
+/* Fix table header */
+#mbqfBillingRulesTable thead.table-dark th {
+    background-color: white;
+    color: black;
+    border-bottom: 2px solid #dee2e6;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Remove Bootstrap dark table overrides */
+.table-dark {
+    --bs-table-bg: white;
+    --bs-table-color: black;
+    --bs-table-border-color: #dee2e6;
+}
+
+/* ==================== DEPOSIT SETTINGS TABLE ==================== */
+
+/* Deposit table layout - matches billing rules style */
+#mbqfDepositRulesTable {
+    table-layout: auto;
+    width: 100%;
+}
+
+/* Set column widths for deposit table - consistent with billing rules */
+#mbqfDepositRulesTable th:nth-child(1),
+#mbqfDepositRulesTable td:nth-child(1) {
+    width: 20%;
+    min-width: 150px;
+}
+
+#mbqfDepositRulesTable th:nth-child(2),
+#mbqfDepositRulesTable td:nth-child(2) {
+    width: 15%;
+    min-width: 120px;
+}
+
+#mbqfDepositRulesTable th:nth-child(3),
+#mbqfDepositRulesTable td:nth-child(3) {
+    width: 20%;
+    min-width: 150px;
+}
+
+#mbqfDepositRulesTable th:nth-child(4),
+#mbqfDepositRulesTable td:nth-child(4) {
+    width: 20%;
+    min-width: 150px;
+}
+
+#mbqfDepositRulesTable th:nth-child(5),
+#mbqfDepositRulesTable td:nth-child(5) {
+    width: 15%;
+    min-width: 120px;
+}
+
+#mbqfDepositRulesTable th:nth-child(6),
+#mbqfDepositRulesTable td:nth-child(6) {
+    width: 10%;
+    min-width: 100px;
+}
+
+/* Fix cell content for deposit table - same as billing rules */
+#mbqfDepositRulesTable th,
+#mbqfDepositRulesTable td {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    vertical-align: top;
+    padding: 12px 8px;
+    border: 1px solid #dee2e6;
+    box-sizing: border-box;
+    white-space: normal;
+}
+
+/* Deposit specific containers - consistent height with billing rules */
+.mbqf-deposit-required-container,
+.mbqf-deposit-amount-container,
+.mbqf-deposit-timing-container,
+.mbqf-qb-sync-container,
+.mbqf-deposit-client-type {
+    width: 100%;
+    display: block;
+    min-height: 80px;
+}
+
+/* Input group adjustments */
+.mbqf-deposit-amount-container .input-group {
+    width: 100%;
+}
+
+.mbqf-deposit-amount-container .form-control {
+    text-align: right;
+}
+
+/* Status indicators */
+.mbqf-deposit-status {
+    font-size: 0.75rem;
+    line-height: 1.2;
+}
+
+.mbqf-amount-info,
+.mbqf-timing-info,
+.mbqf-qb-info {
+    font-size: 0.75rem;
+    line-height: 1.2;
+}
+
+/* QuickBooks connection status */
+#mbqfQBStatus {
+    text-transform: capitalize;
+}
+
+#mbqfLastSync {
+    font-family: monospace;
+}
+
+/* Fix deposit table header to match billing rules */
+#mbqfDepositRulesTable thead.table-dark th {
+    background-color: white;
+    color: black;
+    border-bottom: 2px solid #dee2e6;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* ==================== LAYOUT FIXES FOR BOTH TABS ==================== */
+
+/* Make both tabs use full width and stack info below */
+#mbqf-tab-rules-content .row,
+#mbqf-tab-deposit-content .row {
+    display: flex;
+    flex-direction: column;
+}
+
+#mbqf-tab-rules-content .col-md-8,
+#mbqf-tab-deposit-content .col-md-8 {
+    width: 100%;
+    max-width: 100%;
+}
+
+#mbqf-tab-rules-content .col-md-4,
+#mbqf-tab-deposit-content .col-md-4 {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 2rem;
+}
+
+/* Ensure table doesn't cut off content */
+.table-responsive {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+
+.table-responsive > .table {
+    margin-bottom: 0;
+    min-width: 800px;
+}
+
+/* Deposit information section styling to match billing rules */
+#mbqf-tab-deposit-content .col-md-4 .card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-top: 1rem;
+}
+
+#mbqf-tab-deposit-content .col-md-4 .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0.75rem 1rem;
+}
+
+#mbqf-tab-deposit-content .col-md-4 .card-body {
+    padding: 1rem;
+}
+
+/* Make deposit info alerts match billing rules style */
+#mbqf-tab-deposit-content .alert {
+    margin-bottom: 1rem;
+}
+
+/* ==================== RESPONSIVE FIXES ==================== */
+
+@media (max-width: 768px) {
+    #mbqfBillingRulesTable,
+    #mbqfDepositRulesTable {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    #mbqfBillingRulesTable th,
+    #mbqfBillingRulesTable td,
+    #mbqfDepositRulesTable th,
+    #mbqfDepositRulesTable td {
+        min-width: 150px;
+    }
+    
+    .mbqf-desc-text {
+        font-size: 0.8rem;
+    }
+    
+    .mbqf-rule-details {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    /* Adjust layout for mobile */
+    #mbqf-tab-rules-content .col-md-4,
+    #mbqf-tab-deposit-content .col-md-4 {
+        margin-top: 1rem;
+    }
+}
+
+/* ==================== COMMON TABLE STYLES ==================== */
+
+/* Ensure consistent table header background */
+.table-dark th {
+    background-color: white;
+    color: black;
+}
+
+/* Hover effect for both tables */
+#mbqfBillingRulesTable tbody tr:hover,
+#mbqfDepositRulesTable tbody tr:hover {
+    background-color: #f5f9ff;
+}
+
+/* Consistent button styling */
+.mbqf-edit-rule,
+.mbqf-edit-deposit-rule {
+    border-color: #0d6efd;
+    color: #0d6efd;
+}
+
+.mbqf-edit-rule:hover,
+.mbqf-edit-deposit-rule:hover {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}

@@ -16,15 +16,80 @@ let bookingsData = [
     assignedTo: "John Supervisor",
     notes: "Client prefers morning visits",
     siteVisitReport: {
-      reportDate: "",
-      reportTime: "",
-      siteCondition: "",
-      visitNotes: "",
-      recommendations: "",
-      extraServices: [],
+      reportDate: "2025-01-24",
+      reportTime: "14:30",
+      siteCondition: "good",
+      visitNotes: "Client showed us around the property. Large living area with carpet stains in corner. Kitchen requires deep cleaning.",
+      recommendations: "Recommend extra stain treatment for carpets and kitchen deep clean.",
+      extraServices: ["stain_treatment", "deep_clean"],
+      additionalServices: [
+        { name: "Extra Cleaning", price: 50, selected: true },
+        { name: "Sanitization", price: 75, selected: false },
+        { name: "Odor Removal", price: 120, selected: false },
+        { name: "Stain Treatment", price: 65, selected: true }
+      ],
+      customServices: [
+        { name: "Window Cleaning", price: 85, selected: true },
+        { name: "Fridge Interior", price: 45, selected: false }
+      ],
       draft: false
     },
-    mediaGallery: [],
+    mediaGallery: [
+      {
+        id: 1,
+        url: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+        type: "image",
+        caption: "Living room carpet stains",
+        date: "2025-01-24",
+        fileName: "carpet_stains.jpg",
+        fileSize: 2456789
+      },
+      {
+        id: 2,
+        url: "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+        type: "image",
+        caption: "Kitchen overview - needs deep clean",
+        date: "2025-01-24",
+        fileName: "kitchen_overview.jpg",
+        fileSize: 3123456
+      },
+      {
+        id: 3,
+        url: "https://images.unsplash.com/photo-1556228453-efd6c1ff04f6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+        type: "image",
+        caption: "Bathroom condition",
+        date: "2025-01-24",
+        fileName: "bathroom.jpg",
+        fileSize: 1876543
+      },
+      {
+        id: 4,
+        type: "video",
+        url: "https://assets.mixkit.co/videos/preview/mixkit-close-up-of-carpet-texture-27131-large.mp4",
+        caption: "Carpet texture close-up video",
+        date: "2025-01-24",
+        fileName: "carpet_video.mp4",
+        fileSize: 12567890
+      },
+      {
+        id: 5,
+        url: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+        type: "image",
+        caption: "Entryway and hallway",
+        date: "2025-01-24",
+        fileName: "hallway.jpg",
+        fileSize: 2987654
+      },
+      {
+        id: 6,
+        url: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1158&q=80",
+        type: "image",
+        caption: "Additional stain in bedroom corner",
+        date: "2025-01-24",
+        fileName: "bedroom_stain.jpg",
+        fileSize: 2765432
+      }
+    ],
     
     // Estimation data
     estimation: {
@@ -126,9 +191,62 @@ TOTAL DUE (USD): $327.60
       visitNotes: "",
       recommendations: "",
       extraServices: [],
+      additionalServices: [
+        { name: "Extra Cleaning", price: 50, selected: false },
+        { name: "Sanitization", price: 75, selected: false },
+        { name: "Odor Removal", price: 120, selected: false },
+        { name: "Stain Treatment", price: 65, selected: false }
+      ],
+      customServices: [],
       draft: false
     },
-    mediaGallery: [],
+    mediaGallery: [
+      {
+        id: 7,
+        url: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+        type: "image",
+        caption: "Commercial office reception area",
+        date: "2025-01-23",
+        fileName: "reception.jpg",
+        fileSize: 3456789
+      },
+      {
+        id: 8,
+        url: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80",
+        type: "image",
+        caption: "Conference room setup",
+        date: "2025-01-23",
+        fileName: "conference_room.jpg",
+        fileSize: 2987654
+      },
+      {
+        id: 9,
+        type: "video",
+        url: "https://assets.mixkit.co/videos/preview/mixkit-cleaning-a-window-4052-large.mp4",
+        caption: "Window cleaning demonstration",
+        date: "2025-01-23",
+        fileName: "window_cleaning.mp4",
+        fileSize: 15678901
+      },
+      {
+        id: 10,
+        url: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+        type: "image",
+        caption: "Carpet condition in hallway",
+        date: "2025-01-23",
+        fileName: "hallway_carpet.jpg",
+        fileSize: 2765432
+      },
+      {
+        id: 11,
+        url: "https://images.unsplash.com/photo-1576675466969-38eeae4b41f6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+        type: "image",
+        caption: "Kitchenette area",
+        date: "2025-01-23",
+        fileName: "kitchenette.jpg",
+        fileSize: 3123456
+      }
+    ],
     estimation: {
       currencyBase: "USD",
       original: {
@@ -168,6 +286,153 @@ TOTAL DUE (USD): $756.00
 ========================================`
       }
     }
+  },
+  {
+    bookingId: "BK-2025-00016",
+    clientName: "Robert Chen",
+    contact: "+1 (416) 555-9012",
+    address: "88 Front Street East, Toronto, ON",
+    serviceType: "Move Out Clean",
+    visitDate: "2025-01-27",
+    visitTime: "9:00 AM",
+    status: "in-progress",
+    priority: "high",
+    submittedDate: "2025-01-23",
+    assignedTo: "Lisa Supervisor",
+    notes: "Tenant moving out, property needs full clean",
+    siteVisitReport: {
+      reportDate: "2025-01-24",
+      reportTime: "11:00",
+      siteCondition: "fair",
+      visitNotes: "Property has heavy dust accumulation. Kitchen appliances require deep cleaning. Bathrooms have mold in grout.",
+      recommendations: "Recommend mold treatment for bathrooms and appliance cleaning service.",
+      extraServices: ["mold_treatment", "appliance_clean"],
+      additionalServices: [
+        { name: "Extra Cleaning", price: 50, selected: true },
+        { name: "Sanitization", price: 75, selected: true },
+        { name: "Odor Removal", price: 120, selected: false },
+        { name: "Stain Treatment", price: 65, selected: false }
+      ],
+      customServices: [
+        { name: "Appliance Interior", price: 95, selected: true },
+        { name: "Blind Cleaning", price: 120, selected: true }
+      ],
+      draft: false
+    },
+    mediaGallery: [
+      {
+        id: 12,
+        url: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1172&q=80",
+        type: "image",
+        caption: "Dust accumulation on surfaces",
+        date: "2025-01-24",
+        fileName: "dust_surfaces.jpg",
+        fileSize: 2876543
+      },
+      {
+        id: 13,
+        url: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+        type: "image",
+        caption: "Kitchen appliance condition",
+        date: "2025-01-24",
+        fileName: "kitchen_appliance.jpg",
+        fileSize: 3456789
+      },
+      {
+        id: 14,
+        type: "video",
+        url: "https://assets.mixkit.co/videos/preview/mixkit-professional-cleaning-service-41507-large.mp4",
+        caption: "Professional cleaning process",
+        date: "2025-01-24",
+        fileName: "cleaning_process.mp4",
+        fileSize: 23456789
+      },
+      {
+        id: 15,
+        url: "https://images.unsplash.com/photo-1594810204154-d7f7db8be4e5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+        type: "image",
+        caption: "Bathroom mold in grout",
+        date: "2025-01-24",
+        fileName: "bathroom_mold.jpg",
+        fileSize: 2654321
+      },
+      {
+        id: 16,
+        url: "https://images.unsplash.com/photo-1560185007-cde436f5c5e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+        type: "image",
+        caption: "Window and blind condition",
+        date: "2025-01-24",
+        fileName: "window_blinds.jpg",
+        fileSize: 3123456
+      }
+    ],
+    estimation: {
+      currencyBase: "USD",
+      original: {
+        steamTotal: 850.0,
+        maintenanceTotal: 420.0,
+        steamInvoice: `MOVE OUT CLEAN ESTIMATE
+--------------------------------
+ITEMS SELECTED:
+Full House Steam Clean .... $650
+Extra Large Rooms ×2 .... $100
+Carpet Protection .... $50
+Furniture Cleaning .... $150
+
+DISCOUNTS:
+Move Out Special .... -$100
+
+--------------------------------
+Subtotal: $850.00
+Tax (5%): $42.50
+TOTAL DUE: $892.50`,
+        maintenanceInvoice: `MOVE OUT MAINTENANCE ESTIMATE
+========================================
+Deep Clean (move out) — 8.00 hrs @ $45/hr .... $360.00
+Appliance Cleaning .... $60.00
+Window Cleaning .... $40.00
+
+========================================
+Subtotal: $460.00
+Tax (5%): $23.00
+--------------------------------
+TOTAL DUE (USD): $483.00
+========================================`
+      },
+      adjusted: {
+        steamTotal: 920.0,
+        maintenanceTotal: 480.0,
+        steamInvoice: `MOVE OUT CLEAN ESTIMATE (ADJUSTED)
+--------------------------------
+ITEMS SELECTED:
+Full House Steam Clean .... $650
+Extra Large Rooms ×2 .... $100
+Carpet Protection .... $50
+Furniture Cleaning .... $150
+Mold Treatment .... $70
+
+DISCOUNTS:
+Move Out Special .... -$100
+
+--------------------------------
+Subtotal: $920.00
+Tax (5%): $46.00
+TOTAL DUE: $966.00`,
+        maintenanceInvoice: `MOVE OUT MAINTENANCE ESTIMATE (ADJUSTED)
+========================================
+Deep Clean (move out) — 8.00 hrs @ $45/hr .... $360.00
+Appliance Cleaning .... $60.00
+Window Cleaning .... $40.00
+Blind Cleaning .... $80.00
+
+========================================
+Subtotal: $540.00
+Tax (5%): $27.00
+--------------------------------
+TOTAL DUE (USD): $567.00
+========================================`
+      }
+    }
   }
 ];
 
@@ -191,6 +456,10 @@ let galleryViewer = null;
 let horizontalSlider = null;
 let isHorizontalView = false;
 let shareableLinks = JSON.parse(localStorage.getItem('shareableLinks') || '{}');
+
+// Media table state
+let currentGalleryTab = "grid";
+let editingMediaIndex = -1;
 
 // -----------------------------
 // Initialize
@@ -370,6 +639,12 @@ function wireUI() {
     btnDownloadReport.addEventListener('click', () => {
       downloadReportAsPDF();
     });
+  }
+  
+  // Additional services functionality
+  const btnAddService = document.getElementById('btnAddService');
+  if (btnAddService) {
+    btnAddService.addEventListener('click', addCustomService);
   }
   
   // Check for share link on page load
@@ -725,22 +1000,225 @@ function loadClientInfo() {
 
 function loadSiteVisitReport() {
   const tabContent = document.getElementById("tab-report");
-  const form = document.getElementById("siteVisitReportForm");
   const report = selectedBooking.siteVisitReport;
   
-  if (!form) return;
+  // Create enhanced form with additional services
+  tabContent.innerHTML = `
+    <div class="report-form-container">
+      <h4><i class="fas fa-file-signature"></i> Site Visit Report Form</h4>
+      <form id="siteVisitReportForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reportDate">Visit Date</label>
+            <input type="date" id="reportDate" value="${report.reportDate || ''}" required>
+          </div>
+          <div class="form-group">
+            <label for="reportTime">Visit Time</label>
+            <input type="time" id="reportTime" value="${report.reportTime || ''}" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="siteCondition">Site Condition</label>
+          <select id="siteCondition">
+            <option value="excellent" ${report.siteCondition === 'excellent' ? 'selected' : ''}>Excellent</option>
+            <option value="good" ${report.siteCondition === 'good' || !report.siteCondition ? 'selected' : ''}>Good</option>
+            <option value="fair" ${report.siteCondition === 'fair' ? 'selected' : ''}>Fair</option>
+            <option value="poor" ${report.siteCondition === 'poor' ? 'selected' : ''}>Poor</option>
+            <option value="needs_attention" ${report.siteCondition === 'needs_attention' ? 'selected' : ''}>Needs Attention</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="visitNotes">Visit Notes & Observations</label>
+          <textarea id="visitNotes" rows="4" placeholder="Detailed observations about the site...">${report.visitNotes || ''}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="recommendations">Recommendations</label>
+          <textarea id="recommendations" rows="3" placeholder="Recommended actions or services...">${report.recommendations || ''}</textarea>
+        </div>
+
+        <div class="additional-services-container">
+          <h5><i class="fas fa-list-check"></i> Additional Services</h5>
+          
+          <div class="services-list" id="standardServices">
+            <!-- Standard services will be loaded here -->
+          </div>
+          
+          <div class="custom-services-list" id="customServicesList">
+            <!-- Custom services will be loaded here -->
+          </div>
+          
+          <div class="add-service-section">
+            <h6><i class="fas fa-plus-circle"></i> Add Custom Service</h6>
+            <div class="add-service-controls">
+              <input type="text" id="newServiceName" placeholder="Service name">
+              <input type="number" id="newServicePrice" placeholder="Price" step="0.01" min="0">
+              <button type="button" class="btn-add-service" id="btnAddService">
+                <i class="fas fa-plus"></i> Add Service
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="submit-btn"><i class="fas fa-save"></i> Save Report</button>
+          <button type="button" class="save-draft-btn"><i class="fas fa-file-alt"></i> Save as Draft</button>
+        </div>
+      </form>
+    </div>
+  `;
   
-  // Populate form with existing data
-  document.getElementById("reportDate").value = report.reportDate || "";
-  document.getElementById("reportTime").value = report.reportTime || "";
-  document.getElementById("siteCondition").value = report.siteCondition || "good";
-  document.getElementById("visitNotes").value = report.visitNotes || "";
-  document.getElementById("recommendations").value = report.recommendations || "";
+  // Load standard services
+  loadStandardServices();
   
-  // Clear and set checkboxes
-  document.querySelectorAll('input[name="extraServices"]').forEach(cb => {
-    cb.checked = report.extraServices ? report.extraServices.includes(cb.value) : false;
+  // Load custom services
+  loadCustomServices();
+  
+  // Wire up form events
+  const siteVisitReportForm = document.getElementById("siteVisitReportForm");
+  if (siteVisitReportForm) {
+    siteVisitReportForm.addEventListener("submit", saveSiteVisitReport);
+  }
+  
+  const saveDraftBtn = tabContent.querySelector(".save-draft-btn");
+  if (saveDraftBtn) {
+    saveDraftBtn.addEventListener("click", saveReportAsDraft);
+  }
+  
+  const btnAddService = tabContent.querySelector("#btnAddService");
+  if (btnAddService) {
+    btnAddService.addEventListener("click", addCustomService);
+  }
+}
+
+function loadStandardServices() {
+  const standardServices = document.getElementById("standardServices");
+  if (!standardServices) return;
+  
+  const services = selectedBooking.siteVisitReport.additionalServices || [];
+  
+  standardServices.innerHTML = '';
+  
+  services.forEach((service, index) => {
+    const serviceItem = document.createElement('div');
+    serviceItem.className = 'service-item';
+    serviceItem.innerHTML = `
+      <label>
+        <input type="checkbox" class="service-checkbox" data-index="${index}" ${service.selected ? 'checked' : ''}>
+        <span>${escapeHtml(service.name)}</span>
+      </label>
+      <div class="service-price">$${service.price.toFixed(2)}</div>
+    `;
+    standardServices.appendChild(serviceItem);
   });
+  
+  // Add event listeners to checkboxes
+  standardServices.querySelectorAll('.service-checkbox').forEach(cb => {
+    cb.addEventListener('change', updateServiceSelection);
+  });
+}
+
+function loadCustomServices() {
+  const customServicesList = document.getElementById("customServicesList");
+  if (!customServicesList) return;
+  
+  const customServices = selectedBooking.siteVisitReport.customServices || [];
+  
+  if (customServices.length === 0) {
+    customServicesList.innerHTML = '<p style="color: #666; font-style: italic;">No custom services added</p>';
+    return;
+  }
+  
+  customServicesList.innerHTML = '<h6>Custom Services</h6>';
+  
+  customServices.forEach((service, index) => {
+    const serviceItem = document.createElement('div');
+    serviceItem.className = 'service-item custom';
+    serviceItem.innerHTML = `
+      <label>
+        <input type="checkbox" class="custom-service-checkbox" data-index="${index}" ${service.selected ? 'checked' : ''}>
+        <span>${escapeHtml(service.name)}</span>
+      </label>
+      <div class="service-price">$${service.price.toFixed(2)}</div>
+      <button class="remove-custom-service" data-index="${index}" style="background: none; border: none; color: #dc3545; cursor: pointer;">
+        <i class="fas fa-trash"></i>
+      </button>
+    `;
+    customServicesList.appendChild(serviceItem);
+  });
+  
+  // Add event listeners
+  customServicesList.querySelectorAll('.custom-service-checkbox').forEach(cb => {
+    cb.addEventListener('change', updateCustomServiceSelection);
+  });
+  
+  customServicesList.querySelectorAll('.remove-custom-service').forEach(btn => {
+    btn.addEventListener('click', removeCustomService);
+  });
+}
+
+function addCustomService() {
+  const nameInput = document.getElementById('newServiceName');
+  const priceInput = document.getElementById('newServicePrice');
+  
+  const name = nameInput.value.trim();
+  const price = parseFloat(priceInput.value);
+  
+  if (!name || isNaN(price) || price <= 0) {
+    showNotification('Please enter a valid service name and price', 'warning');
+    return;
+  }
+  
+  // Initialize customServices if it doesn't exist
+  if (!selectedBooking.siteVisitReport.customServices) {
+    selectedBooking.siteVisitReport.customServices = [];
+  }
+  
+  // Add new custom service
+  selectedBooking.siteVisitReport.customServices.push({
+    name: name,
+    price: price,
+    selected: false
+  });
+  
+  // Clear inputs
+  nameInput.value = '';
+  priceInput.value = '';
+  
+  // Reload custom services
+  loadCustomServices();
+  
+  showNotification('Custom service added successfully', 'success');
+}
+
+function removeCustomService(e) {
+  const index = parseInt(e.currentTarget.getAttribute('data-index'));
+  
+  if (selectedBooking.siteVisitReport.customServices && 
+      selectedBooking.siteVisitReport.customServices[index]) {
+    
+    selectedBooking.siteVisitReport.customServices.splice(index, 1);
+    loadCustomServices();
+    showNotification('Custom service removed', 'info');
+  }
+}
+
+function updateServiceSelection(e) {
+  const index = parseInt(e.target.getAttribute('data-index'));
+  if (selectedBooking.siteVisitReport.additionalServices && 
+      selectedBooking.siteVisitReport.additionalServices[index]) {
+    selectedBooking.siteVisitReport.additionalServices[index].selected = e.target.checked;
+  }
+}
+
+function updateCustomServiceSelection(e) {
+  const index = parseInt(e.target.getAttribute('data-index'));
+  if (selectedBooking.siteVisitReport.customServices && 
+      selectedBooking.siteVisitReport.customServices[index]) {
+    selectedBooking.siteVisitReport.customServices[index].selected = e.target.checked;
+  }
 }
 
 function saveSiteVisitReport(e) {
@@ -755,7 +1233,9 @@ function saveSiteVisitReport(e) {
     siteCondition: document.getElementById("siteCondition").value,
     visitNotes: document.getElementById("visitNotes").value,
     recommendations: document.getElementById("recommendations").value,
-    extraServices: Array.from(document.querySelectorAll('input[name="extraServices"]:checked')).map(cb => cb.value),
+    additionalServices: selectedBooking.siteVisitReport.additionalServices,
+    customServices: selectedBooking.siteVisitReport.customServices || [],
+    extraServices: getSelectedServices(),
     draft: false,
     savedAt: new Date().toISOString()
   };
@@ -775,6 +1255,30 @@ function saveSiteVisitReport(e) {
   loadBookingDetails();
 }
 
+function getSelectedServices() {
+  const services = [];
+  
+  // Get selected standard services
+  if (selectedBooking.siteVisitReport.additionalServices) {
+    selectedBooking.siteVisitReport.additionalServices.forEach(service => {
+      if (service.selected) {
+        services.push(service.name.toLowerCase().replace(/\s+/g, '_'));
+      }
+    });
+  }
+  
+  // Get selected custom services
+  if (selectedBooking.siteVisitReport.customServices) {
+    selectedBooking.siteVisitReport.customServices.forEach(service => {
+      if (service.selected) {
+        services.push(service.name.toLowerCase().replace(/\s+/g, '_'));
+      }
+    });
+  }
+  
+  return services;
+}
+
 function saveReportAsDraft() {
   if (!selectedBooking) return;
   
@@ -785,7 +1289,9 @@ function saveReportAsDraft() {
     siteCondition: document.getElementById("siteCondition").value,
     visitNotes: document.getElementById("visitNotes").value,
     recommendations: document.getElementById("recommendations").value,
-    extraServices: Array.from(document.querySelectorAll('input[name="extraServices"]:checked')).map(cb => cb.value),
+    additionalServices: selectedBooking.siteVisitReport.additionalServices,
+    customServices: selectedBooking.siteVisitReport.customServices || [],
+    extraServices: getSelectedServices(),
     draft: true,
     savedAt: new Date().toISOString()
   };
@@ -803,31 +1309,244 @@ function saveReportAsDraft() {
 }
 
 // -----------------------------
-// Media Gallery Management
+// Enhanced Media Gallery Management
 // -----------------------------
 function loadMediaGallery() {
+  const tabContent = document.getElementById("tab-gallery");
+  const mediaItems = selectedBooking.mediaGallery;
+  
+  tabContent.innerHTML = `
+    <div class="gallery-container">
+      <div class="gallery-header">
+        <h4><i class="fas fa-camera"></i> Site Photos & Videos</h4>
+        <div class="gallery-actions">
+          <button class="add-media-btn" id="btnAddMedia">
+            <i class="fas fa-plus"></i> Add Media
+          </button>
+          <button class="view-toggle-btn" id="btnToggleView">
+            <i class="fas fa-th"></i> Horizontal View
+          </button>
+          <input type="file" id="mediaUpload" accept="image/*,video/*" multiple style="display: none;">
+        </div>
+      </div>
+      
+      <!-- Gallery Tabs -->
+      <div class="gallery-tabs">
+        <button class="gallery-tab active" data-tab="grid"><i class="fas fa-th"></i> Grid View</button>
+        <button class="gallery-tab" data-tab="table"><i class="fas fa-table"></i> Media Table</button>
+        <button class="gallery-tab" data-tab="horizontal"><i class="fas fa-sliders-h"></i> Horizontal View</button>
+      </div>
+      
+      <!-- Grid Gallery Tab -->
+      <div class="gallery-tab-content active" id="gallery-grid-tab">
+        <div class="gallery-grid" id="mediaGrid">
+          <!-- Media items will be added here -->
+          ${mediaItems.length === 0 ? `
+            <div class="no-media">
+              <i class="fas fa-images fa-3x"></i>
+              <p>No photos or videos added yet</p>
+              <button class="btn-add-first" id="btnAddFirstMedia">
+                <i class="fas fa-plus"></i> Add First Photo/Video
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+      
+      <!-- Media Table Tab -->
+      <div class="gallery-tab-content" id="gallery-table-tab">
+        <div class="media-table-container">
+          <h5><i class="fas fa-table"></i> Media Management Table</h5>
+          <div class="media-table-wrapper">
+            <table class="media-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Note/Caption</th>
+                  <th>Media Type</th>
+                  <th>Date Uploaded</th>
+                  <th>View</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="mediaTableBody">
+                <!-- Media rows will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Horizontal Gallery Tab -->
+      <div class="gallery-tab-content" id="gallery-horizontal-tab">
+        <div class="horizontal-gallery-container" id="horizontalGallery">
+          <div class="slider-nav">
+            <button class="slider-prev"><i class="fas fa-chevron-left"></i></button>
+            <button class="slider-next"><i class="fas fa-chevron-right"></i></button>
+          </div>
+          <div class="horizontal-slider" id="horizontalSlider">
+            <!-- Horizontal slider items will be loaded here -->
+          </div>
+          <div class="slider-info">
+            <span id="currentSlide">1</span> / <span id="totalSlides">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Media Preview Modal -->
+    <div class="media-preview-modal" id="mediaPreviewModal">
+      <div class="media-preview-content">
+        <button class="close-preview" id="btnClosePreview">
+          <i class="fas fa-times"></i>
+        </button>
+        <div id="previewContainer"></div>
+      </div>
+    </div>
+    
+    <!-- Edit Media Modal -->
+    <div class="edit-media-modal" id="editMediaModal">
+      <div class="edit-media-content">
+        <div class="edit-media-header">
+          <h4><i class="fas fa-edit"></i> Edit Media Details</h4>
+          <button class="edit-media-close" id="btnCloseEditModal">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form class="edit-media-form" id="editMediaForm">
+          <div class="edit-media-preview" id="editMediaPreview"></div>
+          <div class="form-group">
+            <label for="editMediaCaption">Caption/Note</label>
+            <input type="text" id="editMediaCaption" placeholder="Enter caption or note..." required>
+          </div>
+          <div class="form-group">
+            <label for="editMediaDate">Date</label>
+            <input type="date" id="editMediaDate" required>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="submit-btn"><i class="fas fa-save"></i> Save Changes</button>
+            <button type="button" class="save-draft-btn" id="btnCancelEdit">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  `;
+  
+  // Load media based on current tab
+  loadMediaGrid();
+  loadMediaTable();
+  loadHorizontalGallery();
+  
+  // Wire up gallery tab events
+  document.querySelectorAll('.gallery-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabName = tab.getAttribute('data-tab');
+      switchGalleryTab(tabName);
+    });
+  });
+  
+  // Reattach event listeners
+  const btnAddMedia = document.getElementById('btnAddMedia');
+  if (btnAddMedia) {
+    btnAddMedia.addEventListener('click', () => document.getElementById('mediaUpload').click());
+  }
+  
+  const btnAddFirstMedia = document.getElementById('btnAddFirstMedia');
+  if (btnAddFirstMedia) {
+    btnAddFirstMedia.addEventListener('click', () => document.getElementById('mediaUpload').click());
+  }
+  
+  const mediaUpload = document.getElementById('mediaUpload');
+  if (mediaUpload) {
+    mediaUpload.addEventListener('change', handleMediaUpload);
+  }
+  
+  const btnToggleView = document.getElementById('btnToggleView');
+  if (btnToggleView) {
+    btnToggleView.addEventListener('click', toggleGalleryView);
+  }
+  
+  // Wire up modal close buttons
+  const btnClosePreview = document.getElementById('btnClosePreview');
+  if (btnClosePreview) {
+    btnClosePreview.addEventListener('click', () => {
+      document.getElementById('mediaPreviewModal').classList.remove('active');
+    });
+  }
+  
+  const btnCloseEditModal = document.getElementById('btnCloseEditModal');
+  if (btnCloseEditModal) {
+    btnCloseEditModal.addEventListener('click', () => {
+      document.getElementById('editMediaModal').classList.remove('active');
+    });
+  }
+  
+  const btnCancelEdit = document.getElementById('btnCancelEdit');
+  if (btnCancelEdit) {
+    btnCancelEdit.addEventListener('click', () => {
+      document.getElementById('editMediaModal').classList.remove('active');
+    });
+  }
+  
+  // Wire up edit form
+  const editMediaForm = document.getElementById('editMediaForm');
+  if (editMediaForm) {
+    editMediaForm.addEventListener('submit', saveMediaEdits);
+  }
+  
+  // Click outside to close modals
+  document.getElementById('mediaPreviewModal').addEventListener('click', (e) => {
+    if (e.target.id === 'mediaPreviewModal') {
+      document.getElementById('mediaPreviewModal').classList.remove('active');
+    }
+  });
+  
+  document.getElementById('editMediaModal').addEventListener('click', (e) => {
+    if (e.target.id === 'editMediaModal') {
+      document.getElementById('editMediaModal').classList.remove('active');
+    }
+  });
+}
+
+function switchGalleryTab(tabName) {
+  currentGalleryTab = tabName;
+  
+  // Update tab buttons
+  document.querySelectorAll('.gallery-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.getAttribute('data-tab') === tabName);
+  });
+  
+  // Show selected tab content
+  document.querySelectorAll('.gallery-tab-content').forEach(content => {
+    content.classList.toggle('active', content.id === `gallery-${tabName}-tab`);
+  });
+  
+  // Update button text
+  const btnToggleView = document.getElementById('btnToggleView');
+  if (btnToggleView) {
+    if (tabName === 'horizontal') {
+      btnToggleView.innerHTML = '<i class="fas fa-th"></i> Grid View';
+    } else {
+      btnToggleView.innerHTML = '<i class="fas fa-sliders-h"></i> Horizontal View';
+    }
+  }
+  
+  // Update gallery viewer if needed
+  if (tabName === 'grid' && galleryViewer) {
+    setTimeout(() => {
+      if (galleryViewer && galleryViewer.update) {
+        galleryViewer.update();
+      }
+    }, 100);
+  }
+}
+
+function loadMediaGrid() {
   const mediaGrid = document.getElementById("mediaGrid");
   const mediaItems = selectedBooking.mediaGallery;
   
   if (!mediaItems || mediaItems.length === 0) {
-    mediaGrid.innerHTML = `
-      <div class="no-media">
-        <i class="fas fa-images fa-3x"></i>
-        <p>No photos or videos added yet</p>
-        <button class="btn-add-first" id="btnAddFirstMedia">
-          <i class="fas fa-plus"></i> Add First Photo/Video
-        </button>
-      </div>
-    `;
-    
-    // Reattach event listener
-    const addFirstBtn = document.getElementById("btnAddFirstMedia");
-    if (addFirstBtn) {
-      addFirstBtn.addEventListener("click", () => 
-        document.getElementById("mediaUpload").click()
-      );
-    }
-    return;
+    return; // Keep the "no media" message
   }
   
   mediaGrid.innerHTML = "";
@@ -838,7 +1557,7 @@ function loadMediaGallery() {
     
     if (media.type === "image") {
       mediaItem.innerHTML = `
-        <img src="${media.url}" alt="${media.caption || 'Site photo'}">
+        <img src="${media.url}" alt="${media.caption || 'Site photo'}" data-index="${index}">
         <div class="media-actions">
           <button class="delete-media" data-index="${index}" title="Delete">
             <i class="fas fa-trash"></i>
@@ -851,7 +1570,7 @@ function loadMediaGallery() {
       `;
     } else if (media.type === "video") {
       mediaItem.innerHTML = `
-        <video controls>
+        <video controls data-index="${index}">
           <source src="${media.url}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
@@ -879,6 +1598,15 @@ function loadMediaGallery() {
     });
   });
   
+  // Attach click handlers for preview
+  mediaGrid.querySelectorAll("img[data-index], video[data-index]").forEach(media => {
+    media.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const index = parseInt(media.getAttribute("data-index"));
+      previewMedia(index);
+    });
+  });
+  
   // Update gallery viewer
   if (galleryViewer) {
     setTimeout(() => {
@@ -887,6 +1615,114 @@ function loadMediaGallery() {
       }
     }, 100);
   }
+}
+
+function loadMediaTable() {
+  const mediaTableBody = document.getElementById("mediaTableBody");
+  const mediaItems = selectedBooking.mediaGallery;
+  
+  mediaTableBody.innerHTML = "";
+  
+  if (!mediaItems || mediaItems.length === 0) {
+    mediaTableBody.innerHTML = `
+      <tr>
+        <td colspan="6" style="text-align: center; color: #666; padding: 40px;">
+          <i class="fas fa-images fa-2x" style="margin-bottom: 10px; display: block; color: #ccc;"></i>
+          No media items to display
+        </td>
+      </tr>
+    `;
+    return;
+  }
+  
+  // Show first 5 sample items with formatted file sizes
+  const itemsToShow = mediaItems.slice(0, 5);
+  
+  itemsToShow.forEach((media, index) => {
+    const row = document.createElement("tr");
+    const fileSizeFormatted = formatFileSize(media.fileSize);
+    
+    row.innerHTML = `
+      <td>${index + 1}</td>
+      <td>
+        <strong>${escapeHtml(media.caption || 'No caption')}</strong><br>
+        <small style="color: #666;">${media.fileName}</small><br>
+        <small style="color: #888;">${fileSizeFormatted}</small>
+      </td>
+      <td>
+        <span class="media-type-badge ${media.type}">
+          <i class="fas fa-${media.type === 'image' ? 'image' : 'video'}"></i> ${media.type.toUpperCase()}
+        </span>
+      </td>
+      <td>${formatDate(media.date)}</td>
+      <td>
+        <button class="view-media-btn" data-index="${index}">
+          <i class="fas fa-eye"></i> View
+        </button>
+      </td>
+      <td>
+        <button class="edit-media-btn" data-index="${index}">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+        <button class="delete-media-btn" data-index="${index}">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </td>
+    `;
+    
+    mediaTableBody.appendChild(row);
+  });
+  
+  // Show "View All" row if there are more than 5 items
+  if (mediaItems.length > 5) {
+    const viewAllRow = document.createElement("tr");
+    viewAllRow.innerHTML = `
+      <td colspan="6" style="text-align: center; padding: 15px;">
+        <button class="view-all-media-btn" style="background: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+          <i class="fas fa-eye"></i> View All ${mediaItems.length} Media Items
+        </button>
+      </td>
+    `;
+    mediaTableBody.appendChild(viewAllRow);
+    
+    const viewAllBtn = viewAllRow.querySelector('.view-all-media-btn');
+    if (viewAllBtn) {
+      viewAllBtn.addEventListener('click', () => {
+        // Switch to grid view to see all items
+        switchGalleryTab('grid');
+      });
+    }
+  }
+  
+  // Attach event handlers
+  mediaTableBody.querySelectorAll('.view-media-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const index = parseInt(btn.getAttribute('data-index'));
+      previewMedia(index);
+    });
+  });
+  
+  mediaTableBody.querySelectorAll('.edit-media-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const index = parseInt(btn.getAttribute('data-index'));
+      editMediaItem(index);
+    });
+  });
+  
+  mediaTableBody.querySelectorAll('.delete-media-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const index = parseInt(btn.getAttribute('data-index'));
+      deleteMediaItem(index);
+    });
+  });
+}
+
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
 function handleMediaUpload(e) {
@@ -898,7 +1734,7 @@ function handleMediaUpload(e) {
     selectedBooking.mediaGallery = [];
   }
   
-  // Simulate file upload (in real app, you would upload to server)
+  // Process each file
   Array.from(files).forEach((file, i) => {
     const reader = new FileReader();
     
@@ -907,7 +1743,7 @@ function handleMediaUpload(e) {
         id: Date.now() + i,
         url: event.target.result,
         type: file.type.startsWith('image/') ? 'image' : 'video',
-        caption: file.name,
+        caption: file.name.replace(/\.[^/.]+$/, ""), // Remove extension
         date: new Date().toISOString().split('T')[0],
         fileName: file.name,
         fileSize: file.size
@@ -922,9 +1758,11 @@ function handleMediaUpload(e) {
         bookingsData[index].mediaGallery = selectedBooking.mediaGallery;
       }
       
-      // If this is the last file, update the gallery display
+      // If this is the last file, update all gallery views
       if (i === files.length - 1) {
-        loadMediaGallery();
+        loadMediaGrid();
+        loadMediaTable();
+        loadHorizontalGallery();
         showNotification(`Added ${files.length} media item${files.length > 1 ? 's' : ''}`, "success");
       }
     };
@@ -936,10 +1774,118 @@ function handleMediaUpload(e) {
   e.target.value = '';
 }
 
+function previewMedia(index) {
+  const media = selectedBooking.mediaGallery[index];
+  if (!media) return;
+  
+  const previewContainer = document.getElementById('previewContainer');
+  previewContainer.innerHTML = '';
+  
+  if (media.type === 'image') {
+    previewContainer.innerHTML = `
+      <div style="text-align: center;">
+        <img src="${media.url}" alt="${media.caption}" style="max-width: 100%; max-height: 70vh; border-radius: 8px;">
+        <div style="color: white; margin-top: 10px; font-size: 14px;">
+          <strong>${media.caption}</strong><br>
+          <small>${formatDate(media.date)} • ${formatFileSize(media.fileSize)}</small>
+        </div>
+      </div>
+    `;
+  } else if (media.type === 'video') {
+    previewContainer.innerHTML = `
+      <div style="text-align: center;">
+        <video controls autoplay style="max-width: 100%; max-height: 70vh; border-radius: 8px;">
+          <source src="${media.url}" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <div style="color: white; margin-top: 10px; font-size: 14px;">
+          <strong>${media.caption}</strong><br>
+          <small>${formatDate(media.date)} • ${formatFileSize(media.fileSize)}</small>
+        </div>
+      </div>
+    `;
+  }
+  
+  document.getElementById('mediaPreviewModal').classList.add('active');
+}
+
+function editMediaItem(index) {
+  const media = selectedBooking.mediaGallery[index];
+  if (!media) return;
+  
+  editingMediaIndex = index;
+  
+  const editMediaPreview = document.getElementById('editMediaPreview');
+  const editMediaCaption = document.getElementById('editMediaCaption');
+  const editMediaDate = document.getElementById('editMediaDate');
+  
+  // Set preview
+  if (media.type === 'image') {
+    editMediaPreview.innerHTML = `
+      <div style="text-align: center;">
+        <img src="${media.url}" alt="${media.caption}" style="max-width: 100%; max-height: 200px; border-radius: 8px;">
+        <div style="margin-top: 10px; font-size: 12px; color: #666;">
+          ${media.fileName} • ${formatFileSize(media.fileSize)}
+        </div>
+      </div>
+    `;
+  } else if (media.type === 'video') {
+    editMediaPreview.innerHTML = `
+      <div style="text-align: center;">
+        <video controls style="max-width: 100%; max-height: 200px; border-radius: 8px;">
+          <source src="${media.url}" type="video/mp4">
+        </video>
+        <div style="margin-top: 10px; font-size: 12px; color: #666;">
+          ${media.fileName} • ${formatFileSize(media.fileSize)}
+        </div>
+      </div>
+    `;
+  }
+  
+  // Set form values
+  editMediaCaption.value = media.caption || '';
+  editMediaDate.value = media.date || new Date().toISOString().split('T')[0];
+  
+  // Show modal
+  document.getElementById('editMediaModal').classList.add('active');
+}
+
+function saveMediaEdits(e) {
+  e.preventDefault();
+  
+  if (editingMediaIndex === -1) return;
+  
+  const media = selectedBooking.mediaGallery[editingMediaIndex];
+  if (!media) return;
+  
+  // Update media details
+  media.caption = document.getElementById('editMediaCaption').value;
+  media.date = document.getElementById('editMediaDate').value;
+  
+  // Update in bookingsData
+  const bookingIndex = bookingsData.findIndex(b => b.bookingId === selectedBooking.bookingId);
+  if (bookingIndex !== -1) {
+    bookingsData[bookingIndex].mediaGallery[editingMediaIndex] = media;
+  }
+  
+  // Update all views
+  loadMediaGrid();
+  loadMediaTable();
+  loadHorizontalGallery();
+  
+  // Close modal
+  document.getElementById('editMediaModal').classList.remove('active');
+  editingMediaIndex = -1;
+  
+  showNotification('Media details updated successfully!', 'success');
+}
+
 function deleteMediaItem(index) {
   if (!selectedBooking || !selectedBooking.mediaGallery[index]) return;
   
-  if (confirm("Are you sure you want to delete this media item?")) {
+  const media = selectedBooking.mediaGallery[index];
+  
+  if (confirm(`Are you sure you want to delete "${media.caption}"?`)) {
     selectedBooking.mediaGallery.splice(index, 1);
     
     // Update in bookingsData
@@ -948,30 +1894,18 @@ function deleteMediaItem(index) {
       bookingsData[bookingIndex].mediaGallery = selectedBooking.mediaGallery;
     }
     
-    loadMediaGallery();
+    // Update all views
+    loadMediaGrid();
+    loadMediaTable();
+    loadHorizontalGallery();
+    
     showNotification("Media item deleted", "info");
   }
 }
 
 // -----------------------------
-// Horizontal Gallery Functions
+// Enhanced Horizontal Gallery Functions
 // -----------------------------
-function toggleGalleryView() {
-  isHorizontalView = !isHorizontalView;
-  const btnToggle = document.getElementById('btnToggleView');
-  
-  if (isHorizontalView) {
-    btnToggle.innerHTML = '<i class="fas fa-th-large"></i> Grid View';
-    document.getElementById('horizontalGallery').style.display = 'block';
-    document.getElementById('mediaGrid').style.display = 'none';
-    loadHorizontalGallery();
-  } else {
-    btnToggle.innerHTML = '<i class="fas fa-th"></i> Horizontal View';
-    document.getElementById('horizontalGallery').style.display = 'none';
-    document.getElementById('mediaGrid').style.display = 'grid';
-  }
-}
-
 function loadHorizontalGallery() {
   if (!selectedBooking) return;
   
@@ -997,25 +1931,42 @@ function loadHorizontalGallery() {
   mediaItems.forEach((media, index) => {
     const slide = document.createElement('div');
     slide.className = 'slide-item';
+    slide.setAttribute('data-index', index);
     
     if (media.type === 'image') {
       slide.innerHTML = `
-        <img src="${media.url}" alt="${media.caption || 'Site photo'}" class="gallery-image">
+        <img src="${media.url}" alt="${media.caption || 'Site photo'}" class="gallery-image" data-index="${index}">
         <div class="slide-info">
           <div class="media-caption">${media.caption || 'Site photo'}</div>
-          <div class="media-date">${formatDate(media.date)}</div>
+          <div class="media-date">${formatDate(media.date)} • ${formatFileSize(media.fileSize)}</div>
+        </div>
+        <div class="slide-actions">
+          <button class="slide-view-btn" data-index="${index}" title="View Full Size">
+            <i class="fas fa-expand"></i>
+          </button>
+          <button class="slide-edit-btn" data-index="${index}" title="Edit Details">
+            <i class="fas fa-edit"></i>
+          </button>
         </div>
       `;
     } else if (media.type === 'video') {
       slide.className = 'slide-item video';
       slide.innerHTML = `
-        <video controls class="gallery-video">
+        <video controls class="gallery-video" data-index="${index}">
           <source src="${media.url}" type="video/mp4">
           Your browser does not support the video tag.
         </video>
         <div class="slide-info">
           <div class="media-caption">${media.caption || 'Site video'}</div>
-          <div class="media-date">${formatDate(media.date)}</div>
+          <div class="media-date">${formatDate(media.date)} • ${formatFileSize(media.fileSize)}</div>
+        </div>
+        <div class="slide-actions">
+          <button class="slide-view-btn" data-index="${index}" title="View Full Size">
+            <i class="fas fa-expand"></i>
+          </button>
+          <button class="slide-edit-btn" data-index="${index}" title="Edit Details">
+            <i class="fas fa-edit"></i>
+          </button>
         </div>
       `;
     }
@@ -1068,157 +2019,41 @@ function loadHorizontalGallery() {
     horizontalSlider.on('afterChange', function(event, slick, currentSlide) {
       document.getElementById('currentSlide').textContent = currentSlide + 1;
     });
+    
+    // Add slide action handlers
+    slider.querySelectorAll('.slide-view-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const index = parseInt(btn.getAttribute('data-index'));
+        previewMedia(index);
+      });
+    });
+    
+    slider.querySelectorAll('.slide-edit-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const index = parseInt(btn.getAttribute('data-index'));
+        editMediaItem(index);
+      });
+    });
+    
+    // Add click handlers for media items
+    slider.querySelectorAll('img[data-index], video[data-index]').forEach(media => {
+      media.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const index = parseInt(media.getAttribute('data-index'));
+        previewMedia(index);
+      });
+    });
   }
 }
 
-// -----------------------------
-// Estimation Modal with Edit Tab
-// -----------------------------
-function openEstimationModal(bookingId) {
-  const booking = bookingsData.find(b => b.bookingId === bookingId);
-  if (!booking) return;
-  
-  selectedBooking = booking;
-  
-  // Set default tab and currency
-  setEstimationTab("orig", true);
-  
-  // Fill invoices
-  renderEstimationInvoices();
-  
-  // Load edit fields
-  loadEstimationEditFields();
-  
-  document.getElementById("estimationModal").classList.add("active");
-}
-
-function setEstimationTab(tab, silent) {
-  currentEstimationTab = tab;
-  
-  // Update tab buttons
-  document.querySelectorAll(".sitevisit-estimation-tab-unique-9284").forEach(btn => {
-    btn.classList.toggle("active", btn.getAttribute("data-tab") === tab);
-  });
-  
-  // Show selected tab content
-  document.getElementById("tab-orig").classList.toggle("active", tab === "orig");
-  document.getElementById("tab-adj").classList.toggle("active", tab === "adj");
-  document.getElementById("tab-diff").classList.toggle("active", tab === "diff");
-  document.getElementById("tab-edit").classList.toggle("active", tab === "edit");
-  
-  if (!silent) {
-    if (tab === "edit") {
-      loadEstimationEditFields();
-    } else {
-      renderEstimationInvoices();
-    }
+function toggleGalleryView() {
+  if (currentGalleryTab === 'horizontal') {
+    switchGalleryTab('grid');
+  } else {
+    switchGalleryTab('horizontal');
   }
-}
-
-function loadEstimationEditFields() {
-  if (!selectedBooking) return;
-  
-  const est = selectedBooking.estimation;
-  
-  // Generate Steam edit fields (simplified version)
-  const steamFields = document.getElementById("steamEditFields");
-  steamFields.innerHTML = `
-    <div class="edit-field">
-      <label>Steam Service Total (USD)</label>
-      <input type="number" step="0.01" value="${est.adjusted.steamTotal}" id="editSteamTotal">
-    </div>
-    <div class="edit-field">
-      <label>Service Description</label>
-      <textarea id="editSteamDesc" rows="6" placeholder="Enter service description...">${est.adjusted.steamInvoice}</textarea>
-    </div>
-    <div class="edit-field">
-      <label>Include Minimum Charge</label>
-      <select id="editSteamMinCharge">
-        <option value="yes" ${est.adjusted.steamTotal >= 120 ? 'selected' : ''}>Yes (Apply $120 minimum)</option>
-        <option value="no" ${est.adjusted.steamTotal < 120 ? 'selected' : ''}>No (Use actual total)</option>
-      </select>
-    </div>
-  `;
-  
-  // Generate Maintenance edit fields
-  const maintFields = document.getElementById("maintenanceEditFields");
-  maintFields.innerHTML = `
-    <div class="edit-field">
-      <label>Maintenance Service Total (USD)</label>
-      <input type="number" step="0.01" value="${est.adjusted.maintenanceTotal}" id="editMaintTotal">
-    </div>
-    <div class="edit-field">
-      <label>Service Description</label>
-      <textarea id="editMaintDesc" rows="6" placeholder="Enter service description...">${est.adjusted.maintenanceInvoice}</textarea>
-    </div>
-    <div class="edit-field">
-      <label>Tax Rate (%)</label>
-      <input type="number" step="0.01" value="5" id="editTaxRate">
-    </div>
-    <div class="edit-field">
-      <label>Include Travel Time</label>
-      <select id="editTravelTime">
-        <option value="yes">Yes</option>
-        <option value="no">No</option>
-      </select>
-    </div>
-  `;
-}
-
-function saveEstimationDraft() {
-  if (!selectedBooking) return;
-  
-  // Collect edited data
-  const editedData = {
-    steamTotal: parseFloat(document.getElementById("editSteamTotal").value) || 0,
-    steamInvoice: document.getElementById("editSteamDesc").value,
-    maintenanceTotal: parseFloat(document.getElementById("editMaintTotal").value) || 0,
-    maintenanceInvoice: document.getElementById("editMaintDesc").value
-  };
-  
-  // Save as draft (in a real app, you might have a separate draft property)
-  selectedBooking.estimation.draft = editedData;
-  
-  showNotification("Estimation changes saved as draft", "info");
-  
-  // Switch to adjusted tab to see changes
-  setEstimationTab("adj");
-}
-
-function updateEstimation() {
-  if (!selectedBooking) return;
-  
-  // Collect edited data
-  const editedData = {
-    steamTotal: parseFloat(document.getElementById("editSteamTotal").value) || 0,
-    steamInvoice: document.getElementById("editSteamDesc").value,
-    maintenanceTotal: parseFloat(document.getElementById("editMaintTotal").value) || 0,
-    maintenanceInvoice: document.getElementById("editMaintDesc").value
-  };
-  
-  // Apply minimum charge if selected
-  const applyMinCharge = document.getElementById("editSteamMinCharge").value === "yes";
-  if (applyMinCharge && editedData.steamTotal < 120) {
-    editedData.steamTotal = 114 * 1.05; // Apply minimum with tax
-  }
-  
-  // Update adjusted estimation
-  selectedBooking.estimation.adjusted.steamTotal = editedData.steamTotal;
-  selectedBooking.estimation.adjusted.steamInvoice = editedData.steamInvoice;
-  selectedBooking.estimation.adjusted.maintenanceTotal = editedData.maintenanceTotal;
-  selectedBooking.estimation.adjusted.maintenanceInvoice = editedData.maintenanceInvoice;
-  
-  // Update in bookingsData
-  const index = bookingsData.findIndex(b => b.bookingId === selectedBooking.bookingId);
-  if (index !== -1) {
-    bookingsData[index].estimation.adjusted = selectedBooking.estimation.adjusted;
-  }
-  
-  showNotification("Estimation updated successfully!", "success");
-  
-  // Refresh all views
-  renderEstimationInvoices();
-  setEstimationTab("adj");
 }
 
 // -----------------------------
@@ -1419,402 +2254,153 @@ function generateShareId() {
 }
 
 // -----------------------------
-// Share Page View Functionality
+// Estimation Modal Functions
 // -----------------------------
-function checkForShareLink() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const shareId = urlParams.get('share');
+function openEstimationModal(bookingId) {
+  const booking = bookingsData.find(b => b.bookingId === bookingId);
+  if (!booking) return;
   
-  if (shareId) {
-    // Find the booking that has this share ID
-    const bookingEntry = Object.entries(shareableLinks).find(([bookingId, data]) => 
-      data.shareId === shareId && data.active === true
-    );
-    
-    if (bookingEntry) {
-      const [bookingId, linkData] = bookingEntry;
-      const booking = bookingsData.find(b => b.bookingId === bookingId);
-      
-      if (booking) {
-        // Increment view count
-        linkData.views = (linkData.views || 0) + 1;
-        shareableLinks[bookingId] = linkData;
-        localStorage.setItem('shareableLinks', JSON.stringify(shareableLinks));
-        
-        // Show share view
-        showShareView(booking, linkData);
-        return true;
-      }
-    }
-  }
+  selectedBooking = booking;
   
-  return false;
+  // Set default tab and currency
+  setEstimationTab("orig", true);
+  
+  // Fill invoices
+  renderEstimationInvoices();
+  
+  // Load edit fields
+  loadEstimationEditFields();
+  
+  document.getElementById("estimationModal").classList.add("active");
 }
 
-function showShareView(booking, linkData) {
-  // Hide the main dashboard
-  document.querySelector('.sitevisit-container-unique-9284').style.display = 'none';
-  document.querySelector('.sitevisit-header-unique-9284').style.display = 'none';
+function setEstimationTab(tab, silent) {
+  currentEstimationTab = tab;
   
-  // Create and show share view
-  const shareView = document.createElement('div');
-  shareView.className = 'share-view-container';
-  shareView.innerHTML = `
-    <div class="share-view-header">
-      <div class="share-view-brand">
-        <div class="logo">SC</div>
-        <div>
-          <h1>Site Visit Portal</h1>
-          <p>View-only access for booking: ${booking.bookingId}</p>
-        </div>
-      </div>
-      <button class="close-share-view" id="btnCloseShareView">
-        <i class="fas fa-times"></i> Close
-      </button>
+  // Update tab buttons
+  document.querySelectorAll(".sitevisit-estimation-tab-unique-9284").forEach(btn => {
+    btn.classList.toggle("active", btn.getAttribute("data-tab") === tab);
+  });
+  
+  // Show selected tab content
+  document.getElementById("tab-orig").classList.toggle("active", tab === "orig");
+  document.getElementById("tab-adj").classList.toggle("active", tab === "adj");
+  document.getElementById("tab-diff").classList.toggle("active", tab === "diff");
+  document.getElementById("tab-edit").classList.toggle("active", tab === "edit");
+  
+  if (!silent) {
+    if (tab === "edit") {
+      loadEstimationEditFields();
+    } else {
+      renderEstimationInvoices();
+    }
+  }
+}
+
+function loadEstimationEditFields() {
+  if (!selectedBooking) return;
+  
+  const est = selectedBooking.estimation;
+  
+  // Generate Steam edit fields
+  const steamFields = document.getElementById("steamEditFields");
+  steamFields.innerHTML = `
+    <div class="edit-field">
+      <label>Steam Service Total (USD)</label>
+      <input type="number" step="0.01" value="${est.adjusted.steamTotal}" id="editSteamTotal">
     </div>
-    
-    <div class="share-view-content">
-      <div class="share-view-tabs">
-        <button class="share-tab active" data-tab="overview"><i class="fas fa-home"></i> Overview</button>
-        ${linkData.settings.allowEstimationView ? 
-          `<button class="share-tab" data-tab="estimation"><i class="fas fa-calculator"></i> Estimation</button>` : ''}
-        ${linkData.settings.allowReportView ? 
-          `<button class="share-tab" data-tab="report"><i class="fas fa-file-alt"></i> Site Report</button>` : ''}
-        ${linkData.settings.allowGalleryView ? 
-          `<button class="share-tab" data-tab="gallery"><i class="fas fa-images"></i> Gallery</button>` : ''}
-        ${linkData.settings.allowUpload ? 
-          `<button class="share-tab" data-tab="upload"><i class="fas fa-upload"></i> Upload</button>` : ''}
-      </div>
-      
-      <div class="share-view-body">
-        <!-- Overview Tab -->
-        <div class="share-tab-content active" id="share-overview">
-          <div class="overview-card">
-            <h3><i class="fas fa-info-circle"></i> Booking Overview</h3>
-            <div class="overview-details">
-              <div class="overview-item">
-                <strong>Client:</strong> ${escapeHtml(booking.clientName)}
-              </div>
-              <div class="overview-item">
-                <strong>Service:</strong> ${escapeHtml(booking.serviceType)}
-              </div>
-              <div class="overview-item">
-                <strong>Address:</strong> ${escapeHtml(booking.address)}
-              </div>
-              <div class="overview-item">
-                <strong>Visit Date:</strong> ${formatDate(booking.visitDate)} at ${booking.visitTime}
-              </div>
-              <div class="overview-item">
-                <strong>Status:</strong> <span class="status-badge">${booking.status}</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="actions-card">
-            <h4>Quick Actions</h4>
-            <div class="quick-actions">
-              ${linkData.settings.allowEstimationView ? 
-                `<button class="quick-action-btn" data-action="view-estimation">
-                  <i class="fas fa-calculator"></i> View Estimation
-                </button>` : ''}
-              ${linkData.settings.allowGalleryView ? 
-                `<button class="quick-action-btn" data-action="view-gallery">
-                  <i class="fas fa-images"></i> View Gallery
-                </button>` : ''}
-            </div>
-          </div>
-        </div>
-        
-        <!-- Estimation Tab (if allowed) -->
-        ${linkData.settings.allowEstimationView ? `
-          <div class="share-tab-content" id="share-estimation">
-            <div class="estimation-preview">
-              <h3><i class="fas fa-calculator"></i> Estimation Forms</h3>
-              <div class="estimation-display">
-                <pre>${booking.estimation.adjusted.steamInvoice}</pre>
-              </div>
-              <div class="estimation-display">
-                <pre>${booking.estimation.adjusted.maintenanceInvoice}</pre>
-              </div>
-            </div>
-          </div>
-        ` : ''}
-        
-        <!-- Report Tab (if allowed) -->
-        ${linkData.settings.allowReportView ? `
-          <div class="share-tab-content" id="share-report">
-            <div class="report-preview">
-              <h3><i class="fas fa-file-alt"></i> Site Visit Report</h3>
-              ${booking.siteVisitReport && booking.siteVisitReport.reportDate ? `
-                <div class="report-content">
-                  <div class="report-field">
-                    <strong>Visit Date:</strong> ${formatDate(booking.siteVisitReport.reportDate)} ${booking.siteVisitReport.reportTime}
-                  </div>
-                  <div class="report-field">
-                    <strong>Site Condition:</strong> ${booking.siteVisitReport.siteCondition}
-                  </div>
-                  <div class="report-field">
-                    <strong>Notes:</strong> ${escapeHtml(booking.siteVisitReport.visitNotes)}
-                  </div>
-                  <div class="report-field">
-                    <strong>Recommendations:</strong> ${escapeHtml(booking.siteVisitReport.recommendations)}
-                  </div>
-                </div>
-              ` : `
-                <div class="no-report">
-                  <i class="fas fa-file-exclamation"></i>
-                  <p>No site visit report available yet</p>
-                </div>
-              `}
-            </div>
-          </div>
-        ` : ''}
-        
-        <!-- Gallery Tab (if allowed) -->
-        ${linkData.settings.allowGalleryView ? `
-          <div class="share-tab-content" id="share-gallery">
-            <div class="gallery-preview">
-              <h3><i class="fas fa-images"></i> Photo Gallery</h3>
-              ${booking.mediaGallery && booking.mediaGallery.length > 0 ? `
-                <div class="share-gallery-grid">
-                  ${booking.mediaGallery.slice(0, 6).map((media, index) => `
-                    <div class="share-media-item">
-                      ${media.type === 'image' ? 
-                        `<img src="${media.url}" alt="${media.caption}">` :
-                        `<video controls><source src="${media.url}" type="video/mp4"></video>`
-                      }
-                      <div class="share-media-info">${media.caption}</div>
-                    </div>
-                  `).join('')}
-                </div>
-              ` : `
-                <div class="no-gallery">
-                  <i class="fas fa-images"></i>
-                  <p>No photos or videos available yet</p>
-                </div>
-              `}
-            </div>
-          </div>
-        ` : ''}
-        
-        <!-- Upload Tab (if allowed) -->
-        ${linkData.settings.allowUpload ? `
-          <div class="share-tab-content" id="share-upload">
-            <div class="upload-section">
-              <h3><i class="fas fa-upload"></i> Upload Additional Media</h3>
-              <p>You can upload additional photos or videos related to this site visit.</p>
-              
-              <div class="upload-area" id="shareUploadArea">
-                <i class="fas fa-cloud-upload-alt fa-3x"></i>
-                <p>Drag & drop files here or click to browse</p>
-                <input type="file" id="shareFileUpload" accept="image/*,video/*" multiple style="display: none;">
-                <button class="browse-btn" id="btnBrowseShare">Browse Files</button>
-              </div>
-              
-              <div class="upload-queue" id="shareUploadQueue"></div>
-              
-              <button class="upload-submit-btn" id="btnSubmitShareUpload" disabled>
-                <i class="fas fa-upload"></i> Upload Files
-              </button>
-            </div>
-          </div>
-        ` : ''}
-      </div>
+    <div class="edit-field">
+      <label>Service Description</label>
+      <textarea id="editSteamDesc" rows="6" placeholder="Enter service description...">${est.adjusted.steamInvoice}</textarea>
     </div>
-    
-    <div class="share-view-footer">
-      <p>Shared access for booking: <strong>${booking.bookingId}</strong></p>
-      <p class="share-note"><i class="fas fa-info-circle"></i> This is a view-only shared access portal</p>
+    <div class="edit-field">
+      <label>Include Minimum Charge</label>
+      <select id="editSteamMinCharge">
+        <option value="yes" ${est.adjusted.steamTotal >= 120 ? 'selected' : ''}>Yes (Apply $120 minimum)</option>
+        <option value="no" ${est.adjusted.steamTotal < 120 ? 'selected' : ''}>No (Use actual total)</option>
+      </select>
     </div>
   `;
   
-  document.body.appendChild(shareView);
-  
-  // Add event listeners for share view
-  setupShareViewEvents(booking, linkData);
+  // Generate Maintenance edit fields
+  const maintFields = document.getElementById("maintenanceEditFields");
+  maintFields.innerHTML = `
+    <div class="edit-field">
+      <label>Maintenance Service Total (USD)</label>
+      <input type="number" step="0.01" value="${est.adjusted.maintenanceTotal}" id="editMaintTotal">
+    </div>
+    <div class="edit-field">
+      <label>Service Description</label>
+      <textarea id="editMaintDesc" rows="6" placeholder="Enter service description...">${est.adjusted.maintenanceInvoice}</textarea>
+    </div>
+    <div class="edit-field">
+      <label>Tax Rate (%)</label>
+      <input type="number" step="0.01" value="5" id="editTaxRate">
+    </div>
+    <div class="edit-field">
+      <label>Include Travel Time</label>
+      <select id="editTravelTime">
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+    </div>
+  `;
 }
 
-function setupShareViewEvents(booking, linkData) {
-  // Close button
-  document.getElementById('btnCloseShareView').addEventListener('click', () => {
-    const shareView = document.querySelector('.share-view-container');
-    if (shareView) {
-      shareView.remove();
-    }
-    document.querySelector('.sitevisit-container-unique-9284').style.display = 'block';
-    document.querySelector('.sitevisit-header-unique-9284').style.display = 'block';
-    window.history.replaceState({}, document.title, window.location.pathname);
-  });
+function saveEstimationDraft() {
+  if (!selectedBooking) return;
   
-  // Tab switching
-  document.querySelectorAll('.share-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      const tabName = tab.getAttribute('data-tab');
-      
-      // Update active tab
-      document.querySelectorAll('.share-tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      
-      // Show active content
-      document.querySelectorAll('.share-tab-content').forEach(content => {
-        content.classList.remove('active');
-      });
-      const tabContent = document.getElementById(`share-${tabName}`);
-      if (tabContent) {
-        tabContent.classList.add('active');
-      }
-    });
-  });
+  // Collect edited data
+  const editedData = {
+    steamTotal: parseFloat(document.getElementById("editSteamTotal").value) || 0,
+    steamInvoice: document.getElementById("editSteamDesc").value,
+    maintenanceTotal: parseFloat(document.getElementById("editMaintTotal").value) || 0,
+    maintenanceInvoice: document.getElementById("editMaintDesc").value
+  };
   
-  // Quick actions
-  document.querySelectorAll('.quick-action-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const action = btn.getAttribute('data-action');
-      if (action === 'view-estimation') {
-        const estimationTab = document.querySelector('[data-tab="estimation"]');
-        if (estimationTab) estimationTab.click();
-      } else if (action === 'view-gallery') {
-        const galleryTab = document.querySelector('[data-tab="gallery"]');
-        if (galleryTab) galleryTab.click();
-      }
-    });
-  });
+  // Save as draft
+  selectedBooking.estimation.draft = editedData;
   
-  // Upload functionality (if allowed)
-  if (linkData.settings.allowUpload) {
-    const uploadArea = document.getElementById('shareUploadArea');
-    const fileInput = document.getElementById('shareFileUpload');
-    const btnBrowse = document.getElementById('btnBrowseShare');
-    const btnSubmit = document.getElementById('btnSubmitShareUpload');
-    
-    if (uploadArea && fileInput && btnBrowse && btnSubmit) {
-      let filesToUpload = [];
-      
-      btnBrowse.addEventListener('click', () => fileInput.click());
-      uploadArea.addEventListener('click', () => fileInput.click());
-      
-      uploadArea.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadArea.classList.add('dragover');
-      });
-      
-      uploadArea.addEventListener('dragleave', () => {
-        uploadArea.classList.remove('dragover');
-      });
-      
-      uploadArea.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadArea.classList.remove('dragover');
-        handleFileSelect(e.dataTransfer.files);
-      });
-      
-      fileInput.addEventListener('change', (e) => {
-        handleFileSelect(e.target.files);
-      });
-      
-      function handleFileSelect(files) {
-        filesToUpload = Array.from(files);
-        updateUploadQueue();
-        btnSubmit.disabled = filesToUpload.length === 0;
-      }
-      
-      function updateUploadQueue() {
-        const queue = document.getElementById('shareUploadQueue');
-        if (!queue) return;
-        
-        queue.innerHTML = '';
-        
-        if (filesToUpload.length === 0) {
-          queue.innerHTML = '<p class="no-files">No files selected</p>';
-          return;
-        }
-        
-        filesToUpload.forEach((file, index) => {
-          const fileItem = document.createElement('div');
-          fileItem.className = 'upload-file-item';
-          fileItem.innerHTML = `
-            <div class="file-info">
-              <i class="fas fa-file-${file.type.startsWith('image/') ? 'image' : 'video'}"></i>
-              <div>
-                <strong>${file.name}</strong>
-                <p>${formatFileSize(file.size)}</p>
-              </div>
-            </div>
-            <button class="remove-file" data-index="${index}">
-              <i class="fas fa-times"></i>
-            </button>
-          `;
-          queue.appendChild(fileItem);
-        });
-        
-        // Add remove handlers
-        queue.querySelectorAll('.remove-file').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            const index = parseInt(btn.getAttribute('data-index'));
-            filesToUpload.splice(index, 1);
-            updateUploadQueue();
-            btnSubmit.disabled = filesToUpload.length === 0;
-          });
-        });
-      }
-      
-      btnSubmit.addEventListener('click', () => {
-        if (filesToUpload.length === 0) return;
-        
-        btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
-        
-        // Simulate upload
-        setTimeout(() => {
-          // In real app, upload to server here
-          // For demo, we'll add to booking's media gallery
-          filesToUpload.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-              const mediaItem = {
-                id: Date.now(),
-                url: e.target.result,
-                type: file.type.startsWith('image/') ? 'image' : 'video',
-                caption: `Uploaded via share link: ${file.name}`,
-                date: new Date().toISOString().split('T')[0],
-                fileName: file.name,
-                fileSize: file.size,
-                uploadedViaShare: true
-              };
-              
-              if (!booking.mediaGallery) {
-                booking.mediaGallery = [];
-              }
-              
-              booking.mediaGallery.push(mediaItem);
-              
-              // Update link upload count
-              linkData.uploads = (linkData.uploads || 0) + 1;
-              shareableLinks[booking.bookingId] = linkData;
-              localStorage.setItem('shareableLinks', JSON.stringify(shareableLinks));
-            };
-            reader.readAsDataURL(file);
-          });
-          
-          // Reset
-          filesToUpload = [];
-          updateUploadQueue();
-          btnSubmit.disabled = true;
-          btnSubmit.innerHTML = '<i class="fas fa-upload"></i> Upload Files';
-          
-          showNotification(`${filesToUpload.length} file(s) uploaded successfully via share link!`, 'success');
-        }, 1500);
-      });
-    }
+  showNotification("Estimation changes saved as draft", "info");
+  
+  // Switch to adjusted tab to see changes
+  setEstimationTab("adj");
+}
+
+function updateEstimation() {
+  if (!selectedBooking) return;
+  
+  // Collect edited data
+  const editedData = {
+    steamTotal: parseFloat(document.getElementById("editSteamTotal").value) || 0,
+    steamInvoice: document.getElementById("editSteamDesc").value,
+    maintenanceTotal: parseFloat(document.getElementById("editMaintTotal").value) || 0,
+    maintenanceInvoice: document.getElementById("editMaintDesc").value
+  };
+  
+  // Apply minimum charge if selected
+  const applyMinCharge = document.getElementById("editSteamMinCharge").value === "yes";
+  if (applyMinCharge && editedData.steamTotal < 120) {
+    editedData.steamTotal = 114 * 1.05; // Apply minimum with tax
   }
-}
-
-function formatFileSize(bytes) {
-  if (bytes === 0) return '0 Bytes';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  
+  // Update adjusted estimation
+  selectedBooking.estimation.adjusted.steamTotal = editedData.steamTotal;
+  selectedBooking.estimation.adjusted.steamInvoice = editedData.steamInvoice;
+  selectedBooking.estimation.adjusted.maintenanceTotal = editedData.maintenanceTotal;
+  selectedBooking.estimation.adjusted.maintenanceInvoice = editedData.maintenanceInvoice;
+  
+  // Update in bookingsData
+  const index = bookingsData.findIndex(b => b.bookingId === selectedBooking.bookingId);
+  if (index !== -1) {
+    bookingsData[index].estimation.adjusted = selectedBooking.estimation.adjusted;
+  }
+  
+  showNotification("Estimation updated successfully!", "success");
+  
+  // Refresh all views
+  renderEstimationInvoices();
+  setEstimationTab("adj");
 }
 
 // -----------------------------
@@ -1919,7 +2505,6 @@ function editBooking(bookingId) {
   if (!booking) return;
   
   // In a real application, you would open an edit form
-  // For now, we'll just open the estimation modal in edit mode
   selectedBooking = booking;
   openEstimationModal(bookingId);
   setEstimationTab("edit");
