@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Cleaning Estimator</title>
+  <link rel="stylesheet" href="./css/SmartEstimator.css">
+</head>
+<body>
+  <div class="se-container">
+    <!-- Header -->
+    <div class="se-header">
+      <h1>🧹 Smart Cleaning Estimator</h1>
+      <div class="se-nav-buttons">
+        <button onclick="location.href='../index.html'" class="se-btn se-btn-primary">Main Page</button>
+        <button onclick="location.href='./CleaningPriceList.html'" class="se-btn se-btn-secondary">Price List</button>
+        <button onclick="location.href='./ManageCleaningPriceList.html'" class="se-btn se-btn-admin">⚙️ Manage</button>
+      </div>
+    </div>
+
+    <!-- Service Type Selection -->
+    <div class="se-service-tabs">
+      <button class="se-service-tab active" onclick="switchService('steam')">🔥 Steam Clean</button>
+      <button class="se-service-tab" onclick="switchService('maintenance')">🧼 Maintenance Clean</button>
+      <button class="se-service-tab" onclick="switchService('moveout')">📦 Move Out Clean</button>
+      <button class="se-service-tab" onclick="switchService('deep')">🔨 Deep Clean</button>
+      <button class="se-service-tab" onclick="switchService('camper')">🚐 Camper Clean</button>
+      <button class="se-service-tab" onclick="switchService('combined')">🔄 Combined Services</button>
+    </div>
+
+    <!-- Steam Clean Estimator -->
+    <div id="service-steam" class="se-service-content active">
+      <div class="se-estimator-card">
+        <h2>🔥 Steam Clean Estimator</h2>
+        
+        <!-- Staff Info -->
+        <div class="se-staff-info" id="steamStaffInfo">
+          <strong>Available Staff:</strong> <span id="steamStaffList">Loading...</span>
+        </div>
+
+        <form id="steamEstimateForm">
+          <table class="se-table" id="steamItemsTable">
+            <thead>
+              <tr>
+                <th>Select</th>
+                <th>Item</th>
+                <th>Size/Details</th>
+                <th>Price ($)</th>
+                <th>Qty</th>
+              </tr>
+            </thead>
+            <tbody id="steamItemsBody">
+              <!-- Dynamic items from price list -->
+            </tbody>
+          </table>
+
+          <!-- Stair Flight Special -->
+          <div class="se-stair-flight" id="stairFlightSection">
+            <!-- Will be populated dynamically -->
+          </div>
+        </form>
+
+        <!-- Deposit & File Upload -->
+        <div class="se-deposit-section">
+          <label class="se-checkbox">
+            <input type="checkbox" id="steamDepositPaid" onchange="calculateSteamEstimate()"> 
+            <span id="depositLabel">$120 Deposit Paid</span>
+          </label>
+          <div class="se-file-upload">
+            <label>Upload Proof of Deposit:</label>
+            <input type="file" id="steamDepositFile" accept="image/*,application/pdf">
+          </div>
+        </div>
+
+        <!-- Info Button -->
+        <div class="se-info-button">
+          <button onclick="showSteamInfo()" class="se-btn se-btn-info">ⓘ Minimum Charge Policy</button>
+        </div>
+
+        <!-- Invoice -->
+        <div class="se-invoice-box">
+          <h3>Steam Clean Estimate Invoice</h3>
+          <pre id="steamInvoice" class="se-invoice">Select items to see estimate</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Maintenance Clean Estimator -->
+    <div id="service-maintenance" class="se-service-content">
+      <div class="se-estimator-card">
+        <h2>🧼 Maintenance Clean Estimator</h2>
+        
+        <div class="se-rate-selection">
+          <label class="se-radio">
+            <input type="radio" name="maintenanceRate" value="residential" checked onchange="calculateMaintenanceEstimate()"> Residential ($<span id="residentialRateDisplay">38</span>/hr)
+          </label>
+          <label class="se-radio">
+            <input type="radio" name="maintenanceRate" value="commercial" onchange="calculateMaintenanceEstimate()"> Commercial ($<span id="commercialRateDisplay">44</span>/hr)
+          </label>
+        </div>
+
+        <!-- Visit Estimation for Commercial -->
+        <div id="maintenanceVisitOption" style="display:none;" class="se-visit-option">
+          <label class="se-checkbox">
+            <input type="checkbox" id="maintenanceVisitEstimation" onchange="toggleMaintenanceVisit()"> Visit Estimation Required
+          </label>
+          <div id="maintenanceVisitAlert" class="se-alert-box">⚠ Invoice is paused until visit estimation is processed.</div>
+          <div id="maintenanceVisitSuccess" class="se-success-box">✅ Visit estimation finalized.</div>
+          <button id="maintenanceFinalizeBtn" class="se-btn se-btn-success" style="display:none;" onclick="finalizeMaintenanceVisit()">Finalize Visit Estimation</button>
+        </div>
+
+        <!-- Room Hours Table -->
+        <table class="se-table">
+          <thead>
+            <tr>
+              <th>Room</th>
+              <th>Base Hours</th>
+              <th>Large?</th>
+              <th>Extra Hours</th>
+              <th>Total Hours</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Kitchen</td>
+              <td><span id="kitchenBaseDisplay">4.00</span></td>
+              <td><input type="checkbox" id="kitchenLarge" onchange="calculateMaintenanceEstimate()"> +<span id="kitchenLargeAdd">1.5</span> hrs</td>
+              <td>
+                <input type="range" id="kitchenExtra" min="0" max="5" step="0.25" value="0" oninput="updateMaintenanceHours()">
+                <span id="kitchenExtraDisplay">0.00</span> hrs
+              </td>
+              <td id="kitchenHours">4.00</td>
+            </tr>
+            <tr>
+              <td>Bedroom</td>
+              <td><span id="bedroomBaseDisplay">1.00</span></td>
+              <td><input type="checkbox" id="bedroomLarge" onchange="calculateMaintenanceEstimate()"> +<span id="bedroomLargeAdd">0.5</span> hrs</td>
+              <td>
+                <input type="range" id="bedroomExtra" min="0" max="5" step="0.25" value="0" oninput="updateMaintenanceHours()">
+                <span id="bedroomExtraDisplay">0.00</span> hrs
+              </td>
+              <td id="bedroomHours">1.00</td>
+            </tr>
+            <tr>
+              <td>Bathroom</td>
+              <td><span id="bathroomBaseDisplay">2.50</span></td>
+              <td><input type="checkbox" id="bathroomLarge" onchange="calculateMaintenanceEstimate()"> +<span id="bathroomLargeAdd">1.0</span> hrs</td>
+              <td>
+                <input type="range" id="bathroomExtra" min="0" max="5" step="0.25" value="0" oninput="updateMaintenanceHours()">
+                <span id="bathroomExtraDisplay">0.00</span> hrs
+              </td>
+              <td id="bathroomHours">2.50</td>
+            </tr>
+            <tr>
+              <td>Entryway</td>
+              <td><span id="entryBaseDisplay">0.50</span></td>
+              <td>-</td>
+              <td>
+                <input type="range" id="entryExtra" min="0" max="3" step="0.25" value="0" oninput="updateMaintenanceHours()">
+                <span id="entryExtraDisplay">0.00</span> hrs
+              </td>
+              <td id="entryHours">0.50</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="se-note" id="maintenanceNote">Minimum 3 hours for residential cleaning (2 cleaners)</div>
+      </div>
+    </div>
+
+    <!-- Move Out Estimator -->
+    <div id="service-moveout" class="se-service-content">
+      <div class="se-estimator-card">
+        <h2>📦 Move Out Clean Estimator</h2>
+        <p class="se-note">Automatically estimates hours based on size (6 hours minimum for 2 cleaners)</p>
+
+        <div class="se-form-group">
+          <label>Home Size:</label>
+          <select id="moveoutSize" onchange="calculateMoveoutEstimate()" class="se-select">
+            <option value="small">Small — 7–8 hrs</option>
+            <option value="medium">Medium — 9–15 hrs</option>
+            <option value="large">Large — 15+ hrs</option>
+          </select>
+        </div>
+
+        <div class="se-form-group">
+          <label>Square Footage:</label>
+          <input type="number" id="moveoutSqft" placeholder="e.g. 1800" min="300" step="50" oninput="calculateMoveoutEstimate()" class="se-input">
+        </div>
+
+        <div class="se-form-group">
+          <label>Hourly Rate ($):</label>
+          <input type="number" id="moveoutRate" value="38" step="1" oninput="calculateMoveoutEstimate()" class="se-input">
+        </div>
+
+        <div class="se-result-box">
+          <p><strong>Estimated Hours:</strong> <span id="moveoutHoursDisplay">0.00</span></p>
+          <p><strong>Estimated Cost:</strong> $<span id="moveoutCostDisplay">0.00</span></p>
+          <p class="se-small-note">* Travel time is included in total booking hours</p>
+          <p class="se-small-note">* Hours will be divided between 2 staff members</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deep Clean Estimator -->
+    <div id="service-deep" class="se-service-content">
+      <div class="se-estimator-card">
+        <h2>🔨 Deep Clean Estimator</h2>
+        <p class="se-note">Automatic deep clean estimation based on home size (6 hours minimum for 2 cleaners)</p>
+
+        <div class="se-form-group">
+          <label>Home Size:</label>
+          <select id="deepSize" onchange="calculateDeepEstimate()" class="se-select">
+            <option value="small">Small — 7–8 hrs</option>
+            <option value="medium">Medium — 9–15 hrs</option>
+            <option value="large">Large — 15+ hrs</option>
+          </select>
+        </div>
+
+        <div class="se-form-group">
+          <label>Square Footage:</label>
+          <input type="number" id="deepSqft" placeholder="e.g. 1500" min="300" step="50" oninput="calculateDeepEstimate()" class="se-input">
+        </div>
+
+        <div class="se-form-group">
+          <label>Hourly Rate ($):</label>
+          <input type="number" id="deepRate" value="38" step="1" oninput="calculateDeepEstimate()" class="se-input">
+        </div>
+
+        <div class="se-result-box">
+          <p><strong>Estimated Hours:</strong> <span id="deepHoursDisplay">0.00</span></p>
+          <p><strong>Estimated Cost:</strong> $<span id="deepCostDisplay">0.00</span></p>
+          <p class="se-small-note">* Travel time is included in total booking hours</p>
+          <p class="se-small-note">* Hours will be divided between 2 staff members</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Camper Estimator -->
+    <div id="service-camper" class="se-service-content">
+      <div class="se-estimator-card">
+        <h2>🚐 Camper Cleaning Estimator</h2>
+        <div id="camperPackages" class="se-camper-grid">
+          <!-- Dynamic camper packages -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Combined Services Estimator -->
+    <div id="service-combined" class="se-service-content">
+      <div class="se-estimator-card">
+        <h2>🔄 Combined Services Estimator</h2>
+        
+        <div class="se-service-checkboxes">
+          <label class="se-checkbox"><input type="checkbox" id="combinedSteam" onchange="calculateCombinedEstimate()"> Include Steam Clean</label>
+          <label class="se-checkbox"><input type="checkbox" id="combinedMaintenance" onchange="calculateCombinedEstimate()"> Include Maintenance Clean</label>
+          <label class="se-checkbox"><input type="checkbox" id="combinedMoveout" onchange="calculateCombinedEstimate()"> Include Move Out Clean</label>
+          <label class="se-checkbox"><input type="checkbox" id="combinedDeep" onchange="calculateCombinedEstimate()"> Include Deep Clean</label>
+        </div>
+
+        <!-- Travel Time -->
+        <div class="se-travel-section">
+          <h3>Travel Time Fee</h3>
+          <div class="se-form-group">
+            <label>Rate Type:</label>
+            <select id="combinedTravelType" onchange="calculateCombinedEstimate()" class="se-select">
+              <option value="residential">Residential ($<span id="combinedResidentialRate">38</span>/hr)</option>
+              <option value="commercial">Commercial ($<span id="combinedCommercialRate">44</span>/hr)</option>
+            </select>
+          </div>
+          <div class="se-form-group">
+            <label>Travel Time (minutes):</label>
+            <input type="number" id="combinedTravelMinutes" min="0" max="120" step="5" oninput="calculateCombinedEstimate()" class="se-input">
+          </div>
+          <p><strong>Travel Fee:</strong> $<span id="combinedTravelCost">0.00</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Global Invoice Display -->
+    <div class="se-global-invoice">
+      <h2>📋 Final Estimate</h2>
+      <div class="se-invoice-actions">
+        <button class="se-btn se-btn-primary" onclick="copyInvoice()">📋 Copy Invoice</button>
+        <button class="se-btn se-btn-success" id="globalBookButton" onclick="bookService()">📅 Book Service</button>
+      </div>
+      <pre id="globalInvoice" class="se-invoice">Select services to generate estimate</pre>
+    </div>
+
+    <!-- Info Modal -->
+    <div id="steamInfoModal" class="se-modal">
+      <div class="se-modal-content">
+        <span class="se-close" onclick="closeSteamInfo()">&times;</span>
+        <h3>Minimum Charge Policy</h3>
+        <p id="steamPolicyText">All Steam Clean services priced below $114 will be adjusted to $114 plus 5% tax, making the final minimum charge $120.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./js/SmartEstimator.js"></script>
+</body>
+</html>

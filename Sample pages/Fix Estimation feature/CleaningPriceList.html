@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cleaning Services Price List</title>
+  <link rel="stylesheet" href="./css/CleaningPriceList.css">
+</head>
+<body>
+  <div class="cpl-container">
+    <!-- Header -->
+    <div class="cpl-header">
+      <h1>🧹 Cleaning Services Price List</h1>
+      <div class="cpl-nav-buttons">
+       
+        <button onclick="location.href='../estimation.html'" class="cpl-btn cpl-btn-secondary">Steam Estimator</button>
+        <button onclick="location.href='../Maintenance.html'" class="cpl-btn cpl-btn-secondary">Maintenance Estimator</button>
+        <button onclick="location.href='./ManageCleaningPriceList.html'" class="cpl-btn cpl-btn-admin">⚙️ Manage Price List</button>
+      </div>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="cpl-info-cards">
+      <div class="cpl-card">
+        <h3>📋 Quick Info</h3>
+        <p><strong>Minimum Steam Clean:</strong> $114 + 5% tax = $120</p>
+        <p><strong>First-time Client Deposit:</strong> $120</p>
+        <p><strong>Staff who can steam clean:</strong> DORA, ESTHER F, HAWA, MANUEL, MARIE, OPHI, SHANIA, SHANTELLE, THERESA</p>
+      </div>
+      <div class="cpl-card">
+        <h3>⏱️ Service Hours</h3>
+        <p><strong>Maintenance Clean:</strong> 3 hours minimum (2 cleaners)</p>
+        <p><strong>Move Out/Deep Clean:</strong> 6 hours minimum (2 cleaners)</p>
+        <p><strong>Travel Time:</strong> Included in total hours</p>
+      </div>
+    </div>
+
+    <!-- Steam Clean Price List -->
+    <div class="cpl-section" id="steamCleanSection">
+      <h2>🔥 Steam Clean Price List</h2>
+      <div class="cpl-table-container">
+        <table class="cpl-table" id="steamCleanTable">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Size/Details</th>
+              <th>Price ($)</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="steamCleanBody">
+            <!-- Dynamic content loaded from management system -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Camper Services -->
+    <div class="cpl-section" id="camperSection">
+      <h2>🚐 Camper Cleaning Services</h2>
+      <div class="cpl-table-container">
+        <table class="cpl-table" id="camperTable">
+          <thead>
+            <tr>
+              <th>Size</th>
+              <th>Price ($)</th>
+              <th>Includes</th>
+            </tr>
+          </thead>
+          <tbody id="camperBody">
+            <!-- Dynamic content loaded from management system -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Maintenance & Other Services -->
+    <div class="cpl-grid-2">
+      <div class="cpl-section">
+        <h2>🧼 Maintenance Clean</h2>
+        <div class="cpl-table-container">
+          <table class="cpl-table">
+            <tr>
+              <th>Rate Type</th>
+              <th>Price</th>
+            </tr>
+            <tr>
+              <td>Residential</td>
+              <td>$38/hour</td>
+            </tr>
+            <tr>
+              <td>Commercial</td>
+              <td>$44/hour</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="cpl-note">Minimum 3 hours (2 cleaners)</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="cpl-section">
+        <h2>📦 Move Out / Deep Clean</h2>
+        <div class="cpl-table-container">
+          <table class="cpl-table">
+            <tr>
+              <th>Service Type</th>
+              <th>Rate</th>
+            </tr>
+            <tr>
+              <td>Move Out Clean</td>
+              <td>$38/hour (min 6 hours)</td>
+            </tr>
+            <tr>
+              <td>Deep Clean</td>
+              <td>$38/hour (min 6 hours)</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="cpl-note">2 cleaners minimum</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Smart Estimator Rules -->
+    <div class="cpl-section">
+      <h2>⚙️ Smart Calculator Rules</h2>
+      <div class="cpl-rules-container" id="rulesContainer">
+        <!-- Dynamic rules loaded from management system -->
+      </div>
+    </div>
+
+    <!-- Last Updated -->
+    <div class="cpl-footer">
+      <p id="lastUpdated">Last updated: Loading...</p>
+    </div>
+  </div>
+
+  <script src="./js/CleaningPriceList.js"></script>
+</body>
+</html>

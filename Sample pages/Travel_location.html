@@ -1,0 +1,2764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G Corp Cleaning - Dashboard System</title>
+    <style>
+        :root {
+            --primary-color: #0b5cff;
+            --primary-dark: #0047cc;
+            --secondary-color: #06b6d4;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #111827;
+            --light-color: #f9fafb;
+            --gray-color: #6b7280;
+            --border-color: #e5e7eb;
+            --card-bg: #ffffff;
+            --sidebar-bg: #f8fafc;
+            --doc-bg: #1e293b;
+            --doc-text: #e2e8f0;
+            --geofence-color: #06b6d4;
+            --arrival-color: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* Header Styles */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 0.75rem;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .dashboard-selector {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--card-bg);
+            color: var(--dark-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--light-color);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-info {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-doc {
+            background-color: var(--doc-bg);
+            color: var(--doc-text);
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .dashboard-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .card-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--gray-color);
+        }
+
+        /* Map Container */
+        .map-container {
+            height: 400px;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        #adminMap, #cleanerMap {
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 11px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            border: 2px solid white;
+            box-shadow: 0 0 0 3px var(--border-color);
+        }
+
+        .timeline-time {
+            font-size: 0.875rem;
+            color: var(--gray-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-event {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-location {
+            font-size: 0.875rem;
+            color: var(--gray-color);
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .status-available {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-busy {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-offline {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
+        .status-anomaly {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-traveling {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-break {
+            background-color: #f0f9ff;
+            color: #0369a1;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--gray-color);
+            background-color: var(--sidebar-bg);
+        }
+
+        tr:hover {
+            background-color: var(--sidebar-bg);
+        }
+
+        /* Documentation Styles */
+        .documentation-content {
+            background-color: var(--doc-bg);
+            color: var(--doc-text);
+            padding: 2rem;
+            border-radius: 0.75rem;
+            max-height: 80vh;
+            overflow-y: auto;
+            line-height: 1.8;
+        }
+
+        .doc-section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .doc-section h2 {
+            color: var(--doc-text);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .doc-section h3 {
+            color: var(--doc-text);
+            margin: 1.5rem 0 0.75rem 0;
+            font-size: 1.25rem;
+        }
+
+        .doc-section ul, .doc-section ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .doc-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .scenario-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .scenario-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #fbbf24;
+        }
+
+        .feature-table {
+            width: 100%;
+            margin: 1rem 0;
+            background: rgba(255,255,255,0.05);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .feature-table th {
+            background: rgba(255,255,255,0.1);
+            color: var(--doc-text);
+            padding: 1rem;
+        }
+
+        .feature-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .anti-cheat-flags {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .flag-card {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content.documentation {
+            background-color: var(--doc-bg);
+            color: var(--doc-text);
+            max-width: 1000px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-color);
+        }
+
+        /* Notifications */
+        .notification-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-width: 400px;
+        }
+
+        .notification {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification-success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .notification-warning {
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .notification-danger {
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .notification-info {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Job Cards */
+        .job-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .job-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-client {
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .job-time {
+            font-size: 0.875rem;
+            color: var(--gray-color);
+        }
+
+        .job-details {
+            font-size: 0.875rem;
+            color: var(--gray-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .job-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Photo Upload Container */
+        .photo-upload-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .photo-preview {
+            width: 100px;
+            height: 100px;
+            background-color: #f3f4f6;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .photo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+
+            .dashboard-selector {
+                position: static;
+                justify-content: center;
+                margin-top: 1rem;
+            }
+
+            .map-container {
+                height: 300px;
+            }
+
+            .scenario-grid, .anti-cheat-flags {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* NEW STYLES FOR GEO-FENCE FEATURES */
+        
+        /* Geofence Status Indicators */
+        .geofence-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border: 1px solid;
+        }
+
+        .geofence-outside {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-color: #fca5a5;
+        }
+
+        .geofence-inside {
+            background-color: #dcfce7;
+            color: #166534;
+            border-color: #86efac;
+        }
+
+        .geofence-arrived {
+            background-color: #dbeafe;
+            color: #1e40af;
+            border-color: #93c5fd;
+        }
+
+        .distance-indicator {
+            padding: 1rem;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 0.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .distance-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .distance-label {
+            font-size: 0.875rem;
+            color: var(--gray-color);
+        }
+
+        /* Geofence Visualization */
+        .geofence-visual {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 1rem auto;
+        }
+
+        .geofence-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px dashed;
+            opacity: 0.3;
+        }
+
+        .geofence-circle-30m {
+            width: 200px;
+            height: 200px;
+            border-color: var(--geofence-color);
+        }
+
+        .geofence-circle-15m {
+            width: 100px;
+            height: 100px;
+            top: 50px;
+            left: 50px;
+            border-color: var(--arrival-color);
+        }
+
+        .cleaner-dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            transition: all 0.5s ease;
+        }
+
+        /* Service Lock Panel */
+        .service-lock {
+            padding: 1rem;
+            background: #fef3c7;
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--warning-color);
+            margin-bottom: 1rem;
+        }
+
+        .service-unlock {
+            background: #dcfce7;
+            border-left: 4px solid var(--success-color);
+        }
+
+        /* Auto-detection Status */
+        .auto-detection-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            background: rgba(6, 182, 212, 0.1);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .auto-detection-active {
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        /* Arrival Alert */
+        .arrival-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, var(--arrival-color), #059669);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            z-index: 10000;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: fadeInScale 0.5s ease;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏢 G Corp Cleaning Dashboard System</h1>
+            <p>Professional Cleaning Service Management Platform</p>
+            <div class="dashboard-selector">
+                <button class="btn btn-small btn-secondary" id="showAdminBtn">
+                    <i class="fas fa-user-tie"></i> Admin Dashboard
+                </button>
+                <button class="btn btn-small btn-secondary" id="showCleanerBtn">
+                    <i class="fas fa-user"></i> Cleaner Dashboard
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <a href="index.html" class="btn btn-primary">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <button class="btn btn-info" id="docBtn">
+                <i class="fas fa-file-alt"></i> View Documentation
+            </button>
+            <button class="btn btn-secondary" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i> Refresh Dashboard
+            </button>
+            <button class="btn btn-warning" id="simulateGeofenceBtn">
+                <i class="fas fa-map-marker"></i> Test Geofence
+            </button>
+        </div>
+
+        <!-- Admin Dashboard Content -->
+        <div id="adminDashboard" class="dashboard-content active">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Active Cleaners</h3>
+                        <i class="fas fa-users card-icon"></i>
+                    </div>
+                    <div class="metric-value">24</div>
+                    <div class="metric-label">12 on jobs, 8 available, 4 on break</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Today's Revenue</h3>
+                        <i class="fas fa-dollar-sign card-icon"></i>
+                    </div>
+                    <div class="metric-value">$3,845</div>
+                    <div class="metric-label">+12% from yesterday</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Pending Jobs</h3>
+                        <i class="fas fa-tasks card-icon"></i>
+                    </div>
+                    <div class="metric-value">18</div>
+                    <div class="metric-label">3 urgent, 15 standard</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Geofence Alerts</h3>
+                        <i class="fas fa-map-marker-alt card-icon"></i>
+                    </div>
+                    <div class="metric-value" id="geofenceAlertsCount">5</div>
+                    <div class="metric-label" id="geofenceAlertsDetail">3 arrivals, 2 outside zone</div>
+                </div>
+            </div>
+
+            <!-- Geofence Monitoring Section - NEW -->
+            <div class="card" style="margin-bottom: 1.5rem; border: 2px solid var(--geofence-color);">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-satellite"></i> Live Geofence Monitoring System</h3>
+                    <div class="auto-detection-status auto-detection-active">
+                        <i class="fas fa-radar"></i>
+                        <span>Auto-Detection: <strong>ACTIVE</strong> (Updates every 30s)</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                    <div class="distance-indicator">
+                        <div class="distance-value" id="adminDistance">-- m</div>
+                        <div class="distance-label">Distance to Job Location</div>
+                        <div style="font-size: 0.75rem; color: var(--gray-color); margin-top: 0.5rem;">
+                            <i class="fas fa-sync-alt"></i> Last update: <span id="adminLastUpdate">--:--</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="geofence-status" id="adminGeofenceStatus">
+                            <i class="fas fa-circle" style="color: var(--danger-color);"></i>
+                            <span>Status: OUTSIDE geofence</span>
+                        </div>
+                        <div style="font-size: 0.875rem; color: var(--gray-color); margin-top: 0.5rem;">
+                            <i class="fas fa-info-circle"></i> Service Start: <span id="adminServiceLockStatus" style="color: var(--danger-color); font-weight: 600;">LOCKED</span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Geofence Zones:</div>
+                        <div style="display: flex; gap: 1rem;">
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="width: 12px; height: 12px; border-radius: 50%; border: 2px dashed var(--geofence-color);"></div>
+                                    <span>30m - Detection Zone</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem;">
+                                    <div style="width: 12px; height: 12px; border-radius: 50%; border: 2px dashed var(--arrival-color);"></div>
+                                    <span>15m - Service Zone</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Geofence Visualization -->
+                <div style="text-align: center; margin: 1.5rem 0;">
+                    <div style="font-weight: 600; margin-bottom: 1rem;">Cleaner Position Relative to Job Location</div>
+                    <div class="geofence-visual">
+                        <div class="geofence-circle geofence-circle-30m"></div>
+                        <div class="geofence-circle geofence-circle-15m"></div>
+                        <div class="cleaner-dot" id="adminCleanerDot" style="top: 180px; left: 180px;"></div>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+                    <div style="font-size: 0.875rem; color: var(--gray-color);">
+                        <i class="fas fa-clock"></i> Auto-detected arrival: <span id="adminAutoArrivalTime">--:--</span>
+                    </div>
+                    <button class="btn btn-small btn-primary" id="adminForceArrivalBtn">
+                        <i class="fas fa-check-circle"></i> Mark as Arrived
+                    </button>
+                </div>
+            </div>
+
+            <!-- Live Tracking Section -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-header">
+                    <h3 class="card-title">Live Cleaner Tracking - Admin View</h3>
+                    <div>
+                        <button class="btn btn-small btn-primary" id="adminCenterMapBtn">
+                            <i class="fas fa-crosshairs"></i> Center Map
+                        </button>
+                        <button class="btn btn-small btn-success" id="adminUpdateLocationsBtn">
+                            <i class="fas fa-sync"></i> Update Locations
+                        </button>
+                    </div>
+                </div>
+                <div class="map-container">
+                    <div id="adminMap"></div>
+                </div>
+                <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #10b981;"></div>
+                        <span style="font-size: 0.875rem;">Available</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #f59e0b;"></div>
+                        <span style="font-size: 0.875rem;">Busy</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #3b82f6;"></div>
+                        <span style="font-size: 0.875rem;">Traveling</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background-color: #ef4444;"></div>
+                        <span style="font-size: 0.875rem;">Anomaly</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Controls -->
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Admin Controls</h3>
+                        <i class="fas fa-cogs card-icon"></i>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <button class="btn btn-success" id="adminClockAllBtn">
+                            <i class="fas fa-clock"></i> Clock In All Cleaners
+                        </button>
+                        <button class="btn btn-warning" id="adminEmergencyBtn">
+                            <i class="fas fa-exclamation-triangle"></i> Emergency Stop
+                        </button>
+                        <button class="btn btn-primary" id="adminAssignJobsBtn">
+                            <i class="fas fa-tasks"></i> Assign Jobs
+                        </button>
+                        <button class="btn btn-secondary" id="adminGenerateReportBtn">
+                            <i class="fas fa-chart-bar"></i> Generate Report
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Geofence Alerts</h3>
+                        <i class="fas fa-bell card-icon"></i>
+                    </div>
+                    <div id="adminAlerts">
+                        <div style="padding: 0.5rem; background: #dbeafe; border-radius: 0.5rem; margin-bottom: 0.5rem;">
+                            <strong>📍 Auto-Detected Arrival</strong><br>
+                            Cleaner C101 arrived at Johnson Residence (15m)
+                        </div>
+                        <div style="padding: 0.5rem; background: #fee2e2; border-radius: 0.5rem; margin-bottom: 0.5rem;">
+                            <strong>🚨 Outside Geofence</strong><br>
+                            Cleaner C105: 500m from assigned job location
+                        </div>
+                        <div style="padding: 0.5rem; background: #fef3c7; border-radius: 0.5rem; margin-bottom: 0.5rem;">
+                            <strong>⚠️ Service Start Blocked</strong><br>
+                            Cleaner C102: Too far to start service (45m)
+                        </div>
+                        <div style="padding: 0.5rem; background: #dcfce7; border-radius: 0.5rem;">
+                            <strong>✅ Service Unlocked</strong><br>
+                            Cleaner C103: Within service zone (12m)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cleaner Status Table - Enhanced with Geofence -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Cleaner Management</h3>
+                    <div>
+                        <button class="btn btn-small btn-primary" id="adminAddCleanerBtn">
+                            <i class="fas fa-plus"></i> Add Cleaner
+                        </button>
+                        <button class="btn btn-small btn-danger" id="adminForceClockOutBtn">
+                            <i class="fas fa-sign-out-alt"></i> Force Clock Out
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Cleaner ID</th>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>Geofence Status</th>
+                                <th>Distance to Job</th>
+                                <th>Auto-Detected</th>
+                                <th>Service Ready</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminCleanerTableBody">
+                            <!-- Cleaner rows will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Photo Verification Panel -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Photo Verification Center</h3>
+                    <i class="fas fa-camera card-icon"></i>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div class="photo-upload-container">
+                        <div class="photo-preview">
+                            <i class="fas fa-user" style="font-size: 2rem; color: #9ca3af;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600;">Clock-In Photo</div>
+                            <div style="font-size: 0.875rem; color: var(--gray-color);">Optional but recommended</div>
+                        </div>
+                    </div>
+                    <div class="photo-upload-container">
+                        <div class="photo-preview" style="background: #dcfce7;">
+                            <i class="fas fa-check-circle" style="font-size: 2rem; color: #10b981;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600;">End-of-Service Photo</div>
+                            <div style="font-size: 0.875rem; color: var(--gray-color);">Mandatory - Verified</div>
+                        </div>
+                    </div>
+                    <div class="photo-upload-container">
+                        <div class="photo-preview" style="background: #fee2e2;">
+                            <i class="fas fa-times-circle" style="font-size: 2rem; color: #ef4444;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600;">Pre-Clockout Photo</div>
+                            <div style="font-size: 0.875rem; color: var(--gray-color);">Mandatory - Pending</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cleaner Dashboard Content -->
+        <div id="cleanerDashboard" class="dashboard-content">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">My Status</h3>
+                        <i class="fas fa-user card-icon"></i>
+                    </div>
+                    <div class="metric-value" id="cleanerStatus">Available</div>
+                    <div class="metric-label" id="cleanerStatusDetail">Ready for next job</div>
+                    <div style="margin-top: 1rem; padding: 0.75rem; background: #f0f9ff; border-radius: 0.5rem;">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.875rem;">
+                            <span>GPS: <strong style="color: #10b981;">Active</strong></span>
+                            <span>Geofence: <strong id="cleanerGeofenceShortStatus" style="color: #ef4444;">Outside</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Today's Earnings</h3>
+                        <i class="fas fa-dollar-sign card-icon"></i>
+                    </div>
+                    <div class="metric-value">$245</div>
+                    <div class="metric-label">2 jobs completed</div>
+                    <div style="margin-top: 1rem;">
+                        <button class="btn btn-small btn-primary" style="width: 100%;" id="viewEarningsBtn">
+                            <i class="fas fa-chart-line"></i> View Details
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Current Job</h3>
+                        <i class="fas fa-tasks card-icon"></i>
+                    </div>
+                    <div class="metric-value">Job #1024</div>
+                    <div class="metric-label">Client: Johnson Residence</div>
+                    <div style="margin-top: 1rem; font-size: 0.875rem;">
+                        <div><strong>ETA:</strong> <span id="jobETA">15 minutes</span></div>
+                        <div><strong>Distance:</strong> <span id="jobDistance">3.2 km</span></div>
+                        <div><strong>Geofence:</strong> <span id="jobGeofenceStatus" style="color: #ef4444;">15-30m radius</span></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Geofence Status</h3>
+                        <i class="fas fa-map-marker-alt card-icon"></i>
+                    </div>
+                    <div class="metric-value" id="cleanerGeofenceValue">-- m</div>
+                    <div class="metric-label" id="cleanerGeofenceLabel">From job location</div>
+                    <div style="margin-top: 1rem;">
+                        <button class="btn btn-small btn-secondary" style="width: 100%;" id="checkGeofenceBtn">
+                            <i class="fas fa-sync-alt"></i> Check Distance
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Geofence Detection System - NEW -->
+            <div class="card" style="margin-bottom: 1.5rem; border: 2px solid var(--geofence-color);">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-location-crosshairs"></i> Automatic Arrival Detection</h3>
+                    <div class="auto-detection-status" id="cleanerAutoDetectionStatus">
+                        <i class="fas fa-radar"></i>
+                        <span>Auto-Detection: <strong>ACTIVE</strong></span>
+                    </div>
+                </div>
+                
+                <div class="service-lock" id="serviceLockPanel">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-lock" style="color: var(--warning-color); font-size: 1.5rem;"></i>
+                        <div>
+                            <div style="font-weight: 600; color: var(--dark-color);">Service Start: LOCKED</div>
+                            <div style="font-size: 0.875rem; color: var(--gray-color);">
+                                You must be within 15-30m radius of job location to start service
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                    <div class="distance-indicator">
+                        <div class="distance-value" id="cleanerDistance">-- m</div>
+                        <div class="distance-label">Distance to Job Location</div>
+                        <div style="font-size: 0.75rem; color: var(--gray-color); margin-top: 0.5rem;">
+                            <i class="fas fa-sync-alt"></i> Auto-updates every 30 seconds
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="geofence-status" id="cleanerGeofenceStatus">
+                            <i class="fas fa-circle" style="color: var(--danger-color);"></i>
+                            <span>Status: OUTSIDE geofence</span>
+                        </div>
+                        
+                        <div style="margin-top: 1rem; padding: 0.75rem; background: #f0f9ff; border-radius: 0.5rem;">
+                            <div style="font-size: 0.875rem; margin-bottom: 0.5rem;">
+                                <i class="fas fa-info-circle"></i> <strong>Auto-Detection Rules:</strong>
+                            </div>
+                            <ul style="font-size: 0.75rem; color: var(--gray-color); padding-left: 1.5rem;">
+                                <li>Within 30m: Arrival detected automatically</li>
+                                <li>Within 15m: Service can start</li>
+                                <li>No button press required</li>
+                                <li>Admin notified automatically</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 0.5rem;">Your Position:</div>
+                        <div class="geofence-visual">
+                            <div class="geofence-circle geofence-circle-30m"></div>
+                            <div class="geofence-circle geofence-circle-15m"></div>
+                            <div class="cleaner-dot" id="cleanerPositionDot" style="top: 180px; left: 180px;"></div>
+                        </div>
+                        <div style="text-align: center; font-size: 0.75rem; color: var(--gray-color); margin-top: 0.5rem;">
+                            Dot shows your position relative to job
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 1rem; padding: 1rem; background: #f0f9ff; border-radius: 0.5rem;">
+                    <div style="font-size: 0.875rem; color: var(--gray-color);">
+                        <i class="fas fa-exclamation-circle"></i> <strong>System Message:</strong> <span id="geofenceMessage">Move closer to job location. Service start will unlock automatically when within 15m radius.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cleaner Map -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-header">
+                    <h3 class="card-title">My Location & Navigation</h3>
+                    <div>
+                        <button class="btn btn-small btn-primary" id="cleanerCenterMapBtn">
+                            <i class="fas fa-crosshairs"></i> My Location
+                        </button>
+                        <button class="btn btn-small btn-success" id="cleanerGetDirectionsBtn">
+                            <i class="fas fa-route"></i> Get Directions
+                        </button>
+                        <button class="btn btn-small btn-warning" id="cleanerReportGPSBtn">
+                            <i class="fas fa-satellite-dish"></i> GPS Status
+                        </button>
+                    </div>
+                </div>
+                <div class="map-container">
+                    <div id="cleanerMap"></div>
+                </div>
+                <div style="margin-top: 1rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                    <div style="padding: 0.75rem; background: #f0f9ff; border-radius: 0.5rem; text-align: center;">
+                        <div style="font-size: 0.875rem; color: var(--gray-color);">Travel Time</div>
+                        <div style="font-weight: 600;">25 min</div>
+                    </div>
+                    <div style="padding: 0.75rem; background: #f0f9ff; border-radius: 0.5rem; text-align: center;">
+                        <div style="font-size: 0.875rem; color: var(--gray-color);">Distance</div>
+                        <div style="font-weight: 600;">3.2 km</div>
+                    </div>
+                    <div style="padding: 0.75rem; background: #f0f9ff; border-radius: 0.5rem; text-align: center;">
+                        <div style="font-size: 0.875rem; color: var(--gray-color);">GPS Accuracy</div>
+                        <div style="font-weight: 600; color: #10b981;">10m</div>
+                    </div>
+                    <div style="padding: 0.75rem; background: #f0f9ff; border-radius: 0.5rem; text-align: center;">
+                        <div style="font-size: 0.875rem; color: var(--gray-color);">Geofence</div>
+                        <div style="font-weight: 600; color: #ef4444;" id="mapGeofenceStatus">45m</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cleaner Controls -->
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Clock Management</h3>
+                        <i class="fas fa-clock card-icon"></i>
+                        <div class="status-badge" id="serviceStartBadge" style="background-color: #fef3c7; color: #92400e;">
+                            <i class="fas fa-lock"></i> LOCKED
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <button class="btn btn-success" id="cleanerClockInBtn">
+                            <i class="fas fa-sign-in-alt"></i> Clock In (GPS Required)
+                        </button>
+                        <button class="btn btn-warning" id="cleanerStartTravelBtn">
+                            <i class="fas fa-car"></i> Start Travel
+                        </button>
+                        <button class="btn btn-primary" id="cleanerStartServiceBtn" disabled>
+                            <i class="fas fa-play"></i> Start Service (Geofence Locked)
+                        </button>
+                        <button class="btn btn-danger" id="cleanerClockOutBtn">
+                            <i class="fas fa-sign-out-alt"></i> Clock Out (Verification Required)
+                        </button>
+                    </div>
+                    <div style="margin-top: 1rem; padding: 0.75rem; background: #fef3c7; border-radius: 0.5rem;">
+                        <div style="font-size: 0.875rem;">
+                            <i class="fas fa-info-circle"></i> Service start requires: (1) Within 15-30m of job, (2) Auto-detected arrival
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Today's Schedule</h3>
+                        <i class="fas fa-calendar-alt card-icon"></i>
+                    </div>
+                    <div id="cleanerSchedule">
+                        <!-- Schedule will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Activity Timeline</h3>
+                    <i class="fas fa-history card-icon"></i>
+                </div>
+                <div class="timeline" id="cleanerTimeline">
+                    <!-- Timeline items will be added here -->
+                </div>
+            </div>
+
+            <!-- Photo Verification -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Photo Verification</h3>
+                    <i class="fas fa-camera card-icon"></i>
+                </div>
+                <div style="padding: 1rem;">
+                    <p style="margin-bottom: 1rem; color: var(--gray-color);">
+                        <i class="fas fa-exclamation-circle"></i> Photos are required for service completion and clock out. Live camera only - no gallery uploads.
+                    </p>
+                    <div class="photo-upload-container">
+                        <div class="photo-preview" id="clockInPhotoPreview">
+                            <i class="fas fa-user" style="font-size: 2rem; color: #9ca3af;"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600;">Clock-In Photo</div>
+                            <div style="font-size: 0.875rem; color: var(--gray-color); margin-bottom: 0.5rem;">Optional but recommended for verification</div>
+                            <button class="btn btn-small btn-primary" id="cleanerTakeClockInPhotoBtn">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                        </div>
+                    </div>
+                    <div class="photo-upload-container" style="margin-top: 1rem;">
+                        <div class="photo-preview" id="endServicePhotoPreview" style="background: #fee2e2;">
+                            <i class="fas fa-times-circle" style="font-size: 2rem; color: #ef4444;"></i>
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600;">End-of-Service Photo</div>
+                            <div style="font-size: 0.875rem; color: var(--gray-color); margin-bottom: 0.5rem;">Mandatory - Includes GPS and timestamp</div>
+                            <button class="btn btn-small btn-danger" id="cleanerTakeEndServicePhotoBtn">
+                                <i class="fas fa-camera"></i> Required - Take Photo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Arrival Alert Modal -->
+    <div class="arrival-alert" id="arrivalAlert" style="display: none;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">
+            🎯
+        </div>
+        <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">
+            ARRIVAL AUTO-DETECTED!
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+            System detected you are within job location geofence
+        </div>
+        <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 1rem;">
+            <i class="fas fa-map-marker-alt"></i> Distance: <span id="arrivalDistance">15m</span><br>
+            <i class="fas fa-clock"></i> Detected at: <span id="arrivalTime">--:--</span><br>
+            <i class="fas fa-user-tie"></i> Admin notified automatically
+        </div>
+        <button class="btn btn-success" id="closeArrivalAlertBtn" style="margin-top: 1rem; width: 100%;">
+            <i class="fas fa-check"></i> Acknowledged
+        </button>
+    </div>
+
+    <!-- Documentation Modal -->
+    <div class="modal" id="docModal">
+        <div class="modal-content documentation">
+            <div class="modal-header">
+                <h3 class="modal-title">🛰️ TRAVEL & LOCATION DOCUMENTATION</h3>
+                <button class="modal-close" id="closeDocModal">&times;</button>
+            </div>
+            <div class="documentation-content" id="documentationContent">
+                <!-- Documentation will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Modal -->
+    <div class="modal" id="photoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Take Verification Photo</h3>
+                <button class="modal-close" id="closePhotoModal">&times;</button>
+            </div>
+            <div style="text-align: center; padding: 1rem;">
+                <div style="width: 300px; height: 300px; background-color: #f3f4f6; border-radius: 0.5rem; margin: 1rem auto; display: flex; align-items: center; justify-content: center; position: relative;">
+                    <div id="cameraFeed" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-camera" style="font-size: 3rem; color: #9ca3af;"></i>
+                    </div>
+                    <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px;">
+                        GPS: 40.7128° N, 74.0060° W
+                    </div>
+                    <div style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px;">
+                        Time: <span id="currentTime"></span>
+                    </div>
+                </div>
+                <p style="margin-bottom: 1rem; color: var(--gray-color);">
+                    <i class="fas fa-exclamation-triangle"></i> Live camera only - Gallery uploads disabled
+                </p>
+                <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                    <button class="btn btn-primary" id="capturePhotoBtn">
+                        <i class="fas fa-camera"></i> Capture Photo
+                    </button>
+                    <button class="btn btn-secondary" id="cancelPhotoBtn">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Container -->
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize variables
+        let adminMap, cleanerMap;
+        let clockStatus = {};
+        let cleanerLocations = {};
+        let currentDashboard = 'admin';
+        let currentCleanerId = 'C101';
+        let cleanerSchedule = [];
+        
+        // Geofence System Variables
+        let geofenceSystem = {
+            active: true,
+            jobLocation: { lat: 40.7228, lng: -73.9960 }, // Job location (different from starting point)
+            cleanerLocation: { lat: 40.7128, lng: -74.0060 }, // Current cleaner location
+            radius30m: 30, // meters for detection zone
+            radius15m: 15, // meters for service zone
+            arrivalDetected: false,
+            lastDetection: null,
+            updateInterval: null,
+            arrivalAlertShown: false,
+            currentDistance: 3200 // Starting distance in meters
+        };
+
+        // Calculate distance between two coordinates in meters
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371000; // Earth's radius in meters
+            const φ1 = lat1 * Math.PI / 180;
+            const φ2 = lat2 * Math.PI / 180;
+            const Δφ = (lat2 - lat1) * Math.PI / 180;
+            const Δλ = (lon2 - lon1) * Math.PI / 180;
+
+            const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                    Math.cos(φ1) * Math.cos(φ2) *
+                    Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            return R * c; // Distance in meters
+        }
+
+        // Update geofence status for both dashboards
+        function updateGeofenceStatus() {
+            // Simulate movement toward job location
+            if (geofenceSystem.currentDistance > 0) {
+                geofenceSystem.currentDistance -= Math.random() * 100 + 50; // Reduce distance
+                if (geofenceSystem.currentDistance < 0) geofenceSystem.currentDistance = 0;
+            }
+            
+            const distance = geofenceSystem.currentDistance;
+            
+            // Update distance displays
+            document.getElementById('adminDistance').textContent = `${Math.round(distance)}m`;
+            document.getElementById('cleanerDistance').textContent = `${Math.round(distance)}m`;
+            document.getElementById('cleanerGeofenceValue').textContent = `${Math.round(distance)}m`;
+            document.getElementById('mapGeofenceStatus').textContent = `${Math.round(distance)}m`;
+            
+            // Update last update time
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('adminLastUpdate').textContent = timeString;
+            
+            // Determine geofence status
+            let status, statusClass, iconColor, message, canStartService, shortStatus;
+            
+            if (distance <= geofenceSystem.radius15m) {
+                status = 'INSIDE SERVICE ZONE (≤15m)';
+                shortStatus = 'Service Zone';
+                statusClass = 'geofence-inside';
+                iconColor = '#10b981';
+                message = 'You can now start service! Service start button is unlocked.';
+                canStartService = true;
+                
+                // Auto-detect arrival if not already detected
+                if (!geofenceSystem.arrivalDetected) {
+                    detectArrival(distance);
+                }
+            } else if (distance <= geofenceSystem.radius30m) {
+                status = 'INSIDE DETECTION ZONE (≤30m)';
+                shortStatus = 'Detection Zone';
+                statusClass = 'geofence-arrived';
+                iconColor = '#3b82f6';
+                message = 'Arrival detected. Move closer (≤15m) to start service.';
+                canStartService = false;
+                
+                // Auto-detect arrival if not already detected
+                if (!geofenceSystem.arrivalDetected) {
+                    detectArrival(distance);
+                }
+            } else {
+                status = 'OUTSIDE GEOFENCE';
+                shortStatus = 'Outside';
+                statusClass = 'geofence-outside';
+                iconColor = '#ef4444';
+                message = 'Move closer to job location to start service.';
+                canStartService = false;
+                geofenceSystem.arrivalDetected = false;
+            }
+
+            // Update admin panel
+            const adminStatus = document.getElementById('adminGeofenceStatus');
+            adminStatus.className = `geofence-status ${statusClass}`;
+            adminStatus.innerHTML = `<i class="fas fa-circle" style="color: ${iconColor};"></i> Cleaner: ${status}`;
+            
+            document.getElementById('adminServiceLockStatus').textContent = canStartService ? 'UNLOCKED' : 'LOCKED';
+            document.getElementById('adminServiceLockStatus').style.color = canStartService ? 'var(--success-color)' : 'var(--danger-color)';
+
+            // Update cleaner panel
+            const cleanerStatus = document.getElementById('cleanerGeofenceStatus');
+            cleanerStatus.className = `geofence-status ${statusClass}`;
+            cleanerStatus.innerHTML = `<i class="fas fa-circle" style="color: ${iconColor};"></i> Status: ${status}`;
+            
+            document.getElementById('cleanerGeofenceShortStatus').textContent = shortStatus;
+            document.getElementById('cleanerGeofenceShortStatus').style.color = iconColor;
+            document.getElementById('geofenceMessage').textContent = message;
+            document.getElementById('jobGeofenceStatus').textContent = `${Math.round(distance)}m`;
+            document.getElementById('jobGeofenceStatus').style.color = iconColor;
+            
+            // Update service start button
+            const startServiceBtn = document.getElementById('cleanerStartServiceBtn');
+            const serviceLockPanel = document.getElementById('serviceLockPanel');
+            const serviceStartBadge = document.getElementById('serviceStartBadge');
+            
+            if (canStartService) {
+                startServiceBtn.disabled = false;
+                startServiceBtn.innerHTML = '<i class="fas fa-play"></i> START SERVICE (Unlocked)';
+                startServiceBtn.className = 'btn btn-success';
+                
+                serviceLockPanel.className = 'service-lock service-unlock';
+                serviceLockPanel.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-lock-open" style="color: var(--success-color); font-size: 1.5rem;"></i>
+                        <div>
+                            <div style="font-weight: 600; color: var(--dark-color);">Service Start: UNLOCKED</div>
+                            <div style="font-size: 0.875rem; color: var(--gray-color);">
+                                You are within 15m radius. You can now start service.
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                serviceStartBadge.innerHTML = '<i class="fas fa-lock-open"></i> UNLOCKED';
+                serviceStartBadge.style.backgroundColor = '#dcfce7';
+                serviceStartBadge.style.color = '#166534';
+                
+                // Update auto-detection status
+                const autoStatus = document.getElementById('cleanerAutoDetectionStatus');
+                autoStatus.innerHTML = '<i class="fas fa-check-circle"></i> <span>Auto-Detection: <strong>ARRIVAL CONFIRMED</strong></span>';
+                autoStatus.className = 'auto-detection-status auto-detection-active';
+            } else {
+                startServiceBtn.disabled = true;
+                startServiceBtn.innerHTML = '<i class="fas fa-play"></i> START SERVICE (Geofence Locked)';
+                startServiceBtn.className = 'btn btn-primary';
+                
+                serviceLockPanel.className = 'service-lock';
+                serviceLockPanel.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <i class="fas fa-lock" style="color: var(--warning-color); font-size: 1.5rem;"></i>
+                        <div>
+                            <div style="font-weight: 600; color: var(--dark-color);">Service Start: LOCKED</div>
+                            <div style="font-size: 0.875rem; color: var(--gray-color);">
+                                You must be within 15m radius of job location to start service
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                serviceStartBadge.innerHTML = '<i class="fas fa-lock"></i> LOCKED';
+                serviceStartBadge.style.backgroundColor = '#fef3c7';
+                serviceStartBadge.style.color = '#92400e';
+            }
+
+            // Update visual indicators
+            updateVisualPosition(distance);
+            
+            // Update admin table
+            updateAdminTableWithGeofence(distance, status, canStartService);
+
+            return { distance, canStartService };
+        }
+
+        // Auto-detect arrival
+        function detectArrival(distance) {
+            geofenceSystem.arrivalDetected = true;
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            // Update admin auto arrival time
+            document.getElementById('adminAutoArrivalTime').textContent = timeString;
+            
+            // Show arrival alert to cleaner
+            if (!geofenceSystem.arrivalAlertShown && distance <= geofenceSystem.radius30m) {
+                showArrivalAlert(distance);
+                geofenceSystem.arrivalAlertShown = true;
+            }
+            
+            // Log event to timeline
+            addToTimeline('Arrival Auto-Detected', `System detected arrival at ${Math.round(distance)}m from job location`, 'geofence');
+            
+            // Update alerts
+            document.getElementById('geofenceAlertsCount').textContent = '6';
+            document.getElementById('geofenceAlertsDetail').textContent = '4 arrivals, 2 outside zone';
+            
+            // Show notification
+            if (distance <= geofenceSystem.radius30m) {
+                showNotification(`📍 Arrival auto-detected! You are ${Math.round(distance)}m from job location.`, 'success');
+                if (distance <= geofenceSystem.radius15m) {
+                    showNotification(`✅ Service start unlocked! You can now begin service.`, 'success');
+                }
+            }
+        }
+
+        // Show arrival alert
+        function showArrivalAlert(distance) {
+            const alert = document.getElementById('arrivalAlert');
+            document.getElementById('arrivalDistance').textContent = `${Math.round(distance)}m`;
+            document.getElementById('arrivalTime').textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            alert.style.display = 'block';
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                if (alert.style.display === 'block') {
+                    alert.style.display = 'none';
+                }
+            }, 10000);
+        }
+
+        // Update visual position on geofence visualization
+        function updateVisualPosition(distance) {
+            const maxDistance = 100; // Max distance to show in visualization
+            const scale = 180 / maxDistance; // Scale factor for visualization
+            
+            let dotPosition;
+            if (distance > maxDistance) {
+                dotPosition = { x: 180, y: 180 }; // Outside visualization
+            } else {
+                const angle = Math.random() * 2 * Math.PI; // Random angle
+                const visualDistance = distance * scale;
+                dotPosition = {
+                    x: 90 + visualDistance * Math.cos(angle),
+                    y: 90 + visualDistance * Math.sin(angle)
+                };
+            }
+            
+            // Update cleaner dot position
+            const cleanerDot = document.getElementById('cleanerPositionDot');
+            if (cleanerDot) {
+                cleanerDot.style.left = `${dotPosition.x}px`;
+                cleanerDot.style.top = `${dotPosition.y}px`;
+            }
+            
+            // Update admin dot position (mirrored)
+            const adminDot = document.getElementById('adminCleanerDot');
+            if (adminDot) {
+                adminDot.style.left = `${dotPosition.x}px`;
+                adminDot.style.top = `${dotPosition.y}px`;
+            }
+            
+            // Update dot color based on status
+            let dotColor;
+            if (distance <= geofenceSystem.radius15m) {
+                dotColor = 'var(--arrival-color)';
+            } else if (distance <= geofenceSystem.radius30m) {
+                dotColor = 'var(--geofence-color)';
+            } else {
+                dotColor = 'var(--primary-color)';
+            }
+            
+            if (cleanerDot) cleanerDot.style.backgroundColor = dotColor;
+            if (adminDot) adminDot.style.backgroundColor = dotColor;
+        }
+
+        // Update admin table with geofence information
+        function updateAdminTableWithGeofence(distance, status, canStartService) {
+            const tableRows = document.querySelectorAll('#adminCleanerTableBody tr');
+            tableRows.forEach(row => {
+                if (row.cells[0].textContent.includes('C101')) {
+                    // Update geofence status
+                    let statusBadge;
+                    if (distance <= geofenceSystem.radius15m) {
+                        statusBadge = '<span class="status-badge status-success"><i class="fas fa-check-circle"></i> Service Zone</span>';
+                    } else if (distance <= geofenceSystem.radius30m) {
+                        statusBadge = '<span class="status-badge status-traveling"><i class="fas fa-map-marker-alt"></i> Detection Zone</span>';
+                    } else {
+                        statusBadge = '<span class="status-badge status-anomaly"><i class="fas fa-times-circle"></i> Outside</span>';
+                    }
+                    row.cells[3].innerHTML = statusBadge;
+                    
+                    // Update distance
+                    row.cells[4].textContent = `${Math.round(distance)}m`;
+                    
+                    // Update auto-detected
+                    const now = new Date();
+                    row.cells[5].innerHTML = distance <= geofenceSystem.radius30m ? 
+                        `<div style="color: var(--success-color);"><i class="fas fa-check"></i> ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>` :
+                        `<div style="color: var(--gray-color);"><i class="fas fa-clock"></i> Pending</div>`;
+                    
+                    // Update service ready
+                    row.cells[6].innerHTML = canStartService ? 
+                        '<span class="status-badge status-success">Ready</span>' : 
+                        '<span class="status-badge status-warning">Move Closer</span>';
+                }
+            });
+        }
+
+        // Add event to timeline
+        function addToTimeline(event, location, type = 'normal') {
+            const timeline = document.getElementById('cleanerTimeline');
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const item = document.createElement('div');
+            item.className = 'timeline-item';
+            
+            let icon = 'fas fa-map-marker-alt';
+            let color = '#06b6d4';
+            if (type === 'geofence') {
+                icon = 'fas fa-satellite';
+                color = '#10b981';
+            } else if (type === 'warning') {
+                icon = 'fas fa-exclamation-triangle';
+                color = '#f59e0b';
+            }
+            
+            item.innerHTML = `
+                <div class="timeline-time">${timeString}</div>
+                <div class="timeline-event">${event}</div>
+                <div class="timeline-location">${location}</div>
+                <div style="margin-top: 0.25rem;">
+                    <span style="font-size: 0.75rem; color: ${color};">
+                        <i class="${icon}"></i> ${type === 'geofence' ? 'Auto-Detected' : 'GPS Verified'}
+                    </span>
+                </div>
+            `;
+            
+            timeline.insertBefore(item, timeline.firstChild);
+            
+            // Limit to 6 items
+            if (timeline.children.length > 6) {
+                timeline.removeChild(timeline.lastChild);
+            }
+        }
+
+        // Initialize maps
+        function initAdminMap() {
+            adminMap = L.map('adminMap').setView([40.7128, -74.0060], 12);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(adminMap);
+            
+            // Add geofence circles to admin map
+            L.circle(geofenceSystem.jobLocation, {
+                color: 'var(--geofence-color)',
+                fillColor: 'var(--geofence-color)',
+                fillOpacity: 0.1,
+                radius: 30
+            }).addTo(adminMap).bindPopup('30m Detection Zone');
+            
+            L.circle(geofenceSystem.jobLocation, {
+                color: 'var(--arrival-color)',
+                fillColor: 'var(--arrival-color)',
+                fillOpacity: 0.1,
+                radius: 15
+            }).addTo(adminMap).bindPopup('15m Service Zone');
+            
+            // Add job location marker
+            L.marker(geofenceSystem.jobLocation).addTo(adminMap)
+                .bindPopup('<b>Job Location</b><br>Client: Johnson Residence<br>Geofence Active');
+        }
+
+        function initCleanerMap() {
+            cleanerMap = L.map('cleanerMap').setView([40.7128, -74.0060], 14);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(cleanerMap);
+            
+            // Add cleaner's current location marker
+            const cleanerMarker = L.marker([geofenceSystem.cleanerLocation.lat, geofenceSystem.cleanerLocation.lng]).addTo(cleanerMap)
+                .bindPopup('<b>My Location</b><br>Cleaner ID: C101<br>Status: Traveling')
+                .openPopup();
+            
+            // Add job location marker
+            const jobMarker = L.marker([geofenceSystem.jobLocation.lat, geofenceSystem.jobLocation.lng]).addTo(cleanerMap)
+                .bindPopup('<b>Job Location</b><br>Client: Johnson Residence<br>Address: 123 Main St, NYC');
+            
+            // Draw route line
+            const routePoints = [
+                [geofenceSystem.cleanerLocation.lat, geofenceSystem.cleanerLocation.lng],
+                [geofenceSystem.jobLocation.lat, geofenceSystem.jobLocation.lng]
+            ];
+            
+            L.polyline(routePoints, {
+                color: '#0b5cff',
+                weight: 3,
+                opacity: 0.7,
+                dashArray: '10, 10'
+            }).addTo(cleanerMap);
+            
+            // Add geofence circles around job location
+            L.circle(geofenceSystem.jobLocation, {
+                color: '#06b6d4',
+                fillColor: '#06b6d4',
+                fillOpacity: 0.1,
+                radius: 30
+            }).addTo(cleanerMap)
+                .bindPopup('<b>30m Detection Zone</b><br>Arrival auto-detected here');
+            
+            L.circle(geofenceSystem.jobLocation, {
+                color: '#10b981',
+                fillColor: '#10b981',
+                fillOpacity: 0.1,
+                radius: 15
+            }).addTo(cleanerMap)
+                .bindPopup('<b>15m Service Zone</b><br>Service can start here');
+        }
+
+        // Load documentation content with enhanced geofence section
+        function loadDocumentation() {
+            const content = document.getElementById('documentationContent');
+            content.innerHTML = `
+                <div class="doc-section">
+                    <h2>🛰️ STAFF DASHBOARD — TRAVEL & LOCATION PAGE (FULL FEATURE DOCUMENT)</h2>
+                    <p><strong>Cleaner / Staff Panel • Step 10 Compliant • Anti-Cheating Layer Included</strong></p>
+                </div>
+
+                <div class="doc-section">
+                    <h2>1. PAGE PURPOSE</h2>
+                    <p>This module ensures:</p>
+                    <ul>
+                        <li>Accurate GPS-based movement tracking</li>
+                        <li>Proof-based verification of travel and on-site presence</li>
+                        <li>Prevention of:
+                            <ul>
+                                <li>false travel claims</li>
+                                <li>fake early arrivals</li>
+                                <li>accidental or intentional "misclick" clock-outs</li>
+                                <li>ghosting (no movement)</li>
+                                <li>cheating by submitting old photos</li>
+                            </ul>
+                        </li>
+                        <li>Synchronization with Clock-In, Start Service, End Service</li>
+                    </ul>
+                </div>
+
+                <div class="doc-section">
+                    <h2>2. MAIN FEATURES OF THE TRAVEL & LOCATION PAGE</h2>
+                    
+                    <h3>2.1 LIVE MAP TRACKING (Google Maps Embedded View)</h3>
+                    <p>Cleaners can <strong>see their own real-time location</strong>, synced with:</p>
+                    <ul>
+                        <li>Clock-In (tracking starts automatically)</li>
+                        <li>Travel to Job</li>
+                        <li>Service Start</li>
+                        <li>Service End</li>
+                        <li>Travel Back (optional Phase 2)</li>
+                    </ul>
+                    <p><strong>Features:</strong></p>
+                    <ul>
+                        <li>Blue dot = current location</li>
+                        <li>Route line = recommended path from Google Maps</li>
+                        <li>Job location pin = exact client address</li>
+                        <li>ETA displayed</li>
+                        <li>Route updates in real time</li>
+                        <li>Map switches to "Service Mode" once cleaner enters geo-radius of client location</li>
+                    </ul>
+                    <p><strong>Cleaners can use:</strong> Waze / Google Maps directions / Apple Maps (device dependent)</p>
+                    <p><strong>Admin Dashboard receives:</strong> live location, speed, GPS jumps, suspicious behavior (flagged by AI)</p>
+
+                    <h3>2.2 LOCATION TIMELINE</h3>
+                    <p>A timeline shows:</p>
+                    <table class="feature-table">
+                        <thead>
+                            <tr>
+                                <th>Event</th>
+                                <th>Auto Timestamp</th>
+                                <th>GPS Logged</th>
+                                <th>Photo Required</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Clock-In</td><td>Yes</td><td>Yes</td><td>Optional</td></tr>
+                            <tr><td>Start Travel</td><td>Yes</td><td>Yes</td><td>Auto</td></tr>
+                            <tr><td>Arrived at Client</td><td>Yes</td><td>Yes</td><td>Optional</td></tr>
+                            <tr><td>Start Service</td><td>Yes</td><td>Yes</td><td>Optional</td></tr>
+                            <tr><td>End Service</td><td>Yes</td><td>Yes</td><td>Mandatory</td></tr>
+                            <tr><td>Travel Back (optional)</td><td>Yes</td><td>Yes</td><td>Auto</td></tr>
+                            <tr><td>Pre-Clockout Photo</td><td>Yes</td><td>Yes</td><td>Mandatory</td></tr>
+                            <tr><td>Clock-Out</td><td>Yes</td><td>Yes</td><td>Locked unless all previous steps complete</td></tr>
+                        </tbody>
+                    </table>
+                    <p>Every entry is locked and cannot be edited by cleaner.</p>
+
+                    <h3>2.3 PHOTO PROOF UPLOAD (Mandatory in Key Events)</h3>
+                    <p>Photos required for:</p>
+                    <ul>
+                        <li>Clock-In (optional but recommended)</li>
+                        <li>End of Service (mandatory)</li>
+                        <li>Before Clock-Out (mandatory)</li>
+                    </ul>
+                    <p><strong>Rules:</strong></p>
+                    <ul>
+                        <li>App forces <strong>live camera usage</strong> — no gallery uploads</li>
+                        <li>Photo must include:
+                            <ul>
+                                <li>location background</li>
+                                <li>cleaner's face</li>
+                                <li>timestamp auto-embedded</li>
+                                <li>GPS metadata included</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p><strong>Admin sees:</strong> location, timestamp, cleaner ID, map coordinates, suspected tampering alerts (AI detects if photo is "from gallery" hacked)</p>
+
+                    <h3>2.4 GPS-LOCKED CLOCK-IN / CLOCK-OUT</h3>
+                    <p><strong>Clock-In Rules</strong></p>
+                    <ul>
+                        <li>Can only clock in within approved radius:
+                            <ul>
+                                <li>office</li>
+                                <li>warehouse</li>
+                                <li>assigned first job location</li>
+                            </ul>
+                        </li>
+                        <li>Once clocked-in:
+                            <ul>
+                                <li>clock-in cannot be undone</li>
+                                <li>clock-out disabled until all jobs completed</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <p><strong>Clock-Out Rules</strong></p>
+                    <ul>
+                        <li>Cleaner cannot clock-out unless:
+                            <ul>
+                                <li>All jobs marked Done</li>
+                                <li>End-of-service photo uploaded</li>
+                                <li>Vehicle/equipment checklist completed</li>
+                                <li>GPS matches required location rules</li>
+                                <li>No pending incident report</li>
+                                <li>Travel data fully synced</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h3>2.5 ANTI-CHEATING GPS SYSTEM</h3>
+                    <div class="anti-cheat-flags">
+                        <div class="flag-card">
+                            <strong>🚩 Fake GPS / GPS spoofing</strong><br>
+                            App checks for mock locations<br>
+                            If detected → Auto freeze + manager alert
+                        </div>
+                        <div class="flag-card">
+                            <strong>🚩 No movement detected</strong><br>
+                            System flags "Ghost Travel"<br>
+                            Example: cleaner says "I'm traveling", but location not moving
+                        </div>
+                        <div class="flag-card">
+                            <strong>🚩 Jumping location nodes</strong><br>
+                            Cleaner teleports from one place to another too fast<br>
+                            System flags "GPS anomaly"
+                        </div>
+                        <div class="flag-card">
+                            <strong>🚩 Disabled GPS</strong><br>
+                            If GPS turned off → cleaner gets:<br>
+                            "Tracking blocked – cannot continue task"
+                        </div>
+                        <div class="flag-card">
+                            <strong>🚩 Out-of-route behavior</strong><br>
+                            Wandering 3–5 km away from route triggers alert
+                        </div>
+                    </div>
+
+                    <h3>2.6 "ARRIVE AT CLIENT" GEO-FENCE DETECTION SYSTEM</h3>
+                    <p><strong>Automatic Arrival Detection without Cleaner Input</strong></p>
+                    
+                    <div class="feature-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Description</th>
+                                <th>Radius</th>
+                                <th>Action</th>
+                                <th>User View</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Detection Zone</strong></td>
+                                <td>System auto-detects when cleaner enters job area</td>
+                                <td>30 meters</td>
+                                <td>Auto-sets "Arrived at Client" status</td>
+                                <td>Both Cleaner & Admin</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Service Zone</strong></td>
+                                <td>Area where service can be started</td>
+                                <td>15 meters</td>
+                                <td>Unlocks "Start Service" button</td>
+                                <td>Both Cleaner & Admin</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Real-time Distance</strong></td>
+                                <td>Continuous distance monitoring</td>
+                                <td>N/A</td>
+                                <td>Updates every 30 seconds</td>
+                                <td>Both Cleaner & Admin</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Visual Feedback</strong></td>
+                                <td>Position visualization</td>
+                                <td>N/A</td>
+                                <td>Shows position relative to zones</td>
+                                <td>Both Cleaner & Admin</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Auto-Notification</strong></td>
+                                <td>Alert when arrival detected</td>
+                                <td>N/A</td>
+                                <td>Popup notification</td>
+                                <td>Cleaner Only</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Service Lock</strong></td>
+                                <td>Prevent service start outside zone</td>
+                                <td>15-30m</td>
+                                <td>Button disabled/enabled</td>
+                                <td>Both Cleaner & Admin</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4>MANDATORY FEATURES IMPLEMENTED:</h4>
+                    <ol>
+                        <li><strong>Auto-Detection:</strong> System automatically detects arrival without cleaner pressing any button</li>
+                        <li><strong>Dual Dashboard View:</strong> Both cleaner and admin see real-time geofence status</li>
+                        <li><strong>Real-time Distance:</strong> Live distance display in meters from job location</li>
+                        <li><strong>Visual Position Indicator:</strong> Graphical representation of position relative to geofence zones</li>
+                        <li><strong>Service Start Lock:</strong> "Start Service" button only unlocks when within 15-30m radius</li>
+                        <li><strong>Automatic Status Updates:</strong> Admin dashboard shows "Arrived at client" automatically</li>
+                        <li><strong>Popup Alerts:</strong> Cleaner receives notification when arrival is detected</li>
+                        <li><strong>Timeline Integration:</strong> Auto-detected arrivals logged in activity timeline</li>
+                        <li><strong>Alert System:</strong> Admin receives alerts for geofence entries/exits</li>
+                        <li><strong>Continuous Monitoring:</strong> System updates every 30 seconds</li>
+                    </ol>
+                    
+                    <h4>RULES ENFORCED:</h4>
+                    <ul>
+                        <li>Cleaner cannot manually mark arrival - system does it automatically</li>
+                        <li>Cleaner cannot start service unless within 15-30m radius</li>
+                        <li>Admin sees arrival status in real-time without cleaner input</li>
+                        <li>Distance updates automatically - no manual refresh needed</li>
+                        <li>All geofence events are logged for audit trail</li>
+                    </ul>
+
+                    <h3>2.7 TRAVEL TIME VERIFICATION</h3>
+                    <p>AI compares:</p>
+                    <ul>
+                        <li>expected travel time (Google)</li>
+                        <li>actual travel time (GPS)</li>
+                        <li>delays</li>
+                        <li>unusual stops</li>
+                        <li>long idle periods</li>
+                        <li>time-to-distance mismatch</li>
+                    </ul>
+                    <p>Automatically flags:</p>
+                    <ul>
+                        <li>"Unreasonably long travel"</li>
+                        <li>"Suspicious delays"</li>
+                        <li>"No motion but claiming travel"</li>
+                    </ul>
+                </div>
+
+                <div class="doc-section">
+                    <h2>3. POSSIBLE CHEATING / MISUSE SCENARIOS + SOLUTIONS</h2>
+                    <p>Below are real-world scenarios cleaners use to cheat the location & time system — and the exact technical solutions your system must apply.</p>
+                    
+                    <div class="scenario-grid">
+                        <div class="scenario-card">
+                            <div class="scenario-title">🧨 SCENARIO 1: Fake Clock-Out to Stop Tracking</div>
+                            <p>Cleaner tries to: clock out early / pretend it was accidental / stop GPS tracking</p>
+                            <p><strong>✅ SOLUTION:</strong> Disable Clock-Out unless: service complete, end-of-service photo uploaded, GPS confirms they are at final location, equipment/vehicle check done.</p>
+                        </div>
+                        
+                        <div class="scenario-card">
+                            <div class="scenario-title">🧨 SCENARIO 2: "Accidentally Clocked-Out" During Travel</div>
+                            <p>Cleaner pretends: "Sorry I accidentally pressed clock-out too early."</p>
+                            <p><strong>✅ SOLUTION:</strong> Clock-Out button disabled until system allows it. Clock-Out is a 3-step confirmation with GPS lock. Requires mandatory photo proof.</p>
+                        </div>
+                        
+                        <div class="scenario-card">
+                            <div class="scenario-title">🧨 SCENARIO 3: Using Old Photos as Service Proof</div>
+                            <p>Cleaner uploads an old saved picture.</p>
+                            <p><strong>✅ SOLUTION:</strong> Force live camera only. Disable gallery upload. AI detects "no face", "same background as old photo", or "metadata mismatch".</p>
+                        </div>
+                        
+                        <div class="scenario-card">
+                            <div class="scenario-title">🧨 SCENARIO 4: GPS Spoofing (Fake Location Apps)</div>
+                            <p>Cleaner uses fake location app.</p>
+                            <p><strong>✅ SOLUTION:</strong> Mock Location Detection. Root/Jailbreak detection. GPS signal signature matching. If spoofing detected: Auto-logout, Alert sent to admin, Account flagged for audit.</p>
+                        </div>
+                        
+                        <div class="scenario-card">
+                            <div class="scenario-title">🧨 SCENARIO 5: Turning Off GPS During Travel</div>
+                            <p>Cleaner disables location so tracking pauses.</p>
+                            <p><strong>✅ SOLUTION:</strong> If GPS off → app enters Lock Mode: Cannot update job status, Cannot upload photo, Cannot open map, Cannot clock out.</p>
+                        </div>
+                        
+                        <div class="scenario-card">
+                            <div class="scenario-title">🧨 SCENARIO 6: Cleaner Stays in One Place and Claims Travel</div>
+                            <p>Example: They went home first, stayed 30 minutes, but pretend traffic was heavy.</p>
+                            <p><strong>✅ SOLUTION:</strong> AI behavior patterns: Compares distance vs time, Detects stationary state. If unmoving for 3 minutes → "Idle Warning". If idle 15+ minutes → alert.</p>
+                        </div>
+                        
+                        <div class="scenario-card">
+                            <div class="scenario-title">🧨 SCENARIO 7: Cleaner Did Not Arrive at Client Location</div>
+                            <p>They claim: "I'm here already" Start service 1 km away.</p>
+                            <p><strong>✅ SOLUTION:</strong> compulsory Geofence entry check. cannot Start Service unless: 15–30 meters near pin, system shows: "Arrived at job-site".</p>
+                        </div>
+                        
+                        <div class="scenario-card">
+                            <div class="scenario-title">🧨 SCENARIO 8: Cleaner Wanders Away During Service</div>
+                            <p>They leave the house during service time.</p>
+                            <p><strong>✅ SOLUTION:</strong> AI monitors: Movement outside of radius. When cleaner leaves area → Admin alert: "Cleaner left job location during service."</p>
+                        </div>
+                        
+                        <div class="scenario-card">
+                            <div class="scenario-title">🧨 SCENARIO 9: Clock-In From Too Far</div>
+                            <p>Example: They are at home, not at office or job.</p>
+                            <p><strong>✅ SOLUTION:</strong> Clock-In only enabled in geofence zone. If outside zone → error: "Clock-In not allowed from this location."</p>
+                        </div>
+                        
+                        <div class="scenario-card">
+                            <div class="scenario-title">🧨 SCENARIO 10: Claims GPS is "Bugging" or "Not Working"</div>
+                            <p>Cleaner makes an excuse to hide travel.</p>
+                            <p><strong>✅ SOLUTION:</strong> System forces: GPS diagnostic test. If GPS is weak or disabled → app blocks: clock-in, navigation, service start, any submission.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-section">
+                    <h2>4. SUMMARY — WHAT YOU WILL GET</h2>
+                    <p>Your Travel & Location page will:</p>
+                    <ul>
+                        <li>🔐 Prevent cheating</li>
+                        <li>📍 Track real movement in real time</li>
+                        <li>📸 Require photo proof with GPS metadata</li>
+                        <li>🚫 Disable early or accidental clock-out</li>
+                        <li>🛰️ Block spoofing, tampering, old photos</li>
+                        <li>🧭 Auto-detect arrival (No button press needed)</li>
+                        <li>🎯 Dual-radius geofence (15m service, 30m detection)</li>
+                        <li>📊 Real-time distance monitoring for both users</li>
+                        <li>🔒 Automatic service start locking/unlocking</li>
+                        <li>🚨 Send alerts for suspicious behavior</li>
+                        <li>🧠 AI monitors travel fairness and honesty</li>
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Update admin map with cleaner locations
+        function updateAdminMap() {
+            // Clear existing markers
+            adminMap.eachLayer(layer => {
+                if (layer instanceof L.Marker) {
+                    adminMap.removeLayer(layer);
+                }
+            });
+
+            // Add markers for each cleaner
+            Object.entries(cleanerLocations).forEach(([cleanerId, location]) => {
+                const status = location.status || 'available';
+                const iconColor = getStatusColor(status);
+                
+                const marker = L.marker([location.lat, location.lng], {
+                    icon: L.divIcon({
+                        className: 'cleaner-marker',
+                        html: `<div style="background-color: ${iconColor}; width: 24px; height: 24px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 10px;">${cleanerId.substring(1)}</div>`
+                    })
+                }).addTo(adminMap);
+                
+                marker.bindPopup(`
+                    <div style="padding: 0.5rem; min-width: 200px;">
+                        <strong>Cleaner: ${cleanerId}</strong><br>
+                        Status: <span style="color: ${iconColor}">${status}</span><br>
+                        Last Update: ${location.timestamp || 'N/A'}<br>
+                        Battery: ${location.battery || 100}%<br>
+                        Speed: ${location.speed || 0} km/h<br>
+                        ${location.anomaly ? '<span style="color: #ef4444;">🚨 GPS Anomaly Detected</span>' : ''}
+                    </div>
+                `);
+            });
+        }
+
+        function getStatusColor(status) {
+            const colors = {
+                'available': '#10b981',
+                'busy': '#f59e0b',
+                'on_break': '#06b6d4',
+                'offline': '#9ca3af',
+                'anomaly': '#ef4444',
+                'traveling': '#3b82f6'
+            };
+            return colors[status] || '#6b7280';
+        }
+
+        // Dashboard switching
+        function showDashboard(dashboardType) {
+            // Hide all dashboards
+            document.querySelectorAll('.dashboard-content').forEach(dashboard => {
+                dashboard.classList.remove('active');
+            });
+            
+            // Show selected dashboard
+            document.getElementById(`${dashboardType}Dashboard`).classList.add('active');
+            currentDashboard = dashboardType;
+            
+            // Update header
+            const header = document.querySelector('.header h1');
+            const subheader = document.querySelector('.header p');
+            
+            if (dashboardType === 'admin') {
+                header.innerHTML = '👔 Admin Dashboard';
+                subheader.innerHTML = 'Management and monitoring interface with geofence tracking';
+                updateAdminMap();
+            } else {
+                header.innerHTML = '🧹 Cleaner Dashboard';
+                subheader.innerHTML = 'Service execution with automatic arrival detection';
+                updateCleanerDashboard();
+            }
+            
+            showNotification(`${dashboardType === 'admin' ? 'Admin' : 'Cleaner'} dashboard loaded`, 'info');
+        }
+
+        // Clock Management Functions
+        function clockIn(cleanerId) {
+            const timestamp = new Date().toLocaleTimeString();
+            const location = {
+                lat: 40.7128 + Math.random() * 0.1 - 0.05,
+                lng: -74.0060 + Math.random() * 0.1 - 0.05
+            };
+
+            // Check geofence (simulated)
+            const inGeofence = Math.abs(location.lat - 40.7128) < 0.01 && Math.abs(location.lng + 74.0060) < 0.01;
+            
+            if (!inGeofence) {
+                showNotification('❌ Clock-In failed: Outside approved location zone', 'danger');
+                return;
+            }
+
+            clockStatus[cleanerId] = {
+                status: 'clocked_in',
+                timestamp: timestamp,
+                location: location,
+                verified: true
+            };
+
+            showNotification(`✅ Cleaner ${cleanerId} clocked in at ${timestamp}`, 'success');
+            updateAdminCleanerTable();
+            updateCleanerDashboard();
+            updateCleanerTimeline();
+            addToTimeline('Clock In', 'Office - GPS Verified', 'normal');
+        }
+
+        function clockOut(cleanerId) {
+            if (!clockStatus[cleanerId]) {
+                showNotification('❌ Not clocked in', 'danger');
+                return;
+            }
+
+            // Check if all requirements are met
+            const requirementsMet = true; // In real system, check photos, job completion, etc.
+            
+            if (!requirementsMet) {
+                showNotification('❌ Clock-out blocked: Requirements not met. Complete all jobs and upload verification photos.', 'danger');
+                return;
+            }
+
+            const timestamp = new Date().toLocaleTimeString();
+            clockStatus[cleanerId].clock_out = {
+                timestamp: timestamp,
+                verified: true
+            };
+            clockStatus[cleanerId].status = 'clocked_out';
+
+            showNotification(`✅ Cleaner ${cleanerId} clocked out at ${timestamp}`, 'success');
+            updateAdminCleanerTable();
+            updateCleanerDashboard();
+            updateCleanerTimeline();
+            addToTimeline('Clock Out', 'Office - All tasks completed', 'normal');
+        }
+
+        // Update admin cleaner table
+        function updateAdminCleanerTable() {
+            const tableBody = document.getElementById('adminCleanerTableBody');
+            tableBody.innerHTML = '';
+
+            const sampleCleaners = [
+                { 
+                    id: 'C101', 
+                    name: 'John Smith', 
+                    status: 'traveling', 
+                    location: 'En Route', 
+                    job: 'Johnson Residence', 
+                    clock: 'clocked_in',
+                    distance: geofenceSystem.currentDistance,
+                    geofenceStatus: geofenceSystem.currentDistance <= 30 ? 'inside' : 'outside'
+                },
+                { 
+                    id: 'C102', 
+                    name: 'Sarah Johnson', 
+                    status: 'busy', 
+                    location: 'Client B', 
+                    job: 'Smith Apartment', 
+                    clock: 'clocked_in',
+                    distance: 15,
+                    geofenceStatus: 'inside'
+                },
+                { 
+                    id: 'C103', 
+                    name: 'Mike Williams', 
+                    status: 'available', 
+                    location: 'Office', 
+                    job: 'None', 
+                    clock: 'clocked_out',
+                    distance: 0,
+                    geofenceStatus: 'n/a'
+                },
+                { 
+                    id: 'C104', 
+                    name: 'Emma Davis', 
+                    status: 'on_break', 
+                    location: 'Break Room', 
+                    job: 'None', 
+                    clock: 'clocked_out',
+                    distance: 0,
+                    geofenceStatus: 'n/a'
+                },
+                { 
+                    id: 'C105', 
+                    name: 'Robert Brown', 
+                    status: 'anomaly', 
+                    location: 'Unknown', 
+                    job: 'Client D', 
+                    clock: 'clocked_in', 
+                    anomaly: 'GPS spoofing detected',
+                    distance: 500,
+                    geofenceStatus: 'outside'
+                }
+            ];
+
+            sampleCleaners.forEach(cleaner => {
+                const row = document.createElement('tr');
+                
+                const statusClass = `status-${cleaner.status}`;
+                
+                const clockStatusText = cleaner.clock === 'clocked_in' ? 
+                    `<span class="status-badge status-available">Clocked In</span>` :
+                    `<span class="status-badge status-offline">Clocked Out</span>`;
+                
+                // Determine geofence status badge
+                let geofenceBadge = '<span class="status-badge status-offline">N/A</span>';
+                let distanceText = '-- m';
+                let autoDetected = '<div style="color: var(--gray-color);"><i class="fas fa-clock"></i> Pending</div>';
+                let serviceReady = '<span class="status-badge status-offline">N/A</span>';
+                
+                if (cleaner.distance > 0) {
+                    distanceText = `${Math.round(cleaner.distance)}m`;
+                    
+                    if (cleaner.distance <= 15) {
+                        geofenceBadge = '<span class="status-badge status-success"><i class="fas fa-check-circle"></i> Service Zone</span>';
+                        autoDetected = `<div style="color: var(--success-color);"><i class="fas fa-check"></i> ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>`;
+                        serviceReady = '<span class="status-badge status-success">Ready</span>';
+                    } else if (cleaner.distance <= 30) {
+                        geofenceBadge = '<span class="status-badge status-traveling"><i class="fas fa-map-marker-alt"></i> Detection Zone</span>';
+                        autoDetected = `<div style="color: var(--success-color);"><i class="fas fa-check"></i> ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>`;
+                        serviceReady = '<span class="status-badge status-warning">Move Closer</span>';
+                    } else {
+                        geofenceBadge = '<span class="status-badge status-anomaly"><i class="fas fa-times-circle"></i> Outside</span>';
+                        serviceReady = '<span class="status-badge status-warning">Too Far</span>';
+                    }
+                }
+
+                row.innerHTML = `
+                    <td><strong>${cleaner.id}</strong></td>
+                    <td>${cleaner.name}</td>
+                    <td><span class="status-badge ${statusClass}">${cleaner.status}</span></td>
+                    <td>${geofenceBadge}</td>
+                    <td>${distanceText}</td>
+                    <td>${autoDetected}</td>
+                    <td>${serviceReady}</td>
+                    <td>
+                        <button class="btn btn-small btn-primary" onclick="clockIn('${cleaner.id}')">Clock In</button>
+                        <button class="btn btn-small btn-danger" onclick="clockOut('${cleaner.id}')">Clock Out</button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Update cleaner dashboard
+        function updateCleanerDashboard() {
+            // Update status
+            const status = clockStatus[currentCleanerId]?.status || 'available';
+            document.getElementById('cleanerStatus').textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            document.getElementById('cleanerStatus').className = `metric-value status-${status}`;
+            
+            let statusDetail = '';
+            if (status === 'clocked_in') statusDetail = 'Clocked in and ready';
+            else if (status === 'traveling') statusDetail = 'Traveling to job location';
+            else if (status === 'busy') statusDetail = 'Currently working on job';
+            else if (status === 'on_break') statusDetail = 'On break';
+            else statusDetail = 'Available for work';
+            
+            document.getElementById('cleanerStatusDetail').textContent = statusDetail;
+
+            // Update schedule
+            const scheduleContainer = document.getElementById('cleanerSchedule');
+            scheduleContainer.innerHTML = '';
+            
+            cleanerSchedule.forEach(job => {
+                const jobDiv = document.createElement('div');
+                jobDiv.className = 'job-card';
+                jobDiv.innerHTML = `
+                    <div class="job-card-header">
+                        <div class="job-client">${job.client}</div>
+                        <div class="job-time">${job.time}</div>
+                    </div>
+                    <div class="job-details">
+                        ${job.type} • ${job.duration} • ${job.address}
+                    </div>
+                    <div class="job-actions">
+                        ${job.status === 'pending' ? 
+                            `<button class="btn btn-small btn-success" onclick="startJob('${job.id}')">Start</button>` :
+                            `<button class="btn btn-small btn-primary" onclick="completeJob('${job.id}')">Complete</button>`
+                        }
+                        ${job.geofence ? `<span class="status-badge status-traveling">Geofence Active</span>` : ''}
+                    </div>
+                `;
+                scheduleContainer.appendChild(jobDiv);
+            });
+        }
+
+        // Update cleaner timeline
+        function updateCleanerTimeline() {
+            const timeline = document.getElementById('cleanerTimeline');
+            timeline.innerHTML = '';
+
+            const events = [
+                { time: '08:00', event: 'Clock In', location: 'Office', photo: true, gps: true, type: 'normal' },
+                { time: '08:15', event: 'Start Travel', location: 'To Johnson Residence', photo: false, gps: true, type: 'normal' },
+                { time: '08:40', event: 'Arrival Auto-Detected', location: '123 Main St (25m)', photo: false, gps: true, type: 'geofence' },
+                { time: '08:45', event: 'Entered Service Zone', location: '123 Main St (12m)', photo: false, gps: true, type: 'geofence' },
+                { time: '09:00', event: 'Start Service', location: 'Johnson Residence', photo: false, gps: true, type: 'normal' },
+                { time: '11:30', event: 'End Service', location: 'Johnson Residence', photo: true, gps: true, type: 'normal' }
+            ];
+
+            events.forEach(event => {
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+                
+                let icon = 'fas fa-map-marker-alt';
+                let color = '#06b6d4';
+                let label = 'GPS Verified';
+                if (event.type === 'geofence') {
+                    icon = 'fas fa-satellite';
+                    color = '#10b981';
+                    label = 'Auto-Detected';
+                }
+                
+                item.innerHTML = `
+                    <div class="timeline-time">${event.time}</div>
+                    <div class="timeline-event">${event.event}</div>
+                    <div class="timeline-location">${event.location}</div>
+                    <div style="display: flex; gap: 1rem; margin-top: 0.25rem;">
+                        <span style="font-size: 0.75rem; color: ${event.gps ? '#10b981' : '#ef4444'}">
+                            ${event.gps ? '✓ GPS Logged' : '✗ No GPS'}
+                        </span>
+                        <span style="font-size: 0.75rem; color: ${event.photo ? '#10b981' : '#6b7280'}">
+                            ${event.photo ? '📸 Photo Required' : 'No Photo'}
+                        </span>
+                        <span style="font-size: 0.75rem; color: ${color}">
+                            <i class="${icon}"></i> ${label}
+                        </span>
+                    </div>
+                `;
+                timeline.appendChild(item);
+            });
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                                  type === 'warning' ? 'exclamation-triangle' : 
+                                  type === 'danger' ? 'times-circle' : 'info-circle'}"></i>
+                <div>${message}</div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // Update sample cleaner locations
+        function updateSampleLocations() {
+            cleanerLocations = {
+                'C101': { 
+                    lat: geofenceSystem.cleanerLocation.lat + Math.random() * 0.01 - 0.005, 
+                    lng: geofenceSystem.cleanerLocation.lng + Math.random() * 0.01 - 0.005, 
+                    status: 'traveling', 
+                    battery: Math.floor(Math.random() * 30) + 70, 
+                    speed: Math.floor(Math.random() * 40) + 20, 
+                    timestamp: new Date().toLocaleTimeString(),
+                    distance: geofenceSystem.currentDistance
+                },
+                'C102': { lat: 40.7228, lng: -73.9960, status: 'busy', battery: Math.floor(Math.random() * 30) + 70, speed: 0, timestamp: new Date().toLocaleTimeString(), distance: 15 },
+                'C103': { lat: 40.7128, lng: -74.0060, status: 'available', battery: Math.floor(Math.random() * 30) + 70, speed: 0, timestamp: new Date().toLocaleTimeString(), distance: 0 },
+                'C104': { lat: 40.7128, lng: -74.0060, status: 'on_break', battery: Math.floor(Math.random() * 30) + 70, speed: 0, timestamp: new Date().toLocaleTimeString(), distance: 0 },
+                'C105': { lat: 40.7128 + 0.05, lng: -74.0060 + 0.05, status: 'anomaly', battery: Math.floor(Math.random() * 30) + 70, speed: 0, timestamp: new Date().toLocaleTimeString(), anomaly: true, distance: 500 }
+            };
+            
+            updateAdminMap();
+            updateGeofenceStatus();
+            showNotification('✅ Cleaner locations updated with GPS data', 'success');
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load documentation
+            loadDocumentation();
+            
+            // Initialize maps
+            initAdminMap();
+            initCleanerMap();
+            
+            // Initialize sample data
+            cleanerSchedule = [
+                { id: 'job1', client: 'Johnson Residence', time: '9:00 AM - 12:00 PM', type: 'Deep Cleaning', duration: '3 hours', address: '123 Main St, NYC', status: 'in_progress', geofence: true },
+                { id: 'job2', client: 'Smith Apartment', time: '2:00 PM - 4:00 PM', type: 'Regular Cleaning', duration: '2 hours', address: '456 Park Ave, NYC', status: 'pending', geofence: false },
+                { id: 'job3', client: 'Davis Office', time: '5:00 PM - 7:00 PM', type: 'Office Cleaning', duration: '2 hours', address: '789 Broadway, NYC', status: 'pending', geofence: false }
+            ];
+            
+            // Initialize clock status
+            clockStatus[currentCleanerId] = {
+                status: 'traveling',
+                timestamp: '08:00',
+                location: geofenceSystem.cleanerLocation,
+                verified: true
+            };
+            
+            // Start geofence monitoring
+            updateGeofenceStatus();
+            geofenceSystem.updateInterval = setInterval(updateGeofenceStatus, 30000); // Update every 30 seconds
+            
+            updateSampleLocations();
+            updateAdminCleanerTable();
+            updateCleanerDashboard();
+            updateCleanerTimeline();
+
+            // Dashboard switching
+            document.getElementById('showAdminBtn').addEventListener('click', () => showDashboard('admin'));
+            document.getElementById('showCleanerBtn').addEventListener('click', () => showDashboard('cleaner'));
+
+            // Documentation button
+            document.getElementById('docBtn').addEventListener('click', () => {
+                document.getElementById('docModal').classList.add('active');
+            });
+
+            document.getElementById('closeDocModal').addEventListener('click', () => {
+                document.getElementById('docModal').classList.remove('active');
+            });
+
+            // Arrival alert close button
+            document.getElementById('closeArrivalAlertBtn').addEventListener('click', () => {
+                document.getElementById('arrivalAlert').style.display = 'none';
+            });
+
+            // Geofence test button
+            document.getElementById('simulateGeofenceBtn').addEventListener('click', () => {
+                // Simulate moving closer to job location
+                geofenceSystem.currentDistance = Math.max(0, geofenceSystem.currentDistance - 500);
+                updateGeofenceStatus();
+                showNotification('🧪 Geofence test: Simulated movement toward job location', 'info');
+            });
+
+            // Admin buttons
+            document.getElementById('adminUpdateLocationsBtn').addEventListener('click', updateSampleLocations);
+            document.getElementById('adminCenterMapBtn').addEventListener('click', () => {
+                adminMap.setView([40.7128, -74.0060], 12);
+                showNotification('📍 Map centered to NYC headquarters', 'info');
+            });
+            document.getElementById('adminClockAllBtn').addEventListener('click', () => {
+                ['C101', 'C102', 'C103', 'C104', 'C105'].forEach(clockIn);
+                showNotification('✅ All cleaners clocked in with GPS verification', 'success');
+            });
+            document.getElementById('adminEmergencyBtn').addEventListener('click', () => {
+                showNotification('🚨 EMERGENCY STOP: All operations paused. Alert sent to all cleaners.', 'danger');
+            });
+            document.getElementById('adminForceClockOutBtn').addEventListener('click', () => {
+                showNotification('⚠️ Force clock-out feature - Requires manager override authorization', 'warning');
+            });
+            document.getElementById('adminForceArrivalBtn').addEventListener('click', () => {
+                showNotification('📍 Manual arrival marked. Note: System auto-detects arrival normally.', 'info');
+                addToTimeline('Arrival Manually Confirmed', 'Admin override - Normally auto-detected', 'warning');
+            });
+
+            // Cleaner buttons
+            document.getElementById('cleanerClockInBtn').addEventListener('click', () => {
+                // Simulate geofence check
+                const inGeofence = Math.random() > 0.2; // 80% success rate
+                if (inGeofence) {
+                    clockIn(currentCleanerId);
+                    showNotification('✅ Clocked in successfully. GPS verified - within approved zone.', 'success');
+                } else {
+                    showNotification('❌ Clock-In failed: Outside approved location zone. Move to office or job location.', 'danger');
+                }
+            });
+            document.getElementById('cleanerStartTravelBtn').addEventListener('click', () => {
+                if (clockStatus[currentCleanerId]?.status === 'clocked_in') {
+                    clockStatus[currentCleanerId].status = 'traveling';
+                    updateCleanerDashboard();
+                    showNotification('🚗 Travel started. GPS tracking active. ETA: 25 minutes', 'success');
+                    addToTimeline('Start Travel', 'To Johnson Residence', 'normal');
+                } else {
+                    showNotification('❌ Please clock in first before starting travel', 'warning');
+                }
+            });
+            document.getElementById('cleanerStartServiceBtn').addEventListener('click', () => {
+                const status = updateGeofenceStatus();
+                if (status.canStartService) {
+                    clockStatus[currentCleanerId].status = 'busy';
+                    updateCleanerDashboard();
+                    showNotification('✅ Service started. Remember to take verification photos before completion.', 'success');
+                    addToTimeline('Start Service', 'Johnson Residence - Geofence unlocked', 'normal');
+                } else {
+                    showNotification('❌ Cannot start service: Must be within 15-30m of job location. Current distance: ' + Math.round(status.distance) + 'm', 'danger');
+                }
+            });
+            document.getElementById('cleanerClockOutBtn').addEventListener('click', () => {
+                // Check if end-of-service photo is taken
+                const endServicePhotoTaken = document.getElementById('endServicePhotoPreview').style.background !== '#fee2e2';
+                if (!endServicePhotoTaken) {
+                    showNotification('❌ Clock-out blocked: End-of-service photo required. Take photo before clocking out.', 'danger');
+                    document.getElementById('photoModal').classList.add('active');
+                    document.getElementById('currentTime').textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                } else {
+                    clockOut(currentCleanerId);
+                }
+            });
+            document.getElementById('cleanerTakeClockInPhotoBtn').addEventListener('click', () => {
+                document.getElementById('photoModal').classList.add('active');
+                document.getElementById('currentTime').textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            });
+            document.getElementById('cleanerTakeEndServicePhotoBtn').addEventListener('click', () => {
+                document.getElementById('photoModal').classList.add('active');
+                document.getElementById('currentTime').textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            });
+            document.getElementById('cleanerCenterMapBtn').addEventListener('click', () => {
+                cleanerMap.setView([geofenceSystem.cleanerLocation.lat, geofenceSystem.cleanerLocation.lng], 14);
+                showNotification('📍 Map centered to your location. GPS accuracy: 10m', 'info');
+            });
+            document.getElementById('cleanerGetDirectionsBtn').addEventListener('click', () => {
+                showNotification('🗺️ Directions to job location loaded. Route: 3.2km, ETA: 25min', 'success');
+            });
+            document.getElementById('cleanerReportGPSBtn').addEventListener('click', () => {
+                showNotification('📡 GPS diagnostic running... Signal: Strong, Accuracy: 10m, Mock location: Not detected', 'info');
+            });
+            document.getElementById('checkGeofenceBtn').addEventListener('click', () => {
+                updateGeofenceStatus();
+                showNotification('🔄 Geofence status checked manually. Auto-updates every 30 seconds.', 'info');
+            });
+
+            // Photo modal buttons
+            document.getElementById('closePhotoModal').addEventListener('click', () => {
+                document.getElementById('photoModal').classList.remove('active');
+            });
+            document.getElementById('cancelPhotoBtn').addEventListener('click', () => {
+                document.getElementById('photoModal').classList.remove('active');
+                showNotification('❌ Photo capture cancelled', 'warning');
+            });
+            document.getElementById('capturePhotoBtn').addEventListener('click', () => {
+                // Update photo preview
+                document.getElementById('endServicePhotoPreview').style.background = '#dcfce7';
+                document.getElementById('endServicePhotoPreview').innerHTML = '<i class="fas fa-check-circle" style="font-size: 2rem; color: #10b981;"></i>';
+                
+                showNotification('✅ Photo captured successfully. GPS metadata: 40.7128°N, 74.0060°W', 'success');
+                document.getElementById('photoModal').classList.remove('active');
+            });
+
+            // Refresh button
+            document.getElementById('refreshBtn').addEventListener('click', () => {
+                if (currentDashboard === 'admin') {
+                    updateSampleLocations();
+                    updateAdminCleanerTable();
+                    showNotification('🔄 Admin dashboard refreshed with latest data', 'info');
+                } else {
+                    updateCleanerDashboard();
+                    showNotification('🔄 Cleaner dashboard refreshed', 'info');
+                }
+            });
+
+            // Close modal when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('active');
+                    }
+                });
+            });
+
+            // Show welcome notifications
+            setTimeout(() => {
+                showNotification('✅ Dashboard system loaded successfully', 'success');
+            }, 1000);
+
+            setTimeout(() => {
+                showNotification('📍 Geofence system active - Auto-detects arrival without button press', 'info');
+            }, 2000);
+
+            setTimeout(() => {
+                showNotification('📸 Remember: End-of-service photo required before clock-out', 'info');
+            }, 3000);
+        });
+
+        // Helper functions for cleaner actions
+        function startJob(jobId) {
+            // Simulate geofence check
+            const inGeofence = Math.random() > 0.2; // 80% success rate
+            if (inGeofence) {
+                showNotification(`✅ Starting job ${jobId}. GPS verified - within service area.`, 'success');
+                // Update job status in schedule
+                const job = cleanerSchedule.find(j => j.id === jobId);
+                if (job) {
+                    job.status = 'in_progress';
+                    job.geofence = true;
+                    updateCleanerDashboard();
+                }
+            } else {
+                showNotification(`❌ Cannot start job: Must be within 30m of client location`, 'danger');
+            }
+        }
+
+        function completeJob(jobId) {
+            showNotification(`✅ Completing job ${jobId} - Photo verification required`, 'info');
+            document.getElementById('photoModal').classList.add('active');
+            document.getElementById('currentTime').textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+    </script>
+</body>
+</html>

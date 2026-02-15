@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Price List</title>
+  <link rel="stylesheet" href="./css/ManageCleaningPriceList.css">
+</head>
+<body>
+  <div class="mcpl-container">
+    <!-- Header -->
+    <div class="mcpl-header">
+      <h1>⚙️ Manage Price List & Smart Rules</h1>
+      <div class="mcpl-nav-buttons">
+        <button onclick="location.href='./CleaningPriceList.html'" class="mcpl-btn mcpl-btn-primary">View Price List</button>
+        <button onclick="location.href='../estimation.html'" class="mcpl-btn mcpl-btn-secondary">Steam Estimator</button>
+        <button onclick="location.href='../Maintenance.html'" class="mcpl-btn mcpl-btn-secondary">Maintenance Estimator</button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="mcpl-tabs">
+      <button class="mcpl-tab active" onclick="switchTab('steam')">🔥 Steam Clean</button>
+      <button class="mcpl-tab" onclick="switchTab('camper')">🚐 Campers</button>
+      <button class="mcpl-tab" onclick="switchTab('rules')">⚙️ Smart Rules</button>
+      <button class="mcpl-tab" onclick="switchTab('rates')">💰 Hourly Rates</button>
+    </div>
+
+    <!-- Steam Clean Management Tab -->
+    <div id="tab-steam" class="mcpl-tab-content active">
+      <div class="mcpl-toolbar">
+        <h2>Steam Clean Items</h2>
+        <button class="mcpl-btn mcpl-btn-success" onclick="addSteamItem()">➕ Add New Item</button>
+      </div>
+      
+      <div class="mcpl-table-container">
+        <table class="mcpl-table" id="steamItemsTable">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Size/Details</th>
+              <th>Price ($)</th>
+              <th>Notes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="steamItemsBody">
+            <!-- Dynamic content -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mcpl-info-box">
+        <h3>📌 Steam Clean Rules</h3>
+        <div class="mcpl-rule-editor">
+          <label>Minimum Charge:</label>
+          <input type="number" id="minSteamCharge" step="0.01" value="114"> + 5% tax = $<span id="minTotalDisplay">120</span>
+          <button class="mcpl-btn mcpl-btn-small" onclick="updateMinCharge()">Update</button>
+        </div>
+        <div class="mcpl-rule-editor">
+          <label>Deposit Amount:</label>
+          <input type="number" id="depositAmount" step="0.01" value="120">
+          <button class="mcpl-btn mcpl-btn-small" onclick="updateDeposit()">Update</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Camper Management Tab -->
+    <div id="tab-camper" class="mcpl-tab-content">
+      <div class="mcpl-toolbar">
+        <h2>Camper Packages</h2>
+        <button class="mcpl-btn mcpl-btn-success" onclick="addCamperItem()">➕ Add Camper Package</button>
+      </div>
+      
+      <div class="mcpl-table-container">
+        <table class="mcpl-table" id="camperItemsTable">
+          <thead>
+            <tr>
+              <th>Size</th>
+              <th>Price ($)</th>
+              <th>Includes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="camperItemsBody">
+            <!-- Dynamic content -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Smart Rules Tab -->
+    <div id="tab-rules" class="mcpl-tab-content">
+      <div class="mcpl-toolbar">
+        <h2>Smart Calculator Rules</h2>
+        <button class="mcpl-btn mcpl-btn-success" onclick="addRule()">➕ Add Rule</button>
+      </div>
+      
+      <div class="mcpl-rules-list" id="rulesList">
+        <!-- Dynamic rules -->
+      </div>
+
+      <div class="mcpl-info-box">
+        <h3>🤖 Staff List</h3>
+        <textarea id="staffList" rows="3" style="width:100%; padding:8px;">DORA, ESTHER F, HAWA, MANUEL, MARIE, OPHI, SHANIA, SHANTELLE, THERESA</textarea>
+        <button class="mcpl-btn mcpl-btn-primary" onclick="updateStaffList()" style="margin-top:10px;">Update Staff List</button>
+      </div>
+    </div>
+
+    <!-- Hourly Rates Tab -->
+    <div id="tab-rates" class="mcpl-tab-content">
+      <h2>Hourly Rates & Minimums</h2>
+      
+      <div class="mcpl-grid-2">
+        <div class="mcpl-card">
+          <h3>Maintenance Clean</h3>
+          <div class="mcpl-form-group">
+            <label>Residential Rate ($/hr):</label>
+            <input type="number" id="residentialRate" step="0.01" value="38">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Commercial Rate ($/hr):</label>
+            <input type="number" id="commercialRate" step="0.01" value="44">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Minimum Hours:</label>
+            <input type="number" id="maintenanceMinHours" step="0.5" value="3">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Number of Cleaners:</label>
+            <input type="number" id="maintenanceCleaners" value="2">
+          </div>
+        </div>
+
+        <div class="mcpl-card">
+          <h3>Move Out / Deep Clean</h3>
+          <div class="mcpl-form-group">
+            <label>Hourly Rate ($/hr):</label>
+            <input type="number" id="deepRate" step="0.01" value="38">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Minimum Hours:</label>
+            <input type="number" id="deepMinHours" step="0.5" value="6">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Number of Cleaners:</label>
+            <input type="number" id="deepCleaners" value="2">
+          </div>
+        </div>
+      </div>
+
+      <div class="mcpl-card">
+        <h3>Room Base Hours</h3>
+        <div class="mcpl-grid-3">
+          <div class="mcpl-form-group">
+            <label>Kitchen (base):</label>
+            <input type="number" id="kitchenBase" step="0.5" value="4">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Kitchen Large Add:</label>
+            <input type="number" id="kitchenLarge" step="0.5" value="1.5">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Bedroom (base):</label>
+            <input type="number" id="bedroomBase" step="0.5" value="1">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Bedroom Large Add:</label>
+            <input type="number" id="bedroomLarge" step="0.5" value="0.5">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Bathroom (base):</label>
+            <input type="number" id="bathroomBase" step="0.5" value="2.5">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Bathroom Large Add:</label>
+            <input type="number" id="bathroomLarge" step="0.5" value="1">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Entryway (base):</label>
+            <input type="number" id="entryBase" step="0.5" value="0.5">
+          </div>
+        </div>
+      </div>
+
+      <button class="mcpl-btn mcpl-btn-primary" onclick="saveAllRates()" style="margin-top:20px;">💾 Save All Rate Changes</button>
+    </div>
+
+    <!-- Save Status -->
+    <div class="mcpl-save-status" id="saveStatus"></div>
+  </div>
+
+  <script src="./js/ManageCleaningPriceList.js"></script>
+</body>
+</html>
