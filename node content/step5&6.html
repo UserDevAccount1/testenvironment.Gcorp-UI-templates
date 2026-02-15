@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Client Panel — Review Quotation & Pay Invoice</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --primary:#2b5fad;
+  --primary-dark:#1f4e8a;
+  --success:#1fbf75;
+  --danger:#ff5959;
+  --bg:#f2f4f8;
+  --card:#ffffff;
+  --muted:#6b7280;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:var(--bg);
+  color:#111;
+}
+
+/* ===== Navigation ===== */
+.nav-buttons{
+  position:fixed;
+  top:20px;
+  left:20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  z-index:1000;
+}
+.nav-buttons button{
+  background:var(--primary);
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  padding:10px 16px;
+  font-weight:600;
+  cursor:pointer;
+}
+.nav-buttons button:hover{background:var(--primary-dark)}
+
+/* ===== Panel ===== */
+.panel{
+  max-width:440px;
+  margin:90px auto;
+  background:var(--card);
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 8px 25px rgba(0,0,0,.08);
+}
+.header{
+  font-size:1.25rem;
+  font-weight:700;
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.card{
+  background:#f9fafc;
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:16px;
+}
+.card h3{
+  margin:0 0 10px;
+  font-size:0.95rem;
+  color:var(--primary);
+}
+.card p{
+  margin:6px 0;
+  font-size:0.88rem;
+}
+
+.highlight{
+  font-size:1.1rem;
+  font-weight:700;
+}
+.muted{color:var(--muted)}
+
+.btn{
+  width:100%;
+  border:none;
+  border-radius:12px;
+  padding:13px;
+  font-size:0.95rem;
+  font-weight:600;
+  cursor:pointer;
+  margin-top:10px;
+}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+
+/* ===== Digital Booklet ===== */
+.booklet section{
+  border-top:1px dashed #ddd;
+  padding-top:12px;
+  margin-top:12px;
+}
+.booklet h4{
+  margin:0 0 6px;
+  font-size:0.85rem;
+  color:#374151;
+}
+
+.photos{
+  display:flex;
+  gap:8px;
+}
+.photos div{
+  width:60px;
+  height:60px;
+  background:#e5e7eb;
+  border-radius:8px;
+  font-size:0.7rem;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#555;
+}
+
+/* ===== Payment ===== */
+.payment-methods{
+  display:flex;
+  gap:10px;
+}
+.method{
+  flex:1;
+  padding:12px;
+  border-radius:12px;
+  background:#eef1f7;
+  text-align:center;
+  font-size:0.85rem;
+  font-weight:600;
+  cursor:pointer;
+  border:2px solid transparent;
+}
+.method.active{border-color:var(--primary);background:#fff}
+
+.step{display:none}
+.step.active{display:block}
+
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:20px;
+  font-size:0.7rem;
+  background:#e0e7ff;
+  color:var(--primary);
+  margin-left:6px;
+}
+</style>
+</head>
+
+<body>  
+
+<!-- Navigation -->
+<div class="nav-buttons">
+  <button onclick="location.href='step4.html'">← Step 4</button>
+  <button onclick="showStep('step5')">Step 5</button>
+  <button onclick="showStep('step6')">Step 6</button>
+ <button onclick="location.href='ManageBooking-nodecontent.html'">goback to node presentation</button>
+</div>
+
+<!-- STEP 5 -->
+<div id="step5" class="panel step active">
+  <div class="header">Step 5 — Review & Approve Quotation</div>
+
+  <div class="card">
+    <h3>Service Breakdown</h3>
+    <p><strong>Package:</strong> Deep Cleaning Package</p>
+    <p><strong>Areas:</strong> 3 Rooms + 1 Bathroom</p>
+    <p><strong>Upsells:</strong> Carpet Steam Clean, Kitchen Degrease</p>
+  </div>
+
+  <div class="card">
+    <h3>Total Amount</h3>
+    <p>Subtotal: $280.00 CAD</p>
+    <p>Tax (13% HST): $36.40 CAD</p>
+    <p class="highlight">Total: $316.40 CAD</p>
+    <p class="muted">Valid until: Nov 20, 2025</p>
+  </div>
+
+  <div class="card booklet">
+    <h3>Digital Service Booklet</h3>
+
+    <section>
+      <h4>Client Information</h4>
+      <p>John Doe · 416-555-2299</p>
+      <p>123 King St, Toronto</p>
+    </section>
+
+    <section>
+      <h4>Service Details</h4>
+      <p>Deep cleaning, kitchen degrease, steam carpet</p>
+      <p>Estimated Hours: 6.5 hrs</p>
+    </section>
+
+    <section>
+      <h4>Supervisor Site Visit Notes</h4>
+      <p>Heavy grease buildup in kitchen, stairs need attention</p>
+    </section>
+
+    <section>
+      <h4>Photos / Attachments</h4>
+      <div class="photos">
+        <div>Photo</div>
+        <div>Photo</div>
+        <div>Photo</div>
+      </div>
+    </section>
+
+    <section>
+      <h4>Payment Summary</h4>
+      <p>Final Payable: <strong>$316.40 CAD</strong></p>
+    </section>
+  </div>
+
+  <div class="card">
+    <button class="btn btn-success" onclick="approveQuotation()">Approve Quotation</button>
+    <button class="btn btn-danger" onclick="requestRevision()">Request Revision</button>
+  </div>
+</div>
+
+<!-- STEP 6 -->
+<div id="step6" class="panel step">
+  <div class="header">Step 6 — Pay Invoice</div>
+
+  <div class="card">
+    <h3>Invoice Summary</h3>
+    <p>Quotation Ref: <strong>QTN-CA-1056</strong></p>
+    <p>Service: Deep Cleaning Package</p>
+    <p class="highlight">$316.40 CAD</p>
+    <p>Status: <span class="badge">Pending Payment</span></p>
+  </div>
+
+  <div class="card">
+    <h3>Deposit Option <span class="badge">Residential</span></h3>
+    <label>
+      <input type="checkbox" id="deposit" checked /> Pay $120 Deposit Only
+    </label>
+  </div>
+
+  <div class="card">
+    <h3>Payment Method</h3>
+    <div class="payment-methods">
+      <div class="method" onclick="selectMethod(this)">PayPal</div>
+      <div class="method" onclick="selectMethod(this)">Debit Card</div>
+      <div class="method" onclick="selectMethod(this)">Credit Card</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <button class="btn btn-primary" onclick="payNow()">Pay Now</button>
+  </div>
+</div>
+
+<script>
+function showStep(id){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function approveQuotation(){
+  alert('Quotation approved. Proceed to payment.');
+  showStep('step6');
+}
+
+function requestRevision(){
+  alert('Revision request sent to manager.');
+}
+
+function selectMethod(el){
+  document.querySelectorAll('.method').forEach(m=>m.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function payNow(){
+  const deposit=document.getElementById('deposit').checked;
+  alert(deposit
+    ? 'Deposit payment successful. Remaining balance pending.'
+    : 'Full payment successful. Invoice marked as paid.');
+}
+</script>
+
+</body>
+</html>

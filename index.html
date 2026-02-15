@@ -1,35 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Role Buttons</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Role Navigation</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
+      margin: 0;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      background: #f4f4f4;
-      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #e9efff, #f7f9fc);
+      font-family: 'Poppins', sans-serif;
       padding: 20px;
     }
 
-    .button-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
+    .card {
+      background: #ffffff;
       width: 100%;
-      max-width: 800px;
+      max-width: 900px;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
     }
 
-    .button-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 15px;
+    .title {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .button-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
     }
 
     a {
@@ -37,53 +52,136 @@
     }
 
     .btn {
-      padding: 12px 24px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #007bff;
-      color: white;
-      transition: background 0.3s ease;
-      display: inline-block;
-      text-align: center;
-      white-space: nowrap;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 20px;
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 12px;
+      color: #ffffff;
+      background: linear-gradient(135deg, #4f8cff, #2c6cff);
+      box-shadow: 0 10px 20px rgba(79, 140, 255, 0.35);
+      transition: all 0.25s ease;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.15);
+      opacity: 0;
+      transition: opacity 0.25s ease;
     }
 
     .btn:hover {
-      background: #0056b3;
+      transform: translateY(-3px);
+      box-shadow: 0 16px 30px rgba(79, 140, 255, 0.45);
     }
 
-    @media (max-width: 600px) {
-      .btn {
-        width: 100%;
+    .btn:hover::after {
+      opacity: 1;
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 16px rgba(79, 140, 255, 0.35);
+    }
+
+    /* Section spacing */
+    .section {
+      margin-top: 35px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 15px;
+      color: #555;
+    }
+
+    /* Features section styling */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .feature-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #6c757d, #495057);
+      border-radius: 10px;
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      min-height: 50px;
+    }
+
+    .feature-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      background: linear-gradient(135deg, #5a6268, #343a40);
+    }
+
+    @media (max-width: 480px) {
+      .title {
+        font-size: 20px;
       }
 
-      .button-container {
-        flex-direction: column;
-        align-items: center;
+      .btn {
+        font-size: 14px;
+        padding: 12px 16px;
+      }
+      
+      .feature-link {
+        font-size: 13px;
+        padding: 10px 12px;
       }
     }
   </style>
 </head>
 <body>
-  <div class="button-wrapper">
-    <div class="button-container">
-      <a href="./" class="btn">CFO</a>
-      <a href="ignite-va.html" class="btn">Ignite VA</a>
-      <a href="ceo.html" class="btn">CEO</a>
-      <a href="./ADMIN PANEL/Dashboard.html" class="btn">Admin</a>
-      <a href="./MANAGER PANEL/Dashboard.html" class="btn">Manager</a>
-      <a href="./STAFF PANEL/Dashboard.html" class="btn">Staff</a>
-      <a href="./CLIENT PANEL/Dashboard.html" class="btn">Client</a>
-      <a href="./Sample pages/estimation.html" class="btn">Estimation Feature</a>
-    </div><a href="./Sample pages/Fix Estimation feature/CleaningPriceList.html" class="btn">Cleaning Pricelist</a>
-    <div class="button-container">
-      <a href="./Sample pages/application workflow.html" class="btn">Application Workflow</a>
-      <a href="./Sample pages/cleaningworkflow/step1.html" class="btn">Cleaning service Workflow</a>
-      <a href="./Sample pages/database schema.html" class="btn">Data Schema</a>
-       <a href="./Sample pages/Travel_location.html" class="btn">Travel Time Feature</a>
+
+  <div class="card">
+    <div class="title">Dashboard & Features</div>
+
+    <div class="section">
+      <div class="section-title">Roles</div>
+      <div class="button-group">
+        <a href="./" class="btn">CFO</a>
+        <a href="ignite-va.html" class="btn">Ignite VA</a>
+        <a href="ceo.html" class="btn">CEO</a>
+        <a href="./ADMIN PANEL/Dashboard.html" class="btn">Admin</a>
+        <a href="./MANAGER PANEL/Manage Booking.html" class="btn">Manager</a>
+        <a href="./STAFF PANEL/Dashboard.html" class="btn">Staff</a>
+        <a href="./CLIENT PANEL/Dashboard.html" class="btn">Client</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Features</div>
+      <div class="features-grid">
+        <a href="../index.html" class="feature-link">Home</a>
+        <a href="./Fix Estimation feature/ManageCleaningPriceList.html" class="feature-link">Manage Cleaning Price list</a>
+        <a href="./Fix Estimation feature/SmartEstimator.html" class="feature-link">Original Cleaning Estimator</a>
+        <a href="./Fix Estimation feature/ClientCLeaningPriceList.html" class="feature-link">Client Cleaning Price Estimator</a>
+        <a href="./Fix Estimation feature/CleaningPriceList.html" class="feature-link">Cleaning Service Price List</a>
+        <a href="./Sample pages/application workflow.html" class="feature-link">Application Workflow</a>
+        <a href="./Sample pages/database schema.html" class="feature-link">Data Schema</a>
+        <a href="./GEOFENCING FEATURE/ManageStaff.html" class="feature-link">Travel Time</a>
+        <a href="./node content/ManageBooking-nodecontent.html" class="feature-link">Node Content</a>
+        <a href="./GREYLINE OVERBILLING/GreyLine Dashboard.html" class="feature-link">Grey Line</a>
+      </div>
     </div>
   </div>
+
 </body>
 </html>

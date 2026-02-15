@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>CleanRight - Smart Price Estimator</title>
+  <link rel="stylesheet" href="./css/ClientCleaningPriceList.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="ccl-app">
+    <!-- Mobile Header -->
+    <div class="ccl-mobile-header">
+      <div class="ccl-brand">
+        <i class="fas fa-broom ccl-brand-icon"></i>
+        <div class="ccl-brand-text">
+          <h1>CleanRight</h1>
+          <span>Professional Cleaning</span>
+        </div>
+      </div>
+      <button class="ccl-menu-btn" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="ccl-mobile-menu" id="mobileMenu">
+    <!-- Local HTML file for Price List -->
+    <button onclick="location.href='../index.html'" class="mcpl-btn mcpl-btn-primary">
+      Home
+    </button>
+    <!-- Local HTML file for Price List -->
+    <button onclick="location.href='./CleaningPriceList.html'" class="mcpl-btn mcpl-btn-primary">
+      View Price List
+    </button>
+
+    <!-- Original Cleaning Estimator -->
+    <button onclick="location.href='./SmartEstimator.html'" class="mcpl-btn mcpl-btn-secondary">
+      Original Cleaning Estimator
+    </button>
+
+    <!-- Client Cleaning Price Estimator -->
+    <button onclick="location.href='./ClientCLeaningPriceList.html'" class="mcpl-btn mcpl-btn-secondary">
+      Client Cleaning Price Estimator
+    </button>
+
+    <!-- Cleaning Service Price List -->
+    <button onclick="location.href='./ManageCleaningPriceList.html'" class="mcpl-btn mcpl-btn-secondary">
+      Cleaning Service Price List
+    </button>
+
+    <!-- Test Estimator (special toggle, not a link) -->
+    <button class="mcpl-btn mcpl-btn-success" onclick="toggleTestEstimator()">
+      🧪 Test Estimator
+    </button>
+    </div>
+
+    <!-- Desktop Header (hidden on mobile) -->
+    <div class="ccl-desktop-header">
+      <div class="ccl-logo">
+        <i class="fas fa-broom"></i>
+        <div>
+          <h2>CleanRight</h2>
+          <p>Professional Cleaning Services</p>
+        </div>
+      </div>
+      <div class="ccl-nav">
+       <!-- Local HTML file for Price List -->
+    <button onclick="location.href='../index.html'" class="mcpl-btn mcpl-btn-primary">
+      Home
+    </button>
+    <!-- Local HTML file for Price List -->
+    <button onclick="location.href='./CleaningPriceList.html'" class="mcpl-btn mcpl-btn-primary">
+      View Price List
+    </button>
+
+    <!-- Original Cleaning Estimator -->
+    <button onclick="location.href='./SmartEstimator.html'" class="mcpl-btn mcpl-btn-secondary">
+      Original Cleaning Estimator
+    </button>
+
+    <!-- Client Cleaning Price Estimator -->
+    <button onclick="location.href='./ClientCLeaningPriceList.html'" class="mcpl-btn mcpl-btn-secondary">
+      Client Cleaning Price Estimator
+    </button>
+
+    <!-- Cleaning Service Price List -->
+    <button onclick="location.href='./ManageCleaningPriceList.html'" class="mcpl-btn mcpl-btn-secondary">
+      Cleaning Service Price List
+    </button>
+
+    <!-- Test Estimator (special toggle, not a link) -->
+    <button class="mcpl-btn mcpl-btn-success" onclick="toggleTestEstimator()">
+      🧪 Test Estimator
+    </button>
+      </div>
+    </div>
+
+    <!-- Hero Section with Quick Stats -->
+    <div class="ccl-hero">
+      <div class="ccl-hero-content">
+        <span class="ccl-badge">✨ Instant Online Estimator</span>
+        <h2>Know Your Cleaning Cost <span>Before You Book</span></h2>
+        <p>Answer a few questions and get an instant, detailed breakdown of your cleaning estimate. No surprises, just transparent pricing.</p>
+        
+        <!-- Quick Stats Cards -->
+        <div class="ccl-quick-stats">
+          <div class="ccl-stat-chip">
+            <i class="fas fa-users"></i>
+            <span>2 Cleaners Always</span>
+          </div>
+          <div class="ccl-stat-chip">
+            <i class="fas fa-clock"></i>
+            <span>3hr Min Booking</span>
+          </div>
+          <div class="ccl-stat-chip">
+            <i class="fas fa-dollar-sign"></i>
+            <span>$38/hr Starting</span>
+          </div>
+          <div class="ccl-stat-chip">
+            <i class="fas fa-shield-alt"></i>
+            <span>Insured & Bonded</span>
+          </div>
+        </div>
+
+        <!-- Trust Badges -->
+        <div class="ccl-trust-badges">
+          <div class="ccl-badge-item">
+            <i class="fas fa-check-circle"></i> 100% Satisfaction
+          </div>
+          <div class="ccl-badge-item">
+            <i class="fas fa-check-circle"></i> No Hidden Fees
+          </div>
+          <div class="ccl-badge-item">
+            <i class="fas fa-check-circle"></i> Instant Quote
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating Calculator Preview -->
+      <div class="ccl-preview-card">
+        <div class="ccl-preview-header">
+          <i class="fas fa-calculator"></i>
+          <span>Live Estimate Preview</span>
+        </div>
+        <div class="ccl-preview-body" id="previewAmount">
+          <span class="ccl-preview-label">Starting from</span>
+          <span class="ccl-preview-value">$114</span>
+        </div>
+        <button class="ccl-preview-btn" onclick="scrollToSection('estimator')">
+          Calculate Yours <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Estimator Section -->
+    <div id="estimator" class="ccl-estimator-section">
+      <div class="ccl-section-header">
+        <h2>📊 Smart Price Estimator</h2>
+        <p>Select your service and customize the details below</p>
+      </div>
+
+      <!-- Service Type Selector - Mobile Friendly Grid -->
+      <div class="ccl-service-grid" id="services">
+        <button class="ccl-service-card active" onclick="switchService('maintenance')" id="card-maintenance">
+          <div class="ccl-card-icon">🧼</div>
+          <div class="ccl-card-info">
+            <h3>Maintenance Clean</h3>
+            <p>Regular cleaning • From $38/hr</p>
+          </div>
+          <i class="fas fa-check-circle ccl-card-check"></i>
+        </button>
+
+        <button class="ccl-service-card" onclick="switchService('moveout')" id="card-moveout">
+          <div class="ccl-card-icon">📦</div>
+          <div class="ccl-card-info">
+            <h3>Move Out/In</h3>
+            <p>Deep cleaning • 6hr minimum</p>
+          </div>
+          <i class="fas fa-check-circle ccl-card-check"></i>
+        </button>
+
+        <button class="ccl-service-card" onclick="switchService('deep')" id="card-deep">
+          <div class="ccl-card-icon">🔨</div>
+          <div class="ccl-card-info">
+            <h3>Deep Clean</h3>
+            <p>Intensive clean • 6hr minimum</p>
+          </div>
+          <i class="fas fa-check-circle ccl-card-check"></i>
+        </button>
+
+        <button class="ccl-service-card" onclick="switchService('steam')" id="card-steam">
+          <div class="ccl-card-icon">🔥</div>
+          <div class="ccl-card-info">
+            <h3>Steam Clean</h3>
+            <p>Item-based • $114 minimum</p>
+          </div>
+          <i class="fas fa-check-circle ccl-card-check"></i>
+        </button>
+
+        <button class="ccl-service-card" onclick="switchService('camper')" id="card-camper">
+          <div class="ccl-card-icon">🚐</div>
+          <div class="ccl-card-info">
+            <h3>Camper Clean</h3>
+            <p>Package pricing • From $120</p>
+          </div>
+          <i class="fas fa-check-circle ccl-card-check"></i>
+        </button>
+      </div>
+
+      <!-- Estimator Forms Container -->
+      <div class="ccl-forms-container">
+        
+        <!-- MAINTENANCE CLEAN - Enhanced Mobile Form -->
+        <div id="form-maintenance" class="ccl-estimator-form active">
+          <div class="ccl-form-header">
+            <div class="ccl-form-title">
+              <span class="ccl-form-icon">🧼</span>
+              <div>
+                <h3>Maintenance Clean Details</h3>
+                <p>Tell us about your space</p>
+              </div>
+            </div>
+            <div class="ccl-rate-toggle">
+              <button class="ccl-rate-btn active" onclick="setMaintenanceRate('residential')" id="rate-res">
+                Residential<br><small>$38/hr</small>
+              </button>
+              <button class="ccl-rate-btn" onclick="setMaintenanceRate('commercial')" id="rate-com">
+                Commercial<br><small>$44/hr</small>
+              </button>
+            </div>
+          </div>
+
+          <!-- Room Configuration Cards -->
+          <div class="ccl-rooms-container">
+            
+            <!-- Kitchen Card -->
+            <div class="ccl-room-card">
+              <div class="ccl-room-card-header">
+                <div class="ccl-room-title">
+                  <i class="fas fa-utensils"></i>
+                  <span>Kitchen</span>
+                </div>
+                <span class="ccl-room-base">Base: 4 hours</span>
+              </div>
+              
+              <div class="ccl-room-options">
+                <label class="ccl-option-chip">
+                  <input type="checkbox" id="kitchen-large" onchange="calculateMaintenance()">
+                  <span>Large Kitchen <strong>+1.5h</strong></span>
+                </label>
+                
+                <div class="ccl-slider-container">
+                  <div class="ccl-slider-label">
+                    <span>Extra Time</span>
+                    <span class="ccl-slider-value" id="kitchen-extra-value">0h</span>
+                  </div>
+                  <input type="range" id="kitchen-extra" min="0" max="5" step="0.25" value="0" oninput="updateMaintenanceSlider('kitchen')">
+                  <div class="ccl-slider-markers">
+                    <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bedrooms Card -->
+            <div class="ccl-room-card">
+              <div class="ccl-room-card-header">
+                <div class="ccl-room-title">
+                  <i class="fas fa-bed"></i>
+                  <span>Bedrooms</span>
+                </div>
+                <span class="ccl-room-base">Base: 1h each</span>
+              </div>
+              
+              <div class="ccl-room-options">
+                <div class="ccl-counter-group">
+                  <div class="ccl-counter-item">
+                    <label>Regular</label>
+                    <div class="ccl-counter">
+                      <button onclick="adjustValue('bedrooms', -1)">−</button>
+                      <input type="number" id="bedrooms" value="1" min="0" max="5" readonly>
+                      <button onclick="adjustValue('bedrooms', 1)">+</button>
+                    </div>
+                  </div>
+                  
+                  <div class="ccl-counter-item">
+                    <label>Large (+0.5h)</label>
+                    <div class="ccl-counter">
+                      <button onclick="adjustValue('large-bedrooms', -1)">−</button>
+                      <input type="number" id="large-bedrooms" value="0" min="0" max="5" readonly>
+                      <button onclick="adjustValue('large-bedrooms', 1)">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bathrooms Card -->
+            <div class="ccl-room-card">
+              <div class="ccl-room-card-header">
+                <div class="ccl-room-title">
+                  <i class="fas fa-shower"></i>
+                  <span>Bathrooms</span>
+                </div>
+                <span class="ccl-room-base">Base: 2.5h each</span>
+              </div>
+              
+              <div class="ccl-room-options">
+                <div class="ccl-counter-group">
+                  <div class="ccl-counter-item">
+                    <label>Regular</label>
+                    <div class="ccl-counter">
+                      <button onclick="adjustValue('bathrooms', -1)">−</button>
+                      <input type="number" id="bathrooms" value="1" min="0" max="5" readonly>
+                      <button onclick="adjustValue('bathrooms', 1)">+</button>
+                    </div>
+                  </div>
+                  
+                  <div class="ccl-counter-item">
+                    <label>Large (+1h)</label>
+                    <div class="ccl-counter">
+                      <button onclick="adjustValue('large-bathrooms', -1)">−</button>
+                      <input type="number" id="large-bathrooms" value="0" min="0" max="5" readonly>
+                      <button onclick="adjustValue('large-bathrooms', 1)">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Entryway Card -->
+            <div class="ccl-room-card">
+              <div class="ccl-room-card-header">
+                <div class="ccl-room-title">
+                  <i class="fas fa-door-open"></i>
+                  <span>Entryway</span>
+                </div>
+                <span class="ccl-room-base">Base: 0.5h</span>
+              </div>
+              
+              <div class="ccl-room-options">
+                <div class="ccl-slider-container">
+                  <div class="ccl-slider-label">
+                    <span>Extra Time</span>
+                    <span class="ccl-slider-value" id="entry-extra-value">0h</span>
+                  </div>
+                  <input type="range" id="entry-extra" min="0" max="3" step="0.25" value="0" oninput="updateMaintenanceSlider('entry')">
+                  <div class="ccl-slider-markers">
+                    <span>0</span><span>1</span><span>2</span><span>3</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Summary -->
+          <div class="ccl-quick-summary" id="maintenance-summary">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- MOVE OUT FORM -->
+        <div id="form-moveout" class="ccl-estimator-form">
+          <div class="ccl-form-header">
+            <div class="ccl-form-title">
+              <span class="ccl-form-icon">📦</span>
+              <div>
+                <h3>Move Out/In Clean</h3>
+                <p>Tell us about your home</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="ccl-form-content">
+            <div class="ccl-input-card">
+              <label>Home Size</label>
+              <div class="ccl-segmented-control">
+                <button class="ccl-segmented-btn active" onclick="setMoveoutSize('small')" id="size-small">Small</button>
+                <button class="ccl-segmented-btn" onclick="setMoveoutSize('medium')" id="size-medium">Medium</button>
+                <button class="ccl-segmented-btn" onclick="setMoveoutSize('large')" id="size-large">Large</button>
+              </div>
+            </div>
+
+            <div class="ccl-input-card">
+              <label>Square Footage</label>
+              <div class="ccl-input-group">
+                <input type="number" id="moveout-sqft" value="1500" min="300" max="10000" step="50" onchange="calculateMoveout()">
+                <span class="ccl-input-suffix">sq ft</span>
+              </div>
+              
+              <!-- SQFT Visual Guide -->
+              <div class="ccl-sqft-guide">
+                <div class="ccl-guide-item" data-size="1000" onclick="setSqft(1000)">1,000</div>
+                <div class="ccl-guide-item" data-size="1500" onclick="setSqft(1500)">1,500</div>
+                <div class="ccl-guide-item" data-size="2000" onclick="setSqft(2000)">2,000</div>
+                <div class="ccl-guide-item" data-size="2500" onclick="setSqft(2500)">2,500</div>
+                <div class="ccl-guide-item" data-size="3000" onclick="setSqft(3000)">3,000</div>
+              </div>
+            </div>
+
+            <!-- Calculation Explanation -->
+            <div class="ccl-calculation-card">
+              <h4>How we calculate</h4>
+              <div class="ccl-calculation-steps">
+                <div class="ccl-step">
+                  <span class="ccl-step-number">1</span>
+                  <span class="ccl-step-text">Base hours based on size</span>
+                </div>
+                <div class="ccl-step">
+                  <span class="ccl-step-number">2</span>
+                  <span class="ccl-step-text">Add sqft ÷ factor</span>
+                </div>
+                <div class="ccl-step">
+                  <span class="ccl-step-number">3</span>
+                  <span class="ccl-step-text">Apply 6hr minimum</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DEEP CLEAN FORM -->
+        <div id="form-deep" class="ccl-estimator-form">
+          <div class="ccl-form-header">
+            <div class="ccl-form-title">
+              <span class="ccl-form-icon">🔨</span>
+              <div>
+                <h3>Deep Clean</h3>
+                <p>Automatic deep cleaning service</p>
+              </div>
+            </div>
+            <div class="ccl-badge-large">AUTOMATIC DEEP CLEAN</div>
+          </div>
+
+          <div class="ccl-form-content">
+            <div class="ccl-input-card">
+              <label>Home Size</label>
+              <div class="ccl-segmented-control">
+                <button class="ccl-segmented-btn active" onclick="setDeepSize('small')" id="deep-small">Small</button>
+                <button class="ccl-segmented-btn" onclick="setDeepSize('medium')" id="deep-medium">Medium</button>
+                <button class="ccl-segmented-btn" onclick="setDeepSize('large')" id="deep-large">Large</button>
+              </div>
+            </div>
+
+            <div class="ccl-input-card">
+              <label>Square Footage</label>
+              <div class="ccl-input-group">
+                <input type="number" id="deep-sqft" value="1500" min="300" max="10000" step="50" onchange="calculateDeep()">
+                <span class="ccl-input-suffix">sq ft</span>
+              </div>
+            </div>
+
+            <!-- Deep Clean Includes -->
+            <div class="ccl-includes-card">
+              <h4>✓ Deep clean includes:</h4>
+              <div class="ccl-includes-grid">
+                <span><i class="fas fa-check"></i> Inside cabinets</span>
+                <span><i class="fas fa-check"></i> Behind appliances</span>
+                <span><i class="fas fa-check"></i> Light fixtures</span>
+                <span><i class="fas fa-check"></i> Baseboards</span>
+                <span><i class="fas fa-check"></i> Window tracks</span>
+                <span><i class="fas fa-check"></i> Ceiling fans</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEAM CLEAN FORM -->
+        <div id="form-steam" class="ccl-estimator-form">
+          <div class="ccl-form-header">
+            <div class="ccl-form-title">
+              <span class="ccl-form-icon">🔥</span>
+              <div>
+                <h3>Steam Clean</h3>
+                <p>Select items to clean</p>
+              </div>
+            </div>
+            <div class="ccl-min-badge">Min: $114 + tax = $120</div>
+          </div>
+
+          <div class="ccl-form-content">
+            <!-- Steam Items Grid -->
+            <div class="ccl-items-grid" id="steam-items">
+              <!-- Items loaded by JS -->
+            </div>
+
+            <!-- Stair Flight Section -->
+            <div class="ccl-stair-card">
+              <div class="ccl-stair-header">
+                <i class="fas fa-stairs"></i>
+                <span>Stair Flight</span>
+              </div>
+              <div class="ccl-stair-controls">
+                <div class="ccl-stair-slider">
+                  <input type="range" id="steam-stairs" min="0" max="15" value="0" step="1" oninput="updateSteamStairs()">
+                  <div class="ccl-stair-labels">
+                    <span>0</span><span>5</span><span>10</span><span>15</span>
+                  </div>
+                </div>
+                <div class="ccl-stair-display">
+                  <span id="steam-stairs-count">0</span> flights = $<span id="steam-stairs-price">0</span>
+                  <small>max $75</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deposit Option -->
+            <div class="ccl-deposit-card">
+              <label class="ccl-toggle">
+                <input type="checkbox" id="steam-deposit" onchange="calculateSteam()">
+                <span class="ccl-toggle-slider"></span>
+                <span class="ccl-toggle-label">First-time client? Pay $120 deposit now</span>
+              </label>
+            </div>
+
+            <!-- Info Note -->
+            <div class="ccl-info-note">
+              <i class="fas fa-info-circle"></i>
+              <span>1 bedroom = 1.5 hours for carpet cleaning</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CAMPER FORM -->
+        <div id="form-camper" class="ccl-estimator-form">
+          <div class="ccl-form-header">
+            <div class="ccl-form-title">
+              <span class="ccl-form-icon">🚐</span>
+              <div>
+                <h3>Camper Clean</h3>
+                <p>Choose your package</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="ccl-camper-cards" id="camper-packages">
+            <!-- Packages loaded by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Results Section -->
+      <div class="ccl-live-results" id="liveResults">
+        <div class="ccl-results-header">
+          <h3>Your Instant Estimate</h3>
+          <span class="ccl-update-badge">Live <i class="fas fa-sync-alt fa-spin"></i></span>
+        </div>
+        <div id="results-content">
+          <!-- Results populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div id="how-it-works" class="ccl-how-section">
+      <h2 class="ccl-section-title">How It Works</h2>
+      <div class="ccl-steps-container">
+        <div class="ccl-step-card">
+          <div class="ccl-step-icon">1️⃣</div>
+          <h3>Choose Service</h3>
+          <p>Select the type of cleaning you need</p>
+        </div>
+        <div class="ccl-step-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="ccl-step-card">
+          <div class="ccl-step-icon">2️⃣</div>
+          <h3>Customize Details</h3>
+          <p>Tell us about your space</p>
+        </div>
+        <div class="ccl-step-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="ccl-step-card">
+          <div class="ccl-step-icon">3️⃣</div>
+          <h3>Get Instant Price</h3>
+          <p>See detailed breakdown in real-time</p>
+        </div>
+        <div class="ccl-step-arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="ccl-step-card">
+          <div class="ccl-step-icon">4️⃣</div>
+          <h3>Book & Relax</h3>
+          <p>Schedule your cleaning</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div id="faq" class="ccl-faq-section">
+      <h2 class="ccl-section-title">Frequently Asked Questions</h2>
+      <div class="ccl-faq-container">
+        <div class="ccl-faq-item">
+          <button class="ccl-faq-question" onclick="toggleFAQ(this)">
+            <span>How accurate is this estimator?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="ccl-faq-answer">
+            <p>Our estimator is based on industry standards and thousands of actual cleanings. It provides a highly accurate estimate, but final price may vary slightly based on on-site assessment.</p>
+          </div>
+        </div>
+
+        <div class="ccl-faq-item">
+          <button class="ccl-faq-question" onclick="toggleFAQ(this)">
+            <span>What's included in the price?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="ccl-faq-answer">
+            <p>The price includes labor for 2 professional cleaners, all equipment and supplies, insurance, and taxes. Travel time is included in the total hours.</p>
+          </div>
+        </div>
+
+        <div class="ccl-faq-item">
+          <button class="ccl-faq-question" onclick="toggleFAQ(this)">
+            <span>How does the deposit work?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="ccl-faq-answer">
+            <p>First-time clients pay a $120 deposit to secure their booking. This is deducted from your final invoice. The remaining balance is due after service completion.</p>
+          </div>
+        </div>
+
+        <div class="ccl-faq-item">
+          <button class="ccl-faq-question" onclick="toggleFAQ(this)">
+            <span>Can I modify the estimate?</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div class="ccl-faq-answer">
+            <p>Absolutely! Use the sliders and counters to adjust hours, add extra time, or select different items. Your estimate updates instantly.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="ccl-cta-section">
+      <div class="ccl-cta-content">
+        <h2>Ready for a sparkling clean?</h2>
+        <p>Get your instant estimate now and book in minutes</p>
+        <button class="ccl-cta-btn" onclick="scrollToSection('estimator')">
+          Start Your Estimate <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="ccl-footer">
+      <div class="ccl-footer-content">
+        <div class="ccl-footer-brand">
+          <i class="fas fa-broom"></i>
+          <span>CleanRight</span>
+        </div>
+        <div class="ccl-footer-links">
+          <a href="#">Terms</a>
+          <a href="#">Privacy</a>
+          <a href="#">Contact</a>
+          <a href="#">Careers</a>
+        </div>
+        <p class="ccl-copyright">© 2024 CleanRight Professional Cleaning. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./js/ClientCleaningPriceList.js"></script>
+</body>
+</html>

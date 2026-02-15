@@ -25,7 +25,7 @@
     <link href="./public/assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
 
     <link href="./public/assets/css/style.css" rel="stylesheet" type="text/css" />
-
+<link href="./assets/css/ManageCleaner/ManageCleaner.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -651,7 +651,7 @@
                     <div class="collapse navbar-collapse justify-content-between">
                         <div class="header-left">
                             <div class="dashboard_bar">
-                                Admin Dashboard </div>
+                                Manage Cleaner Users </div>
                         </div>
                         <ul class="navbar-nav header-right">
                             <li class="nav-item dropdown notification_dropdown all">
@@ -1182,32 +1182,309 @@
 
 
 
-        <!--**********************************
+     <!--**********************************
     Content body start
 ***********************************-->
-        <div class="content-body default-height">
-            <div class="container-fluid">
+<div class="content-body default-height">
+    <div class="container-fluid">
 
-    
+        <!-- UNIQUE WRAPPER ID: mgcCleanerWrap - all styles and scripts are scoped under this id -->
+        <div id="mgcCleanerWrap">
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            <!-- ========== MANAGE CLEANERS DASHBOARD CONTENT ========== -->
+            <!-- Header with title and filter bar -->
+            <div class="mgc-header">
+                <div class="mgc-title-area">
+                    <h2><i class="fas fa-broom"></i> Manage Cleaners</h2>
+                    <p>Complete cleaner profiles & real-time workforce management</p>
+                </div>
+                <div class="mgc-filter-actions">
+                    <!-- filter row with status pills (fully functional) -->
+                    <div class="mgc-filter-tabs" id="mgcFilterTabs">
+                        <span class="mgc-filter-active" data-status="all">All</span>
+                        <span data-status="Online">Online</span>
+                        <span data-status="On Site">On Site</span>
+                        <span data-status="Traveling">Traveling</span>
+                        <span data-status="Break">Break</span>
+                        <span data-status="Offline">Offline</span>
+                        <span data-status="On Leave">On Leave</span>
+                    </div>
+                    <div class="mgc-bulk-actions">
+                        <button class="mgc-btn-light" id="mgcExportBtn"><i class="fas fa-download"></i> Export</button>
+                        <button class="mgc-btn-light" id="mgcFilterBtn"><i class="fas fa-sliders-h"></i> Filters</button>
+                    </div>
+                </div>
             </div>
-        </div>
-        <!--**********************************
+
+            <!-- Search Bar -->
+            <div class="mgc-search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="mgcSearchInput" placeholder="Search cleaners by name, ID, email, phone..." autocomplete="off">
+            </div>
+
+            <!-- MAIN TABLE: 5 sample cleaners with all required columns -->
+            <div class="mgc-table-responsive">
+                <table class="mgc-table" id="mgcCleanerTable">
+                    <thead>
+                        <tr>
+                            <th class="mgc-sortable">Cleaner ID <i class="fas fa-sort"></i></th>
+                            <th>Photo</th>
+                            <th class="mgc-sortable">Name <i class="fas fa-sort"></i></th>
+                            <th>Contact</th>
+                            <th>Email</th>
+                            <th class="mgc-sortable">Status <i class="fas fa-sort"></i></th>
+                            <th>Current Job</th>
+                            <th>Location</th>
+                            <th class="mgc-sortable">Rating <i class="fas fa-sort"></i></th>
+                            <th class="mgc-sortable">On-Time <i class="fas fa-sort"></i></th>
+                            <th class="mgc-sortable">Jobs <i class="fas fa-sort"></i></th>
+                            <th>Skills</th>
+                            <th>Employ Type</th>
+                            <th>Work Zones</th>
+                            <th class="mgc-sortable">Last Active <i class="fas fa-sort"></i></th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mgcTableBody">
+                        <!-- sample data row 1 -->
+                        <tr data-status="Online" data-cleaner-id="CL-1024">
+                            <td><span class="mgc-id-prefix">CL-1024</span></td>
+                            <td><div class="mgc-avatar" style="background-color: #1e4f8a;">SM</div></td>
+                            <td><span class="mgc-name">Sophia Martinez</span><br><span class="mgc-name-detail">sophia.m</span></td>
+                            <td><i class="fas fa-phone-alt mgc-icon-cta mgc-phone-icon" data-phone="+14155550199"></i> +1 415 555 0199</td>
+                            <td><i class="fas fa-envelope mgc-icon-cta mgc-email-icon" data-email="s.martinez@clean.co"></i> s.martinez@clean.co</td>
+                            <td><span class="mgc-status-badge mgc-status-online">Online</span></td>
+                            <td><span class="mgc-job">#J-332 · 2h Downtown</span></td>
+                            <td><i class="fas fa-map-marker-alt mgc-location-icon"></i> 0.3 mi · 1min</td>
+                            <td><span class="mgc-stars">★★★★★</span> 4.9</td>
+                            <td>98% <i class="fas fa-clock"></i></td>
+                            <td>1,224</td>
+                            <td><span class="mgc-skill">Deep</span><span class="mgc-skill">Steam</span></td>
+                            <td><span class="mgc-badge-emp">Full-time</span></td>
+                            <td>Downtown, SOMA</td>
+                            <td><span class="mgc-time-ago">just now</span></td>
+                            <td class="mgc-actions-cell">
+                                <i class="fas fa-eye" data-action="view" title="View Profile"></i>
+                                <i class="fas fa-edit" data-action="edit" title="Edit Cleaner"></i>
+                                <i class="fas fa-tasks" data-action="assign" title="Assign Job"></i>
+                                <i class="fas fa-comment" data-action="message" title="Send Message"></i>
+                                <i class="fas fa-chart-line" data-action="performance" title="Performance"></i>
+                                <i class="fas fa-file-alt" data-action="documents" title="Documents"></i>
+                            </td>
+                        </tr>
+                        <!-- row 2: James Chen - On Site -->
+                        <tr data-status="On Site" data-cleaner-id="CL-2087">
+                            <td><span class="mgc-id-prefix">CL-2087</span></td>
+                            <td><div class="mgc-avatar" style="background-color: #b45309;">JC</div></td>
+                            <td><span class="mgc-name">James Chen</span><br><span class="mgc-name-detail">james.c</span></td>
+                            <td><i class="fas fa-phone-alt mgc-icon-cta mgc-phone-icon" data-phone="+16285550234"></i> +1 628 555 0234</td>
+                            <td><i class="fas fa-envelope mgc-icon-cta mgc-email-icon" data-email="j.chen@clean.co"></i> j.chen@clean.co</td>
+                            <td><span class="mgc-status-badge mgc-status-onsite">On Site</span></td>
+                            <td><span class="mgc-job">#J-428 · 230 Main St</span></td>
+                            <td><i class="fas fa-map-marker-alt mgc-location-icon"></i> at job · 0min</td>
+                            <td><span class="mgc-stars">★★★★☆</span> 4.2</td>
+                            <td>95%</td>
+                            <td>978</td>
+                            <td><span class="mgc-skill">Deep</span><span class="mgc-skill">Window</span></td>
+                            <td><span class="mgc-badge-emp">Full-time</span></td>
+                            <td>North Beach, FiDi</td>
+                            <td><span class="mgc-time-ago">5 min ago</span></td>
+                            <td class="mgc-actions-cell">
+                                <i class="fas fa-eye" data-action="view" title="View Profile"></i>
+                                <i class="fas fa-edit" data-action="edit" title="Edit Cleaner"></i>
+                                <i class="fas fa-tasks" data-action="assign" title="Assign Job"></i>
+                                <i class="fas fa-comment" data-action="message" title="Send Message"></i>
+                                <i class="fas fa-chart-line" data-action="performance" title="Performance"></i>
+                                <i class="fas fa-file-alt" data-action="documents" title="Documents"></i>
+                            </td>
+                        </tr>
+                        <!-- row 3: Maria Garcia - Traveling -->
+                        <tr data-status="Traveling" data-cleaner-id="CL-3051">
+                            <td><span class="mgc-id-prefix">CL-3051</span></td>
+                            <td><div class="mgc-avatar" style="background-color: #0f5c4b;">MG</div></td>
+                            <td><span class="mgc-name">Maria Garcia</span><br><span class="mgc-name-detail">maria.g</span></td>
+                            <td><i class="fas fa-phone-alt mgc-icon-cta mgc-phone-icon" data-phone="+14155558873"></i> +1 415 555 8873</td>
+                            <td><i class="fas fa-envelope mgc-icon-cta mgc-email-icon" data-email="m.garcia@clean.co"></i> m.garcia@clean.co</td>
+                            <td><span class="mgc-status-badge mgc-status-traveling">Traveling</span></td>
+                            <td><span class="mgc-job">en route to #J-512</span></td>
+                            <td><i class="fas fa-location-arrow mgc-location-icon"></i> 1.2 mi · 4min</td>
+                            <td><span class="mgc-stars">★★★★★</span> 5.0</td>
+                            <td>100%</td>
+                            <td>1,502</td>
+                            <td><span class="mgc-skill">Move-Out</span><span class="mgc-skill">Carpet</span></td>
+                            <td><span class="mgc-badge-emp">Contract</span></td>
+                            <td>Mission, Bernal</td>
+                            <td><span class="mgc-time-ago">2 min ago</span></td>
+                            <td class="mgc-actions-cell">
+                                <i class="fas fa-eye" data-action="view" title="View Profile"></i>
+                                <i class="fas fa-edit" data-action="edit" title="Edit Cleaner"></i>
+                                <i class="fas fa-tasks" data-action="assign" title="Assign Job"></i>
+                                <i class="fas fa-comment" data-action="message" title="Send Message"></i>
+                                <i class="fas fa-chart-line" data-action="performance" title="Performance"></i>
+                                <i class="fas fa-file-alt" data-action="documents" title="Documents"></i>
+                            </td>
+                        </tr>
+                        <!-- row 4: David Kim - Break -->
+                        <tr data-status="Break" data-cleaner-id="CL-1129">
+                            <td><span class="mgc-id-prefix">CL-1129</span></td>
+                            <td><div class="mgc-avatar" style="background-color: #7b4c9d;">DK</div></td>
+                            <td><span class="mgc-name">David Kim</span><br><span class="mgc-name-detail">david.k</span></td>
+                            <td><i class="fas fa-phone-alt mgc-icon-cta mgc-phone-icon" data-phone="+16505553421"></i> +1 650 555 3421</td>
+                            <td><i class="fas fa-envelope mgc-icon-cta mgc-email-icon" data-email="d.kim@clean.co"></i> d.kim@clean.co</td>
+                            <td><span class="mgc-status-badge mgc-status-break">Break</span></td>
+                            <td><span class="mgc-job">— (lunch)</span></td>
+                            <td><i class="fas fa-coffee mgc-location-icon"></i> 0.0 mi · 12min</td>
+                            <td><span class="mgc-stars">★★★☆☆</span> 3.8</td>
+                            <td>82%</td>
+                            <td>643</td>
+                            <td><span class="mgc-skill">Maintenance</span><span class="mgc-skill">HEPA</span></td>
+                            <td><span class="mgc-badge-emp">Part-time</span></td>
+                            <td>Richmond, Sunset</td>
+                            <td><span class="mgc-time-ago">12 min ago</span></td>
+                            <td class="mgc-actions-cell">
+                                <i class="fas fa-eye" data-action="view" title="View Profile"></i>
+                                <i class="fas fa-edit" data-action="edit" title="Edit Cleaner"></i>
+                                <i class="fas fa-tasks" data-action="assign" title="Assign Job"></i>
+                                <i class="fas fa-comment" data-action="message" title="Send Message"></i>
+                                <i class="fas fa-chart-line" data-action="performance" title="Performance"></i>
+                                <i class="fas fa-file-alt" data-action="documents" title="Documents"></i>
+                            </td>
+                        </tr>
+                        <!-- row 5: Elena Rossi - Offline -->
+                        <tr data-status="Offline" data-cleaner-id="CL-4013">
+                            <td><span class="mgc-id-prefix">CL-4013</span></td>
+                            <td><div class="mgc-avatar" style="background-color: #b02e4c;">ER</div></td>
+                            <td><span class="mgc-name">Elena Rossi</span><br><span class="mgc-name-detail">elena.r</span></td>
+                            <td><i class="fas fa-phone-alt mgc-icon-cta mgc-phone-icon" data-phone="+14155557782"></i> +1 415 555 7782</td>
+                            <td><i class="fas fa-envelope mgc-icon-cta mgc-email-icon" data-email="e.rossi@clean.co"></i> e.rossi@clean.co</td>
+                            <td><span class="mgc-status-badge mgc-status-offline">Offline</span></td>
+                            <td><span class="mgc-job">—</span></td>
+                            <td><i class="fas fa-map-marker-alt mgc-location-icon"></i> last: 2hr ago</td>
+                            <td><span class="mgc-stars">★★★★☆</span> 4.5</td>
+                            <td>97%</td>
+                            <td>2,101</td>
+                            <td><span class="mgc-skill">Steam</span><span class="mgc-skill">Post-Reno</span></td>
+                            <td><span class="mgc-badge-emp">Full-time</span></td>
+                            <td>Marina, Cow Hollow</td>
+                            <td><span class="mgc-time-ago">2 hours ago</span></td>
+                            <td class="mgc-actions-cell">
+                                <i class="fas fa-eye" data-action="view" title="View Profile"></i>
+                                <i class="fas fa-edit" data-action="edit" title="Edit Cleaner"></i>
+                                <i class="fas fa-tasks" data-action="assign" title="Assign Job"></i>
+                                <i class="fas fa-comment" data-action="message" title="Send Message"></i>
+                                <i class="fas fa-chart-line" data-action="performance" title="Performance"></i>
+                                <i class="fas fa-file-alt" data-action="documents" title="Documents"></i>
+                            </td>
+                        </tr>
+                        <!-- end sample data -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- small row with summary and bulk actions -->
+            <div class="mgc-footer-stats">
+                <div class="mgc-stats-info" id="mgcStatsInfo">
+                    <i class="fas fa-users"></i> <span id="mgcTotalCount">5</span> active cleaners · 
+                    <span id="mgcOnlineCount">1</span> online · 
+                    <span id="mgcOnSiteCount">1</span> on site · 
+                    <span id="mgcTravelingCount">1</span> traveling · 
+                    <span id="mgcBreakCount">1</span> break · 
+                    <span id="mgcOfflineCount">1</span> offline
+                </div>
+                <div class="mgc-bulk-footer">
+                    <button class="mgc-btn-light" id="mgcBulkEmail"><i class="fas fa-envelope"></i> Bulk Email</button>
+                    <button class="mgc-btn-light" id="mgcBulkZone"><i class="fas fa-map-pin"></i> Assign Zone</button>
+                    <button class="mgc-btn-light" id="mgcBulkStatus"><i class="fas fa-sync-alt"></i> Update Status</button>
+                </div>
+            </div>
+
+            <!-- ========== FLOATING WINDOW FOR CLEANER PROFILE ========== -->
+            <div class="mgc-floating-window" id="mgcFloatingWindow">
+                <div class="mgc-floating-header">
+                    <div class="mgc-floating-title">
+                        <i class="fas fa-user-circle"></i> Cleaner Profile
+                    </div>
+                    <div class="mgc-floating-actions">
+                        <button class="mgc-floating-btn" id="mgcFloatingMinimize"><i class="fas fa-minus"></i></button>
+                        <button class="mgc-floating-btn" id="mgcFloatingClose"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <div class="mgc-floating-content" id="mgcFloatingContent">
+                    <!-- Profile content will be dynamically loaded here -->
+                    <div class="mgc-profile-loading">
+                        <i class="fas fa-spinner fa-pulse"></i> Select a cleaner to view profile
+                    </div>
+                </div>
+                <div class="mgc-floating-tabs" id="mgcFloatingTabs">
+                    <span class="mgc-tab-active" data-tab="personal">Personal</span>
+                    <span data-tab="skills">Skills</span>
+                    <span data-tab="performance">Performance</span>
+                    <span data-tab="equipment">Equipment</span>
+                    <span data-tab="documents">Documents</span>
+                    <span data-tab="history">History</span>
+                </div>
+            </div>
+
+            <!-- ========== FILTERS PANEL (Advanced Filters) ========== -->
+            <div class="mgc-filters-panel" id="mgcFiltersPanel">
+                <div class="mgc-filters-header">
+                    <h4><i class="fas fa-filter"></i> Advanced Filters</h4>
+                    <button class="mgc-filters-close" id="mgcFiltersClose"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="mgc-filters-body">
+                    <div class="mgc-filter-group">
+                        <label>Employment Type</label>
+                        <select id="mgcFilterEmployment">
+                            <option value="all">All</option>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Agency">Agency</option>
+                        </select>
+                    </div>
+                    <div class="mgc-filter-group">
+                        <label>Skills</label>
+                        <select id="mgcFilterSkills">
+                            <option value="all">All</option>
+                            <option value="Steam">Steam Cleaning</option>
+                            <option value="Deep">Deep Cleaning</option>
+                            <option value="Move-Out">Move-Out</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Carpet">Carpet Cleaning</option>
+                            <option value="Window">Window Cleaning</option>
+                        </select>
+                    </div>
+                    <div class="mgc-filter-group">
+                        <label>Work Zone</label>
+                        <select id="mgcFilterZone">
+                            <option value="all">All</option>
+                            <option value="Downtown">Downtown</option>
+                            <option value="SOMA">SOMA</option>
+                            <option value="Mission">Mission</option>
+                            <option value="North Beach">North Beach</option>
+                            <option value="Richmond">Richmond</option>
+                        </select>
+                    </div>
+                    <div class="mgc-filter-group">
+                        <label>Rating</label>
+                        <select id="mgcFilterRating">
+                            <option value="all">All</option>
+                            <option value="5">5★ Only</option>
+                            <option value="4">4★+</option>
+                            <option value="3">3★+</option>
+                        </select>
+                    </div>
+                    <div class="mgc-filter-actions">
+                        <button class="mgc-btn-primary" id="mgcApplyFilters">Apply Filters</button>
+                        <button class="mgc-btn-light" id="mgcResetFilters">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- end #mgcCleanerWrap -->
+
+    </div>
+</div>
+<!--**********************************
     Content body end
 ***********************************-->
         <!--**********************************
@@ -1227,7 +1504,7 @@
     <script src="./public/assets/vendor/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
 
 
-
+<script src="./assets/js/ManageCleaner/ManageCleaner.js"></script>
     <script src="./public/assets/js/dlabnav-init.js"></script>
     <script src="./public/assets/js/custom.min.js"></script>
     <script src="./public/assets/js/demo.js"></script>

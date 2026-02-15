@@ -1,0 +1,1460 @@
+/* 
+ * MB-FinalQuotation-Floatingwindow.css
+ * CSS file for Quotation Detail Modal/Floating Window
+ * Contains styles for all tabs inside the view modal
+ * Does NOT contain main table or filter styles
+ */
+
+/* CSS Variables - Specific to modal window */
+#MBFinalQuotationContainer {
+    --mbqf-primary: #4e1313;
+    --mbqf-primary-light: #6b1a1a;
+    --mbqf-primary-lighter: #8a2424;
+    --mbqf-secondary: #2c5aa0;
+    --mbqf-secondary-light: #4a7fd4;
+    --mbqf-success: #10b981;
+    --mbqf-warning: #f59e0b;
+    --mbqf-danger: #dc3545;
+    --mbqf-info: #0dcaf0;
+    --mbqf-light-bg: #f8fafc;
+    --mbqf-card-bg: #ffffff;
+    --mbqf-text-primary: #1e293b;
+    --mbqf-text-secondary: #64748b;
+    --mbqf-border: #e2e8f0;
+    --mbqf-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --mbqf-radius: 12px;
+    --mbqf-radius-sm: 8px;
+    --mbqf-transition: all 0.3s ease;
+}
+
+/* ============ MODAL HEADER STYLES ============ */
+/* Modal header with gradient background */
+#MBFinalQuotationContainer .modal-header.mbqf-modal-header {
+    padding: 20px 30px;
+    background: linear-gradient(135deg, var(--mbqf-primary) 0%, var(--mbqf-primary-light) 100%) !important;
+    color: white !important;
+    border-radius: var(--mbqf-radius) var(--mbqf-radius) 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: none !important;
+}
+
+/* ============ MODAL TABS NAVIGATION ============ */
+/* Tabs container */
+#MBFinalQuotationContainer .mbqf-modal-tabs {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+/* Individual tab buttons */
+#MBFinalQuotationContainer .mbqf-tab-btn {
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white !important;
+    border-radius: var(--mbqf-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--mbqf-transition);
+    white-space: nowrap;
+}
+
+#MBFinalQuotationContainer .mbqf-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#MBFinalQuotationContainer .mbqf-tab-btn.active {
+    background: white !important;
+    color: var(--mbqf-primary) !important;
+}
+
+/* Modal close button */
+#MBFinalQuotationContainer .mbqf-modal-close {
+    background: none;
+    border: none;
+    color: white !important;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+#MBFinalQuotationContainer .mbqf-modal-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============ MODAL BODY ============ */
+#MBFinalQuotationContainer .modal-body {
+    padding: 30px;
+    overflow-y: auto;
+    flex: 1;
+    max-height: calc(100vh - 200px);
+}
+
+/* Tab content visibility */
+#MBFinalQuotationContainer .mbqf-tab-content {
+    display: none;
+}
+
+#MBFinalQuotationContainer .mbqf-tab-content.active {
+    display: block;
+    animation: mbqf-fadeIn 0.3s ease;
+}
+
+@keyframes mbqf-fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============ OVERVIEW TAB FIXES ============ */
+/* Fix for overview grid container */
+#MBFinalQuotationContainer .mbqf-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+/* Fix for row inside overview grid - remove row class conflict */
+#MBFinalQuotationContainer .mbqf-overview-grid > .col-md-6 {
+    display: contents; /* This removes the Bootstrap column layout interference */
+}
+
+#MBFinalQuotationContainer .mbqf-overview-grid > * {
+    min-width: 0; /* Prevent overflow */
+}
+
+/* Fix for overview card layout */
+#MBFinalQuotationContainer .mbqf-overview-card {
+    background: var(--mbqf-light-bg);
+    border-radius: var(--mbqf-radius);
+    padding: 20px;
+    border: 1px solid var(--mbqf-border);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 300px; /* Ensure consistent height */
+}
+
+/* Fix card header */
+#MBFinalQuotationContainer .mbqf-overview-card h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: var(--mbqf-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid var(--mbqf-border);
+    padding-bottom: 10px;
+    flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+#MBFinalQuotationContainer .mbqf-overview-card h3 i {
+    font-size: 16px;
+    width: 24px;
+    text-align: center;
+}
+
+/* Fix info grid layout */
+#MBFinalQuotationContainer .mbqf-info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+    min-height: 0; /* Allow flex item to shrink */
+}
+
+/* Fix info items alignment */
+#MBFinalQuotationContainer .mbqf-info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Center vertically */
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--mbqf-border);
+    min-height: 28px; /* Ensure consistent height */
+}
+
+#MBFinalQuotationContainer .mbqf-info-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* Fix label and value alignment */
+#MBFinalQuotationContainer .mbqf-info-label {
+    font-weight: 600;
+    color: var(--mbqf-text-secondary);
+    font-size: 14px;
+    flex: 0 0 auto; /* Don't grow or shrink */
+    margin-right: 15px;
+}
+
+#MBFinalQuotationContainer .mbqf-info-value {
+    text-align: right;
+    font-weight: 500;
+    color: var(--mbqf-text-primary);
+    word-break: break-word;
+    overflow-wrap: break-word;
+    flex: 1; /* Take remaining space */
+    min-width: 0; /* Allow text wrapping */
+}
+
+/* Fix status badge positioning */
+#MBFinalQuotationContainer .mbqf-status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+    margin-left: 8px;
+}
+
+/* Status badge colors */
+#MBFinalQuotationContainer .mbqf-status-badge.draft {
+    background: #e9ecef;
+    color: #495057;
+}
+
+#MBFinalQuotationContainer .mbqf-status-badge.quotation_sent,
+#MBFinalQuotationContainer .mbqf-status-badge.sent {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+#MBFinalQuotationContainer .mbqf-status-badge.approved,
+#MBFinalQuotationContainer .mbqf-status-badge.confirmed {
+    background: #d4edda;
+    color: #155724;
+}
+
+#MBFinalQuotationContainer .mbqf-status-badge.revision_requested {
+    background: #fff3cd;
+    color: #856404;
+}
+
+#MBFinalQuotationContainer .mbqf-status-badge.rejected,
+#MBFinalQuotationContainer .mbqf-status-badge.cancelled {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Fix task list textarea */
+#MBFinalQuotationContainer .mbqf-task-list {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--mbqf-border);
+    border-radius: var(--mbqf-radius-sm);
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 150px;
+    color: var(--mbqf-text-primary);
+    background: white;
+    flex: 1; /* Make textarea fill available space */
+    min-width: 0; /* Prevent overflow */
+}
+
+/* Fix price summary card */
+#MBFinalQuotationContainer .mbqf-price-summary {
+    grid-column: span 2;
+}
+
+#MBFinalQuotationContainer .mbqf-price-summary .mbqf-overview-card {
+    min-height: auto; /* Let content determine height */
+}
+
+/* Fix price computation layout */
+#MBFinalQuotationContainer .mbqf-price-computation {
+    background: white;
+    border-radius: var(--mbqf-radius);
+    padding: 20px;
+    border: 1px solid var(--mbqf-border);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around; /* Evenly distribute price rows */
+}
+
+/* Fix price rows alignment */
+#MBFinalQuotationContainer .mbqf-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--mbqf-border);
+    min-height: 32px;
+}
+
+#MBFinalQuotationContainer .mbqf-price-row:last-child {
+    border-bottom: none;
+}
+
+#MBFinalQuotationContainer .mbqf-price-row.mbqf-total-row {
+    border-top: 2px solid var(--mbqf-border);
+    margin-top: 8px;
+    padding-top: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    min-height: 40px;
+}
+
+#MBFinalQuotationContainer .mbqf-price-label {
+    font-weight: 500;
+    color: var(--mbqf-text-secondary);
+    flex: 1;
+}
+
+#MBFinalQuotationContainer .mbqf-price-value {
+    font-weight: 600;
+    color: var(--mbqf-text-primary);
+    flex: 0 0 auto;
+    min-width: 100px;
+    text-align: right;
+}
+
+#MBFinalQuotationContainer .mbqf-total-row .mbqf-price-label {
+    color: var(--mbqf-primary);
+    font-weight: 700;
+}
+
+#MBFinalQuotationContainer .mbqf-total-row .mbqf-price-value {
+    color: var(--mbqf-primary);
+    font-size: 20px;
+    font-weight: 800;
+}
+
+/* Fix recurrence badge alignment */
+#MBFinalQuotationContainer .mbqf-recurrence-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #e8f4fd;
+    color: var(--mbqf-secondary);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 10px;
+    white-space: nowrap;
+}
+
+/* Fix for deposit status icon alignment */
+#MBFinalQuotationContainer .mbqf-info-value i {
+    margin-right: 5px;
+}
+
+/* Fix for responsive layout */
+@media (max-width: 1200px) {
+    #MBFinalQuotationContainer .mbqf-overview-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-price-summary {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 992px) {
+    #MBFinalQuotationContainer .mbqf-overview-card {
+        min-height: auto; /* Remove fixed height on mobile */
+    }
+    
+    #MBFinalQuotationContainer .mbqf-info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-info-label,
+    #MBFinalQuotationContainer .mbqf-info-value {
+        width: 100%;
+        text-align: left;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-info-value {
+        margin-top: 2px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-price-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-price-label,
+    #MBFinalQuotationContainer .mbqf-price-value {
+        width: 100%;
+        text-align: left;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-total-row .mbqf-price-value {
+        text-align: left;
+    }
+}
+
+@media (max-width: 768px) {
+    #MBFinalQuotationContainer .mbqf-overview-card {
+        padding: 15px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-overview-card h3 {
+        font-size: 16px;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-info-label,
+    #MBFinalQuotationContainer .mbqf-info-value {
+        font-size: 13px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-price-row.mbqf-total-row {
+        font-size: 16px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-total-row .mbqf-price-value {
+        font-size: 18px;
+    }
+}
+
+/* Fix for text overflow */
+#MBFinalQuotationContainer .mbqf-info-value,
+#MBFinalQuotationContainer .mbqf-price-value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Fix for long content in overview */
+#MBFinalQuotationContainer .mbqf-overview-card {
+    overflow: hidden; /* Prevent content overflow */
+}
+
+/* Ensure proper spacing in overview tab */
+#MBFinalQuotationContainer .mbqf-tab-content.active {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+#MBFinalQuotationContainer #mbqfOverviewTab {
+    padding-top: 0; /* Remove extra padding */
+}
+
+/* ============ TAB 2: ESTIMATION STYLES ============ */
+/* Control settings panel */
+#MBFinalQuotationContainer .mbqf-control-settings {
+    background: var(--mbqf-light-bg);
+    padding: 20px;
+    border-radius: var(--mbqf-radius);
+    border: 1px solid var(--mbqf-border);
+    margin-bottom: 20px;
+}
+
+#MBFinalQuotationContainer .mbqf-control-settings h4 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: var(--mbqf-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Input sections */
+#MBFinalQuotationContainer .mbqf-travel-time-input,
+#MBFinalQuotationContainer .mbqf-square-footage-input,
+#MBFinalQuotationContainer .mbqf-deposit-upload {
+    margin-top: 15px;
+}
+
+/* Deposit upload section */
+#MBFinalQuotationContainer .mbqf-deposit-upload {
+    padding: 15px;
+    background: white;
+    border-radius: var(--mbqf-radius-sm);
+    border: 1px solid var(--mbqf-border);
+}
+
+#MBFinalQuotationContainer .mbqf-deposit-upload h5 {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: var(--mbqf-text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ============ TAB 3: SUPERVISOR REPORT STYLES ============ */
+/* Textareas in supervisor tab */
+#MBFinalQuotationContainer .mbqf-supervisor-notes,
+#MBFinalQuotationContainer .mbqf-special-instructions {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--mbqf-border);
+    border-radius: var(--mbqf-radius-sm);
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    color: var(--mbqf-text-primary);
+    background: white;
+}
+
+#MBFinalQuotationContainer .mbqf-supervisor-notes {
+    min-height: 150px;
+}
+
+#MBFinalQuotationContainer .mbqf-special-instructions {
+    min-height: 100px;
+}
+
+/* Price estimate input */
+#MBFinalQuotationContainer .mbqf-estimate-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--mbqf-border);
+    border-radius: var(--mbqf-radius-sm);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--mbqf-text-primary);
+    background: white;
+}
+
+/* ============ TAB 4: GALLERY STYLES ============ */
+/* Gallery container */
+#MBFinalQuotationContainer .gallery-container {
+    padding: 20px;
+}
+
+#MBFinalQuotationContainer .gallery-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--mbqf-border);
+}
+
+#MBFinalQuotationContainer .gallery-header h4 {
+    font-size: 18px;
+    color: var(--mbqf-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Gallery action buttons */
+#MBFinalQuotationContainer .gallery-actions {
+    display: flex;
+    gap: 10px;
+}
+
+#MBFinalQuotationContainer .add-media-btn,
+#MBFinalQuotationContainer .view-toggle-btn {
+    padding: 8px 16px;
+    background: var(--mbqf-secondary);
+    color: white;
+    border: none;
+    border-radius: var(--mbqf-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--mbqf-transition);
+}
+
+#MBFinalQuotationContainer .add-media-btn:hover,
+#MBFinalQuotationContainer .view-toggle-btn:hover {
+    background: var(--mbqf-secondary-light);
+    transform: translateY(-1px);
+}
+
+/* Horizontal gallery slider */
+#MBFinalQuotationContainer .horizontal-gallery-container {
+    position: relative;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: var(--mbqf-light-bg);
+    border-radius: var(--mbqf-radius);
+}
+
+#MBFinalQuotationContainer .slider-nav {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    z-index: 10;
+}
+
+#MBFinalQuotationContainer .slider-prev,
+#MBFinalQuotationContainer .slider-next {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--mbqf-transition);
+}
+
+#MBFinalQuotationContainer .slider-prev:hover,
+#MBFinalQuotationContainer .slider-next:hover {
+    background: rgba(0, 0, 0, 0.9);
+}
+
+#MBFinalQuotationContainer .horizontal-slider {
+    display: flex;
+    overflow: hidden;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+#MBFinalQuotationContainer .slider-item {
+    min-width: 300px;
+    max-width: 300px;
+    height: 200px;
+    border-radius: var(--mbqf-radius-sm);
+    overflow: hidden;
+    position: relative;
+}
+
+#MBFinalQuotationContainer .slider-item img,
+#MBFinalQuotationContainer .slider-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#MBFinalQuotationContainer .slider-info {
+    text-align: center;
+    margin-top: 10px;
+    font-weight: 600;
+    color: var(--mbqf-text-secondary);
+}
+
+/* Grid gallery */
+#MBFinalQuotationContainer .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+#MBFinalQuotationContainer .media-item {
+    position: relative;
+    aspect-ratio: 4/3;
+    border-radius: var(--mbqf-radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--mbqf-border);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    background: var(--mbqf-light-bg);
+}
+
+#MBFinalQuotationContainer .media-item:hover {
+    transform: scale(1.05);
+    box-shadow: var(--mbqf-shadow);
+}
+
+#MBFinalQuotationContainer .media-item img,
+#MBFinalQuotationContainer .media-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Audio item styling */
+#MBFinalQuotationContainer .media-item.audio-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+#MBFinalQuotationContainer .audio-icon {
+    font-size: 40px;
+    color: white;
+}
+
+#MBFinalQuotationContainer .media-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* No media state */
+#MBFinalQuotationContainer .no-media {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--mbqf-text-secondary);
+}
+
+#MBFinalQuotationContainer .no-media i {
+    margin-bottom: 15px;
+    color: var(--mbqf-border);
+}
+
+#MBFinalQuotationContainer .btn-add-first {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: var(--mbqf-secondary);
+    color: white;
+    border: none;
+    border-radius: var(--mbqf-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 15px auto 0;
+    transition: var(--mbqf-transition);
+}
+
+#MBFinalQuotationContainer .btn-add-first:hover {
+    background: var(--mbqf-secondary-light);
+}
+
+/* ============ TAB 5: UPSELLING STYLES ============ */
+/* Add custom upsell section */
+#MBFinalQuotationContainer .mbqf-add-upsell {
+    background: var(--mbqf-light-bg);
+    padding: 20px;
+    border-radius: var(--mbqf-radius);
+    margin-bottom: 20px;
+    border: 1px solid var(--mbqf-border);
+}
+
+#MBFinalQuotationContainer .mbqf-add-upsell h5 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: var(--mbqf-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Upselling items */
+#MBFinalQuotationContainer .mbqf-upselling-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: white;
+    border: 1px solid var(--mbqf-border);
+    border-radius: var(--mbqf-radius-sm);
+    margin-bottom: 10px;
+    transition: var(--mbqf-transition);
+}
+
+#MBFinalQuotationContainer .mbqf-upselling-item:hover {
+    border-color: var(--mbqf-secondary);
+    box-shadow: var(--mbqf-shadow);
+}
+
+#MBFinalQuotationContainer .mbqf-upselling-content {
+    flex: 1;
+}
+
+#MBFinalQuotationContainer .mbqf-upselling-title {
+    font-weight: 600;
+    color: var(--mbqf-text-primary);
+    margin-bottom: 5px;
+}
+
+#MBFinalQuotationContainer .mbqf-upselling-description {
+    font-size: 13px;
+    color: var(--mbqf-text-secondary);
+}
+
+#MBFinalQuotationContainer .mbqf-upselling-price {
+    font-weight: 700;
+    color: var(--mbqf-success);
+    font-size: 16px;
+}
+
+/* Upsells total display */
+#MBFinalQuotationContainer .mbqf-upselling-total h4 {
+    color: var(--mbqf-primary);
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid var(--mbqf-border);
+}
+
+#MBFinalQuotationContainer .mbqf-upselling-total span {
+    color: var(--mbqf-success);
+}
+
+/* ============ TAB 6: BILLING SETTINGS STYLES ============ */
+/* Settings container */
+#MBFinalQuotationContainer .mbqf-settings-container h3 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: var(--mbqf-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Billing cards */
+#MBFinalQuotationContainer .mbqf-billing-card {
+    background: var(--mbqf-light-bg);
+    padding: 20px;
+    border-radius: var(--mbqf-radius);
+    border: 1px solid var(--mbqf-border);
+    margin-bottom: 20px;
+    transition: var(--mbqf-transition);
+}
+
+#MBFinalQuotationContainer .mbqf-billing-card:hover {
+    border-color: var(--mbqf-primary);
+    transform: translateY(-2px);
+}
+
+#MBFinalQuotationContainer .mbqf-billing-card h4 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: var(--mbqf-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Billing list */
+#MBFinalQuotationContainer .mbqf-billing-list {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+#MBFinalQuotationContainer .mbqf-billing-list li {
+    margin-bottom: 8px;
+    color: var(--mbqf-text-secondary);
+    line-height: 1.5;
+}
+
+/* Automation settings */
+#MBFinalQuotationContainer .mbqf-automation-settings {
+    padding: 20px;
+    background: var(--mbqf-light-bg);
+    border-radius: var(--mbqf-radius);
+    border: 1px solid var(--mbqf-border);
+}
+
+/* ============ TAB 7: INTERNAL NOTES STYLES ============ */
+/* Internal notes textarea */
+#MBFinalQuotationContainer .mbqf-internal-notes {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--mbqf-border);
+    border-radius: var(--mbqf-radius-sm);
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 200px;
+    color: var(--mbqf-text-primary);
+    background: white;
+}
+
+/* ============ MODAL FOOTER ACTIONS ============ */
+#MBFinalQuotationContainer .modal-footer.mbqf-modal-footer {
+    padding: 20px 30px;
+    background: var(--mbqf-light-bg);
+    border-radius: 0 0 var(--mbqf-radius) var(--mbqf-radius);
+    border-top: 1px solid var(--mbqf-border);
+}
+
+/* Action buttons container */
+#MBFinalQuotationContainer .mbqf-modal-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    width: 100%;
+}
+
+/* Modal action buttons */
+#MBFinalQuotationContainer .mbqf-action-btn.mbqf-generate {
+    background: linear-gradient(135deg, var(--mbqf-success), #0da271);
+    color: white;
+    padding: 12px 24px;
+}
+
+#MBFinalQuotationContainer .mbqf-action-btn.mbqf-revise {
+    background: linear-gradient(135deg, var(--mbqf-warning), #d97706);
+    color: white;
+    padding: 12px 24px;
+}
+
+#MBFinalQuotationContainer .mbqf-action-btn.mbqf-reject {
+    background: linear-gradient(135deg, var(--mbqf-danger), #b91c1c);
+    color: white;
+    padding: 12px 24px;
+}
+
+#MBFinalQuotationContainer .mbqf-action-btn.mbqf-save {
+    background: linear-gradient(135deg, var(--mbqf-secondary), #3b82f6);
+    color: white;
+    padding: 12px 24px;
+}
+
+#MBFinalQuotationContainer .mbqf-action-btn.mbqf-generate:hover,
+#MBFinalQuotationContainer .mbqf-action-btn.mbqf-revise:hover,
+#MBFinalQuotationContainer .mbqf-action-btn.mbqf-reject:hover,
+#MBFinalQuotationContainer .mbqf-action-btn.mbqf-save:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--mbqf-shadow);
+}
+
+/* ============ BILLING SETTINGS MODAL STYLES ============ */
+/* Table in billing settings modal */
+#MBFinalQuotationContainer .mbqf-settings-container .table th {
+    background: var(--mbqf-primary);
+    color: white;
+}
+
+#MBFinalQuotationContainer .mbqf-settings-container .table td {
+    vertical-align: middle;
+}
+
+/* Automation management section */
+#MBFinalQuotationContainer .mbqf-automation-management {
+    padding: 20px;
+    background: var(--mbqf-light-bg);
+    border-radius: var(--mbqf-radius);
+    border: 1px solid var(--mbqf-border);
+    margin-top: 20px;
+}
+
+#MBFinalQuotationContainer .mbqf-automation-management h5 {
+    color: var(--mbqf-primary);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ============ RESPONSIVE DESIGN FOR MODAL ============ */
+@media (max-width: 992px) {
+    #MBFinalQuotationContainer .mbqf-tab-btn {
+        flex: 1;
+        justify-content: center;
+        min-width: 120px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-billing-card {
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    #MBFinalQuotationContainer .modal-body {
+        padding: 20px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-modal-actions {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-action-btn {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 5px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-overview-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-modal-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 5px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-tab-btn {
+        white-space: nowrap;
+        min-width: auto;
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+    
+    #MBFinalQuotationContainer .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    #MBFinalQuotationContainer .slider-item {
+        min-width: 250px;
+        max-width: 250px;
+        height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    #MBFinalQuotationContainer .modal-header.mbqf-modal-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-modal-tabs {
+        width: 100%;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 5px;
+    }
+}
+
+/* ============ ENHANCED GALLERY TABS ============ */
+#MBFinalQuotationContainer .gallery-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--mbqf-border);
+    padding-bottom: 10px;
+}
+
+#MBFinalQuotationContainer .gallery-tab {
+    padding: 10px 20px;
+    background: var(--mbqf-light-bg);
+    border: 1px solid var(--mbqf-border);
+    border-radius: var(--mbqf-radius-sm);
+    color: var(--mbqf-text-secondary);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--mbqf-transition);
+    white-space: nowrap;
+}
+
+#MBFinalQuotationContainer .gallery-tab:hover {
+    background: var(--mbqf-border);
+    color: var(--mbqf-text-primary);
+}
+
+#MBFinalQuotationContainer .gallery-tab.active {
+    background: var(--mbqf-primary);
+    color: white;
+    border-color: var(--mbqf-primary);
+}
+
+#MBFinalQuotationContainer .gallery-tab-content {
+    display: none;
+}
+
+#MBFinalQuotationContainer .gallery-tab-content.active {
+    display: block;
+    animation: mbqf-fadeIn 0.3s ease;
+}
+
+/* ============ MEDIA TABLE VIEW ============ */
+#MBFinalQuotationContainer .media-table-container {
+    background: white;
+    border-radius: var(--mbqf-radius);
+    padding: 20px;
+    border: 1px solid var(--mbqf-border);
+}
+
+#MBFinalQuotationContainer .media-table-container h5 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    color: var(--mbqf-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#MBFinalQuotationContainer .media-table-wrapper {
+    overflow-x: auto;
+}
+
+#MBFinalQuotationContainer .media-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+#MBFinalQuotationContainer .media-table thead {
+    background: var(--mbqf-primary);
+    color: white;
+}
+
+#MBFinalQuotationContainer .media-table th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+#MBFinalQuotationContainer .media-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--mbqf-border);
+    vertical-align: middle;
+}
+
+#MBFinalQuotationContainer .media-table tbody tr:hover {
+    background-color: var(--mbqf-light-bg);
+}
+
+#MBFinalQuotationContainer .media-table .media-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#MBFinalQuotationContainer .media-table .media-type-badge.image {
+    background: #e8f4fd;
+    color: var(--mbqf-secondary);
+}
+
+#MBFinalQuotationContainer .media-table .media-type-badge.video {
+    background: #f0e8fd;
+    color: #8a2be2;
+}
+
+#MBFinalQuotationContainer .media-table .media-type-badge.audio {
+    background: #e8fdf0;
+    color: #10b981;
+}
+
+#MBFinalQuotationContainer .media-table-actions {
+    display: flex;
+    gap: 5px;
+}
+
+#MBFinalQuotationContainer .media-table-action-btn {
+    padding: 5px 10px;
+    background: var(--mbqf-light-bg);
+    border: 1px solid var(--mbqf-border);
+    border-radius: 4px;
+    color: var(--mbqf-text-secondary);
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: var(--mbqf-transition);
+}
+
+#MBFinalQuotationContainer .media-table-action-btn:hover {
+    background: var(--mbqf-border);
+    color: var(--mbqf-text-primary);
+}
+
+#MBFinalQuotationContainer .media-table-action-btn.view {
+    background: #e8f4fd;
+    color: var(--mbqf-secondary);
+    border-color: #c1d9f3;
+}
+
+#MBFinalQuotationContainer .media-table-action-btn.edit {
+    background: #fff8e1;
+    color: #f59e0b;
+    border-color: #ffe8a1;
+}
+
+#MBFinalQuotationContainer .media-table-action-btn.delete {
+    background: #ffeaea;
+    color: #dc3545;
+    border-color: #ffc9c9;
+}
+
+/* ============ MEDIA PREVIEW MODAL ============ */
+#MBFinalQuotationContainer .media-preview-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    animation: mbqf-fadeIn 0.3s ease;
+}
+
+#MBFinalQuotationContainer .media-preview-content {
+    position: relative;
+    width: 90%;
+    height: 90%;
+    margin: 2% auto;
+    background: #1e293b;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+#MBFinalQuotationContainer .close-preview {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+#MBFinalQuotationContainer .close-preview:hover {
+    background: rgba(0, 0, 0, 0.9);
+    transform: scale(1.1);
+}
+
+#MBFinalQuotationContainer #previewContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+#MBFinalQuotationContainer #previewContainer img,
+#MBFinalQuotationContainer #previewContainer video {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+#MBFinalQuotationContainer .preview-audio {
+    text-align: center;
+    color: white;
+    padding: 40px;
+}
+
+#MBFinalQuotationContainer .preview-audio .audio-icon-large {
+    margin-bottom: 20px;
+    color: #667eea;
+}
+
+#MBFinalQuotationContainer .preview-audio audio {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* ============ EDIT MEDIA MODAL ============ */
+#MBFinalQuotationContainer .edit-media-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10001;
+    animation: mbqf-fadeIn 0.3s ease;
+}
+
+#MBFinalQuotationContainer .edit-media-content {
+    position: relative;
+    width: 500px;
+    max-width: 90%;
+    margin: 5% auto;
+    background: white;
+    border-radius: var(--mbqf-radius);
+    overflow: hidden;
+    box-shadow: var(--mbqf-shadow);
+}
+
+#MBFinalQuotationContainer .edit-media-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: var(--mbqf-primary);
+    color: white;
+}
+
+#MBFinalQuotationContainer .edit-media-header h4 {
+    margin: 0;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#MBFinalQuotationContainer .edit-media-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+#MBFinalQuotationContainer .edit-media-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#MBFinalQuotationContainer .edit-media-form {
+    padding: 20px;
+}
+
+#MBFinalQuotationContainer .edit-media-preview {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 20px;
+    border-radius: var(--mbqf-radius-sm);
+    overflow: hidden;
+    background: var(--mbqf-light-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#MBFinalQuotationContainer .edit-media-preview img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+#MBFinalQuotationContainer .form-group {
+    margin-bottom: 15px;
+}
+
+#MBFinalQuotationContainer .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: var(--mbqf-text-primary);
+}
+
+#MBFinalQuotationContainer .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--mbqf-border);
+    border-radius: var(--mbqf-radius-sm);
+    font-family: inherit;
+    font-size: 14px;
+}
+
+#MBFinalQuotationContainer .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#MBFinalQuotationContainer .submit-btn,
+#MBFinalQuotationContainer .save-draft-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: var(--mbqf-radius-sm);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--mbqf-transition);
+}
+
+#MBFinalQuotationContainer .submit-btn {
+    background: linear-gradient(135deg, var(--mbqf-success), #0da271);
+    color: white;
+}
+
+#MBFinalQuotationContainer .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--mbqf-shadow);
+}
+
+#MBFinalQuotationContainer .save-draft-btn {
+    background: var(--mbqf-light-bg);
+    color: var(--mbqf-text-secondary);
+    border: 1px solid var(--mbqf-border);
+}
+
+#MBFinalQuotationContainer .save-draft-btn:hover {
+    background: var(--mbqf-border);
+}
+
+/* ============ RESPONSIVE DESIGN FOR ENHANCED GALLERY ============ */
+@media (max-width: 768px) {
+    #MBFinalQuotationContainer .gallery-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 5px;
+    }
+    
+    #MBFinalQuotationContainer .gallery-tab {
+        white-space: nowrap;
+        min-width: auto;
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+    
+    #MBFinalQuotationContainer .media-table th,
+    #MBFinalQuotationContainer .media-table td {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+    
+    #MBFinalQuotationContainer .media-table-actions {
+        flex-direction: column;
+        gap: 3px;
+    }
+    
+    #MBFinalQuotationContainer .media-table-action-btn {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+    
+    #MBFinalQuotationContainer .edit-media-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+}

@@ -1,0 +1,213 @@
+/* CleaningPriceList.css - Unique namespace with cpl- prefix */
+.cpl-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.cpl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.cpl-header h1 {
+  color: #0a4d8c;
+  margin: 0;
+  font-size: 2em;
+}
+
+.cpl-nav-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cpl-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.cpl-btn-primary {
+  background: #0a4d8c;
+  color: white;
+}
+
+.cpl-btn-primary:hover {
+  background: #063a6b;
+}
+
+.cpl-btn-secondary {
+  background: #e9ecef;
+  color: #495057;
+}
+
+.cpl-btn-secondary:hover {
+  background: #dee2e6;
+}
+
+.cpl-btn-admin {
+  background: #28a745;
+  color: white;
+}
+
+.cpl-btn-admin:hover {
+  background: #218838;
+}
+
+.cpl-info-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.cpl-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-left: 5px solid #0a4d8c;
+}
+
+.cpl-card h3 {
+  margin-top: 0;
+  color: #0a4d8c;
+  font-size: 1.2em;
+}
+
+.cpl-section {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.cpl-section h2 {
+  color: #0a4d8c;
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.cpl-table-container {
+  overflow-x: auto;
+}
+
+.cpl-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+
+.cpl-table th {
+  background: #0a4d8c;
+  color: white;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.cpl-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.cpl-table tr:hover {
+  background: #f8f9fa;
+}
+
+.cpl-note {
+  background: #fff3cd;
+  color: #856404;
+  padding: 10px;
+  font-style: italic;
+}
+
+.cpl-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.cpl-rules-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.cpl-rule-item {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid #28a745;
+}
+
+.cpl-rule-item h4 {
+  margin: 0 0 10px 0;
+  color: #0a4d8c;
+}
+
+.cpl-rule-item p {
+  margin: 5px 0;
+  color: #495057;
+}
+
+.cpl-footer {
+  text-align: center;
+  color: #6c757d;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #dee2e6;
+}
+
+/* Status indicators */
+.cpl-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cpl-badge-success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.cpl-badge-warning {
+  background: #fff3cd;
+  color: #856404;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cpl-header {
+    flex-direction: column;
+    align-items: start;
+  }
+  
+  .cpl-nav-buttons {
+    width: 100%;
+    justify-content: stretch;
+  }
+  
+  .cpl-btn {
+    flex: 1;
+    text-align: center;
+  }
+}

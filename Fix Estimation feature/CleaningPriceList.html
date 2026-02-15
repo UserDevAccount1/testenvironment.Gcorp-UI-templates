@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cleaning Services Price List</title>
+  <link rel="stylesheet" href="./css/CleaningPriceList.css">
+</head>
+<body>
+  <div class="cpl-container">
+    <!-- Header -->
+    <div class="cpl-header">
+      <h1>🧹 Cleaning Services Price List</h1>
+      <div class="cpl-nav-buttons">
+        <!-- Local HTML file for Price List -->
+    <button onclick="location.href='../index.html'" class="mcpl-btn mcpl-btn-primary">
+      Home
+    </button>
+    <!-- Local HTML file for Price List -->
+    <button onclick="location.href='./CleaningPriceList.html'" class="mcpl-btn mcpl-btn-primary">
+      View Price List
+    </button>
+
+    <!-- Original Cleaning Estimator -->
+    <button onclick="location.href='./SmartEstimator.html'" class="mcpl-btn mcpl-btn-secondary">
+      Original Cleaning Estimator
+    </button>
+
+    <!-- Client Cleaning Price Estimator -->
+    <button onclick="location.href='./ClientCLeaningPriceList.html'" class="mcpl-btn mcpl-btn-secondary">
+      Client Cleaning Price Estimator
+    </button>
+
+    <!-- Cleaning Service Price List -->
+    <button onclick="location.href='./ManageCleaningPriceList.html'" class="mcpl-btn mcpl-btn-secondary">
+      Cleaning Service Price List
+    </button>
+      </div>
+    </div>
+
+    <!-- Info Cards -->
+    <div class="cpl-info-cards">
+      <div class="cpl-card">
+        <h3>📋 Quick Info</h3>
+        <p><strong>Minimum Steam Clean:</strong> $114 + 5% tax = $120</p>
+        <p><strong>First-time Client Deposit:</strong> $120</p>
+        <p><strong>Staff who can steam clean:</strong> <span id="staffList">DORA, ESTHER F, HAWA, MANUEL, MARIE, OPHI, SHANIA, SHANTELLE, THERESA</span></p>
+      </div>
+      <div class="cpl-card">
+        <h3>⏱️ Service Hours</h3>
+        <p><strong>Maintenance Clean:</strong> <span id="maintenanceMinHours">3</span> hours minimum (<span id="maintenanceCleaners">2</span> cleaners)</p>
+        <p><strong>Move Out/Deep Clean:</strong> <span id="deepMinHours">6</span> hours minimum (<span id="deepCleaners">2</span> cleaners)</p>
+        <p><strong>Travel Time:</strong> Included in total booking hours</p>
+      </div>
+    </div>
+
+    <!-- Steam Clean Price List -->
+    <div class="cpl-section" id="steamCleanSection">
+      <h2>🔥 Steam Clean Price List</h2>
+      <div class="cpl-table-container">
+        <table class="cpl-table" id="steamCleanTable">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Size/Details</th>
+              <th>Price ($)</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody id="steamCleanBody">
+            <!-- Dynamic content loaded from management system -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Camper Services -->
+    <div class="cpl-section" id="camperSection">
+      <h2>🚐 Camper Cleaning Services</h2>
+      <div class="cpl-table-container">
+        <table class="cpl-table" id="camperTable">
+          <thead>
+            <tr>
+              <th>Size</th>
+              <th>Price ($)</th>
+              <th>Includes</th>
+            </tr>
+          </thead>
+          <tbody id="camperBody">
+            <!-- Dynamic content loaded from management system -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Detailed Service Information Tables -->
+    <div class="cpl-detailed-services">
+      <!-- Maintenance Clean Detailed Info -->
+      <div class="cpl-section">
+        <h2>🧼 MAINTENANCE CLEAN PRICE LIST</h2>
+        <div class="cpl-table-container">
+          <table class="cpl-table cpl-detailed-table">
+            <thead>
+              <tr>
+                <th>Rate Type</th>
+                <th>Price</th>
+                <th>Requirements & Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Residential</strong></td>
+                <td>$<span id="residentialRate">38</span>/hour</td>
+                <td>
+                  <ul class="cpl-list">
+                    <li>Minimum service: <span id="maintenanceMinDetail">3</span> hours for <span id="maintenanceCleanersDetail">2</span> cleaners</li>
+                    <li>Travel time is included in the total booking hours</li>
+                    <li>If client avails steam clean, mention total cost and break it down if needed</li>
+                    <li>Based on cleaner assessment</li>
+                    <li>Mention the total cost and break it down if needed</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Commercial</strong></td>
+                <td>$<span id="commercialRate">44</span>/hour</td>
+                <td>
+                  <ul class="cpl-list">
+                    <li>Minimum service: <span id="commercialMinHours">6</span> hours for <span id="commercialCleaners">2</span> cleaners (3 hrs × 2 cleaners)</li>
+                    <li>Travel time is included in the total booking hours</li>
+                    <li>Let client know total estimated hours will be divided between two staff members</li>
+                    <li>Example: 10 hours = 5 hours per staff</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Move Out/Move In Price List -->
+      <div class="cpl-section">
+        <h2>📦 MOVE OUT / MOVE IN PRICE LIST</h2>
+        <div class="cpl-table-container">
+          <table class="cpl-table cpl-detailed-table">
+            <thead>
+              <tr>
+                <th>Service Type</th>
+                <th>Rate</th>
+                <th>Requirements & Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Move Out Clean</strong></td>
+                <td>$<span id="moveoutRate">38</span>/hour</td>
+                <td>
+                  <ul class="cpl-list">
+                    <li>Minimum service: <span id="moveoutMinHours">6</span> hours for <span id="moveoutCleaners">2</span> cleaners</li>
+                    <li>Travel time is included in the total booking hours</li>
+                    <li>Let the client know the total estimated hours and that this will be divided between two staff members</li>
+                    <li>Example: 10 hours = 5 hours per staff</li>
+                    <li>Mention the total cost and break it down if needed</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Deep Clean Price List -->
+      <div class="cpl-section">
+        <h2>🔨 DEEP CLEAN PRICE LIST</h2>
+        <div class="cpl-table-container">
+          <table class="cpl-table cpl-detailed-table">
+            <thead>
+              <tr>
+                <th>Service Type</th>
+                <th>Rate</th>
+                <th>Requirements & Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Deep Clean</strong></td>
+                <td>$<span id="deepRate">38</span>/hour</td>
+                <td>
+                  <ul class="cpl-list">
+                    <li><strong>AUTOMATIC CLEANING TYPE IS DEEP CLEAN</strong></li>
+                    <li>Minimum service: <span id="deepMinDetail">6</span> hours for <span id="deepCleanersDetail">2</span> cleaners</li>
+                    <li>Travel time is included in the total booking hours</li>
+                    <li>Mention the total cost and break it down if needed</li>
+                    <li>Let the client know the total estimated hours and that this will be divided between two staff members</li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Steam Clean Notes -->
+    <div class="cpl-section">
+      <h2>🔥 Steam Clean Additional Information</h2>
+      <div class="cpl-info-box">
+        <ul class="cpl-list">
+          <li><strong>IF CLIENT AVAILS STEAM CLEAN:</strong> Mention the total cost and break it down if needed</li>
+          <li><strong>BASED ON CLEANER ASSESSMENT:</strong> Final pricing may be adjusted after on-site assessment</li>
+          <li><strong>1 bedroom = 1½ hours</strong> for carpet cleaning</li>
+          <li>Minimum charge: $114 + 5% tax = $120</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Smart Estimator Rules -->
+    <div class="cpl-section">
+      <h2>⚙️ Smart Calculator Rules</h2>
+      <div class="cpl-rules-container" id="rulesContainer">
+        <!-- Dynamic rules loaded from management system -->
+      </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="cpl-summary-cards">
+      <div class="cpl-card cpl-card-highlight">
+        <h3>💰 Standard Rates Summary</h3>
+        <p><strong>Residential Cleaning:</strong> $<span id="summaryResidential">38</span>/hour (3-hour minimum)</p>
+        <p><strong>Commercial Cleaning:</strong> $<span id="summaryCommercial">44</span>/hour (6-hour minimum for 2 cleaners)</p>
+        <p><strong>Move Out/Deep Clean:</strong> $<span id="summaryDeep">38</span>/hour (6-hour minimum for 2 cleaners)</p>
+      </div>
+      
+      <div class="cpl-card cpl-card-info">
+        <h3>👥 Staff Allocation</h3>
+        <p>All hourly services are performed by <strong><span id="staffCount">2</span> cleaners</strong></p>
+        <p>Total hours are divided equally between staff members</p>
+        <p>Example: 10 hour booking = 5 hours per staff member</p>
+      </div>
+    </div>
+
+    <!-- Last Updated -->
+    <div class="cpl-footer">
+      <p id="lastUpdated">Last updated: Loading...</p>
+    </div>
+  </div>
+
+  <script src="./js/CleaningPriceList.js"></script>
+</body>
+</html>

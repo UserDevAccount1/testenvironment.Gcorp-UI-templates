@@ -1,0 +1,768 @@
+/* 
+ * MB-FinalQuotation.css
+ * Main CSS file for Quotation Management System Table Interface
+ * Contains styles for the main dashboard, table, filters, and stats
+ * Does NOT contain modal/floating window styles
+ */
+
+/* CSS Variables - Scoped to this component */
+#MBFinalQuotationContainer {
+    --mbqf-primary: #4e1313;
+    --mbqf-primary-light: #6b1a1a;
+    --mbqf-primary-lighter: #8a2424;
+    --mbqf-secondary: #2c5aa0;
+    --mbqf-secondary-light: #4a7fd4;
+    --mbqf-success: #10b981;
+    --mbqf-warning: #f59e0b;
+    --mbqf-danger: #dc3545;
+    --mbqf-info: #0dcaf0;
+    --mbqf-light-bg: #f8fafc;
+    --mbqf-card-bg: #ffffff;
+    --mbqf-text-primary: #1e293b;
+    --mbqf-text-secondary: #64748b;
+    --mbqf-border: #e2e8f0;
+    --mbqf-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --mbqf-radius: 12px;
+    --mbqf-radius-sm: 8px;
+    --mbqf-transition: all 0.3s ease;
+}
+
+/* ============ BASE CONTAINER STYLES ============ */
+#MBFinalQuotationContainer {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--mbqf-text-primary);
+    line-height: 1.6;
+    padding: 20px;
+    background: linear-gradient(135deg, #f6f9ff 0%, #f1f5f9 100%);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============ HEADER SECTION ============ */
+/* Header container with gradient background */
+#MBFinalQuotationContainer .mbqf-header {
+    background: linear-gradient(135deg, var(--mbqf-primary) 0%, var(--mbqf-primary-light) 100%);
+    color: white !important;
+    padding: 25px 30px;
+    border-radius: var(--mbqf-radius);
+    margin-bottom: 25px;
+    box-shadow: var(--mbqf-shadow);
+}
+
+/* Header title styles - WHITE TEXT */
+#MBFinalQuotationContainer .mbqf-header-title h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white !important;
+}
+
+#MBFinalQuotationContainer .mbqf-header-title p {
+    opacity: 0.9;
+    font-size: 16px;
+    color: white !important;
+}
+
+#MBFinalQuotationContainer .mbqf-header-controls {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* ============ SEARCH AND FILTERS SECTION ============ */
+/* Search container */
+#MBFinalQuotationContainer .mbqf-search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 200px;
+}
+
+#MBFinalQuotationContainer .mbqf-search-container i {
+    position: absolute;
+    left: 10px;
+    color: rgba(255, 255, 255, 0.9);
+    z-index: 1;
+}
+
+/* Search input - WHITE TEXT */
+#MBFinalQuotationContainer .mbqf-search-input {
+    padding: 8px 12px 8px 35px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+    color: white !important;
+    border-radius: var(--mbqf-radius-sm);
+    font-family: inherit;
+    width: 100%;
+    font-size: 14px;
+    transition: var(--mbqf-transition);
+}
+
+#MBFinalQuotationContainer .mbqf-search-input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#MBFinalQuotationContainer .mbqf-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Filters container */
+#MBFinalQuotationContainer .mbqf-filters-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+#MBFinalQuotationContainer .mbqf-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Filter labels - WHITE TEXT */
+#MBFinalQuotationContainer .mbqf-filter-group label {
+    font-weight: 600;
+    font-size: 14px;
+    color: white !important;
+    white-space: nowrap;
+}
+
+/* Filter selects and inputs - WHITE TEXT */
+#MBFinalQuotationContainer .mbqf-filter-select,
+#MBFinalQuotationContainer .mbqf-filter-input {
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(243, 240, 240, 0.15);
+    color: white !important;
+    border-radius: var(--mbqf-radius-sm);
+    font-family: inherit;
+    min-width: 140px;
+    font-size: 14px;
+    transition: var(--mbqf-transition);
+    cursor: pointer;
+}
+
+/* Fix for dropdown options - WHITE TEXT */
+#MBFinalQuotationContainer .mbqf-filter-select option {
+    background: var(--mbqf-primary-light) !important;
+    color: white !important;
+    padding: 12px !important;
+    font-size: 14px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+#MBFinalQuotationContainer .mbqf-filter-select option:hover {
+    background: var(--mbqf-primary-lighter) !important;
+}
+
+#MBFinalQuotationContainer .mbqf-filter-select option:checked {
+    background: var(--mbqf-primary) !important;
+    font-weight: 600 !important;
+}
+
+#MBFinalQuotationContainer .mbqf-filter-select:focus,
+#MBFinalQuotationContainer .mbqf-filter-input:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Date input styling */
+#MBFinalQuotationContainer .mbqf-filter-input::-webkit-calendar-picker-indicator {
+    filter: invert(1) brightness(2);
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+/* Filter selects and inputs - WHITE TEXT */
+#MBFinalQuotationContainer .mbqf-filter-select,
+#MBFinalQuotationContainer .mbqf-filter-input {
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15); /* FIXED: Changed to white with transparency */
+    color: white !important;
+    border-radius: var(--mbqf-radius-sm);
+    font-family: inherit;
+    min-width: 140px;
+    font-size: 14px;
+    transition: var(--mbqf-transition);
+    cursor: pointer;
+}
+
+/* Add dropdown arrow styling */
+#MBFinalQuotationContainer .mbqf-filter-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+    padding-right: 36px;
+}
+
+/* Filter buttons - WHITE TEXT */
+#MBFinalQuotationContainer .mbqf-filter-btn {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.2); /* ADDED: Background color */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* ADDED: Border */
+    color: white !important;
+    border-radius: var(--mbqf-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--mbqf-transition);
+}
+
+#MBFinalQuotationContainer .mbqf-filter-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+#MBFinalQuotationContainer .mbqf-filter-btn.mbqf-reset {
+    background: rgba(220, 53, 69, 0.2);
+    border-color: rgba(220, 53, 69, 0.3);
+}
+
+#MBFinalQuotationContainer .mbqf-filter-btn.mbqf-reset:hover {
+    background: rgba(220, 53, 69, 0.3);
+}
+
+#MBFinalQuotationContainer .mbqf-filter-btn.mbqf-reset {
+    background: rgba(220, 53, 69, 0.2);
+    border-color: rgba(220, 53, 69, 0.3);
+}
+
+#MBFinalQuotationContainer .mbqf-filter-btn.mbqf-reset:hover {
+    background: rgba(220, 53, 69, 0.3);
+}
+
+/* ============ STATS SUMMARY ============ */
+#MBFinalQuotationContainer .mbqf-stats-summary {
+    display: flex;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 12px 20px;
+    border-radius: var(--mbqf-radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#MBFinalQuotationContainer .mbqf-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Stats labels and values - WHITE TEXT */
+#MBFinalQuotationContainer .mbqf-stat-label {
+    font-size: 12px;
+    opacity: 0.9;
+    color: white !important;
+}
+
+#MBFinalQuotationContainer .mbqf-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: white !important;
+}
+
+#MBFinalQuotationContainer .mbqf-stat-value.mbqf-pending {
+    color: #fbbf24 !important;
+}
+
+#MBFinalQuotationContainer .mbqf-stat-value.mbqf-sent {
+    color: #34d399 !important;
+}
+
+/* ============ TABLE CONTAINER ============ */
+#MBFinalQuotationContainer .mbqf-table-container {
+    margin-bottom: 25px;
+    background: var(--mbqf-card-bg);
+    border-radius: var(--mbqf-radius);
+    padding: 25px;
+    box-shadow: var(--mbqf-shadow);
+}
+
+#MBFinalQuotationContainer .mbqf-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--mbqf-border);
+}
+
+#MBFinalQuotationContainer .mbqf-table-header h2 {
+    font-size: 20px;
+    color: var(--mbqf-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#MBFinalQuotationContainer .mbqf-table-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Table action buttons */
+#MBFinalQuotationContainer .mbqf-action-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: var(--mbqf-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--mbqf-transition);
+}
+
+#MBFinalQuotationContainer .mbqf-action-btn.mbqf-settings {
+    background: var(--mbqf-text-secondary);
+    color: white;
+}
+
+#MBFinalQuotationContainer .mbqf-action-btn.mbqf-export {
+    background: var(--mbqf-secondary);
+    color: white;
+}
+
+#MBFinalQuotationContainer .mbqf-action-btn.mbqf-refresh {
+    background: var(--mbqf-light-bg);
+    color: var(--mbqf-text-primary);
+    border: 1px solid var(--mbqf-border);
+}
+
+#MBFinalQuotationContainer .mbqf-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--mbqf-shadow);
+}
+
+/* ============ QUOTATIONS TABLE ============ */
+#MBFinalQuotationContainer .mbqf-quotations-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+#MBFinalQuotationContainer .mbqf-quotations-table thead th {
+    background: var(--mbqf-light-bg);
+    font-weight: 600;
+    color: var(--mbqf-text-primary);
+    border-bottom: 2px solid var(--mbqf-border);
+    padding: 15px;
+    text-align: left;
+}
+
+#MBFinalQuotationContainer .mbqf-quotations-table tbody tr {
+    border-bottom: 1px solid var(--mbqf-border);
+    transition: background 0.2s ease;
+}
+
+#MBFinalQuotationContainer .mbqf-quotations-table tbody tr:hover {
+    background: rgba(78, 19, 19, 0.05) !important;
+}
+
+#MBFinalQuotationContainer .mbqf-quotations-table td {
+    padding: 15px;
+    vertical-align: middle;
+    color: var(--mbqf-text-primary);
+}
+
+/* ============ STATUS BADGES IN TABLE ============ */
+#MBFinalQuotationContainer .mbqf-status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: white !important;
+    min-width: 120px;
+    text-align: center;
+}
+
+#MBFinalQuotationContainer .mbqf-status-badge.visit_completed {
+    background: linear-gradient(135deg, #0369a1, #0ea5e9) !important;
+}
+
+#MBFinalQuotationContainer .mbqf-status-badge.pending_review {
+    background: linear-gradient(135deg, #92400e, #f97316) !important;
+}
+
+#MBFinalQuotationContainer .mbqf-status-badge.quotation_sent {
+    background: linear-gradient(135deg, #065f46, #10b981) !important;
+}
+
+#MBFinalQuotationContainer .mbqf-status-badge.revision_requested {
+    background: linear-gradient(135deg, #92400e, #f97316) !important;
+}
+
+#MBFinalQuotationContainer .mbqf-status-badge.approved {
+    background: linear-gradient(135deg, #065f46, #10b981) !important;
+}
+
+#MBFinalQuotationContainer .mbqf-status-badge.rejected {
+    background: linear-gradient(135deg, #991b1b, #dc3545) !important;
+}
+
+/* ============ DEPOSIT STATUS IN TABLE ============ */
+#MBFinalQuotationContainer .mbqf-deposit-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#MBFinalQuotationContainer .mbqf-deposit-status.paid {
+    color: var(--mbqf-success);
+}
+
+#MBFinalQuotationContainer .mbqf-deposit-status.pending {
+    color: var(--mbqf-warning);
+}
+
+#MBFinalQuotationContainer .mbqf-deposit-status.not-required {
+    color: var(--mbqf-text-secondary);
+}
+
+/* ============ BILLING TYPE BADGES IN TABLE ============ */
+#MBFinalQuotationContainer .mbqf-billing-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white !important;
+}
+
+#MBFinalQuotationContainer .mbqf-billing-badge.commercial {
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+}
+
+#MBFinalQuotationContainer .mbqf-billing-badge.residential_recurring {
+    background: linear-gradient(135deg, #059669, #10b981);
+}
+
+#MBFinalQuotationContainer .mbqf-billing-badge.residential_onetime {
+    background: linear-gradient(135deg, #7c2d12, #f59e0b);
+}
+
+/* ============ ACTION BUTTONS IN TABLE ============ */
+#MBFinalQuotationContainer .mbqf-table-actions-cell {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+#MBFinalQuotationContainer .mbqf-action-btn.small {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    min-width: 80px;
+    justify-content: center;
+}
+
+/* View and Edit buttons in table */
+#MBFinalQuotationContainer .mbqf-action-btn.mbqf-view {
+    background: var(--mbqf-secondary);
+    color: white;
+}
+
+#MBFinalQuotationContainer .mbqf-action-btn.mbqf-edit {
+    background: var(--mbqf-warning);
+    color: white;
+}
+
+/* ============ TABLE FOOTER ============ */
+#MBFinalQuotationContainer .mbqf-table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--mbqf-border);
+}
+
+#MBFinalQuotationContainer .mbqf-pagination {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#MBFinalQuotationContainer .mbqf-pagination-btn {
+    padding: 8px 16px;
+    background: var(--mbqf-light-bg);
+    border: 1px solid var(--mbqf-border);
+    border-radius: var(--mbqf-radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--mbqf-transition);
+}
+
+#MBFinalQuotationContainer .mbqf-pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#MBFinalQuotationContainer .mbqf-page-info {
+    font-weight: 600;
+    color: var(--mbqf-text-secondary);
+}
+
+#MBFinalQuotationContainer .mbqf-items-per-page {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#MBFinalQuotationContainer .mbqf-items-per-page select {
+    padding: 6px 10px;
+    border: 1px solid var(--mbqf-border);
+    border-radius: var(--mbqf-radius-sm);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--mbqf-text-primary);
+    background: white;
+    cursor: pointer;
+}
+
+/* ============ STATS GRID ============ */
+#MBFinalQuotationContainer .mbqf-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+#MBFinalQuotationContainer .mbqf-stat-card {
+    background: var(--mbqf-card-bg);
+    border-radius: var(--mbqf-radius);
+    padding: 20px;
+    box-shadow: var(--mbqf-shadow);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.3s ease;
+}
+
+#MBFinalQuotationContainer .mbqf-stat-card:hover {
+    transform: translateY(-5px);
+}
+
+#MBFinalQuotationContainer .mbqf-stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+}
+
+#MBFinalQuotationContainer .mbqf-stat-content h3 {
+    font-size: 16px;
+    color: var(--mbqf-text-secondary);
+    margin-bottom: 5px;
+}
+
+#MBFinalQuotationContainer .mbqf-stat-number {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--mbqf-text-primary);
+    margin-bottom: 5px;
+}
+
+#MBFinalQuotationContainer .mbqf-stat-change {
+    font-size: 12px;
+    color: var(--mbqf-text-secondary);
+}
+
+#MBFinalQuotationContainer .mbqf-stat-change i {
+    margin-right: 4px;
+}
+
+/* ============ MESSAGE TOAST ============ */
+#MBFinalQuotationContainer .mbqf-message-toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--mbqf-success);
+    color: white;
+    padding: 15px 25px;
+    border-radius: var(--mbqf-radius);
+    box-shadow: var(--mbqf-shadow);
+    z-index: 9999;
+    display: none;
+    animation: mbqf-slideIn 0.3s ease;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+@keyframes mbqf-slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+#MBFinalQuotationContainer .mbqf-toast-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#MBFinalQuotationContainer .mbqf-toast-icon {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#MBFinalQuotationContainer .mbqf-toast-text {
+    font-weight: 500;
+    flex: 1;
+}
+
+/* ============ RESPONSIVE DESIGN ============ */
+@media (max-width: 1200px) {
+    #MBFinalQuotationContainer .mbqf-filters-container {
+        gap: 10px;
+    }
+}
+
+@media (max-width: 992px) {
+    #MBFinalQuotationContainer .mbqf-header-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-filters-container {
+        flex-wrap: wrap;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    #MBFinalQuotationContainer {
+        padding: 10px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-header {
+        padding: 20px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-table-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-table-container {
+        padding: 15px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-table-footer {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-pagination {
+        justify-content: center;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Make table scrollable on mobile */
+    #MBFinalQuotationContainer .mbqf-quotations-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-quotations-table thead {
+        display: none;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-quotations-table tbody tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid var(--mbqf-border);
+        border-radius: var(--mbqf-radius-sm);
+        padding: 10px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-quotations-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border: none;
+        border-bottom: 1px solid var(--mbqf-border);
+    }
+    
+    #MBFinalQuotationContainer .mbqf-quotations-table td:last-child {
+        border-bottom: none;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-quotations-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--mbqf-text-secondary);
+        width: 40%;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-quotations-table .mbqf-table-actions-cell {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    #MBFinalQuotationContainer .mbqf-header-title h1 {
+        font-size: 22px;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-filter-group {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-filter-select,
+    #MBFinalQuotationContainer .mbqf-filter-input {
+        width: 100%;
+    }
+    
+    #MBFinalQuotationContainer .mbqf-stats-summary {
+        width: 100%;
+        justify-content: space-around;
+    }
+}

@@ -1,0 +1,468 @@
+/* SmartEstimator.css - Unique namespace with se- prefix */
+.se-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f0f2f5;
+  min-height: 100vh;
+}
+
+.se-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.se-header h1 {
+  color: #2c3e50;
+  margin: 0;
+  font-size: 2em;
+}
+
+.se-nav-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.se-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.se-btn-primary {
+  background: #3498db;
+  color: white;
+}
+
+.se-btn-primary:hover {
+  background: #2980b9;
+}
+
+.se-btn-secondary {
+  background: #95a5a6;
+  color: white;
+}
+
+.se-btn-secondary:hover {
+  background: #7f8c8d;
+}
+
+.se-btn-admin {
+  background: #9b59b6;
+  color: white;
+}
+
+.se-btn-admin:hover {
+  background: #8e44ad;
+}
+
+.se-btn-success {
+  background: #27ae60;
+  color: white;
+}
+
+.se-btn-success:hover {
+  background: #229954;
+}
+
+.se-btn-info {
+  background: #3498db;
+  color: white;
+  padding: 5px 15px;
+  font-size: 12px;
+}
+
+.se-service-tabs {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 20px;
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  flex-wrap: wrap;
+  overflow-x: auto;
+}
+
+.se-service-tab {
+  padding: 12px 24px;
+  border: none;
+  background: #ecf0f1;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #7f8c8d;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.se-service-tab:hover {
+  background: #bdc3c7;
+  color: #2c3e50;
+}
+
+.se-service-tab.active {
+  background: #3498db;
+  color: white;
+}
+
+.se-service-content {
+  display: none;
+  margin-bottom: 30px;
+}
+
+.se-service-content.active {
+  display: block;
+}
+
+.se-estimator-card {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.se-estimator-card h2 {
+  color: #2c3e50;
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.se-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.se-table th {
+  background: #34495e;
+  color: white;
+  padding: 12px;
+  text-align: left;
+}
+
+.se-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.se-table tr:hover {
+  background: #f8f9fa;
+}
+
+.se-staff-info {
+  background: #e8f4f8;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #3498db;
+}
+
+.se-stair-flight {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+
+.se-deposit-section {
+  background: #fff3cd;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+  border-left: 4px solid #ffc107;
+}
+
+.se-file-upload {
+  margin-top: 10px;
+}
+
+.se-file-upload label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.se-file-upload input {
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.se-info-button {
+  text-align: right;
+  margin: 10px 0;
+}
+
+.se-invoice-box {
+  background: #2c3e50;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.se-invoice-box h3 {
+  margin-top: 0;
+  color: #ecf0f1;
+}
+
+.se-invoice {
+  font-family: monospace;
+  white-space: pre-wrap;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.se-global-invoice {
+  background: #2c3e50;
+  color: white;
+  padding: 25px;
+  border-radius: 12px;
+  margin-top: 30px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.se-global-invoice h2 {
+  margin-top: 0;
+  color: #ecf0f1;
+}
+
+.se-invoice-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.se-rate-selection {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.se-radio, .se-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.se-radio input, .se-checkbox input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.se-visit-option {
+  margin: 15px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.se-alert-box {
+  color: #721c24;
+  background: #f8d7da;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  font-weight: 600;
+}
+
+.se-success-box {
+  color: #155724;
+  background: #d4edda;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+  font-weight: 600;
+}
+
+.se-note {
+  background: #fff3cd;
+  color: #856404;
+  padding: 10px;
+  border-radius: 4px;
+  margin: 15px 0;
+}
+
+.se-small-note {
+  font-size: 12px;
+  color: #6c757d;
+  margin: 5px 0;
+}
+
+.se-form-group {
+  margin-bottom: 15px;
+}
+
+.se-form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.se-input, .se-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.se-result-box {
+  background: #e8f4f8;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  border-left: 4px solid #3498db;
+}
+
+.se-result-box p {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+.se-camper-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.se-camper-card {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.se-camper-card:hover {
+  border-color: #3498db;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.se-camper-card.selected {
+  border-color: #27ae60;
+  background: #d4edda;
+}
+
+.se-camper-card h3 {
+  margin: 0 0 10px 0;
+  color: #2c3e50;
+}
+
+.se-camper-price {
+  font-size: 24px;
+  font-weight: bold;
+  color: #27ae60;
+  margin: 10px 0;
+}
+
+.se-camper-includes {
+  color: #6c757d;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.se-service-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.se-travel-section {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.se-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.se-modal-content {
+  background-color: white;
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 8px;
+  width: 80%;
+  max-width: 500px;
+  position: relative;
+}
+
+.se-close {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #aaa;
+}
+
+.se-close:hover {
+  color: #333;
+}
+
+@media (max-width: 768px) {
+  .se-header {
+    flex-direction: column;
+    align-items: start;
+  }
+  
+  .se-service-tabs {
+    flex-direction: column;
+  }
+  
+  .se-service-tab {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .se-table {
+    font-size: 14px;
+  }
+  
+  .se-table td, .se-table th {
+    padding: 8px 5px;
+  }
+}

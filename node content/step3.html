@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Step 3 - Supervisor Site Visit & Report</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-bg: #f8f9fa;
+            --border-color: #e0e0e0;
+            --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 25px 30px;
+            border-radius: 0 0 15px 15px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .header h1 {
+            font-weight: 700;
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header h1 i {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin: 10px 0 0;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .breadcrumb-item.active {
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* Context Box */
+        .context-box {
+            background: linear-gradient(to right, #e3f2fd, #e8f5e9);
+            border-left: 4px solid var(--info-color);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .context-box h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        /* Cards */
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .section-title h2 {
+            margin: 0;
+            color: var(--secondary-color);
+            font-size: 1.4rem;
+        }
+
+        .section-title i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        /* Client Info Grid */
+        .client-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            background: var(--light-bg);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        /* Original Estimation Preview */
+        .estimation-preview {
+            background: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .preview-line {
+            margin: 5px 0;
+            padding: 3px 0;
+        }
+
+        /* Adjusted Estimation Table */
+        .estimation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .estimation-table th {
+            background: var(--light-bg);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .estimation-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .estimation-table tbody tr:hover {
+            background: rgba(67, 97, 238, 0.03);
+        }
+
+        .item-checkbox {
+            text-align: center;
+        }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 5px;
+        }
+
+        /* Stairs Slider */
+        .stairs-slider-container {
+            padding: 20px;
+            background: var(--light-bg);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .slider-value {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            background: #ddd;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        /* Financial Summary */
+        .financial-summary {
+            background: linear-gradient(to right, #f8f9fa, white);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .financial-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .financial-item.total {
+            border-bottom: 2px solid var(--primary-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            padding-top: 15px;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            margin-left: 10px;
+            font-size: 0.9rem;
+        }
+
+        .price-difference {
+            color: var(--success-color);
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        /* Form Sections */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+            width: 100%;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Photo Upload */
+        .photo-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            background: var(--light-bg);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .photo-upload:hover {
+            border-color: var(--primary-color);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .photo-upload i {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .photo-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .photo-thumb {
+            position: relative;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .photo-thumb img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .photo-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Submission Section */
+        .submission-section {
+            background: linear-gradient(to right, #e8f5e9, #e3f2fd);
+            border-left: 4px solid var(--success-color);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .submission-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-submit {
+            padding: 12px 30px;
+            background: var(--success-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-save {
+            padding: 12px 30px;
+            background: var(--warning-color);
+            color: #212529;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-save:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+        }
+
+        /* Confirmation Modal */
+        .confirmation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .confirmation-modal.active {
+            display: flex;
+        }
+
+        .confirmation-content {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .confirmation-icon {
+            font-size: 60px;
+            color: var(--success-color);
+            margin-bottom: 20px;
+        }
+
+        /* Currency Toggle */
+        .currency-toggle {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .currency-btn {
+            padding: 8px 20px;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .currency-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .currency-symbol {
+            font-weight: 700;
+            margin-right: 5px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .client-info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .estimation-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .submission-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>
+            <i class="fas fa-clipboard-check"></i>
+            Step 3 - Supervisor Site Visit & Report
+        </h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="ManageBooking-nodecontent.html" class="text-white">go back to step 3 node</a></li>
+
+            </ol>
+        </nav>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- 1. Page Context Info Box -->
+        <div class="context-box">
+            <h3><i class="fas fa-info-circle me-2"></i>Site Visit Instructions</h3>
+            <p><strong>Purpose:</strong> This page is used when a site visit is required to inspect the property, verify client data, adjust estimates based on actual conditions, and upload visual proof.</p>
+            <ul class="mb-0">
+                <li>Review original client estimation from Step 1 (based on Estimation Calculator)</li>
+                <li>Adjust items and quantities based on actual site conditions</li>
+                <li>Upload photos as evidence of property inspection</li>
+                <li>Submit report to move booking to Step 4 (Manager Review)</li>
+            </ul>
+        </div>
+
+        <!-- 2. Client Information & Original Estimation -->
+        <div class="section-card">
+            <div class="section-title">
+                <i class="fas fa-user-circle"></i>
+                <h2>Client Information & Original Estimation</h2>
+            </div>
+
+            <!-- Client Info -->
+            <div class="client-info-grid mb-4">
+                <div class="info-item">
+                    <div class="info-label">Booking ID</div>
+                    <div class="info-value">BK-2025-00014</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Client Name</div>
+                    <div class="info-value">James Wilson</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Contact Number</div>
+                    <div class="info-value">+1 (416) 555-1234</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Address</div>
+                    <div class="info-value">25 Queen Street West, Toronto, ON</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Date Submitted</div>
+                    <div class="info-value">Jan 21, 2025 - 08:15 AM</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Services Required</div>
+                    <div class="info-value">
+                        <span class="badge bg-info">Steam Clean + Maintenance</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Original Estimation Preview -->
+            <h4 class="mb-3"><i class="fas fa-file-invoice me-2"></i>Original Client Estimation (Step 1 - From Estimation Calculator)</h4>
+            <div class="estimation-preview">
+                <div class="preview-line">┌─────────────────────────────────────────────────────────┐</div>
+                <div class="preview-line">│ <strong>STEAM CLEAN SERVICES ESTIMATE</strong>                    │</div>
+                <div class="preview-line">├─────────────────────────────────────────────────────────┤</div>
+                <div class="preview-line">│ ITEMS SELECTED:                                        │</div>
+                <div class="preview-line">│ Large Room (10x10) × 2 ........... $75 each = $150.00   │</div>
+                <div class="preview-line">│ Regular Room (8x8) × 3 ........... $60 each = $180.00   │</div>
+                <div class="preview-line">│ Area Rug × 1 ...................... $30 each = $30.00   │</div>
+                <div class="preview-line">│ Stair Flights (5) ................ $5 each = $25.00    │</div>
+                <div class="preview-line">├─────────────────────────────────────────────────────────┤</div>
+                <div class="preview-line">│ <strong>MAINTENANCE CLEAN ESTIMATE</strong>                       │</div>
+                <div class="preview-line">│ Type: Residential                                       │</div>
+                <div class="preview-line">│ Rate: $38/hour                                          │</div>
+                <div class="preview-line">│ Kitchen (large) ................... 4.5 hours           │</div>
+                <div class="preview-line">│ Bedroom × 2 (large) ............... 3.0 hours           │</div>
+                <div class="preview-line">│ Bathroom × 2 ..................... 5.0 hours           │</div>
+                <div class="preview-line">│ Entryway ......................... 0.5 hours           │</div>
+                <div class="preview-line">│ Total Hours: ...................... 13.0 hours          │</div>
+                <div class="preview-line">├─────────────────────────────────────────────────────────┤</div>
+                <div class="preview-line">│ <strong>FINANCIAL SUMMARY</strong>                                │</div>
+                <div class="preview-line">│ Steam Clean Subtotal: .............. $385.00            │</div>
+                <div class="preview-line">│ Maintenance Clean (13 hrs × $38): .. $494.00            │</div>
+                <div class="preview-line">│ Subtotal: .......................... $879.00            │</div>
+                <div class="preview-line">│ Tax (5%): .......................... $43.95             │</div>
+                <div class="preview-line">│ <strong>TOTAL DUE (CAD): ................ $922.95</strong>        │</div>
+                <div class="preview-line">└─────────────────────────────────────────────────────────┘</div>
+            </div>
+        </div>
+
+        <!-- 3. Supervisor Adjusted Estimation Table -->
+        <div class="section-card">
+            <div class="section-title">
+                <i class="fas fa-edit"></i>
+                <h2>Supervisor Adjusted Estimation</h2>
+            </div>
+            
+            <!-- Currency Toggle -->
+            <div class="currency-toggle">
+                <button class="currency-btn active" id="btnCad" onclick="setCurrency('CAD')">
+                    <span class="currency-symbol">$</span> CAD (Canadian Dollars)
+                </button>
+                <button class="currency-btn" id="btnUsd" onclick="setCurrency('USD')">
+                    <span class="currency-symbol">$</span> USD (US Dollars)
+                </button>
+            </div>
+
+            <p class="text-muted mb-3">Adjust items based on actual site inspection. Check items to include in final estimate.</p>
+
+            <table class="estimation-table">
+                <thead>
+                    <tr>
+                        <th width="50" class="item-checkbox">✓</th>
+                        <th>Item Name</th>
+                        <th>Size / Details</th>
+                        <th width="120">Unit Price</th>
+                        <th width="150">Quantity</th>
+                        <th width="120">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody id="estimationItems">
+                    <!-- Items will be populated by JavaScript -->
+                </tbody>
+            </table>
+
+            <!-- Stairs Slider -->
+            <div class="stairs-slider-container">
+                <div class="slider-header">
+                    <h5 class="mb-0"><i class="fas fa-stairs me-2"></i>Stairs Cleaning</h5>
+                    <div class="slider-value">Flights: <span id="stairsCount">5</span> × <span class="currency-symbol">$</span><span id="stairsUnitPrice">5</span> = <span class="currency-symbol">$</span><span id="stairsTotal">25</span></div>
+                </div>
+                <input type="range" min="0" max="15" value="5" class="range-slider" id="stairsSlider">
+                <div class="slider-labels">
+                    <span>0 flights</span>
+                    <span>15 flights (max <span class="currency-symbol">$</span>75)</span>
+                </div>
+                <div class="mt-2 text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Max charge capped at <span class="currency-symbol">$</span>75 for 15+ flights
+                </div>
+            </div>
+
+            <!-- 4. Adjusted Estimation Preview -->
+            <div class="financial-summary mt-4">
+                <h4 class="mb-3 text-center">ADJUSTED ESTIMATION (<span id="currencyLabel">CAD</span>)</h4>
+                <div class="financial-item">
+                    <span>Steam Clean Items Subtotal:</span>
+                    <span><span class="currency-symbol">$</span><span id="steamSubtotal">360</span>.00</span>
+                </div>
+                <div class="financial-item">
+                    <span>Stairs Cleaning:</span>
+                    <span><span class="currency-symbol">$</span><span id="stairsSubtotal">25</span>.00</span>
+                </div>
+                <div class="financial-item">
+                    <span>Maintenance Clean Hours:</span>
+                    <span><span id="maintenanceHours">14.5</span> hrs × <span class="currency-symbol">$</span><span id="maintenanceRate">38</span> = <span class="currency-symbol">$</span><span id="maintenanceSubtotal">551</span>.00</span>
+                </div>
+                <div class="financial-item">
+                    <span>Travel Time Fee (Residential):</span>
+                    <span><span class="currency-symbol">$</span><span id="travelSubtotal">19</span>.00</span>
+                </div>
+                <div class="financial-item">
+                    <span>Service Subtotal:</span>
+                    <span><span class="currency-symbol">$</span><span id="serviceSubtotal">955</span>.00</span>
+                </div>
+                <div class="financial-item">
+                    <span>Tax (5%):</span>
+                    <span><span class="currency-symbol">$</span><span id="taxAmount">47.75</span></span>
+                </div>
+                <div class="financial-item total">
+                    <span>Grand Total:</span>
+                    <span><span class="currency-symbol">$</span><span id="grandTotal">1002.75</span></span>
+                </div>
+                <div class="mt-3 text-center">
+                    <small class="text-muted">
+                        Original: <span class="currency-symbol">$</span>922.95 
+                        <span class="price-difference" id="priceDifference">(+<span class="currency-symbol">$</span>79.80)</span>
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Site Visit Report Form -->
+        <div class="section-card">
+            <div class="section-title">
+                <i class="fas fa-clipboard-list"></i>
+                <h2>Site Visit Report Form</h2>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Property & Scope Notes</label>
+                        <textarea class="form-control" id="propertyNotes" rows="5" placeholder="Observed conditions, rooms, surfaces, stains, furniture layout, discrepancies with Step 1...">Property has larger than standard rooms. Master bedroom measures 15x18 ft instead of estimated 10x10 ft. Additional hallway and landing areas require cleaning. Kitchen is oversized with island - requires additional time. Two bathrooms have extensive tile work needing special attention.</textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Special Requirements</label>
+                        <textarea class="form-control" id="specialRequirements" rows="5" placeholder="Client-specific requests, materials/chemicals required, security notes, pet presence...">Client requests eco-friendly cleaning products. Pet present (small dog) - need to schedule when pet can be secured in separate area. Special attention to hardwood floor protection. Access limited to weekdays 9am-3pm. Requires stair railings to be cleaned as well.</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Updated Estimated Price Range (<span id="rangeCurrency">CAD</span>)</label>
+                        <div class="row">
+                            <div class="col">
+                                <input type="number" class="form-control" id="minPrice" placeholder="Min price" value="950">
+                            </div>
+                            <div class="col-auto align-self-center">to</div>
+                            <div class="col">
+                                <input type="number" class="form-control" id="maxPrice" placeholder="Max price" value="1100">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label">Maintenance Clean Type</label>
+                        <select class="form-select" id="maintenanceType">
+                            <option value="residential" selected>Residential ($38/hr)</option>
+                            <option value="commercial">Commercial ($44/hr)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photo Upload -->
+            <div class="form-group mt-4">
+                <label class="form-label">Upload Photos / Evidence</label>
+                <div class="photo-upload" id="photoUploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h5>Drag & Drop Photos Here</h5>
+                    <p class="text-muted">or click to select files</p>
+                    <input type="file" id="photoInput" accept="image/*" multiple style="display: none;">
+                </div>
+                <div class="photo-preview" id="photoPreview">
+                    <!-- Photos will be added here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Submission & Confirmation -->
+        <div class="submission-section">
+            <h3><i class="fas fa-paper-plane me-2"></i>Submit Site Visit Report</h3>
+            <p class="mb-3">Once submitted, this booking will move to Step 4 (Manager Review & Final Quotation) with status updated to <strong>visit_completed</strong>.</p>
+            
+            <div class="submission-actions">
+                <button class="btn-submit" onclick="submitReport()">
+                    <i class="fas fa-check-circle"></i> Submit Report
+                </button>
+                <button class="btn-save" onclick="saveDraft()">
+                    <i class="fas fa-save"></i> Save as Draft
+                </button>
+            </div>
+            
+            <div class="mt-4">
+                <small class="text-muted">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    <strong>Note:</strong> Submission will send notification to manager for Step 4 review.
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="confirmation-modal" id="confirmationModal">
+        <div class="confirmation-content">
+            <div class="confirmation-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2>✅ Site Visit Report Submitted!</h2>
+            <p class="lead mb-3">Booking status updated to <strong>visit_completed</strong></p>
+            <p class="text-muted mb-4">Manager has been notified for Step 4 review.</p>
+            <button class="btn btn-primary btn-lg" onclick="closeConfirmation()">
+                <i class="fas fa-check me-2"></i> Continue to Dashboard
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample data for estimation items based on estimation calculator
+        const estimationItems = [
+            { id: 1, name: "Large Room Cleaning", details: "Master bedroom (15x18 ft)", price: 75, quantity: 1, checked: true },
+            { id: 2, name: "Large Room Cleaning", details: "Guest bedroom (12x14 ft)", price: 75, quantity: 1, checked: true },
+            { id: 3, name: "Regular Room Cleaning", details: "Office (10x12 ft)", price: 60, quantity: 1, checked: true },
+            { id: 4, name: "Regular Room Cleaning", details: "Living room (14x16 ft)", price: 60, quantity: 1, checked: true },
+            { id: 5, name: "Area Rug Cleaning", details: "8x10 Persian rug", price: 30, quantity: 2, checked: true },
+            { id: 6, name: "Walk-in Closet", details: "Large master closet", price: 50, quantity: 1, checked: true },
+            { id: 7, name: "Hallway Cleaning", details: "Main hallway 20ft length", price: 35, quantity: 1, checked: true },
+            { id: 8, name: "Landing Cleaning", details: "Upper floor landing", price: 25, quantity: 1, checked: true }
+        ];
+
+        // State variables
+        let uploadedPhotos = [];
+        let originalTotal = 922.95;
+        let currentCurrency = 'CAD';
+        let exchangeRate = 1.0;
+
+        // DOM Elements
+        const estimationItemsEl = document.getElementById('estimationItems');
+        const stairsSlider = document.getElementById('stairsSlider');
+        const stairsCountEl = document.getElementById('stairsCount');
+        const stairsTotalEl = document.getElementById('stairsTotal');
+        const stairsUnitPriceEl = document.getElementById('stairsUnitPrice');
+        const steamSubtotalEl = document.getElementById('steamSubtotal');
+        const stairsSubtotalEl = document.getElementById('stairsSubtotal');
+        const maintenanceSubtotalEl = document.getElementById('maintenanceSubtotal');
+        const maintenanceHoursEl = document.getElementById('maintenanceHours');
+        const maintenanceRateEl = document.getElementById('maintenanceRate');
+        const travelSubtotalEl = document.getElementById('travelSubtotal');
+        const serviceSubtotalEl = document.getElementById('serviceSubtotal');
+        const taxAmountEl = document.getElementById('taxAmount');
+        const grandTotalEl = document.getElementById('grandTotal');
+        const priceDifferenceEl = document.getElementById('priceDifference');
+        const photoUploadArea = document.getElementById('photoUploadArea');
+        const photoInput = document.getElementById('photoInput');
+        const photoPreview = document.getElementById('photoPreview');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const currencyLabel = document.getElementById('currencyLabel');
+        const rangeCurrency = document.getElementById('rangeCurrency');
+
+        // Initialize
+        function init() {
+            renderEstimationItems();
+            setupEventListeners();
+            updateCalculations();
+            setCurrency('CAD'); // Default to CAD
+        }
+
+        // Set currency
+        function setCurrency(currency) {
+            currentCurrency = currency;
+            
+            // Update exchange rate
+            if (currency === 'USD') {
+                exchangeRate = 0.74; // 1 CAD = 0.74 USD
+                document.getElementById('btnCad').classList.remove('active');
+                document.getElementById('btnUsd').classList.add('active');
+            } else {
+                exchangeRate = 1.0; // CAD
+                document.getElementById('btnCad').classList.add('active');
+                document.getElementById('btnUsd').classList.remove('active');
+            }
+            
+            // Update labels
+            currencyLabel.textContent = currency;
+            rangeCurrency.textContent = currency;
+            
+            updateCalculations();
+        }
+
+        // Convert amount based on current currency
+        function convertAmount(amount) {
+            return amount * exchangeRate;
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return convertAmount(amount).toLocaleString('en-CA', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Render estimation items table
+        function renderEstimationItems() {
+            estimationItemsEl.innerHTML = '';
+            
+            estimationItems.forEach(item => {
+                const row = document.createElement('tr');
+                const subtotal = item.price * item.quantity;
+                
+                row.innerHTML = `
+                    <td class="item-checkbox">
+                        <input type="checkbox" class="form-check-input" 
+                               id="item-${item.id}" 
+                               ${item.checked ? 'checked' : ''}
+                               onchange="updateItem(${item.id}, this.checked)">
+                    </td>
+                    <td>${item.name}</td>
+                    <td>${item.details}</td>
+                    <td>$${item.price.toLocaleString()}</td>
+                    <td>
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="adjustQuantity(${item.id}, -1)">-</button>
+                            <input type="number" class="qty-input" 
+                                   id="qty-${item.id}" 
+                                   value="${item.quantity}" 
+                                   min="0" 
+                                   onchange="updateQuantity(${item.id}, this.value)">
+                            <button class="qty-btn" onclick="adjustQuantity(${item.id}, 1)">+</button>
+                        </div>
+                    </td>
+                    <td><strong id="subtotal-${item.id}">$${subtotal.toLocaleString()}</strong></td>
+                `;
+                
+                estimationItemsEl.appendChild(row);
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Stairs slider
+            stairsSlider.addEventListener('input', function() {
+                updateStairsCalculation();
+                updateCalculations();
+            });
+
+            // Photo upload
+            photoUploadArea.addEventListener('click', () => {
+                photoInput.click();
+            });
+
+            photoInput.addEventListener('change', handlePhotoUpload);
+
+            // Drag and drop for photos
+            photoUploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                photoUploadArea.style.borderColor = 'var(--primary-color)';
+                photoUploadArea.style.background = 'rgba(67, 97, 238, 0.1)';
+            });
+
+            photoUploadArea.addEventListener('dragleave', () => {
+                photoUploadArea.style.borderColor = '';
+                photoUploadArea.style.background = '';
+            });
+
+            photoUploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                photoUploadArea.style.borderColor = '';
+                photoUploadArea.style.background = '';
+                
+                if (e.dataTransfer.files.length > 0) {
+                    handlePhotoFiles(e.dataTransfer.files);
+                }
+            });
+
+            // Maintenance type change
+            document.getElementById('maintenanceType').addEventListener('change', updateCalculations);
+        }
+
+        // Update item checked status
+        function updateItem(itemId, isChecked) {
+            const item = estimationItems.find(i => i.id === itemId);
+            if (item) {
+                item.checked = isChecked;
+                updateCalculations();
+            }
+        }
+
+        // Adjust quantity
+        function adjustQuantity(itemId, delta) {
+            const item = estimationItems.find(i => i.id === itemId);
+            if (item) {
+                const newQty = Math.max(0, item.quantity + delta);
+                item.quantity = newQty;
+                document.getElementById(`qty-${itemId}`).value = newQty;
+                updateSubtotal(itemId);
+                updateCalculations();
+            }
+        }
+
+        // Update quantity
+        function updateQuantity(itemId, value) {
+            const item = estimationItems.find(i => i.id === itemId);
+            if (item) {
+                const newQty = Math.max(0, parseInt(value) || 0);
+                item.quantity = newQty;
+                updateSubtotal(itemId);
+                updateCalculations();
+            }
+        }
+
+        // Update subtotal for item
+        function updateSubtotal(itemId) {
+            const item = estimationItems.find(i => i.id === itemId);
+            if (item) {
+                const subtotal = item.price * item.quantity;
+                document.getElementById(`subtotal-${itemId}`).textContent = `$${subtotal.toLocaleString()}`;
+            }
+        }
+
+        // Update stairs calculation
+        function updateStairsCalculation() {
+            const flights = parseInt(stairsSlider.value);
+            const stairsTotal = Math.min(flights * 5, 75); // Max $75
+            
+            stairsCountEl.textContent = flights;
+            stairsTotalEl.textContent = formatCurrency(stairsTotal);
+            stairsUnitPriceEl.textContent = formatCurrency(5);
+        }
+
+        // Update all calculations
+        function updateCalculations() {
+            // Calculate steam clean items subtotal
+            let steamSubtotal = 0;
+            estimationItems.forEach(item => {
+                if (item.checked) {
+                    steamSubtotal += item.price * item.quantity;
+                }
+            });
+            
+            // Calculate stairs subtotal
+            const flights = parseInt(stairsSlider.value);
+            const stairsSubtotal = Math.min(flights * 5, 75);
+            
+            // Calculate maintenance subtotal
+            const maintenanceType = document.getElementById('maintenanceType').value;
+            const maintenanceRate = maintenanceType === 'residential' ? 38 : 44;
+            const maintenanceHours = 14.5; // Based on site inspection
+            const maintenanceSubtotal = maintenanceHours * maintenanceRate;
+            
+            // Calculate travel fee (45 minutes at maintenance rate)
+            const travelFee = (45/60) * maintenanceRate;
+            
+            // Calculate service subtotal
+            const serviceSubtotal = steamSubtotal + stairsSubtotal + maintenanceSubtotal + travelFee;
+            
+            // Calculate tax and total
+            const tax = serviceSubtotal * 0.05;
+            const grandTotal = serviceSubtotal + tax;
+            
+            // Update DOM
+            steamSubtotalEl.textContent = formatCurrency(steamSubtotal);
+            stairsSubtotalEl.textContent = formatCurrency(stairsSubtotal);
+            maintenanceSubtotalEl.textContent = formatCurrency(maintenanceSubtotal);
+            maintenanceHoursEl.textContent = maintenanceHours;
+            maintenanceRateEl.textContent = formatCurrency(maintenanceRate);
+            travelSubtotalEl.textContent = formatCurrency(travelFee);
+            serviceSubtotalEl.textContent = formatCurrency(serviceSubtotal);
+            taxAmountEl.textContent = formatCurrency(tax);
+            grandTotalEl.textContent = formatCurrency(grandTotal);
+            
+            // Update price difference
+            const difference = grandTotal - originalTotal;
+            if (difference > 0) {
+                priceDifferenceEl.textContent = `(+$${formatCurrency(difference)})`;
+                priceDifferenceEl.style.color = 'var(--danger-color)';
+            } else if (difference < 0) {
+                priceDifferenceEl.textContent = `(-$${formatCurrency(Math.abs(difference))})`;
+                priceDifferenceEl.style.color = 'var(--success-color)';
+            } else {
+                priceDifferenceEl.textContent = '(No change)';
+                priceDifferenceEl.style.color = 'var(--grey-line)';
+            }
+        }
+
+        // Handle photo upload
+        function handlePhotoUpload(e) {
+            handlePhotoFiles(e.target.files);
+        }
+
+        function handlePhotoFiles(files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        uploadedPhotos.push({
+                            id: Date.now() + i,
+                            name: file.name,
+                            url: e.target.result
+                        });
+                        renderPhotoPreview();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+
+        // Render photo preview
+        function renderPhotoPreview() {
+            photoPreview.innerHTML = '';
+            
+            uploadedPhotos.forEach(photo => {
+                const thumb = document.createElement('div');
+                thumb.className = 'photo-thumb';
+                thumb.innerHTML = `
+                    <img src="${photo.url}" alt="${photo.name}">
+                    <button class="photo-remove" onclick="removePhoto(${photo.id})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                photoPreview.appendChild(thumb);
+            });
+        }
+
+        // Remove photo
+        function removePhoto(photoId) {
+            uploadedPhotos = uploadedPhotos.filter(p => p.id !== photoId);
+            renderPhotoPreview();
+        }
+
+        // Submit report
+        function submitReport() {
+            // Validate required fields
+            const propertyNotes = document.getElementById('propertyNotes').value;
+            const specialRequirements = document.getElementById('specialRequirements').value;
+            
+            if (!propertyNotes.trim() || !specialRequirements.trim()) {
+                alert('Please fill in all required fields in the Site Visit Report Form.');
+                return;
+            }
+            
+            if (uploadedPhotos.length === 0) {
+                if (!confirm('No photos have been uploaded. Continue without evidence?')) {
+                    return;
+                }
+            }
+            
+            // Prepare submission data
+            const submissionData = {
+                bookingId: 'BK-2025-00014',
+                clientName: 'James Wilson',
+                adjustedEstimation: {
+                    steamCleanItems: estimationItems.filter(item => item.checked),
+                    stairsFlights: parseInt(stairsSlider.value),
+                    stairsCost: Math.min(parseInt(stairsSlider.value) * 5, 75),
+                    maintenanceType: document.getElementById('maintenanceType').value,
+                    maintenanceHours: 14.5,
+                    maintenanceRate: document.getElementById('maintenanceType').value === 'residential' ? 38 : 44,
+                    travelFee: (45/60) * (document.getElementById('maintenanceType').value === 'residential' ? 38 : 44),
+                    subtotal: parseFloat(serviceSubtotalEl.textContent.replace(/[^0-9.-]+/g,"")),
+                    tax: parseFloat(taxAmountEl.textContent.replace(/[^0-9.-]+/g,"")),
+                    total: parseFloat(grandTotalEl.textContent.replace(/[^0-9.-]+/g,"")),
+                    currency: currentCurrency
+                },
+                siteVisitReport: {
+                    propertyNotes: propertyNotes,
+                    specialRequirements: specialRequirements,
+                    priceRange: {
+                        min: parseFloat(document.getElementById('minPrice').value),
+                        max: parseFloat(document.getElementById('maxPrice').value)
+                    },
+                    photos: uploadedPhotos.length
+                },
+                supervisorId: 'SUP-001',
+                timestamp: new Date().toISOString(),
+                status: 'visit_completed'
+            };
+            
+            console.log('Submission Data:', submissionData);
+            
+            // Show confirmation modal
+            confirmationModal.classList.add('active');
+        }
+
+        // Save draft
+        function saveDraft() {
+            alert('Report saved as draft. You can return to complete it later.');
+            // In a real app, this would save to localStorage or backend
+        }
+
+        // Close confirmation modal
+        function closeConfirmation() {
+            confirmationModal.classList.remove('active');
+            // In a real app, this would redirect to dashboard
+            alert('Redirecting to dashboard...');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

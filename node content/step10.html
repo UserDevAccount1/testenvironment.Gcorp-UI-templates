@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 10 — Cleaner Dashboard: View Assignment & Begin Service</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --primary: #2b5fad;
+    --primary-dark: #1f4e8a;
+    --primary-light: #eef5ff;
+    --secondary: #10b981;
+    --secondary-dark: #0da271;
+    --warning: #f59e0b;
+    --danger: #dc3545;
+    --success: #28a745;
+    --light-bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f6f9ff 0%, #f1f5f9 100%);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Dashboard Layout */
+  .dashboard-container {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 25px 20px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .cleaner-profile {
+    text-align: center;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 25px;
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+  }
+
+  .cleaner-name {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+
+  .cleaner-id {
+    font-size: 14px;
+    opacity: 0.9;
+    margin-bottom: 10px;
+  }
+
+  .cleaner-rating {
+    color: var(--warning);
+    font-size: 14px;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    font-size: inherit;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .nav-item.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-weight: 600;
+  }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--warning);
+    color: white;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  /* Main Content */
+  .main-content {
+    padding: 30px;
+    overflow-y: auto;
+  }
+
+  /* Header */
+  .content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .header-title h1 {
+    font-size: 28px;
+    color: var(--primary-dark);
+    margin-bottom: 8px;
+  }
+
+  .header-title p {
+    color: var(--text-secondary);
+    font-size: 15px;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 15px;
+  }
+
+  /* Dashboard Grid */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  /* Appointment Summary Card */
+  .summary-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: var(--shadow);
+    margin-bottom: 25px;
+    border-left: 5px solid var(--primary);
+  }
+
+  .summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .appointment-id {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .status-accepted {
+    background: #e8fce8;
+    color: #2c7a2c;
+  }
+
+  .status-ready {
+    background: #e6f0ff;
+    color: var(--primary);
+  }
+
+  .status-in-progress {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  /* Summary Grid */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  .summary-item {
+    padding: 15px;
+    background: var(--light-bg);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+
+  .summary-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .summary-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  /* Client Info Card */
+  .client-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: var(--shadow);
+    margin-bottom: 25px;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .card-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  .card-title h2 {
+    font-size: 20px;
+    color: var(--primary-dark);
+    margin-bottom: 4px;
+  }
+
+  .card-title p {
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  /* Client Details */
+  .client-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+  }
+
+  .detail-item {
+    padding: 12px;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+
+  .detail-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+  }
+
+  .detail-value {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 14px 24px;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 160px;
+    justify-content: center;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(43, 95, 173, 0.3);
+  }
+
+  .btn-success {
+    background: var(--success);
+    color: white;
+  }
+
+  .btn-success:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+  }
+
+  .btn-success:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .btn-outline {
+    background: white;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+  }
+
+  .btn-outline:hover {
+    background: var(--primary-light);
+  }
+
+  /* Task List Section */
+  .task-section {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: var(--shadow);
+    margin-bottom: 25px;
+  }
+
+  .task-category {
+    margin-bottom: 25px;
+    background: var(--light-bg);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .category-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary-dark);
+  }
+
+  .task-list {
+    list-style: none;
+  }
+
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .task-item:last-child {
+    border-bottom: none;
+  }
+
+  .task-icon {
+    color: var(--secondary);
+    font-size: 16px;
+    min-width: 20px;
+  }
+
+  .task-content {
+    flex: 1;
+  }
+
+  .task-name {
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .task-description {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .task-priority {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  .priority-high {
+    background: #fde8e8;
+    color: var(--danger);
+  }
+
+  .priority-medium {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .priority-low {
+    background: #e8fce8;
+    color: #2c7a2c;
+  }
+
+  /* Equipment Checklist */
+  .equipment-section {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 25px;
+    box-shadow: var(--shadow);
+    margin-bottom: 25px;
+    border: 2px solid var(--warning);
+  }
+
+  .equipment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .equipment-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .equipment-title i {
+    color: var(--warning);
+    font-size: 22px;
+  }
+
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+  }
+
+  .checklist-item.required {
+    border-left: 4px solid var(--danger);
+    background: #fff8e6;
+  }
+
+  .checklist-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
+
+  .checklist-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--warning);
+    cursor: pointer;
+  }
+
+  .equipment-name {
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .equipment-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  /* Progress Section */
+  .progress-section {
+    background: var(--light-bg);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin: 20px 0;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .progress-label {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .progress-value {
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .progress-bar {
+    height: 10px;
+    background: #e2e8f0;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 15px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--secondary);
+    border-radius: 5px;
+    transition: width 0.3s ease;
+  }
+
+  /* Notes Section */
+  .notes-section {
+    background: #f8f9fa;
+    border-radius: var(--radius);
+    padding: 25px;
+    margin-bottom: 25px;
+    border-left: 4px solid var(--primary);
+  }
+
+  .notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+  }
+
+  .note-item {
+    padding: 15px;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+
+  .note-type {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .type-client {
+    background: #e8f4fd;
+    color: var(--primary);
+  }
+
+  .type-manager {
+    background: #e8fce8;
+    color: #2c7a2c;
+  }
+
+  .type-warning {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  /* Right Sidebar */
+  .right-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .widget {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .widget-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .widget-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--primary-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 18px;
+  }
+
+  /* Map Widget */
+  .map-container {
+    height: 200px;
+    background: #e8f4fd;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  /* Timeline Widget */
+  .timeline {
+    margin-top: 15px;
+  }
+
+  .timeline-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .timeline-item:last-child {
+    border-bottom: none;
+  }
+
+  .timeline-icon {
+    width: 24px;
+    height: 24px;
+    background: var(--light-bg);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 12px;
+  }
+
+  .timeline-content {
+    flex: 1;
+  }
+
+  .timeline-time {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+  }
+
+  .timeline-text {
+    font-size: 14px;
+  }
+
+  /* Start Service Section */
+  .start-service-section {
+    background: linear-gradient(135deg, #f6f9ff 0%, #e8efff 100%);
+    border-radius: var(--radius);
+    padding: 30px;
+    margin-top: 30px;
+    border: 2px solid var(--primary);
+    text-align: center;
+  }
+
+  .start-service-title {
+    font-size: 22px;
+    color: var(--primary-dark);
+    margin-bottom: 15px;
+  }
+
+  .start-service-description {
+    color: var(--text-secondary);
+    margin-bottom: 25px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .service-requirements {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .requirement-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: white;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+  }
+
+  .requirement-check {
+    color: var(--secondary);
+  }
+
+  /* Notification */
+  .notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 1000;
+    display: none;
+    max-width: 400px;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .notification-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+
+  .notification-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .dashboard-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+      display: none;
+    }
+    
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .main-content {
+      padding: 20px;
+    }
+    
+    .content-header {
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .header-actions {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+    }
+    
+    .btn {
+      width: 100%;
+    }
+    
+    .summary-grid,
+    .client-details,
+    .checklist-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+  <!-- Dashboard Container -->
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="cleaner-profile">
+        <div class="profile-avatar">
+          <i class="fas fa-user-tie"></i>
+        </div>
+        <h2 class="cleaner-name">John M. (Team Lead)</h2>
+        <p class="cleaner-id">Cleaner ID: CL-2025-001</p>
+        <div class="cleaner-rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star-half-alt"></i>
+          4.8/5.0
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button onclick="location.href='step9.html'" class="nav-item">
+          <i class="fas fa-arrow-left"></i>
+          Back to Appointments
+        </button>
+        <button onclick="location.href='ManageBooking-nodecontent.html'" class="nav-item">
+          <i class="fas fa-sitemap"></i>
+          Back to Node Presentation
+        </button>
+        <button class="nav-item active">
+          <i class="fas fa-clipboard-check"></i>
+          Assignment Review
+        </button>
+        <button class="nav-item">
+          <i class="fas fa-tasks"></i>
+          Active Jobs
+          <span class="nav-badge">1</span>
+        </button>
+        <button class="nav-item">
+          <i class="fas fa-history"></i>
+          Job History
+        </button>
+        <button class="nav-item">
+          <i class="fas fa-chart-line"></i>
+          Performance
+        </button>
+        <button class="nav-item">
+          <i class="fas fa-tools"></i>
+          Equipment
+        </button>
+        <button onclick="location.href='step11.html'" 
+        class="nav-item" 
+        style="background:none; border:none; cursor:pointer; width:100%; text-align:left;">
+  <i class="fas fa-arrow-right"></i>
+  Go to Step 11
+</button>
+
+      </nav>
+
+      <div style="margin-top: auto; padding-top: 20px; font-size: 12px; opacity: 0.7; text-align: center;">
+        <p>Step 10: Assignment Review</p>
+        <p>© 2025 CleanPro Systems</p>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="content-header">
+        <div class="header-title">
+          <h1>Assignment Review & Service Start</h1>
+          <p>Review complete appointment details and verify equipment before beginning service</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline">
+            <i class="fas fa-question-circle"></i>
+            Help
+          </button>
+          <button class="btn btn-outline" onclick="contactManager()">
+            <i class="fas fa-headset"></i>
+            Contact Manager
+          </button>
+        </div>
+      </header>
+
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+        <!-- Left Column -->
+        <div>
+          <!-- Appointment Summary -->
+          <div class="summary-card">
+            <div class="summary-header">
+              <div class="appointment-id">APT-2025-3321</div>
+              <div class="status-badge status-accepted">
+                <i class="fas fa-check-circle"></i> Accepted & Ready
+              </div>
+            </div>
+            
+            <div class="summary-grid">
+              <div class="summary-item">
+                <div class="summary-label">Service Type</div>
+                <div class="summary-value">Deep Cleaning + Balcony</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">Date & Time</div>
+                <div class="summary-value">Feb 15, 2025 — 2:00 PM</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">Duration</div>
+                <div class="summary-value">4.5 Hours</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">Cleaners Needed</div>
+                <div class="summary-value">2 Cleaners</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">Payment Method</div>
+                <div class="summary-value">Online Paid</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">Estimated Value</div>
+                <div class="summary-value">$450.00</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Client Information -->
+          <div class="client-card">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="fas fa-user-circle"></i>
+              </div>
+              <div class="card-title">
+                <h2>Client Information</h2>
+                <p>Contact details and special instructions</p>
+              </div>
+            </div>
+            
+            <div class="client-details">
+              <div class="detail-item">
+                <div class="detail-label">Client Name</div>
+                <div class="detail-value">Maria Santos</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Phone</div>
+                <div class="detail-value">0917-555-8822</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Email</div>
+                <div class="detail-value">maria.santos@example.com</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Pets at Home</div>
+                <div class="detail-value">1 Dog (Friendly)</div>
+              </div>
+            </div>
+            
+            <div class="action-buttons">
+              <button class="btn btn-outline" onclick="contactClient()">
+                <i class="fas fa-phone"></i>
+                Call Client
+              </button>
+              <button class="btn btn-outline" onclick="sendMessage()">
+                <i class="fas fa-comment"></i>
+                Send Message
+              </button>
+            </div>
+          </div>
+
+          <!-- Location Details -->
+          <div class="client-card">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <div class="card-title">
+                <h2>Location Details</h2>
+                <p>Address and access instructions</p>
+              </div>
+            </div>
+            
+            <div class="client-details">
+              <div class="detail-item">
+                <div class="detail-label">Address</div>
+                <div class="detail-value">Tower 3, Casa Verde Residences, Makati City</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Unit</div>
+                <div class="detail-value">12F-1208</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Building Type</div>
+                <div class="detail-value">High-Rise Condominium</div>
+              </div>
+              <div class="detail-item">
+                <div class="detail-label">Parking</div>
+                <div class="detail-value">Basement parking available</div>
+              </div>
+            </div>
+            
+            <div class="action-buttons">
+              <button class="btn btn-primary" onclick="openNavigation()">
+                <i class="fas fa-directions"></i>
+                Open Navigation
+              </button>
+            </div>
+          </div>
+
+          <!-- Task List -->
+          <div class="task-section">
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="fas fa-clipboard-list"></i>
+              </div>
+              <div class="card-title">
+                <h2>Task List</h2>
+                <p>Review all tasks before starting service (Read-only)</p>
+              </div>
+            </div>
+            
+            <!-- Bedroom Tasks -->
+            <div class="task-category">
+              <div class="category-header">
+                <i class="fas fa-bed"></i>
+                <div class="category-title">Bedroom Tasks (3 Rooms)</div>
+              </div>
+              <ul class="task-list">
+                <li class="task-item">
+                  <i class="fas fa-check-circle task-icon"></i>
+                  <div class="task-content">
+                    <div class="task-name">Change bed sheets and pillowcases</div>
+                    <div class="task-description">All bedrooms, fresh linen provided by client</div>
+                    <span class="task-priority priority-medium">Medium Priority</span>
+                  </div>
+                </li>
+                <li class="task-item">
+                  <i class="fas fa-check-circle task-icon"></i>
+                  <div class="task-content">
+                    <div class="task-name">Wipe all surfaces and furniture</div>
+                    <div class="task-description">Dusting and surface cleaning</div>
+                    <span class="task-priority priority-high">High Priority</span>
+                  </div>
+                </li>
+                <li class="task-item">
+                  <i class="fas fa-check-circle task-icon"></i>
+                  <div class="task-content">
+                    <div class="task-name">Vacuum carpets and rugs</div>
+                    <div class="task-description">Thorough vacuuming, edges and corners</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            
+            <!-- Kitchen Tasks -->
+            <div class="task-category">
+              <div class="category-header">
+                <i class="fas fa-utensils"></i>
+                <div class="category-title">Kitchen Tasks</div>
+              </div>
+              <ul class="task-list">
+                <li class="task-item">
+                  <i class="fas fa-check-circle task-icon"></i>
+                  <div class="task-content">
+                    <div class="task-name">Degrease stove and range hood</div>
+                    <div class="task-description">Remove grease buildup</div>
+                    <span class="task-priority priority-high">High Priority</span>
+                  </div>
+                </li>
+                <li class="task-item">
+                  <i class="fas fa-check-circle task-icon"></i>
+                  <div class="task-content">
+                    <div class="task-name">Clean countertops and backsplash</div>
+                    <div class="task-description">Disinfect all surfaces</div>
+                  </div>
+                </li>
+                <li class="task-item">
+                  <i class="fas fa-check-circle task-icon"></i>
+                  <div class="task-content">
+                    <div class="task-name">Spot clean cabinets and drawers</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            
+            <!-- Client Custom Tasks -->
+            <div class="task-category">
+              <div class="category-header">
+                <i class="fas fa-star"></i>
+                <div class="category-title">Client Custom Tasks</div>
+              </div>
+              <ul class="task-list">
+                <li class="task-item">
+                  <i class="fas fa-check-circle task-icon"></i>
+                  <div class="task-content">
+                    <div class="task-name">Clean cat litter area</div>
+                    <div class="task-description">Please wear mask provided in utility closet</div>
+                    <span class="task-priority priority-high">High Priority</span>
+                  </div>
+                </li>
+                <li class="task-item">
+                  <i class="fas fa-check-circle task-icon"></i>
+                  <div class="task-content">
+                    <div class="task-name">Balcony floor scrubbing</div>
+                    <div class="task-description">Remove moss and stains from tiles</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <aside class="right-sidebar">
+          <!-- Map Widget -->
+          <div class="widget">
+            <div class="widget-header">
+              <div class="widget-icon">
+                <i class="fas fa-map"></i>
+              </div>
+              <div>
+                <h3>Location Map</h3>
+                <p style="font-size: 13px; color: var(--text-secondary);">Service address</p>
+              </div>
+            </div>
+            
+            <div class="map-container">
+              <div style="text-align: center;">
+                <i class="fas fa-map-marker-alt" style="font-size: 40px; margin-bottom: 10px;"></i>
+                <p>Tower 3, Casa Verde Residences</p>
+                <p>Makati City, Philippines</p>
+              </div>
+            </div>
+            
+            <button class="btn btn-outline" style="width: 100%; margin-top: 15px;" onclick="openNavigation()">
+              <i class="fas fa-directions"></i>
+              Get Directions
+            </button>
+          </div>
+
+          <!-- Equipment Checklist -->
+          <div class="equipment-section">
+            <div class="equipment-header">
+              <div class="equipment-title">
+                <i class="fas fa-toolbox"></i>
+                <div>
+                  <h3 style="color: var(--warning);">Mandatory Equipment</h3>
+                  <p style="font-size: 13px;">All items must be verified</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="checklist-grid">
+              <div class="checklist-item required">
+                <input type="checkbox" id="eq1" onchange="updateEquipmentProgress()">
+                <div>
+                  <div class="equipment-name">Steam Cleaning Machine</div>
+                  <div class="equipment-desc">Heavy-duty carpet steamer</div>
+                </div>
+              </div>
+              <div class="checklist-item required">
+                <input type="checkbox" id="eq2" onchange="updateEquipmentProgress()">
+                <div>
+                  <div class="equipment-name">HEPA Vacuum Cleaner</div>
+                  <div class="equipment-desc">For allergen control</div>
+                </div>
+              </div>
+              <div class="checklist-item required">
+                <input type="checkbox" id="eq3" onchange="updateEquipmentProgress()">
+                <div>
+                  <div class="equipment-name">Extension Cord</div>
+                  <div class="equipment-desc">20ft minimum length</div>
+                </div>
+              </div>
+              <div class="checklist-item required">
+                <input type="checkbox" id="eq4" onchange="updateEquipmentProgress()">
+                <div>
+                  <div class="equipment-name">Protective Gloves</div>
+                  <div class="equipment-desc">Chemical-resistant</div>
+                </div>
+              </div>
+              <div class="checklist-item">
+                <input type="checkbox" id="eq5" onchange="updateEquipmentProgress()">
+                <div>
+                  <div class="equipment-name">Ladder</div>
+                  <div class="equipment-desc">For high ceiling cleaning</div>
+                </div>
+              </div>
+              <div class="checklist-item">
+                <input type="checkbox" id="eq6" onchange="updateEquipmentProgress()">
+                <div>
+                  <div class="equipment-name">Window Cleaning Kit</div>
+                  <div class="equipment-desc">For balcony glass doors</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="progress-section">
+              <div class="progress-header">
+                <div class="progress-label">Equipment Readiness</div>
+                <div class="progress-value" id="equipmentProgress">0/4</div>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+              </div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin-top: 10px;">
+                <i class="fas fa-exclamation-triangle" style="color: var(--warning);"></i>
+                All required equipment must be verified before starting service
+              </p>
+            </div>
+          </div>
+
+          <!-- Special Notes -->
+          <div class="notes-section">
+            <div class="card-header" style="border-bottom: none; padding-bottom: 0;">
+              <div class="card-icon">
+                <i class="fas fa-sticky-note"></i>
+              </div>
+              <div class="card-title">
+                <h2>Special Notes</h2>
+                <p>Important instructions from client and manager</p>
+              </div>
+            </div>
+            
+            <div class="notes-grid">
+              <div class="note-item">
+                <span class="note-type type-client">Client Note</span>
+                <p><strong>Allergy Warning:</strong> Client allergic to strong chemicals → use mild, eco-friendly solutions only</p>
+              </div>
+              <div class="note-item">
+                <span class="note-type type-manager">Manager Note</span>
+                <p><strong>Fragile Items:</strong> Glass ornaments in living room - handle with extreme care</p>
+              </div>
+              <div class="note-item">
+                <span class="note-type type-warning">Access Instructions</span>
+                <p><strong>Building Access:</strong> RFID card available at guardhouse. Call upon arrival: 0917-555-8822</p>
+              </div>
+              <div class="note-item">
+                <span class="note-type type-warning">Safety Warning</span>
+                <p><strong>Balcony Safety:</strong> Slippery tiles when wet. Use caution and proper footwear</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline Widget -->
+          <div class="widget">
+            <div class="widget-header">
+              <div class="widget-icon">
+                <i class="fas fa-history"></i>
+              </div>
+              <div>
+                <h3>Appointment Timeline</h3>
+                <p style="font-size: 13px; color: var(--text-secondary);">Status history</p>
+              </div>
+            </div>
+            
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-icon">
+                  <i class="fas fa-calendar-plus"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-time">Feb 10, 2:30 PM</div>
+                  <div class="timeline-text">Appointment created by client</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-icon">
+                  <i class="fas fa-user-check"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-time">Feb 12, 9:15 AM</div>
+                  <div class="timeline-text">Assigned to Cleaner Team</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-icon">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-time">Today, 8:30 AM</div>
+                  <div class="timeline-text">Accepted by cleaner</div>
+                </div>
+              </div>
+              <div class="timeline-item">
+                <div class="timeline-icon">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="timeline-content">
+                  <div class="timeline-time">Now</div>
+                  <div class="timeline-text">Ready to start service</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Start Service Section -->
+      <div class="start-service-section">
+        <h2 class="start-service-title">Ready to Begin Service?</h2>
+        <p class="start-service-description">
+          Confirm that you have reviewed all details and verified all required equipment. 
+          Starting service will begin tracking and mark this appointment as "In Progress".
+        </p>
+        
+        <div class="service-requirements">
+          <div class="requirement-item">
+            <i class="fas fa-check-circle requirement-check"></i>
+            <span>All appointment details reviewed</span>
+          </div>
+          <div class="requirement-item">
+            <i class="fas fa-check-circle requirement-check"></i>
+            <span>Client contact information verified</span>
+          </div>
+          <div class="requirement-item">
+            <i class="fas fa-check-circle requirement-check"></i>
+            <span>Location and access instructions understood</span>
+          </div>
+          <div class="requirement-item">
+            <i class="fas" id="equipmentCheckIcon">⏳</i>
+            <span>All mandatory equipment verified (<span id="requiredCount">0</span>/<span id="totalRequired">4</span>)</span>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="btn btn-success" id="startServiceBtn" disabled onclick="startService()">
+            <i class="fas fa-play-circle"></i>
+            Start Service
+          </button>
+          <button class="btn btn-outline" onclick="requestSupport()">
+            <i class="fas fa-headset"></i>
+            Request Support
+          </button>
+        </div>
+        
+        <p style="font-size: 14px; color: var(--text-secondary); margin-top: 20px;">
+          <i class="fas fa-info-circle"></i>
+          Note: GPS tracking will activate when service begins. All equipment must be verified.
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Notification -->
+  <div id="notification" class="notification">
+    <div class="notification-header">
+      <div class="notification-icon">
+        <i class="fas fa-check"></i>
+      </div>
+      <div>
+        <h3 style="color: var(--primary-dark);">Service Started!</h3>
+        <p style="font-size: 14px; color: var(--text-secondary);">Status updated successfully</p>
+      </div>
+    </div>
+    <div id="notificationMessage" style="font-size: 15px; margin-bottom: 20px;">
+      <!-- Message will be inserted here -->
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button onclick="closeNotification()" style="flex: 1; padding: 12px; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600;">
+        OK
+      </button>
+      <button onclick="goToStep11()" style="flex: 1; padding: 12px; background: white; color: var(--primary); border: 1px solid var(--primary); border-radius: var(--radius-sm); cursor: pointer; font-weight: 600;">
+        Go to Step 11
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Equipment tracking
+    let equipmentComplete = false;
+    const requiredEquipment = ['eq1', 'eq2', 'eq3', 'eq4'];
+    
+    // Update equipment progress
+    function updateEquipmentProgress() {
+      let checkedCount = 0;
+      
+      requiredEquipment.forEach(id => {
+        if (document.getElementById(id).checked) {
+          checkedCount++;
+        }
+      });
+      
+      // Update progress display
+      const progressFill = document.getElementById('progressFill');
+      const progressText = document.getElementById('equipmentProgress');
+      const requiredCount = document.getElementById('requiredCount');
+      const equipmentIcon = document.getElementById('equipmentCheckIcon');
+      const startBtn = document.getElementById('startServiceBtn');
+      
+      const percentage = (checkedCount / requiredEquipment.length) * 100;
+      progressFill.style.width = `${percentage}%`;
+      progressText.textContent = `${checkedCount}/${requiredEquipment.length}`;
+      requiredCount.textContent = checkedCount;
+      document.getElementById('totalRequired').textContent = requiredEquipment.length;
+      
+      // Update icon
+      if (checkedCount === requiredEquipment.length) {
+        equipmentIcon.className = 'fas fa-check-circle requirement-check';
+        equipmentIcon.style.color = 'var(--secondary)';
+        equipmentComplete = true;
+      } else {
+        equipmentIcon.className = 'fas fa-exclamation-circle';
+        equipmentIcon.style.color = 'var(--warning)';
+        equipmentComplete = false;
+      }
+      
+      // Enable/disable start button
+      startBtn.disabled = !equipmentComplete;
+      if (equipmentComplete) {
+        startBtn.innerHTML = '<i class="fas fa-play-circle"></i> Start Service';
+      } else {
+        startBtn.innerHTML = `<i class="fas fa-exclamation-circle"></i> Complete Equipment Check (${checkedCount}/${requiredEquipment.length})`;
+      }
+      
+      // Update progress bar color
+      if (percentage === 100) {
+        progressFill.style.background = 'var(--secondary)';
+      } else if (percentage >= 50) {
+        progressFill.style.background = 'var(--warning)';
+      } else {
+        progressFill.style.background = 'var(--danger)';
+      }
+    }
+    
+    // Start service
+    function startService() {
+      if (!equipmentComplete) {
+        alert('Please complete all required equipment checks before starting service.');
+        return;
+      }
+      
+      // Show confirmation
+      if (confirm('Are you ready to start service?\n\nStarting service will:\n• Activate GPS tracking\n• Mark appointment as "In Progress"\n• Begin time tracking\n• Notify client and manager')) {
+        // Update status
+        const statusBadge = document.querySelector('.status-badge');
+        const startBtn = document.getElementById('startServiceBtn');
+        
+        if (statusBadge) {
+          statusBadge.className = 'status-badge status-in-progress';
+          statusBadge.innerHTML = '<i class="fas fa-play-circle"></i> In Progress';
+        }
+        
+        if (startBtn) {
+          startBtn.disabled = true;
+          startBtn.innerHTML = '<i class="fas fa-sync fa-spin"></i> Service Started';
+        }
+        
+        // Show notification
+        showNotification();
+        
+        // Log start time (in real app, this would send to server)
+        const startTime = new Date().toLocaleTimeString();
+        console.log(`Service started at: ${startTime}`);
+      }
+    }
+    
+    // Show notification
+    function showNotification() {
+      const notification = document.getElementById('notification');
+      const message = document.getElementById('notificationMessage');
+      
+      message.innerHTML = `
+        <p><strong>Appointment APT-2025-3321</strong> service has begun.</p>
+        <p style="margin-top: 10px;">✅ Status updated to: <strong>In Progress</strong></p>
+        <p>✅ Tracking activated:</p>
+        <ul style="margin-left: 20px; margin-top: 5px;">
+          <li>GPS location tracking</li>
+          <li>Time tracking started</li>
+          <li>Client notified</li>
+          <li>Manager notified</li>
+        </ul>
+        <p style="margin-top: 10px; font-size: 14px; color: var(--text-secondary);">
+          Next step: Proceed to Step 11 for task completion tracking.
+        </p>
+      `;
+      
+      notification.style.display = 'block';
+      
+      // Auto-hide after 10 seconds
+      setTimeout(() => {
+        if (notification.style.display === 'block') {
+          notification.style.display = 'none';
+        }
+      }, 10000);
+    }
+    
+    // Close notification
+    function closeNotification() {
+      document.getElementById('notification').style.display = 'none';
+    }
+    
+    // Go to Step 11
+    function goToStep11() {
+      closeNotification();
+      alert('Redirecting to Step 11: Active Cleaning Session...');
+      // In real app: window.location.href = 'step11.html';
+    }
+    
+    // Contact functions
+    function contactClient() {
+      alert('Calling client: 0917-555-8822');
+      // In real app: window.location.href = 'tel:09175558822';
+    }
+    
+    function sendMessage() {
+      alert('Opening messaging app...');
+    }
+    
+    function contactManager() {
+      alert('Contacting manager support...');
+    }
+    
+    function openNavigation() {
+      alert('Opening navigation to: Tower 3, Casa Verde Residences, Makati City');
+      // In real app: window.location.href = 'https://maps.google.com/?q=Tower+3+Casa+Verde+Residences+Makati+City';
+    }
+    
+    function requestSupport() {
+      alert('Requesting support from manager...');
+    }
+    
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      updateEquipmentProgress();
+      
+      // Auto-check some equipment for demo
+      setTimeout(() => {
+        document.getElementById('eq1').checked = true;
+        document.getElementById('eq3').checked = true;
+        updateEquipmentProgress();
+      }, 1000);
+    });
+    
+    // Close notification when clicking outside
+    window.onclick = function(event) {
+      const notification = document.getElementById('notification');
+      if (event.target === notification) {
+        closeNotification();
+      }
+    }
+  </script>
+</body>
+</html>

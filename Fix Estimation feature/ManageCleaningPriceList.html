@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Price List & Test Estimator</title>
+  <link rel="stylesheet" href="./css/ManageCleaningPriceList.css">
+</head>
+<body>
+  <div class="mcpl-container">
+    <!-- Header -->
+   <div class="mcpl-header">
+  <h1>⚙️ Manage Price List & Smart Rules</h1>
+  <div class="mcpl-nav-buttons">
+    <!-- Local HTML file for Price List -->
+    <button onclick="location.href='../index.html'" class="mcpl-btn mcpl-btn-primary">
+      Home
+    </button>
+    <!-- Local HTML file for Price List -->
+    <button onclick="location.href='./CleaningPriceList.html'" class="mcpl-btn mcpl-btn-primary">
+      View Price List
+    </button>
+
+    <!-- Original Cleaning Estimator -->
+    <button onclick="location.href='./SmartEstimator.html'" class="mcpl-btn mcpl-btn-secondary">
+      Original Cleaning Estimator
+    </button>
+
+    <!-- Client Cleaning Price Estimator -->
+    <button onclick="location.href='./ClientCLeaningPriceList.html'" class="mcpl-btn mcpl-btn-secondary">
+      Client Cleaning Price Estimator
+    </button>
+
+    <!-- Cleaning Service Price List -->
+    <button onclick="location.href='./ManageCleaningPriceList.html'" class="mcpl-btn mcpl-btn-secondary">
+      Cleaning Service Price List
+    </button>
+
+    <!-- Test Estimator (special toggle, not a link) -->
+    <button class="mcpl-btn mcpl-btn-success" onclick="toggleTestEstimator()">
+      🧪 Test Estimator
+    </button>
+  </div>
+</div>
+
+
+    <!-- Tabs -->
+    <div class="mcpl-tabs">
+      <button class="mcpl-tab active" onclick="switchTab('steam')">🔥 Steam Clean</button>
+      <button class="mcpl-tab" onclick="switchTab('camper')">🚐 Campers</button>
+      <button class="mcpl-tab" onclick="switchTab('rules')">⚙️ Smart Rules</button>
+      <button class="mcpl-tab" onclick="switchTab('rates')">💰 Hourly Rates</button>
+      <button class="mcpl-tab" onclick="switchTab('testing')">🧪 Testing & Validation</button>
+    </div>
+
+    <!-- STEAM CLEAN MANAGEMENT TAB - WITH ALL ORIGINAL DATA -->
+    <div id="tab-steam" class="mcpl-tab-content active">
+      <!-- Original Steam Clean Header with Questions -->
+      <div class="mcpl-steam-header" style="background: #e8f4f8; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h2 style="color: #2c3e50; margin-top: 0;">🔥 STEAM CLEAN PRICE LIST</h2>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0;">
+          <!-- Questions Column -->
+          <div style="background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #3498db;">
+            <h3 style="margin-top: 0; color: #2c3e50;">📋 QUESTIONS FOR CLEANING SERVICES</h3>
+            <ol style="margin: 0; padding-left: 20px;">
+              <li><strong>DOES IT HAVE HOURLY BASED PRICES AT THE SAME TIME WITH STEAM CLEAN</strong></li>
+              <li><strong>PRICE BREAKDOWN LIST?</strong></li>
+              <li><strong>CLIENT DASHBOARD ESTIMATION INCLUSION</strong></li>
+              <li><strong style="color: #e74c3c;">114 MINIMUM FOR STEAM CLEAN</strong></li>
+              <li><strong style="color: #e74c3c;">ONCE IT DID NOT REACH TO 120</strong> - Minimum charge applied</li>
+              <li><strong style="color: #27ae60;">BOOKING DEPOSIT FIRST THEY NEED TO PAY 120 FOR FIRST TIME CLIENT</strong></li>
+              <li><strong style="color: #27ae60;">AFTER THAT CLIENT WILL PAY INVOICE CLIENT</strong></li>
+            </ol>
+          </div>
+          
+          <!-- Staff Column -->
+          <div style="background: white; padding: 15px; border-radius: 8px; border-left: 5px solid #9b59b6;">
+            <h3 style="margin-top: 0; color: #2c3e50;">👥 STAFF WHO CAN STEAM CLEAN</h3>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+              <div style="background: #3498db; color: white; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold;">DORA</div>
+              <div style="background: #3498db; color: white; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold;">ESTHER F</div>
+              <div style="background: #3498db; color: white; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold;">HAWA</div>
+              <div style="background: #3498db; color: white; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold;">MANUEL</div>
+              <div style="background: #3498db; color: white; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold;">MARIE</div>
+              <div style="background: #3498db; color: white; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold;">OPHI</div>
+              <div style="background: #3498db; color: white; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold;">SHANIA</div>
+              <div style="background: #3498db; color: white; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold;">SHANTELLE</div>
+              <div style="background: #3498db; color: white; padding: 8px; border-radius: 5px; text-align: center; font-weight: bold;">THERESA</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Steam Clean Items Table Header -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 2fr; gap: 10px; background: #34495e; color: white; padding: 10px; border-radius: 5px; font-weight: bold; margin-top: 10px;">
+          <div>ITEM</div>
+          <div>PRICE</div>
+          <div>NOTES</div>
+          <div>DETAILS</div>
+        </div>
+      </div>
+
+      <!-- Steam Clean Items Management -->
+      <div class="mcpl-toolbar">
+        <h2>Manage Steam Clean Items</h2>
+        <button class="mcpl-btn mcpl-btn-success" onclick="addSteamItem()">➕ Add New Item</button>
+      </div>
+      
+      <div class="mcpl-table-container">
+        <table class="mcpl-table" id="steamItemsTable">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Size/Details</th>
+              <th>Price ($)</th>
+              <th>Notes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="steamItemsBody">
+            <!-- Dynamic content will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Original Steam Clean Notes -->
+      <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 5px solid #ffc107;">
+        <p style="margin: 5px 0; color: #856404;"><strong>📝 CARPETS:</strong> 1 bedroom = 1½ hour</p>
+        <p style="margin: 5px 0; color: #856404;"><strong>📝 STAIRFLIGHT:</strong> $75 DEPEND ON STAIRS (1,2,3,4,5)</p>
+      </div>
+
+      <!-- Steam Clean Rules Editor -->
+      <div class="mcpl-info-box">
+        <h3>📌 Steam Clean Rules</h3>
+        <div class="mcpl-rule-editor">
+          <label>Minimum Charge (before tax):</label>
+          <input type="number" id="minSteamCharge" step="0.01" value="114"> + 5% tax = $<span id="minTotalDisplay">120</span>
+          <button class="mcpl-btn mcpl-btn-small" onclick="updateMinCharge()">Update</button>
+        </div>
+        <div class="mcpl-rule-editor">
+          <label>First-time Client Deposit:</label>
+          <input type="number" id="depositAmount" step="0.01" value="120">
+          <button class="mcpl-btn mcpl-btn-small" onclick="updateDeposit()">Update</button>
+        </div>
+        <div class="mcpl-rule-editor">
+          <label>Stair Flight Price (per flight):</label>
+          <input type="number" id="stairPrice" step="0.01" value="5">
+          <button class="mcpl-btn mcpl-btn-small" onclick="updateStairPrice()">Update</button>
+        </div>
+        <div class="mcpl-rule-editor">
+          <label>Max Stair Price:</label>
+          <input type="number" id="maxStairPrice" step="0.01" value="75">
+          <button class="mcpl-btn mcpl-btn-small" onclick="updateMaxStairPrice()">Update</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMPER MANAGEMENT TAB - WITH ALL ORIGINAL DATA -->
+    <div id="tab-camper" class="mcpl-tab-content">
+      <!-- Original Camper Header -->
+      <div style="background: #d4edda; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h2 style="color: #155724; margin-top: 0;">🚐 CAMPER CLEANING SERVICES</h2>
+        <p style="font-size: 16px; color: #155724;"><strong>MINIMUM FOR ANY SERVICE: $120</strong></p>
+      </div>
+
+      <!-- Original Camper Details -->
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px;">
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 5px solid #28a745;">
+          <h3 style="margin-top: 0; color: #28a745;">SMALL CAMPER</h3>
+          <p><strong style="font-size: 24px; color: #28a745;">$120</strong></p>
+          <p><strong>UP TO 20FT</strong></p>
+          <p>ONE COUCH, ONE BED, ONE LIVING ROOM CARPET</p>
+        </div>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 5px solid #fd7e14;">
+          <h3 style="margin-top: 0; color: #fd7e14;">MEDIUM CAMPER</h3>
+          <p><strong style="font-size: 24px; color: #fd7e14;">$220</strong></p>
+          <p><strong>UP TO 27FT</strong></p>
+          <p>ONE COUCH, ONE SEATING COUCH, ONE BED, LIVING ROOM CARPET</p>
+        </div>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 5px solid #dc3545;">
+          <h3 style="margin-top: 0; color: #dc3545;">LARGE CAMPER</h3>
+          <p><strong style="font-size: 24px; color: #dc3545;">$290</strong></p>
+          <p><strong>27FT AND LARGER</strong></p>
+          <p>TWO COUCHES, KITCHEN COUCH, LIVING AREA, ONE BED</p>
+        </div>
+      </div>
+
+      <!-- Camper Items Management -->
+      <div class="mcpl-toolbar">
+        <h2>Manage Camper Packages</h2>
+        <button class="mcpl-btn mcpl-btn-success" onclick="addCamperItem()">➕ Add Camper Package</button>
+      </div>
+      
+      <div class="mcpl-table-container">
+        <table class="mcpl-table" id="camperItemsTable">
+          <thead>
+            <tr>
+              <th>Size</th>
+              <th>Price ($)</th>
+              <th>Includes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="camperItemsBody">
+            <!-- Dynamic content -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SMART RULES TAB - WITH ALL SERVICE NOTES -->
+    <div id="tab-rules" class="mcpl-tab-content">
+      <div class="mcpl-toolbar">
+        <h2>Smart Calculator Rules</h2>
+        <button class="mcpl-btn mcpl-btn-success" onclick="addRule()">➕ Add Rule</button>
+      </div>
+      
+      <div class="mcpl-rules-list" id="rulesList">
+        <!-- Dynamic rules will be loaded here -->
+      </div>
+
+      <!-- MAINTENANCE CLEAN PRICE LIST DETAILS -->
+      <div class="mcpl-info-box" style="margin-top: 20px; border-left-color: #28a745;">
+        <h3 style="color: #28a745;">🧼 MAINTENANCE CLEAN PRICE LIST</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr style="background: #28a745; color: white;">
+            <th style="padding: 10px;">Rate</th>
+            <th style="padding: 10px;">Details</th>
+          </tr>
+          <tr style="border-bottom: 1px solid #dee2e6;">
+            <td style="padding: 10px;"><strong>$38/hour</strong></td>
+            <td style="padding: 10px;">
+              <ul style="margin: 0;">
+                <li>Minimum service 3 hours for two cleaners</li>
+                <li>Travel time is included in the total booking hours</li>
+                <li><strong>IF CLIENT AVAIL STEAM CLEAN:</strong> Mention total cost and break it down if needed</li>
+                <li><strong>BASED ON CLEANER ASSESSMENT</strong></li>
+                <li>Our standard rate is $38/hour for residential cleaning, with a 3-hour minimum per booking</li>
+                <li>Mention the total cost and break it down if needed</li>
+              </ul>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- MOVE OUT/MOVE IN PRICE LIST DETAILS -->
+      <div class="mcpl-info-box" style="margin-top: 20px; border-left-color: #fd7e14;">
+        <h3 style="color: #fd7e14;">📦 MOVE OUT/MOVE IN PRICE LIST</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr style="background: #fd7e14; color: white;">
+            <th style="padding: 10px;">Rate</th>
+            <th style="padding: 10px;">Details</th>
+          </tr>
+          <tr style="border-bottom: 1px solid #dee2e6;">
+            <td style="padding: 10px;"><strong>$38/hour</strong></td>
+            <td style="padding: 10px;">
+              <ul style="margin: 0;">
+                <li>Minimum service 6 hours for two cleaners</li>
+                <li>Travel time is included in the total booking hours</li>
+                <li>Let the client know the total estimated hours and that this will be divided between two staff members</li>
+                <li><strong>Example:</strong> 10 hours = 5 hours per staff</li>
+                <li>Mention the total cost and break it down if needed</li>
+              </ul>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- DEEP CLEAN PRICE LIST DETAILS -->
+      <div class="mcpl-info-box" style="margin-top: 20px; border-left-color: #dc3545;">
+        <h3 style="color: #dc3545;">🔨 DEEP CLEAN PRICE LIST</h3>
+        <div style="background: #dc3545; color: white; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+          <strong>AUTOMATIC CLEANING TYPE IS DEEP CLEAN</strong>
+        </div>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr style="background: #dc3545; color: white;">
+            <th style="padding: 10px;">Rate</th>
+            <th style="padding: 10px;">Details</th>
+          </tr>
+          <tr>
+            <td style="padding: 10px;"><strong>$38/hour</strong></td>
+            <td style="padding: 10px;">
+              <ul style="margin: 0;">
+                <li>Minimum service 6 hours for two cleaners</li>
+                <li>Travel time is included in the total booking hours</li>
+                <li>Mention the total cost and break it down if needed</li>
+                <li>Let the client know the total estimated hours and that this will be divided between two staff members</li>
+              </ul>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Staff List Editor -->
+      <div class="mcpl-info-box">
+        <h3>🤖 Staff List</h3>
+        <textarea id="staffList" rows="3" style="width:100%; padding:8px;">DORA, ESTHER F, HAWA, MANUEL, MARIE, OPHI, SHANIA, SHANTELLE, THERESA</textarea>
+        <button class="mcpl-btn mcpl-btn-primary" onclick="updateStaffList()" style="margin-top:10px;">Update Staff List</button>
+      </div>
+    </div>
+
+    <!-- HOURLY RATES TAB -->
+    <div id="tab-rates" class="mcpl-tab-content">
+      <h2>💰 Hourly Rates & Minimums</h2>
+      
+      <div class="mcpl-grid-2">
+        <div class="mcpl-card">
+          <h3>🧼 Maintenance Clean</h3>
+          <div class="mcpl-form-group">
+            <label>Residential Rate ($/hr):</label>
+            <input type="number" id="residentialRate" step="0.01" value="38">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Commercial Rate ($/hr):</label>
+            <input type="number" id="commercialRate" step="0.01" value="44">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Minimum Hours (Residential):</label>
+            <input type="number" id="maintenanceMinHours" step="0.5" value="3">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Minimum Hours (Commercial):</label>
+            <input type="number" id="commercialMinHours" step="0.5" value="6">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Number of Cleaners:</label>
+            <input type="number" id="maintenanceCleaners" value="2">
+          </div>
+        </div>
+
+        <div class="mcpl-card">
+          <h3>📦 Move Out / 🔨 Deep Clean</h3>
+          <div class="mcpl-form-group">
+            <label>Hourly Rate ($/hr):</label>
+            <input type="number" id="deepRate" step="0.01" value="38">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Minimum Hours:</label>
+            <input type="number" id="deepMinHours" step="0.5" value="6">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Number of Cleaners:</label>
+            <input type="number" id="deepCleaners" value="2">
+          </div>
+        </div>
+      </div>
+
+      <div class="mcpl-card">
+        <h3>Room Base Hours</h3>
+        <div class="mcpl-grid-3">
+          <div class="mcpl-form-group">
+            <label>Kitchen (base):</label>
+            <input type="number" id="kitchenBase" step="0.5" value="4">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Kitchen Large Add:</label>
+            <input type="number" id="kitchenLarge" step="0.5" value="1.5">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Bedroom (base):</label>
+            <input type="number" id="bedroomBase" step="0.5" value="1">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Bedroom Large Add:</label>
+            <input type="number" id="bedroomLarge" step="0.5" value="0.5">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Bathroom (base):</label>
+            <input type="number" id="bathroomBase" step="0.5" value="2.5">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Bathroom Large Add:</label>
+            <input type="number" id="bathroomLarge" step="0.5" value="1">
+          </div>
+          <div class="mcpl-form-group">
+            <label>Entryway (base):</label>
+            <input type="number" id="entryBase" step="0.5" value="0.5">
+          </div>
+        </div>
+      </div>
+
+      <button class="mcpl-btn mcpl-btn-primary" onclick="saveAllRates()" style="margin-top:20px;">💾 Save All Rate Changes</button>
+    </div>
+
+    <!-- TESTING & VALIDATION TAB -->
+    <div id="tab-testing" class="mcpl-tab-content">
+      <h2>🧪 Test Estimator Validation</h2>
+      
+      <div class="mcpl-test-grid">
+        <!-- Maintenance Test -->
+        <div class="mcpl-test-card">
+          <h3>🧼 Maintenance Clean Test</h3>
+          <div class="mcpl-test-form">
+            <div class="mcpl-form-group">
+              <label>Rate Type:</label>
+              <select id="testMaintenanceType" onchange="testMaintenanceCalculation()">
+                <option value="residential">Residential ($38/hr)</option>
+                <option value="commercial">Commercial ($44/hr)</option>
+              </select>
+            </div>
+            <div class="mcpl-form-group">
+              <label>Kitchen:</label>
+              <input type="checkbox" id="testKitchenLarge" onchange="testMaintenanceCalculation()"> Large (+1.5 hrs)
+            </div>
+            <div class="mcpl-form-group">
+              <label>Bedrooms:</label>
+              <input type="number" id="testBedrooms" min="0" max="5" value="2" onchange="testMaintenanceCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Large Bedrooms:</label>
+              <input type="number" id="testLargeBedrooms" min="0" max="5" value="0" onchange="testMaintenanceCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Bathrooms:</label>
+              <input type="number" id="testBathrooms" min="0" max="5" value="1" onchange="testMaintenanceCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Large Bathrooms:</label>
+              <input type="number" id="testLargeBathrooms" min="0" max="5" value="0" onchange="testMaintenanceCalculation()">
+            </div>
+            <div class="mcpl-test-result" id="maintenanceTestResult">
+              Click Calculate to see result
+            </div>
+          </div>
+        </div>
+
+        <!-- Move Out Test -->
+        <div class="mcpl-test-card">
+          <h3>📦 Move Out Test</h3>
+          <div class="mcpl-test-form">
+            <div class="mcpl-form-group">
+              <label>Home Size:</label>
+              <select id="testMoveoutSize" onchange="testMoveoutCalculation()">
+                <option value="small">Small (7-8 hrs)</option>
+                <option value="medium">Medium (9-15 hrs)</option>
+                <option value="large">Large (15+ hrs)</option>
+              </select>
+            </div>
+            <div class="mcpl-form-group">
+              <label>Square Footage:</label>
+              <input type="number" id="testMoveoutSqft" value="1500" onchange="testMoveoutCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Rate ($/hr):</label>
+              <input type="number" id="testMoveoutRate" value="38" onchange="testMoveoutCalculation()">
+            </div>
+            <div class="mcpl-test-result" id="moveoutTestResult">
+              Click Calculate to see result
+            </div>
+          </div>
+        </div>
+
+        <!-- Deep Clean Test -->
+        <div class="mcpl-test-card">
+          <h3>🔨 Deep Clean Test</h3>
+          <div class="mcpl-test-form">
+            <div class="mcpl-notice" style="margin-bottom:10px;">⚠️ AUTOMATIC CLEANING TYPE IS DEEP CLEAN</div>
+            <div class="mcpl-form-group">
+              <label>Home Size:</label>
+              <select id="testDeepSize" onchange="testDeepCalculation()">
+                <option value="small">Small (7-8 hrs)</option>
+                <option value="medium">Medium (9-15 hrs)</option>
+                <option value="large">Large (15+ hrs)</option>
+              </select>
+            </div>
+            <div class="mcpl-form-group">
+              <label>Square Footage:</label>
+              <input type="number" id="testDeepSqft" value="1500" onchange="testDeepCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Rate ($/hr):</label>
+              <input type="number" id="testDeepRate" value="38" onchange="testDeepCalculation()">
+            </div>
+            <div class="mcpl-test-result" id="deepTestResult">
+              Click Calculate to see result
+            </div>
+          </div>
+        </div>
+
+        <!-- Steam Clean Test -->
+        <div class="mcpl-test-card">
+          <h3>🔥 Steam Clean Test</h3>
+          <div class="mcpl-test-form">
+            <div class="mcpl-form-group">
+              <label>Large Carpets (10x10 @ $75):</label>
+              <input type="number" id="testLargeCarpets" min="0" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Regular Carpets (8x8 @ $60):</label>
+              <input type="number" id="testRegularCarpets" min="0" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Small Carpets (5x5 @ $55):</label>
+              <input type="number" id="testSmallCarpets" min="0" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Area Rugs (@ $30):</label>
+              <input type="number" id="testAreaRugs" min="0" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Small Rugs (@ $25):</label>
+              <input type="number" id="testSmallRugs" min="0" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Walk-in Closet Large (@ $50):</label>
+              <input type="number" id="testLargeCloset" min="0" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Walk-in Closet Small (@ $35):</label>
+              <input type="number" id="testSmallCloset" min="0" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Stair Flights ($5 each, max $75):</label>
+              <input type="number" id="testStairs" min="0" max="15" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Walls (@ $100):</label>
+              <input type="number" id="testWalls" min="0" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Small Chairs/Bar Stools (@ $20):</label>
+              <input type="number" id="testChairs" min="0" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Couches (@ $100):</label>
+              <input type="number" id="testCouches" min="0" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Love Seats (@ $75):</label>
+              <input type="number" id="testLoveSeats" min="0" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Mattresses (@ $100):</label>
+              <input type="number" id="testMattresses" min="0" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Hallways (@ $35):</label>
+              <input type="number" id="testHallways" min="0" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Landings (@ $25):</label>
+              <input type="number" id="testLandings" min="0" value="0" onchange="testSteamCalculation()">
+            </div>
+            <div class="mcpl-form-group">
+              <label><input type="checkbox" id="testDeposit" onchange="testSteamCalculation()"> $120 Deposit Paid</label>
+            </div>
+            <div class="mcpl-test-result" id="steamTestResult">
+              Click Calculate to see result
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLOATING TEST ESTIMATOR WINDOW -->
+    <div id="floatingEstimator" class="mcpl-floating-estimator" style="display: none;">
+      <div class="mcpl-floating-header">
+        <h3>🧪 Live Test Estimator</h3>
+        <button class="mcpl-floating-close" onclick="toggleTestEstimator()">✕</button>
+      </div>
+      <div class="mcpl-floating-content">
+        <!-- Service Type Selection -->
+        <div class="mcpl-floating-tabs">
+          <button class="mcpl-float-tab active" onclick="switchFloatTab('maintenance')">🧼 Maintenance</button>
+          <button class="mcpl-float-tab" onclick="switchFloatTab('moveout')">📦 Move Out</button>
+          <button class="mcpl-float-tab" onclick="switchFloatTab('deep')">🔨 Deep Clean</button>
+          <button class="mcpl-float-tab" onclick="switchFloatTab('steam')">🔥 Steam</button>
+          <button class="mcpl-float-tab" onclick="switchFloatTab('camper')">🚐 Camper</button>
+        </div>
+
+        <!-- Maintenance Float Tab -->
+        <div id="float-maintenance" class="mcpl-float-tab-content active">
+          <div class="mcpl-float-form">
+            <div class="mcpl-notice">🧼 MAINTENANCE CLEAN - Residential: $38/hr (3hr min), Commercial: $44/hr (6hr min)</div>
+            <div class="mcpl-form-group">
+              <label>Rate Type:</label>
+              <select id="floatMaintenanceType" onchange="calculateFloatMaintenance()">
+                <option value="residential">Residential ($38/hr) - 3 hour minimum</option>
+                <option value="commercial">Commercial ($44/hr) - 6 hour minimum</option>
+              </select>
+            </div>
+            
+            <div class="mcpl-room-calculator">
+              <h4>Room Configuration</h4>
+              
+              <div class="mcpl-room-item">
+                <label>Kitchen (base 4 hrs):</label>
+                <div class="mcpl-room-controls">
+                  <input type="checkbox" id="floatKitchenLarge" onchange="calculateFloatMaintenance()"> Large (+1.5 hrs)
+                  <input type="range" id="floatKitchenExtra" min="0" max="5" step="0.25" value="0" oninput="calculateFloatMaintenance()">
+                  <span id="floatKitchenExtraDisplay">0.0</span> extra hrs
+                </div>
+              </div>
+
+              <div class="mcpl-room-item">
+                <label>Bedrooms (base 1 hr):</label>
+                <div class="mcpl-room-controls">
+                  <input type="number" id="floatBedrooms" min="0" max="5" value="1" onchange="calculateFloatMaintenance()"> rooms
+                  <input type="number" id="floatLargeBedrooms" min="0" max="5" value="0" onchange="calculateFloatMaintenance()"> large (+0.5)
+                </div>
+              </div>
+
+              <div class="mcpl-room-item">
+                <label>Bathrooms (base 2.5 hrs):</label>
+                <div class="mcpl-room-controls">
+                  <input type="number" id="floatBathrooms" min="0" max="5" value="1" onchange="calculateFloatMaintenance()"> rooms
+                  <input type="number" id="floatLargeBathrooms" min="0" max="5" value="0" onchange="calculateFloatMaintenance()"> large (+1.0)
+                </div>
+              </div>
+
+              <div class="mcpl-room-item">
+                <label>Entryway (base 0.5 hrs):</label>
+                <div class="mcpl-room-controls">
+                  <input type="range" id="floatEntryExtra" min="0" max="3" step="0.25" value="0" oninput="calculateFloatMaintenance()">
+                  <span id="floatEntryExtraDisplay">0.0</span> extra hrs
+                </div>
+              </div>
+            </div>
+
+            <div class="mcpl-float-result" id="floatMaintenanceResult">
+              <!-- Dynamic result -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Move Out Float Tab -->
+        <div id="float-moveout" class="mcpl-float-tab-content">
+          <div class="mcpl-float-form">
+            <div class="mcpl-notice">📦 MOVE OUT CLEAN - $38/hr, 6 hour minimum for 2 cleaners</div>
+            <div class="mcpl-form-group">
+              <label>Home Size:</label>
+              <select id="floatMoveoutSize" onchange="calculateFloatMoveout()">
+                <option value="small">Small (7-8 hrs base)</option>
+                <option value="medium">Medium (9-15 hrs base)</option>
+                <option value="large">Large (15+ hrs base)</option>
+              </select>
+            </div>
+            <div class="mcpl-form-group">
+              <label>Square Footage:</label>
+              <input type="number" id="floatMoveoutSqft" value="1500" onchange="calculateFloatMoveout()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Hourly Rate:</label>
+              <input type="number" id="floatMoveoutRate" value="38" onchange="calculateFloatMoveout()">
+            </div>
+            <div class="mcpl-float-result" id="floatMoveoutResult">
+              <!-- Dynamic result -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Deep Clean Float Tab -->
+        <div id="float-deep" class="mcpl-float-tab-content">
+          <div class="mcpl-float-form">
+            <div class="mcpl-notice">⚠️ AUTOMATIC CLEANING TYPE IS DEEP CLEAN - $38/hr, 6 hour minimum for 2 cleaners</div>
+            <div class="mcpl-form-group">
+              <label>Home Size:</label>
+              <select id="floatDeepSize" onchange="calculateFloatDeep()">
+                <option value="small">Small (7-8 hrs base)</option>
+                <option value="medium">Medium (9-15 hrs base)</option>
+                <option value="large">Large (15+ hrs base)</option>
+              </select>
+            </div>
+            <div class="mcpl-form-group">
+              <label>Square Footage:</label>
+              <input type="number" id="floatDeepSqft" value="1500" onchange="calculateFloatDeep()">
+            </div>
+            <div class="mcpl-form-group">
+              <label>Hourly Rate:</label>
+              <input type="number" id="floatDeepRate" value="38" onchange="calculateFloatDeep()">
+            </div>
+            <div class="mcpl-float-result" id="floatDeepResult">
+              <!-- Dynamic result -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Steam Clean Float Tab -->
+        <div id="float-steam" class="mcpl-float-tab-content">
+          <div class="mcpl-float-form">
+            <div class="mcpl-notice">🔥 STEAM CLEAN - Minimum $114 + 5% tax = $120, First-time deposit $120</div>
+            <div class="mcpl-steam-items" id="floatSteamItems">
+              <!-- Dynamic steam items will be loaded here -->
+            </div>
+            <div class="mcpl-form-group">
+              <label>Stair Flights ($5 each, max $75):</label>
+              <input type="number" id="floatStairs" min="0" max="15" value="0" onchange="calculateFloatSteam()">
+            </div>
+            <div class="mcpl-form-group">
+              <label><input type="checkbox" id="floatDeposit" onchange="calculateFloatSteam()"> $120 Deposit Paid</label>
+            </div>
+            <div class="mcpl-float-result" id="floatSteamResult">
+              <!-- Dynamic result -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Camper Float Tab -->
+        <div id="float-camper" class="mcpl-float-tab-content">
+          <div class="mcpl-float-form">
+            <div class="mcpl-notice">🚐 CAMPER CLEANING - Minimum for any service: $120</div>
+            <div class="mcpl-camper-packages" id="floatCamperPackages">
+              <!-- Dynamic camper packages will be loaded here -->
+            </div>
+            <div class="mcpl-float-result" id="floatCamperResult">
+              <!-- Dynamic result -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Quotation Breakdown -->
+        <div class="mcpl-quotation-breakdown" id="quotationBreakdown">
+          <h4>📋 Quotation Breakdown</h4>
+          <div id="breakdownContent">Select service and configure options to see detailed breakdown</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Save Status -->
+    <div class="mcpl-save-status" id="saveStatus"></div>
+  </div>
+
+  <script src="./js/ManageCleaningPriceList.js"></script>
+</body>
+</html>

@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleanPro - Service Booking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6de5;
+            --primary-dark: #3a5ad6;
+            --secondary: #10b981;
+            --light-bg: #f8fafc;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background-color: #f1f5f9;
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .logo i {
+            color: var(--primary);
+            font-size: 28px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            color: var(--primary);
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 2;
+        }
+        
+        .step.active .step-circle {
+            background-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(74, 109, 229, 0.2);
+        }
+        
+        .step.inactive .step-circle {
+            background-color: #cbd5e1;
+        }
+        
+        .step-line {
+            position: absolute;
+            top: 20px;
+            left: 50px;
+            width: 60px;
+            height: 2px;
+            background-color: var(--border);
+            z-index: 1;
+        }
+        
+        .step-label {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .step.active .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: var(--text);
+        }
+        
+        .card-title i {
+            color: var(--primary);
+        }
+        
+        .client-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .info-label {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .info-value {
+            font-weight: 500;
+            padding: 10px 14px;
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        
+        .cleaning-type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .cleaning-type-card {
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .cleaning-type-card:hover {
+            border-color: var(--primary);
+        }
+        
+        .cleaning-type-card.selected {
+            border-color: var(--primary);
+            background-color: rgba(74, 109, 229, 0.05);
+        }
+        
+        .type-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .type-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .type-checkbox {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cleaning-type-card.selected .type-checkbox {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .type-checkbox i {
+            color: white;
+            font-size: 12px;
+            display: none;
+        }
+        
+        .cleaning-type-card.selected .type-checkbox i {
+            display: block;
+        }
+        
+        .type-details {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+        
+        .price-tag {
+            background-color: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            align-self: flex-start;
+        }
+        
+        .details-section {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .details-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .details-table {
+            width: 100%;
+            font-size: 14px;
+            border-collapse: collapse;
+        }
+        
+        .details-table th, .details-table td {
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .details-table th {
+            background-color: var(--light-bg);
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .service-items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .service-item {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .item-name {
+            font-weight: 600;
+        }
+        
+        .item-price {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 8px;
+        }
+        
+        .quantity-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .quantity-btn:hover {
+            background-color: var(--light-bg);
+        }
+        
+        .quantity-display {
+            font-weight: 600;
+            font-size: 18px;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            font-size: 16px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .checkbox-option:hover {
+            border-color: var(--primary);
+        }
+        
+        .checkbox-option.selected {
+            border-color: var(--primary);
+            background-color: rgba(74, 109, 229, 0.05);
+        }
+        
+        .checkbox-icon {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .checkbox-option.selected .checkbox-icon {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .checkbox-icon i {
+            color: white;
+            font-size: 12px;
+            display: none;
+        }
+        
+        .checkbox-option.selected .checkbox-icon i {
+            display: block;
+        }
+        
+        .checkbox-content {
+            flex: 1;
+        }
+        
+        .checkbox-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .checkbox-desc {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        .estimate-summary {
+            background-color: var(--light-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .summary-row.total {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary);
+            margin-top: 8px;
+            padding-top: 16px;
+            border-top: 2px solid var(--border);
+        }
+        
+        .summary-label {
+            color: var(--text);
+        }
+        
+        .summary-value {
+            font-weight: 600;
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-submit:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .tip {
+            background-color: #fff8e1;
+            border-left: 4px solid var(--warning);
+            padding: 12px 16px;
+            margin: 16px 0;
+            font-size: 14px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .deposit-options {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .deposit-option {
+            flex: 1;
+        }
+        
+        /* Calculator Styles */
+        .calculator-section {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: var(--light-bg);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .calculator-card {
+            background: white;
+            padding: 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        
+        .slider-container {
+            margin: 15px 0;
+        }
+        
+        .slider-value {
+            font-weight: 600;
+            color: var(--primary);
+            margin-left: 10px;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        input[type="number"], select {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .calculation-results {
+            background: white;
+            padding: 15px;
+            border-radius: var(--radius);
+            border: 2px solid var(--primary);
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .result-label {
+            color: var(--text);
+        }
+        
+        .result-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .calculator-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn-calculator {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .btn-calculator.primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-calculator.secondary {
+            background-color: var(--light-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        
+        .calculator-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .close-calculator {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+        
+        @media (max-width: 768px) {
+            .client-info-grid,
+            .cleaning-type-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .service-items-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .deposit-options {
+                flex-direction: column;
+            }
+            
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .service-items-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 16px;
+            }
+        }
+        
+        .required-tag {
+            background-color: var(--danger);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+        .link-calculator {
+    background-color: var(--primary);
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    transition: background-color 0.2s;
+}
+
+.link-calculator:hover {
+    background-color: var(--primary-dark);
+}
+    </style>
+</head>
+<body>
+    <div class="container" id="workflowNavigation">
+    <a href="./ManageBooking-nodecontent.html" target="_blank" class="btn btn-primary" id="workflowPresentationBtn">
+        <i class="fas fa-calculator me-2"></i> Step Node Presentation Workflow
+    </a>
+</div>
+        
+        <!-- Client Information Card -->
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-user-circle"></i>
+                <h2>Client Information</h2>
+            </div>
+            <div class="client-info-grid">
+                <div class="info-item">
+                    <div class="info-label">Full Name</div>
+                    <div class="info-value">Maria Santos</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Mobile Number</div>
+                    <div class="info-value">+63 912 345 6789</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Complete Address</div>
+                    <div class="info-value">25 Jupiter St., Canada City</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Email (Optional)</div>
+                    <div class="info-value">maria.santos@email.com</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cleaning Type Selection -->
+        <div class="card">
+            <div class="card-title">
+    <i class="fas fa-check-square"></i>
+    <h2>Cleaning Type Selection</h2>
+    <a href="estimation.html" target="_blank" class="link-calculator">
+        <i class="fas fa-calculator"></i> View Full Calculator
+    </a>
+</div>
+            <p style="margin-bottom: 16px; color: var(--text-light);">Select one or more cleaning types contents here are not final its based on the estimation calculator (these are just sample text). Each has its own pricing rules.</p>
+            
+            <div class="tip">
+                <i class="fas fa-lightbulb"></i> Tap multiple options to select more than one cleaning type.
+            </div>
+            
+            <div class="cleaning-type-grid">
+                <div class="cleaning-type-card" data-type="maintenance" onclick="toggleCleaningType(this)">
+                    <div class="type-header">
+                        <div class="type-name">Maintenance Clean</div>
+                        <div class="type-checkbox"><i class="fas fa-check"></i></div>
+                    </div>
+                    <p class="type-details">Regular upkeep for residential or commercial properties</p>
+                    <div class="price-tag">From $38/hr</div>
+                </div>
+                
+                <div class="cleaning-type-card" data-type="moveout" onclick="toggleCleaningType(this)">
+                    <div class="type-header">
+                        <div class="type-name">Move-Out Clean</div>
+                        <div class="type-checkbox"><i class="fas fa-check"></i></div>
+                    </div>
+                    <p class="type-details">Dynamic pricing based on square footage</p>
+                    <div class="price-tag">From $50/hr</div>
+                </div>
+                
+                <div class="cleaning-type-card" data-type="deep" onclick="toggleCleaningType(this)">
+                    <div class="type-header">
+                        <div class="type-name">Deep Clean</div>
+                        <div class="type-checkbox"><i class="fas fa-check"></i></div>
+                    </div>
+                    <p class="type-details">Heavy-duty cleaning for neglected areas</p>
+                    <div class="price-tag">From $50/hr</div>
+                </div>
+                
+                <div class="cleaning-type-card selected" data-type="steam" onclick="toggleCleaningType(this)">
+                    <div class="type-header">
+                        <div class="type-name">Steam Clean</div>
+                        <div class="type-checkbox"><i class="fas fa-check"></i></div>
+                    </div>
+                    <p class="type-details">Fixed item-based pricing with $120 minimum</p>
+                    <div class="price-tag">From $120</div>
+                </div>
+            </div>
+            
+            <!-- Maintenance Clean Calculator -->
+            <div id="calculator-maintenance" class="calculator-section hidden">
+                <div class="calculator-title">
+                    <h3><i class="fas fa-calculator"></i> Maintenance Clean Calculator</h3>
+                    <button class="close-calculator" onclick="closeCalculator('maintenance')">×</button>
+                </div>
+                
+                <div class="calculator-grid">
+                    <div class="calculator-card">
+                        <h4>Service Options</h4>
+                        <div>
+                            <label><input type="radio" name="maintenanceRate" value="residential" checked onchange="calculateMaintenance()"> Residential ($38/hr)</label><br>
+                            <label><input type="radio" name="maintenanceRate" value="commercial" onchange="calculateMaintenance()"> Commercial ($44/hr)</label>
+                        </div>
+                        
+                        <div id="visitEstimationSection" class="hidden">
+                            <label><input type="checkbox" id="visitEstimation" onchange="toggleVisitEstimation()"> Visit Estimation Required</label>
+                            <p class="tip">Commercial maintenance clean requires on-site visit</p>
+                        </div>
+                    </div>
+                    
+                    <div class="calculator-card">
+                        <h4>Room Configuration</h4>
+                        <table class="details-table">
+                            <thead>
+                                <tr>
+                                    <th>Room</th>
+                                    <th>Base Hrs</th>
+                                    <th>Large?</th>
+                                    <th>Extra Hours</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Kitchen</td>
+                                    <td>3</td>
+                                    <td><input type="checkbox" id="kitchenLarge" onchange="calculateMaintenance()"></td>
+                                    <td>
+                                        <input type="range" id="kitchenExtra" min="0" max="5" step="0.25" value="0" oninput="updateSliderValue('kitchenExtra', 'kitchenExtraValue')">
+                                        <span id="kitchenExtraValue" class="slider-value">0.00</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Bedroom</td>
+                                    <td>1</td>
+                                    <td><input type="checkbox" id="bedroomLarge" onchange="calculateMaintenance()"></td>
+                                    <td>
+                                        <input type="range" id="bedroomExtra" min="0" max="5" step="0.25" value="0" oninput="updateSliderValue('bedroomExtra', 'bedroomExtraValue')">
+                                        <span id="bedroomExtraValue" class="slider-value">0.00</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Bathroom</td>
+                                    <td>2.5</td>
+                                    <td><input type="checkbox" id="bathroomLarge" onchange="calculateMaintenance()"></td>
+                                    <td>
+                                        <input type="range" id="bathroomExtra" min="0" max="5" step="0.25" value="0" oninput="updateSliderValue('bathroomExtra', 'bathroomExtraValue')">
+                                        <span id="bathroomExtraValue" class="slider-value">0.00</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Entryway</td>
+                                    <td>0.5</td>
+                                    <td>Fixed</td>
+                                    <td>
+                                        <input type="range" id="entryExtra" min="0" max="3" step="0.25" value="0" oninput="updateSliderValue('entryExtra', 'entryExtraValue')">
+                                        <span id="entryExtraValue" class="slider-value">0.00</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="calculation-results">
+                    <div class="result-item">
+                        <span class="result-label">Total Hours:</span>
+                        <span class="result-value" id="maintenanceTotalHours">0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Hourly Rate:</span>
+                        <span class="result-value" id="maintenanceHourlyRate">$0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Estimated Cost:</span>
+                        <span class="result-value" id="maintenanceTotalCost">$0.00</span>
+                    </div>
+                </div>
+                
+                <div class="calculator-buttons">
+                    <button class="btn-calculator primary" onclick="applyMaintenanceEstimate()">Apply to Estimate</button>
+                    <button class="btn-calculator secondary" onclick="closeCalculator('maintenance')">Cancel</button>
+                </div>
+            </div>
+            
+            <!-- Move-Out Clean Calculator -->
+            <div id="calculator-moveout" class="calculator-section hidden">
+                <div class="calculator-title">
+                    <h3><i class="fas fa-calculator"></i> Move-Out Clean Calculator</h3>
+                    <button class="close-calculator" onclick="closeCalculator('moveout')">×</button>
+                </div>
+                
+                <div class="calculator-grid">
+                    <div class="calculator-card">
+                        <h4>Home Size</h4>
+                        <select id="moveoutSize" onchange="calculateMoveOut()">
+                            <option value="small">Small (7-8 hrs base)</option>
+                            <option value="medium">Medium (9-15 hrs base)</option>
+                            <option value="large">Large (15+ hrs base)</option>
+                        </select>
+                        
+                        <label>Square Footage:</label>
+                        <input type="number" id="moveoutSqft" placeholder="e.g., 1800" min="300" step="50" oninput="calculateMoveOut()">
+                        
+                        <label>Hourly Rate ($):</label>
+                        <input type="number" id="moveoutRate" value="50" min="20" step="1" oninput="calculateMoveOut()">
+                    </div>
+                    
+                    <div class="calculator-card">
+                        <h4>Calculation Formula</h4>
+                        <p><strong>Small:</strong> sqft ÷ 300</p>
+                        <p><strong>Medium:</strong> sqft ÷ 250</p>
+                        <p><strong>Large:</strong> sqft ÷ 200</p>
+                        <p class="tip">Final Hours = MAX(Base Hours, Sqft Factor)</p>
+                    </div>
+                </div>
+                
+                <div class="calculation-results">
+                    <div class="result-item">
+                        <span class="result-label">Base Hours:</span>
+                        <span class="result-value" id="moveoutBaseHours">0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Sqft Factor:</span>
+                        <span class="result-value" id="moveoutSqftFactor">0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Estimated Hours:</span>
+                        <span class="result-value" id="moveoutTotalHours">0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Estimated Cost:</span>
+                        <span class="result-value" id="moveoutTotalCost">$0.00</span>
+                    </div>
+                </div>
+                
+                <div class="calculator-buttons">
+                    <button class="btn-calculator primary" onclick="applyMoveOutEstimate()">Apply to Estimate</button>
+                    <button class="btn-calculator secondary" onclick="closeCalculator('moveout')">Cancel</button>
+                </div>
+            </div>
+            
+            <!-- Deep Clean Calculator -->
+            <div id="calculator-deep" class="calculator-section hidden">
+                <div class="calculator-title">
+                    <h3><i class="fas fa-calculator"></i> Deep Clean Calculator</h3>
+                    <button class="close-calculator" onclick="closeCalculator('deep')">×</button>
+                </div>
+                
+                <div class="calculator-grid">
+                    <div class="calculator-card">
+                        <h4>Home Size</h4>
+                        <select id="deepSize" onchange="calculateDeepClean()">
+                            <option value="small">Small (7-8 hrs base)</option>
+                            <option value="medium">Medium (9-15 hrs base)</option>
+                            <option value="large">Large (15+ hrs base)</option>
+                        </select>
+                        
+                        <label>Square Footage:</label>
+                        <input type="number" id="deepSqft" placeholder="e.g., 1500" min="300" step="50" oninput="calculateDeepClean()">
+                        
+                        <label>Hourly Rate ($):</label>
+                        <input type="number" id="deepRate" value="50" min="20" step="1" oninput="calculateDeepClean()">
+                    </div>
+                    
+                    <div class="calculator-card">
+                        <h4>Deep Clean Tasks</h4>
+                        <ul style="font-size: 14px; color: var(--text-light); padding-left: 20px;">
+                            <li>Baseboards cleaning</li>
+                            <li>Deep scrubbing</li>
+                            <li>Inside cabinets</li>
+                            <li>Behind appliances</li>
+                            <li>Detailed dusting</li>
+                            <li>Heavy soil removal</li>
+                        </ul>
+                        <p class="tip">Minimum 7 hours for all deep clean services</p>
+                    </div>
+                </div>
+                
+                <div class="calculation-results">
+                    <div class="result-item">
+                        <span class="result-label">Base Hours:</span>
+                        <span class="result-value" id="deepBaseHours">0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Sqft Factor:</span>
+                        <span class="result-value" id="deepSqftFactor">0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Estimated Hours:</span>
+                        <span class="result-value" id="deepTotalHours">0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Estimated Cost:</span>
+                        <span class="result-value" id="deepTotalCost">$0.00</span>
+                    </div>
+                </div>
+                
+                <div class="calculator-buttons">
+                    <button class="btn-calculator primary" onclick="applyDeepCleanEstimate()">Apply to Estimate</button>
+                    <button class="btn-calculator secondary" onclick="closeCalculator('deep')">Cancel</button>
+                </div>
+            </div>
+            
+            <!-- Steam Clean Calculator -->
+            <div id="calculator-steam" class="calculator-section">
+                <div class="calculator-title">
+                    <h3><i class="fas fa-calculator"></i> Steam Clean Calculator</h3>
+                </div>
+                
+                <div class="calculator-grid">
+                    <div class="calculator-card">
+                        <h4>Service Items</h4>
+                        <table class="details-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Price</th>
+                                    <th>Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Large Room</td>
+                                    <td>$75</td>
+                                    <td><input type="number" id="steamLargeRoom" min="0" value="0" style="width: 60px;" oninput="calculateSteamClean()"></td>
+                                </tr>
+                                <tr>
+                                    <td>Regular Room</td>
+                                    <td>$60</td>
+                                    <td><input type="number" id="steamRegularRoom" min="0" value="0" style="width: 60px;" oninput="calculateSteamClean()"></td>
+                                </tr>
+                                <tr>
+                                    <td>Area Rug</td>
+                                    <td>$30</td>
+                                    <td><input type="number" id="steamAreaRug" min="0" value="0" style="width: 60px;" oninput="calculateSteamClean()"></td>
+                                </tr>
+                                <tr>
+                                    <td>Walk-in Closet</td>
+                                    <td>$50</td>
+                                    <td><input type="number" id="steamCloset" min="0" value="0" style="width: 60px;" oninput="calculateSteamClean()"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="calculator-card">
+                        <h4>Additional Items</h4>
+                        <table class="details-table">
+                            <tbody>
+                                <tr>
+                                    <td>Stairs (per flight)</td>
+                                    <td>$5</td>
+                                    <td>
+                                        <input type="range" id="steamStairs" min="0" max="15" value="0" oninput="updateSliderValue('steamStairs', 'steamStairsValue')">
+                                        <span id="steamStairsValue" class="slider-value">0</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Walls</td>
+                                    <td>$100</td>
+                                    <td><input type="number" id="steamWalls" min="0" value="0" style="width: 60px;" oninput="calculateSteamClean()"></td>
+                                </tr>
+                                <tr>
+                                    <td>Couch</td>
+                                    <td>$100</td>
+                                    <td><input type="number" id="steamCouch" min="0" value="0" style="width: 60px;" oninput="calculateSteamClean()"></td>
+                                </tr>
+                                <tr>
+                                    <td>Love Seat</td>
+                                    <td>$75</td>
+                                    <td><input type="number" id="steamLoveseat" min="0" value="0" style="width: 60px;" oninput="calculateSteamClean()"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="calculation-results">
+                    <div class="result-item">
+                        <span class="result-label">Items Subtotal:</span>
+                        <span class="result-value" id="steamSubtotal">$0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Minimum Adjustment:</span>
+                        <span class="result-value" id="steamMinAdjustment">$0.00</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Estimated Cost:</span>
+                        <span class="result-value" id="steamTotalCost">$0.00</span>
+                    </div>
+                </div>
+                
+                <div class="tip">
+                    <i class="fas fa-info-circle"></i> Minimum charge: $120. Services under $120 will be adjusted to $114 + tax.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Service Items Section -->
+        <div class="card" id="service-items-card">
+            <div class="card-title">
+                <i class="fas fa-list"></i>
+                <h2>Service Items</h2>
+            </div>
+            <p style="margin-bottom: 16px; color: var(--text-light);">Select items and set quantities for steam cleaning services.</p>
+            
+            <div class="service-items-grid">
+                <div class="service-item">
+                    <div class="item-header">
+                        <div class="item-name">Large Room</div>
+                        <div class="item-price">$75</div>
+                    </div>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="adjustQuantity(this, -1, 'steam')">-</button>
+                        <div class="quantity-display">0</div>
+                        <button class="quantity-btn" onclick="adjustQuantity(this, 1, 'steam')">+</button>
+                    </div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="item-header">
+                        <div class="item-name">Regular Room</div>
+                        <div class="item-price">$60</div>
+                    </div>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="adjustQuantity(this, -1, 'steam')">-</button>
+                        <div class="quantity-display">0</div>
+                        <button class="quantity-btn" onclick="adjustQuantity(this, 1, 'steam')">+</button>
+                    </div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="item-header">
+                        <div class="item-name">Area Rug</div>
+                        <div class="item-price">$30</div>
+                    </div>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="adjustQuantity(this, -1, 'steam')">-</button>
+                        <div class="quantity-display">0</div>
+                        <button class="quantity-btn" onclick="adjustQuantity(this, 1, 'steam')">+</button>
+                    </div>
+                </div>
+                
+                <div class="service-item">
+                    <div class="item-header">
+                        <div class="item-name">Stairs (per flight)</div>
+                        <div class="item-price">$5</div>
+                    </div>
+                    <div class="quantity-selector">
+                        <button class="quantity-btn" onclick="adjustQuantity(this, -1, 'steam')">-</button>
+                        <div class="quantity-display">0</div>
+                        <button class="quantity-btn" onclick="adjustQuantity(this, 1, 'steam')">+</button>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-light);">Max 15 flights ($75)</div>
+                </div>
+            </div>
+            
+            <div class="tip" style="margin-top: 20px;">
+                <i class="fas fa-exclamation-circle"></i> Minimum subtotal: $1,200 (before tax)
+            </div>
+        </div>
+        
+        <!-- Optional Tasks -->
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-tasks"></i>
+                <h2>Optional Tasks</h2>
+            </div>
+            <p style="margin-bottom: 16px; color: var(--text-light);">Add any additional cleaning requests or special instructions.</p>
+            
+            <textarea id="optionalTasks" placeholder="Examples: Clean balcony, wipe exterior windows, oven deep cleaning, pet area sanitization, mold removal..."></textarea>
+        </div>
+        
+        <!-- On-Site Visit Request -->
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-home"></i>
+                <h2>On-Site Visit Request</h2>
+            </div>
+            <p style="margin-bottom: 16px; color: var(--text-light);">Request a supervisor inspection before final pricing.</p>
+            
+            <div class="checkbox-option" id="onsiteVisitOption" onclick="toggleCheckbox(this)">
+                <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                <div class="checkbox-content">
+                    <div class="checkbox-title">Request on-site supervisor visit</div>
+                    <div class="checkbox-desc">Required for commercial maintenance clean, large properties, or complex requests. Supervisor will contact you to schedule a visit.</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 16px; padding: 12px; background-color: rgba(239, 68, 68, 0.1); border-radius: var(--radius); border-left: 4px solid var(--danger);">
+                <p style="font-size: 14px; color: var(--text);"><strong>Note:</strong> On-site visit is automatically required for:
+                <ul style="margin-left: 20px; margin-top: 8px; font-size: 14px;">
+                    <li>Commercial Maintenance Clean</li>
+                    <li>Large properties (over 3000 sqft)</li>
+                    <li>Steam cleaning with nonstandard items</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Estimate Summary -->
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-calculator"></i>
+                <h2>Estimate Summary</h2>
+            </div>
+            
+            <div class="estimate-summary">
+                <div id="estimateBreakdown">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+                
+                <div class="summary-row" id="summarySubtotal">
+                    <div class="summary-label">Subtotal</div>
+                    <div class="summary-value">$0.00</div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-label">Tax (5%)</div>
+                    <div class="summary-value" id="summaryTax">$0.00</div>
+                </div>
+                <div class="summary-row total">
+                    <div class="summary-label">Grand Total</div>
+                    <div class="summary-value" id="summaryTotal">$0.00</div>
+                </div>
+            </div>
+            
+            <div class="tip" style="margin-top: 20px;">
+                <i class="fas fa-info-circle"></i> Minimum subtotal of $1,200 required. Current subtotal: <span id="currentSubtotal">$0.00</span>
+            </div>
+        </div>
+        
+        <!-- Deposit Option -->
+        <div class="card">
+            <div class="card-title">
+                <i class="fas fa-money-bill-wave"></i>
+                <h2>Deposit Option</h2>
+            </div>
+            <p style="margin-bottom: 16px; color: var(--text-light);">Residential clients can choose to pay a deposit now or waive it until final payment.</p>
+            
+            <div class="deposit-options">
+                <div class="deposit-option">
+                    <div class="checkbox-option selected" onclick="selectDepositOption(this, 'pay')">
+                        <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                        <div class="checkbox-content">
+                            <div class="checkbox-title">Pay $120 Deposit</div>
+                            <div class="checkbox-desc">Residential steam cleaning requires a $120 deposit. Payment request will appear in Step 6.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="deposit-option">
+                    <div class="checkbox-option" onclick="selectDepositOption(this, 'waive')">
+                        <div class="checkbox-icon"><i class="fas fa-check"></i></div>
+                        <div class="checkbox-content">
+                            <div class="checkbox-title">Waive Deposit</div>
+                            <div class="checkbox-desc">Proceed without paying deposit now. Full payment will be required in Step 6.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 16px; padding: 12px; background-color: rgba(16, 185, 129, 0.1); border-radius: var(--radius);">
+                <p style="font-size: 14px; color: var(--text);"><i class="fas fa-building"></i> <strong>Commercial clients:</strong> No deposit required for commercial properties.</p>
+            </div>
+        </div>
+        
+        <!-- Submit Button -->
+        <button class="btn-submit" onclick="submitBooking()">
+            <i class="fas fa-paper-plane"></i>
+            Submit Booking
+        </button>
+        
+        <div style="text-align: center; margin-top: 24px; color: var(--text-light); font-size: 14px;">
+            <p>By submitting, you agree to our Terms of Service. Your data will be saved for supervisor review in Step 2.</p>
+        </div>
+    </div>
+
+    <!-- Modal for Additional Steam Items -->
+    <div id="steamModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Additional Steam Clean Items</h2>
+                <button class="close-modal" onclick="closeModal()">×</button>
+            </div>
+            <div id="steamModalContent">
+                <!-- Dynamic content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables to store estimates
+        let selectedCleaningTypes = ['steam'];
+        let depositOption = 'pay';
+        let estimates = {
+            maintenance: { hours: 0, rate: 0, cost: 0 },
+            moveout: { hours: 0, cost: 0 },
+            deep: { hours: 0, cost: 0 },
+            steam: { cost: 0 }
+        };
+        
+        // Initialize the interface
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateSteamClean();
+            updateEstimate();
+        });
+        
+        // Toggle cleaning type selection
+        function toggleCleaningType(card) {
+            const type = card.getAttribute('data-type');
+            const isSelected = card.classList.contains('selected');
+            
+            if (isSelected) {
+                card.classList.remove('selected');
+                const index = selectedCleaningTypes.indexOf(type);
+                if (index > -1) {
+                    selectedCleaningTypes.splice(index, 1);
+                }
+                closeCalculator(type);
+            } else {
+                card.classList.add('selected');
+                selectedCleaningTypes.push(type);
+                showCalculator(type);
+            }
+            
+            // Show/hide service items section if steam clean is selected
+            const serviceItemsCard = document.getElementById('service-items-card');
+            if (type === 'steam') {
+                if (isSelected) {
+                    serviceItemsCard.classList.add('hidden');
+                    closeCalculator('steam');
+                } else {
+                    serviceItemsCard.classList.remove('hidden');
+                }
+            }
+            
+            updateEstimate();
+        }
+        
+        // Show calculator for specific cleaning type
+        function showCalculator(type) {
+            // Hide all calculators first
+            document.querySelectorAll('.calculator-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show the selected calculator
+            const calculator = document.getElementById(`calculator-${type}`);
+            if (calculator) {
+                calculator.classList.remove('hidden');
+                
+                // Initialize calculations
+                switch(type) {
+                    case 'maintenance':
+                        calculateMaintenance();
+                        break;
+                    case 'moveout':
+                        calculateMoveOut();
+                        break;
+                    case 'deep':
+                        calculateDeepClean();
+                        break;
+                    case 'steam':
+                        calculateSteamClean();
+                        break;
+                }
+            }
+        }
+        
+        // Close calculator
+        function closeCalculator(type) {
+            const calculator = document.getElementById(`calculator-${type}`);
+            if (calculator) {
+                calculator.classList.add('hidden');
+            }
+        }
+        
+        // Maintenance Clean Calculator
+        function calculateMaintenance() {
+            const rateType = document.querySelector('input[name="maintenanceRate"]:checked').value;
+            const rate = rateType === 'residential' ? 38 : 44;
+            
+            // Update visit estimation section for commercial
+            const visitSection = document.getElementById('visitEstimationSection');
+            if (rateType === 'commercial') {
+                visitSection.classList.remove('hidden');
+            } else {
+                visitSection.classList.add('hidden');
+                document.getElementById('visitEstimation').checked = false;
+            }
+            
+            // Calculate room hours
+            let kitchenHours = 3;
+            if (document.getElementById('kitchenLarge').checked) kitchenHours += 1.5;
+            kitchenHours += parseFloat(document.getElementById('kitchenExtra').value) || 0;
+            
+            let bedroomHours = 1;
+            if (document.getElementById('bedroomLarge').checked) bedroomHours += 0.5;
+            bedroomHours += parseFloat(document.getElementById('bedroomExtra').value) || 0;
+            
+            let bathroomHours = 2.5;
+            if (document.getElementById('bathroomLarge').checked) bathroomHours += 1;
+            bathroomHours += parseFloat(document.getElementById('bathroomExtra').value) || 0;
+            
+            let entryHours = 0.5;
+            entryHours += parseFloat(document.getElementById('entryExtra').value) || 0;
+            
+            // Calculate total hours
+            let totalHours = kitchenHours + bedroomHours + bathroomHours + entryHours;
+            
+            // Apply minimum hours
+            const minHours = rateType === 'residential' ? 3 : 6;
+            if (totalHours < minHours) totalHours = minHours;
+            
+            // Calculate cost
+            const cost = totalHours * rate;
+            
+            // Update display
+            document.getElementById('maintenanceTotalHours').textContent = totalHours.toFixed(2);
+            document.getElementById('maintenanceHourlyRate').textContent = `$${rate.toFixed(2)}`;
+            document.getElementById('maintenanceTotalCost').textContent = `$${cost.toFixed(2)}`;
+            
+            // Store estimate
+            estimates.maintenance = { hours: totalHours, rate: rate, cost: cost };
+        }
+        
+        // Apply maintenance estimate to summary
+        function applyMaintenanceEstimate() {
+            closeCalculator('maintenance');
+            updateEstimate();
+        }
+        
+        // Move-Out Clean Calculator
+        function calculateMoveOut() {
+            const size = document.getElementById('moveoutSize').value;
+            const sqft = parseFloat(document.getElementById('moveoutSqft').value) || 0;
+            const rate = parseFloat(document.getElementById('moveoutRate').value) || 50;
+            
+            // Base hours based on size
+            let baseHours = 0;
+            let divisor = 0;
+            
+            switch(size) {
+                case 'small':
+                    baseHours = 7;
+                    divisor = 300;
+                    break;
+                case 'medium':
+                    baseHours = 9;
+                    divisor = 250;
+                    break;
+                case 'large':
+                    baseHours = 15;
+                    divisor = 200;
+                    break;
+            }
+            
+            // Calculate sqft factor
+            const sqftFactor = sqft / divisor;
+            
+            // Determine final hours
+            const totalHours = Math.max(baseHours, sqftFactor);
+            const cost = totalHours * rate;
+            
+            // Update display
+            document.getElementById('moveoutBaseHours').textContent = baseHours.toFixed(2);
+            document.getElementById('moveoutSqftFactor').textContent = sqftFactor.toFixed(2);
+            document.getElementById('moveoutTotalHours').textContent = totalHours.toFixed(2);
+            document.getElementById('moveoutTotalCost').textContent = `$${cost.toFixed(2)}`;
+            
+            // Store estimate
+            estimates.moveout = { hours: totalHours, cost: cost };
+        }
+        
+        // Apply move-out estimate to summary
+        function applyMoveOutEstimate() {
+            closeCalculator('moveout');
+            updateEstimate();
+        }
+        
+        // Deep Clean Calculator
+        function calculateDeepClean() {
+            const size = document.getElementById('deepSize').value;
+            const sqft = parseFloat(document.getElementById('deepSqft').value) || 0;
+            const rate = parseFloat(document.getElementById('deepRate').value) || 50;
+            
+            // Base hours based on size
+            let baseHours = 7; // Minimum for deep clean
+            let divisor = 0;
+            
+            switch(size) {
+                case 'small':
+                    divisor = 300;
+                    break;
+                case 'medium':
+                    baseHours = 9;
+                    divisor = 250;
+                    break;
+                case 'large':
+                    baseHours = 15;
+                    divisor = 200;
+                    break;
+            }
+            
+            // Calculate sqft factor
+            const sqftFactor = sqft / divisor;
+            
+            // Determine final hours (minimum 7 hours for deep clean)
+            const totalHours = Math.max(baseHours, sqftFactor, 7);
+            const cost = totalHours * rate;
+            
+            // Update display
+            document.getElementById('deepBaseHours').textContent = baseHours.toFixed(2);
+            document.getElementById('deepSqftFactor').textContent = sqftFactor.toFixed(2);
+            document.getElementById('deepTotalHours').textContent = totalHours.toFixed(2);
+            document.getElementById('deepTotalCost').textContent = `$${cost.toFixed(2)}`;
+            
+            // Store estimate
+            estimates.deep = { hours: totalHours, cost: cost };
+        }
+        
+        // Apply deep clean estimate to summary
+        function applyDeepCleanEstimate() {
+            closeCalculator('deep');
+            updateEstimate();
+        }
+        
+        // Steam Clean Calculator
+        function calculateSteamClean() {
+            // Calculate item costs
+            const largeRoomQty = parseInt(document.getElementById('steamLargeRoom').value) || 0;
+            const regularRoomQty = parseInt(document.getElementById('steamRegularRoom').value) || 0;
+            const areaRugQty = parseInt(document.getElementById('steamAreaRug').value) || 0;
+            const closetQty = parseInt(document.getElementById('steamCloset').value) || 0;
+            const stairsQty = parseInt(document.getElementById('steamStairs').value) || 0;
+            const wallsQty = parseInt(document.getElementById('steamWalls').value) || 0;
+            const couchQty = parseInt(document.getElementById('steamCouch').value) || 0;
+            const loveseatQty = parseInt(document.getElementById('steamLoveseat').value) || 0;
+            
+            let subtotal = (largeRoomQty * 75) + (regularRoomQty * 60) + (areaRugQty * 30) +
+                          (closetQty * 50) + (stairsQty * 5) + (wallsQty * 100) +
+                          (couchQty * 100) + (loveseatQty * 75);
+            
+            // Apply minimum charge
+            let minAdjustment = 0;
+            if (subtotal > 0 && subtotal < 120) {
+                minAdjustment = 114 - subtotal;
+                subtotal = 114;
+            }
+            
+            // Update display
+            document.getElementById('steamSubtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('steamMinAdjustment').textContent = minAdjustment > 0 ? `+$${minAdjustment.toFixed(2)}` : '$0.00';
+            document.getElementById('steamTotalCost').textContent = `$${subtotal.toFixed(2)}`;
+            
+            // Store estimate
+            estimates.steam.cost = subtotal;
+            
+            // Update service items grid
+            updateServiceItemsFromCalculator();
+        }
+        
+        // Update service items grid from calculator
+        function updateServiceItemsFromCalculator() {
+            // This function would sync the calculator values with the service items grid
+            // For simplicity, we'll just update the estimate
+            updateEstimate();
+        }
+        
+        // Update slider value display
+        function updateSliderValue(sliderId, displayId) {
+            const slider = document.getElementById(sliderId);
+            const display = document.getElementById(displayId);
+            if (slider && display) {
+                display.textContent = slider.value;
+                
+                // Trigger calculation based on which calculator is active
+                if (sliderId.includes('kitchen') || sliderId.includes('bedroom') || 
+                    sliderId.includes('bathroom') || sliderId.includes('entry')) {
+                    calculateMaintenance();
+                } else if (sliderId.includes('steam')) {
+                    calculateSteamClean();
+                }
+            }
+        }
+        
+        // Adjust quantity in service items
+        function adjustQuantity(button, change, type) {
+            const quantityDisplay = button.parentElement.querySelector('.quantity-display');
+            let currentQuantity = parseInt(quantityDisplay.textContent) || 0;
+            let newQuantity = currentQuantity + change;
+            
+            // Ensure quantity doesn't go below 0
+            if (newQuantity < 0) newQuantity = 0;
+            
+            // For stairs, limit to 15 max
+            const itemName = button.parentElement.parentElement.querySelector('.item-name').textContent;
+            if (itemName.includes('Stairs') && newQuantity > 15) newQuantity = 15;
+            
+            quantityDisplay.textContent = newQuantity;
+            
+            // Update calculator if steam clean
+            if (type === 'steam') {
+                updateCalculatorFromServiceItems();
+            }
+            
+            updateEstimate();
+        }
+        
+        // Update calculator from service items
+        function updateCalculatorFromServiceItems() {
+            // This would sync the service items grid with the calculator
+            // For now, we'll just update the estimate
+            updateEstimate();
+        }
+        
+        // Toggle checkbox option
+        function toggleCheckbox(option) {
+            const isSelected = option.classList.contains('selected');
+            
+            if (isSelected) {
+                option.classList.remove('selected');
+            } else {
+                option.classList.add('selected');
+            }
+        }
+        
+        // Select deposit option
+        function selectDepositOption(option, type) {
+            const allOptions = document.querySelectorAll('.deposit-option .checkbox-option');
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            option.classList.add('selected');
+            depositOption = type;
+            updateEstimate();
+        }
+        
+        // Toggle visit estimation
+        function toggleVisitEstimation() {
+            const isVisitRequired = document.getElementById('visitEstimation').checked;
+            // This would trigger additional logic for visit estimation
+        }
+        
+        // Update overall estimate
+        function updateEstimate() {
+            const breakdown = document.getElementById('estimateBreakdown');
+            let subtotal = 0;
+            let breakdownHTML = '';
+            
+            // Add selected services to breakdown
+            if (selectedCleaningTypes.includes('maintenance') && estimates.maintenance.cost > 0) {
+                subtotal += estimates.maintenance.cost;
+                breakdownHTML += `
+                    <div class="summary-row">
+                        <div class="summary-label">Maintenance Clean (${estimates.maintenance.hours.toFixed(2)} hrs)</div>
+                        <div class="summary-value">$${estimates.maintenance.cost.toFixed(2)}</div>
+                    </div>
+                `;
+            }
+            
+            if (selectedCleaningTypes.includes('moveout') && estimates.moveout.cost > 0) {
+                subtotal += estimates.moveout.cost;
+                breakdownHTML += `
+                    <div class="summary-row">
+                        <div class="summary-label">Move-Out Clean (${estimates.moveout.hours.toFixed(2)} hrs)</div>
+                        <div class="summary-value">$${estimates.moveout.cost.toFixed(2)}</div>
+                    </div>
+                `;
+            }
+            
+            if (selectedCleaningTypes.includes('deep') && estimates.deep.cost > 0) {
+                subtotal += estimates.deep.cost;
+                breakdownHTML += `
+                    <div class="summary-row">
+                        <div class="summary-label">Deep Clean (${estimates.deep.hours.toFixed(2)} hrs)</div>
+                        <div class="summary-value">$${estimates.deep.cost.toFixed(2)}</div>
+                    </div>
+                `;
+            }
+            
+            if (selectedCleaningTypes.includes('steam') && estimates.steam.cost > 0) {
+                subtotal += estimates.steam.cost;
+                breakdownHTML += `
+                    <div class="summary-row">
+                        <div class="summary-label">Steam Clean Items</div>
+                        <div class="summary-value">$${estimates.steam.cost.toFixed(2)}</div>
+                    </div>
+                `;
+            }
+            
+            // Update breakdown
+            breakdown.innerHTML = breakdownHTML;
+            
+            // Calculate tax and total
+            const tax = subtotal * 0.05;
+            let total = subtotal + tax;
+            
+            // Apply deposit if selected
+            if (depositOption === 'pay') {
+                total -= 120;
+            }
+            
+            // Update summary
+            document.getElementById('summarySubtotal').querySelector('.summary-value').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('summaryTax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('summaryTotal').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('currentSubtotal').textContent = `$${subtotal.toFixed(2)}`;
+            
+            // Update minimum subtotal warning
+            const tip = document.querySelector('.tip:last-child');
+            if (tip) {
+                const minWarning = subtotal < 1200 ? ` Minimum subtotal of $1,200 required. Current subtotal: $${subtotal.toFixed(2)}` : '';
+                tip.innerHTML = `<i class="fas fa-info-circle"></i>${minWarning}`;
+            }
+        }
+        
+        // Submit booking
+        function submitBooking() {
+            const onSiteVisit = document.querySelector('#onsiteVisitOption.selected') !== null;
+            
+            // Collect all data
+            const bookingData = {
+                clientInfo: {
+                    name: 'Maria Santos',
+                    phone: '+63 912 345 6789',
+                    address: '25 Jupiter St., Canada City',
+                    email: 'maria.santos@email.com'
+                },
+                cleaningTypes: selectedCleaningTypes,
+                estimates: estimates,
+                optionalTasks: document.getElementById('optionalTasks').value,
+                onSiteVisit: onSiteVisit,
+                depositOption: depositOption,
+                subtotal: parseFloat(document.getElementById('summarySubtotal').querySelector('.summary-value').textContent.replace('$', '')),
+                total: parseFloat(document.getElementById('summaryTotal').textContent.replace('$', ''))
+            };
+            
+            // Show confirmation message
+            if (onSiteVisit) {
+                alert('📩 Booking submitted. Supervisor will contact you for on-site visit.');
+            } else {
+                alert('✅ Booking submitted! Status: pending_review');
+            }
+            
+            // In a real app, this would submit the data to a server
+            console.log('Booking Data:', bookingData);
+            
+            // Data saved for Step 2:
+            // - Client info
+            // - Selected cleaning types
+            // - Steam/fixed items & quantities
+            // - Optional tasks
+            // - On-site visit request
+            // - Deposit option
+            // - Estimated subtotal & total
+        }
+        
+        // Modal functions
+        function openSteamModal() {
+            const modal = document.getElementById('steamModal');
+            const modalContent = document.getElementById('steamModalContent');
+            
+            // Populate modal with additional steam items
+            modalContent.innerHTML = `
+                <div class="calculator-grid">
+                    <div class="calculator-card">
+                        <h4>Additional Items</h4>
+                        <table class="details-table">
+                            <tbody>
+                                <tr>
+                                    <td>Mattress</td>
+                                    <td>$100</td>
+                                    <td><input type="number" id="modalMattress" min="0" value="0" style="width: 60px;"></td>
+                                </tr>
+                                <tr>
+                                    <td>Hallway</td>
+                                    <td>$35</td>
+                                    <td><input type="number" id="modalHallway" min="0" value="0" style="width: 60px;"></td>
+                                </tr>
+                                <tr>
+                                    <td>Landing</td>
+                                    <td>$25</td>
+                                    <td><input type="number" id="modalLanding" min="0" value="0" style="width: 60px;"></td>
+                                </tr>
+                                <tr>
+                                    <td>Small Chair</td>
+                                    <td>$20</td>
+                                    <td><input type="number" id="modalChair" min="0" value="0" style="width: 60px;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="calculator-buttons" style="margin-top: 20px;">
+                    <button class="btn-calculator primary" onclick="addSteamItems()">Add Items</button>
+                    <button class="btn-calculator secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('steamModal').style.display = 'none';
+        }
+        
+        function addSteamItems() {
+            // Add modal items to calculator
+            closeModal();
+            calculateSteamClean();
+        }
+    </script>
+</body>
+</html>
