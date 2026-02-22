@@ -1,0 +1,896 @@
+/**
+ * MB-CleanerNotes.css
+ * Complete styles for notes and task management system
+ */
+
+/* ===== Container Styles ===== */
+.cleaner-cleaner-notes-container,
+.cleaner-cleaner-tasks-container {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    color: #1e293b;
+    background: #f8fafc;
+    min-height: 100vh;
+    padding: 1.5rem;
+}
+
+/* ===== Tab Styles ===== */
+.cleaner-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0.5rem;
+}
+
+.cleaner-tab {
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    border-radius: 0.375rem 0.375rem 0 0;
+    font-weight: 500;
+    color: #64748b;
+    transition: all 0.2s;
+}
+
+.cleaner-tab:hover {
+    color: #3b82f6;
+    background: #f8fafc;
+}
+
+.cleaner-tab.active {
+    color: #3b82f6;
+    border-bottom: 2px solid #3b82f6;
+    margin-bottom: -0.5rem;
+}
+
+.cleaner-tab-pane {
+    display: none;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.cleaner-tab-pane.active {
+    display: block;
+}
+
+/* ===== Header Styles ===== */
+.cleaner-notes-header,
+.cleaner-task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.cleaner-notes-header h3,
+.cleaner-task-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0;
+}
+
+.cleaner-notes-count {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* ===== Controls ===== */
+.cleaner-notes-controls,
+.cleaner-task-filters {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.cleaner-search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.cleaner-search-box input {
+    padding: 0.625rem 2.5rem 0.625rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    width: 280px;
+    transition: all 0.2s;
+    background: white;
+}
+
+.cleaner-search-box input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.cleaner-search-box i {
+    position: absolute;
+    right: 1rem;
+    color: #94a3b8;
+    font-size: 0.875rem;
+}
+
+.cleaner-select,
+.cleaner-task-filters select {
+    padding: 0.625rem 2.5rem 0.625rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background-color: white;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    min-width: 140px;
+}
+
+.cleaner-select:focus,
+.cleaner-task-filters select:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+/* ===== Button Styles ===== */
+.cleaner-btn {
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    line-height: 1;
+}
+
+.cleaner-btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.813rem;
+}
+
+.cleaner-btn-xs {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.cleaner-btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+
+.cleaner-btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+.cleaner-btn-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.cleaner-btn-success:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2);
+}
+
+.cleaner-btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.cleaner-btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.2);
+}
+
+.cleaner-btn-secondary {
+    background: #64748b;
+    color: white;
+}
+
+.cleaner-btn-secondary:hover {
+    background: #475569;
+}
+
+.cleaner-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ===== Table Styles ===== */
+.cleaner-notes-table-container,
+.cleaner-tasks-table-container {
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    background: white;
+}
+
+.cleaner-notes-table,
+.cleaner-tasks-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.cleaner-notes-table thead,
+.cleaner-tasks-table thead {
+    background: #f1f5f9;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.cleaner-notes-table th,
+.cleaner-tasks-table th {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    font-weight: 600;
+    color: #475569;
+    white-space: nowrap;
+    font-size: 0.813rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.cleaner-notes-table td,
+.cleaner-tasks-table td {
+    padding: 1.25rem;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+}
+
+.cleaner-notes-table tbody tr:hover,
+.cleaner-tasks-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.cleaner-notes-table tbody tr:last-child td,
+.cleaner-tasks-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ===== Media Preview ===== */
+.cleaner-media-preview {
+    color: #3b82f6;
+    cursor: pointer;
+    font-size: 0.813rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    background: #eff6ff;
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+}
+
+.cleaner-media-preview:hover {
+    background: #dbeafe;
+    color: #1d4ed8;
+    text-decoration: underline;
+}
+
+/* ===== Badges ===== */
+.cleaner-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.cleaner-badge-manager {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.cleaner-badge-client {
+    background: #fce7f3;
+    color: #9d174d;
+}
+
+.cleaner-badge-cleaner {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.cleaner-badge-system {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.cleaner-badge-success {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.cleaner-badge-warning {
+    background: #fed7aa;
+    color: #92400e;
+}
+
+.cleaner-badge-secondary {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.cleaner-badge-danger {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* ===== Priority Badges ===== */
+.cleaner-priority-urgent {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    animation: pulse 2s infinite;
+}
+
+.cleaner-priority-high {
+    background: #ffedd5;
+    color: #c2410c;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.cleaner-priority-normal {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.cleaner-priority-low {
+    background: #e2e8f0;
+    color: #334155;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* ===== Category Cards ===== */
+.cleaner-task-categories {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.cleaner-category-card {
+    background: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.cleaner-category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border-color: #3b82f6;
+}
+
+/* ===== Progress Bar ===== */
+.cleaner-progress-summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 300px;
+}
+
+.cleaner-progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.cleaner-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #10b981);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.cleaner-progress-text {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #3b82f6;
+    min-width: 100px;
+}
+
+/* ===== Services Breakdown ===== */
+.cleaner-services-breakdown {
+    margin-bottom: 2rem;
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+}
+
+.cleaner-service-item {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+}
+
+.cleaner-subtask {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    background: #f8fafc;
+    border-radius: 0.375rem;
+}
+
+.cleaner-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    flex: 1;
+}
+
+.subtask-status {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    background: #e2e8f0;
+    color: #475569;
+}
+
+/* ===== Validation Styles ===== */
+.cleaner-validation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.cleaner-validation-item {
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+/* ===== Form Styles ===== */
+.cleaner-add-note-form {
+    background: #f8fafc;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.cleaner-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.cleaner-full-width {
+    grid-column: 1 / -1;
+}
+
+.cleaner-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.cleaner-form-group label {
+    font-size: 0.813rem;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.cleaner-form-group input,
+.cleaner-form-group textarea,
+.cleaner-form-group select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    background: white;
+    width: 100%;
+}
+
+.cleaner-form-group input:focus,
+.cleaner-form-group textarea:focus,
+.cleaner-form-group select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.cleaner-note-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 1.25rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* ===== Chat Styles ===== */
+.cleaner-chat-container {
+    background: white;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+.cleaner-chat-header {
+    padding: 1.25rem;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cleaner-chat-header h3 {
+    margin: 0;
+    font-size: 1.125rem;
+    color: #0f172a;
+}
+
+.cleaner-chat-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #475569;
+}
+
+.cleaner-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #94a3b8;
+}
+
+.cleaner-status-dot.active {
+    background: #10b981;
+    animation: pulse 2s infinite;
+}
+
+.cleaner-chat-messages {
+    height: 400px;
+    overflow-y: auto;
+    padding: 1.5rem;
+    background: #ffffff;
+}
+
+.cleaner-chat-message {
+    margin-bottom: 1rem;
+    max-width: 70%;
+}
+
+.cleaner-chat-message-manager {
+    margin-left: auto;
+    text-align: right;
+}
+
+.cleaner-chat-message-cleaner {
+    margin-right: auto;
+    text-align: left;
+}
+
+.cleaner-chat-message-system {
+    margin: 0 auto;
+    text-align: center;
+    max-width: 90%;
+}
+
+.cleaner-chat-message-system div {
+    background: #e2e8f0;
+    color: #475569;
+    font-style: italic;
+}
+
+.cleaner-chat-message-time {
+    font-size: 0.688rem;
+    color: #94a3b8;
+    margin-top: 0.25rem;
+}
+
+.cleaner-chat-input {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+}
+
+.cleaner-chat-input input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.cleaner-chat-input input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ===== Sample Media Info ===== */
+.cleaner-sample-media-info {
+    background: #f0f9ff;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    border-left: 4px solid #3b82f6;
+}
+
+.cleaner-sample-media-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.cleaner-sample-media-grid div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+}
+
+.cleaner-sample-media-grid div:hover {
+    background: #e6f0ff;
+    transform: translateY(-1px);
+}
+
+/* ===== Modal Styles ===== */
+.cleaner-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.2s ease;
+}
+
+.cleaner-modal-overlay > div {
+    background: white;
+    border-radius: 0.5rem;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90%;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.cleaner-modal-overlay .cleaner-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #64748b;
+    line-height: 1;
+    padding: 0.25rem 0.5rem;
+    transition: color 0.2s;
+}
+
+.cleaner-modal-overlay .cleaner-modal-close:hover {
+    color: #ef4444;
+}
+
+/* ===== Media Viewer ===== */
+.cleaner-media-viewer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    animation: fadeIn 0.2s ease;
+}
+
+.cleaner-media-viewer-overlay > div {
+    background: white;
+    border-radius: 0.5rem;
+    max-width: 90%;
+    max-height: 90%;
+    overflow: hidden;
+}
+
+.cleaner-media-viewer-overlay .cleaner-media-viewer-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #64748b;
+    transition: color 0.2s;
+}
+
+.cleaner-media-viewer-overlay .cleaner-media-viewer-close:hover {
+    color: #ef4444;
+}
+
+/* ===== Notifications ===== */
+#cleaner-notification-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10002;
+}
+
+#cleaner-notification-container > div {
+    background: white;
+    border-left: 4px solid;
+    padding: 1rem 1.5rem;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.5rem;
+    animation: slideIn 0.3s ease;
+}
+
+/* ===== Animations ===== */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ===== Utility Classes ===== */
+.cleaner-text-center {
+    text-align: center;
+}
+
+.cleaner-text-muted {
+    color: #64748b;
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 1024px) {
+    .cleaner-task-categories {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .cleaner-notes-header,
+    .cleaner-task-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .cleaner-notes-controls,
+    .cleaner-task-filters {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .cleaner-search-box input,
+    .cleaner-select,
+    .cleaner-task-filters select {
+        width: 100%;
+    }
+
+    .cleaner-search-box {
+        width: 100%;
+    }
+
+    .cleaner-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cleaner-task-categories {
+        grid-template-columns: 1fr;
+    }
+
+    .cleaner-notes-table th,
+    .cleaner-notes-table td,
+    .cleaner-tasks-table th,
+    .cleaner-tasks-table td {
+        padding: 0.75rem;
+    }
+
+    .cleaner-chat-message {
+        max-width: 85%;
+    }
+}
+
+@media (max-width: 480px) {
+    .cleaner-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .cleaner-note-actions {
+        flex-direction: column;
+    }
+
+    .cleaner-note-actions .cleaner-btn {
+        width: 100%;
+    }
+
+    .cleaner-sample-media-grid {
+        flex-direction: column;
+    }
+}
